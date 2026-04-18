@@ -1,0 +1,342 @@
+/* ============================================
+   VARIABLES GLOBALES Y TEMAS
+   ============================================ */
+ 
+/* IMPORTACIÓN DE TIPOGRAFÍA MODERNA */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=Bebas+Neue&display=swap');
+
+/* VARIABLES DEL TEMA CLARO (Default) */
+:root {
+    /* COLORES DE MARCA */
+    --rose: #FF007F;
+    --rose-hover: #E60072;
+    --rose-light: #FFF0F6;
+    --rose-bg: #FFE8F5;
+    
+    /* COLORES PRINCIPAL (AdminRC Events) */
+    --gold: #d725dd;
+    --gold-dim: rgba(215, 37, 221, 0.15);
+    --gold-glow: rgba(215, 37, 221, 0.4);
+    --dark: #0d0b0f;
+    --dark-2: #141118;
+    --dark-3: #1c1820;
+    --cream: #faf7f2;
+    --cream-2: #f2edea;
+    --text: #2a2229;
+    --muted: #7a717a;
+    --accent-cyan: #00e5ff;
+    --accent-warm: #ff6b35;
+    
+    /* COLORES BASE */
+    --white: #FFFFFF;
+    --light-bg: #FAFBFC;
+    --light-gray: #F3F4F6;
+    --border: rgba(215, 37, 221, 0.18);
+    --border-soft: rgba(42, 34, 41, 0.1);
+    --text-dark: #111827;
+    --text-gray: #6B7280;
+    --text-light: #9CA3AF;
+    
+    /* COMPONENTES ESPECÍFICOS */
+    --header-bg: rgba(255, 255, 255, 0.95);
+    --header-border: #E5E7EB;
+    --sidebar-bg: #FAFBFC;
+    --card-bg: #FFFFFF;
+    
+    /* COLORES FUNCIONALES */
+    --success: #10B981;
+    --danger: #EF4444;
+    --info: #3B82F6;
+    
+    /* TIPOGRAFÍA */
+    --font-display: 'Playfair Display', serif;
+    --font-sans: 'DM Sans', sans-serif;
+    --font-bold: 'Bebas Neue', sans-serif;
+    
+    /* TRANSICIONES */
+    --transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    --transition-fast: all 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+    
+    /* BORDES */
+    --border-principal: rgba(215, 37, 221, 0.2);
+    
+}
+ 
+/* VARIABLES DEL TEMA OSCURO */
+body.dark-mode {
+    /* COLORES BASE - INVERTIDOS */
+    --white: #121212;
+    --light-bg: #0A0A0A;
+    --light-gray: #1E1E1E;
+    --border: #2D2D2D;
+    --text-dark: #F9FAFB;
+    --text-gray: #9CA3AF;
+    --text-light: #6B7280;
+    
+    /* COMPONENTES - TEMA OSCURO */
+    --header-bg: rgba(18, 18, 18, 0.98);
+    --header-border: #2D2D2D;
+    --sidebar-bg: #121212;
+    --card-bg: #1A1A1A;
+    --rose-bg: #2D1B26;
+}
+ 
+/* ============================================
+   RESET GLOBAL Y ESTILOS BASE
+   ============================================ */
+ 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+}
+ 
+html {
+    scroll-behavior: smooth;
+}
+ 
+body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--white);
+    color: var(--text-dark);
+    min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+ 
+/* ============================================
+   ELEMENTO INVISIBLE PARA DEBUG
+   ============================================ */
+.ff {
+    color: transparent;
+}
+ 
+/* ============================================
+   LOADING SPINNER - DISEÑO PREMIUM
+   ============================================ */
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    gap: 20px;
+}
+ 
+body.dark-mode .loader {
+    background: rgba(18, 18, 18, 0.9);
+}
+ 
+body.transparent-mode .loader {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+ 
+.loader.active {
+    opacity: 1;
+    visibility: visible;
+}
+ 
+/* SPINNER PREMIUM */
+.spinner {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+ 
+.spinner::before,
+.spinner::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid transparent;
+}
+ 
+.spinner::before {
+    border-top-color: var(--rose);
+    border-right-color: var(--rose);
+    animation: spinOuter 0.6s linear infinite;
+}
+ 
+.spinner::after {
+    border-bottom-color: var(--info);
+    border-left-color: var(--info);
+    animation: spinInner 0.8s linear infinite reverse;
+    width: 85%;
+    height: 85%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+ 
+/* LOADING TEXT */
+.loader-text {
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    animation: pulse 0.8s ease-in-out infinite;
+}
+ 
+body.dark-mode .loader-text {
+    color: var(--text-dark);
+}
+ 
+/* DOTS ANIMATION */
+.loader-dots {
+    display: inline-block;
+    margin-left: 4px;
+}
+ 
+.loader-dots span {
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    margin: 0 2px;
+    background: var(--rose);
+    border-radius: 50%;
+    animation: dotsAnimation 0.8s ease-in-out infinite;
+}
+ 
+.loader-dots span:nth-child(1) {
+    animation-delay: 0s;
+}
+ 
+.loader-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+ 
+.loader-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+ 
+/* ============================================
+   ANIMACIONES GLOBALES
+   ============================================ */
+@keyframes spinOuter {
+    to {
+        transform: rotate(360deg);
+    }
+}
+ 
+@keyframes spinInner {
+    to {
+        transform: translate(-50%, -50%) rotate(-360deg);
+    }
+}
+ 
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+ 
+@keyframes dotsAnimation {
+    0%, 100% {
+        transform: translateY(0);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translateY(-8px);
+        opacity: 1;
+    }
+}
+ 
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+ 
+/* ============================================
+   TIPOGRAFÍA GLOBAL
+   ============================================ */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.2;
+}
+ 
+p {
+    line-height: 1.6;
+}
+ 
+a {
+    color: var(--rose);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+ 
+a:hover {
+    color: var(--rose-hover);
+}
+ 
+/* ============================================
+   SCROLLBAR GLOBAL
+   ============================================ */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+ 
+::-webkit-scrollbar-track {
+    background: var(--light-gray);
+}
+ 
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+ 
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-light);
+}
+ 
+/* ============================================
+   RESPONSIVE BASE
+   ============================================ */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+ 
+    h1 {
+        font-size: 1.8rem;
+    }
+ 
+    h2 {
+        font-size: 1.4rem;
+    }
+}
+ 
+@media (max-width: 480px) {
+    body {
+        font-size: 13px;
+    }
+ 
+    h1 {
+        font-size: 1.4rem;
+    }
+ 
+    h2 {
+        font-size: 1.1rem;
+    }
+}

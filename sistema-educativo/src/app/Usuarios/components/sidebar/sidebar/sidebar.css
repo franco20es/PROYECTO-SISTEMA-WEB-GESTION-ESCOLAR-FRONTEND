@@ -1,0 +1,488 @@
+/* ══════════════════════════════════════════════════════
+   §01 — VARIABLES GLOBALES (MODO SIMPLIFICADO)
+   Paleta: Primario (#1290e4), Superficie (#FFFFFF), Contenido (#000000)
+══════════════════════════════════════════════════════ */
+:host {
+  /* 1. COLOR PRIMARIO (Acción y Marca) */
+  --gold:           #1290e4;
+  --gold-dim:       rgba(18, 144, 228, 0.1);
+  --gold-glow:      rgba(18, 144, 228, 0.25);
+  --gold-bright:    #36a9f5;
+
+  /* 2. COLOR DE SUPERFICIE (Fondos y Capas) */
+  /* Mantenemos los nombres --dark para no romper tu CSS, pero con valores claros */
+  --dark:           #ffffff;
+  --dark-2:         #f9fafb;
+  --dark-3:         #f3f4f6;
+  --dark-4:         #e5e7eb;
+  --dark-5:         #d1d5db;
+  --white:          #ffffff;
+  --black:          #000000;
+
+  /* 3. COLOR DE CONTENIDO (Textos y Bordes) */
+  --text-primary:   #000000;
+  --text-secondary: rgba(0, 0, 0, 0.65);
+  --text-muted:     rgba(0, 0, 0, 0.4);
+  --border:         rgba(0, 0, 0, 0.08);
+  --border-soft:    rgba(0, 0, 0, 0.04);
+
+  /* Colores Funcionales (Solo para estados críticos) */
+  --green:          #10b981;
+  --red:            #ef4444;
+  --amber:          #f59e0b;
+  --cyan:           #06b6d4;
+
+  /* Layout & Configuración */
+  --sidebar-full:   264px;
+  --sidebar-mini:   68px;
+  --topbar-h:       60px;
+  --radius:         0px;
+  --radius-sm:      2px;
+
+  /* Transiciones */
+  --tr:             all 0.35s cubic-bezier(0.4,0,0.2,1);
+  --tr-fast:        all 0.18s ease;
+  --tr-sidebar:     transform 0.38s cubic-bezier(0.4,0,0.2,1),
+                    width 0.38s cubic-bezier(0.4,0,0.2,1);
+
+  /* Tipografías */
+  --f-display:      'Bebas Neue', sans-serif;
+  --f-serif:        'Playfair Display', serif;
+  --f-body:         'DM Sans', sans-serif;
+}
+/* ══════════════════════════════════════════════════════
+   §04 — SIDEBAR
+   Desktop: visible, colapsable (full ↔ mini)
+   Mobile: oculto, slide-in con overlay
+══════════════════════════════════════════════════════ */
+.sidebar {
+  width: var(--sidebar-full); /* Ancho completo del sidebar */
+  min-height: 100vh; /* Asegura que el sidebar ocupe toda la altura de la pantalla */
+  background: var(--white); /* Fondo oscuro para el sidebar */
+  border-right: 1px solid var(--border); /* Borde derecho para separar del contenido */
+  display: flex; /* Usamos flexbox para organizar el contenido del sidebar */
+  flex-direction: column; /* Organizamos los elementos en columna */
+  position: fixed; /* Fijamos el sidebar para que siempre esté visible */
+  top: 0; left: 0; bottom: 0; /* Asegura que el sidebar ocupe toda la altura y esté pegado a la izquierda */
+  z-index: 300; /* Asegura que el sidebar esté por debajo del overlay móvil */
+  transition: var(--tr-sidebar); /* Transición suave para el colapso y expansión del sidebar */
+  overflow: hidden; /* Evita que el contenido se desborde cuando el sidebar se colapsa */
+  flex-shrink: 0; /* Evita que el sidebar se reduzca en tamaño al colapsar */
+}
+
+/* Brillo decorativo superior */
+.sidebar::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent 60%); /* Brillo con degradado */
+}
+
+/* — Estado colapsado en desktop — */
+.sidebar.collapsed {
+  width: var(--sidebar-mini);
+}
+
+/* — Estado mobile: fuera de pantalla — */
+@media (max-width: 1023px) {
+  .sidebar {
+    transform: translateX(-100%);
+    width: var(--sidebar-full);
+    box-shadow: none;
+  }
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 8px 0 40px rgba(0,0,0,0.6);
+  }
+}
+
+/* ─── Logo del sidebar ─── */
+.sb-logo {
+  padding: 0 18px;
+  height: var(--topbar-h);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  overflow: hidden;
+  min-width: 0;
+}
+
+
+
+/* Contenedor del icono/imagen */
+.sb-logo-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  /* Fondo sutil para que el logo resalte */
+  background: var(--bg-soft); 
+  border-radius: 8px; /* Un redondeo ligero es más moderno que uno total */
+  border: 1px solid var(--border);
+  transition: var(--tr-fast);
+}
+
+/* La imagen del logo */
+.sb-logo-icon img {
+  width: 40px; /* Tamaño equilibrado */
+  height: 40px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05)); /* Sombra suave interna */
+}
+
+.sb-logo-icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+}
+
+.sb-logo-icon i { font-size: 1rem; color: #fff; position: relative; z-index: 1; }
+
+.sb-logo-text {
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity 0.25s ease, width 0.35s ease;
+  width: 160px;
+}
+
+.sb-logo-text .brand-a {
+  font-family: var(--f-display);
+  font-size: 1.35rem;
+  letter-spacing: 4px;
+  color: var(--black);
+}
+
+.sb-logo-text .brand-r {
+  font-family: var(--f-display);
+  font-size: 1.35rem;
+  letter-spacing: 4px;
+  color: var(--gold);
+}
+
+.sb-logo-text small {
+  display: block;
+  font-size: 0.4rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--black);
+  margin-top: -4px;
+}
+
+/* Ocultar texto en sidebar mini */
+.sidebar.collapsed .sb-logo-text { opacity: 0; width: 0; }
+
+/* ─── Tarjeta de usuario ─── */
+.sb-user {
+  margin: 12px 10px;
+  padding: 12px 14px;
+  background: var(--gold-dim);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  cursor: pointer;
+  transition: var(--tr);
+  flex-shrink: 0;
+  overflow: hidden;
+  min-width: 0;
+  position: relative;
+}
+
+.sb-user::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(215,37,221,0.08), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.sb-user:hover::before { opacity: 1; }
+
+.sb-user:hover { border-color: var(--gold); }
+
+.sb-avatar {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--gold), #a010a8);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--f-display);
+  font-size: 1rem; color: #fff;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.sb-avatar-plan {
+  position: absolute;
+  bottom: -4px; right: -4px;
+  background: var(--dark-2);
+  border: 1px solid var(--gold);
+  padding: 1px 5px;
+  font-size: 0.4rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.sb-user-info {
+  overflow: hidden;
+  transition: opacity 0.25s ease, width 0.35s ease;
+  width: 170px;
+  min-width: 0;
+}
+
+.sb-user-name {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sb-user-email {
+  font-size: 0.66rem;
+  color: var(--text-muted);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ocultar info en mini */
+.sidebar.collapsed .sb-user-info { opacity: 0; width: 0; }
+
+/* ─── Navegación ─── */
+.sb-nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 8px 0 16px;
+}
+
+.sb-nav::-webkit-scrollbar { width: 0; }
+
+.sb-section {
+  font-size: 0.5rem;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--black);
+  font-weight: 700;
+  padding: 14px 20px 5px;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.25s ease;
+}
+
+.sidebar.collapsed .sb-section { opacity: 0; }
+
+/* Ítem de navegación */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  font-family: var(--f-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--black);
+  cursor: pointer;
+  transition: var(--tr);
+  position: relative;
+  border-left: 2px solid transparent;
+  white-space: nowrap;
+  overflow: hidden;
+  text-decoration: none;
+  user-select: none;
+}
+
+/* Efecto hover con brillo */
+.nav-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(215,37,221,0.08), transparent);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.nav-item:hover::before  { opacity: 1; }
+.nav-item:hover          { color: rgba(255,255,255,0.9); }
+
+/* Estado activo */
+.nav-item.active {
+  color: var(--black);
+  border-left-color: var(--gold);
+  background: rgba(215,37,221,0.1);
+}
+
+.nav-item.active::before { opacity: 1; }
+
+.nav-item.active .nav-icon { color: var(--gold); }
+
+/* Ícono del nav item */
+.nav-icon {
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+  transition: color 0.25s, transform 0.25s;
+}
+
+.nav-item:hover .nav-icon { transform: translateX(2px); }
+.nav-item.active .nav-icon { transform: none; }
+
+/* Texto del nav item */
+.nav-label {
+  flex: 1;
+  transition: opacity 0.2s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--black);
+}
+
+.sidebar.collapsed .nav-label { opacity: 0; width: 0; overflow: hidden; }
+
+/* Badge del nav item */
+.nav-badge {
+  background: var(--gold);
+  color: #fff;
+  font-size: 0.5rem;
+  letter-spacing: 1px;
+  padding: 2px 6px;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: opacity 0.2s ease;
+  min-width: 18px;
+  text-align: center;
+}
+
+.nav-badge.danger { background: var(--red); }
+.sidebar.collapsed .nav-badge { opacity: 0; }
+
+/* Tooltip en sidebar mini */
+.nav-item[data-tip] {
+  position: relative;
+}
+
+.nav-item[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: calc(var(--sidebar-mini) - 4px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-6px);
+  background: var(--dark-4);
+  border: 1px solid var(--border);
+  color: #fff;
+  font-size: 0.72rem;
+  padding: 5px 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 500;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+  box-shadow: 4px 4px 16px rgba(0,0,0,0.5);
+}
+
+.sidebar.collapsed .nav-item[data-tip]:hover::after {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* Punto activo indicator */
+.nav-item.active::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 5px;
+  background: var(--gold);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.sidebar.collapsed .nav-item.active::after { opacity: 0; }
+
+/* ─── Pie del sidebar ─── */
+.sb-footer {
+  padding: 10px 8px 20px;
+  border-top: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+
+/* ─── Botón colapsar sidebar (desktop) ─── */
+.sb-collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 9px 20px;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--tr);
+  background: none;
+  border: 1px solid transparent;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.sb-collapse-btn:hover {
+  color: var(--gold);
+  border-color: var(--border);
+  background: var(--gold-dim);
+}
+
+.sb-collapse-btn i { font-size: 1rem; flex-shrink: 0; }
+
+.sb-collapse-text {
+  transition: opacity 0.2s ease;
+}
+
+.sidebar.collapsed .sb-collapse-text { opacity: 0; width: 0; overflow: hidden; }
+.sidebar.collapsed .sb-collapse-btn i { transform: rotate(180deg); }
+
+/* ── Ocultar collapse btn en mobile ── */
+@media (max-width: 1023px) {
+  .sb-collapse-btn { display: none; }
+}
+
+/* ── Overlay mobile ── */
+.sb-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0);
+  z-index: 290;
+  backdrop-filter: blur(0px);
+  transition: background 0.35s ease, backdrop-filter 0.35s ease;
+}
+
+@media (max-width: 1023px) {
+  .sb-overlay {
+    display: block;
+    pointer-events: none;
+  }
+
+  .sb-overlay.active {
+    pointer-events: all;
+    background: rgba(0,0,0,0.72);
+    backdrop-filter: blur(3px);
+  }
+}

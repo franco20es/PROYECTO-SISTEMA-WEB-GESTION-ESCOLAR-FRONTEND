@@ -1,0 +1,51 @@
+<!-- ════════════════════════════════════════
+     VIEW: SEGURIDAD
+════════════════════════════════════════ -->
+<div class="view" id="view-seguridad">
+  <div class="section-tag">Protección de cuenta</div>
+  <h1 class="page-title">Seguridad de <em>Cuenta</em></h1>
+  <p class="page-subtitle">Gestiona tu contraseña, sesiones y configuración de acceso.</p>
+
+  <div class="sec-grid">
+    <div class="sec-card">
+      <div class="sec-card-hdr"><div class="sec-card-icon"><i class="bi bi-key-fill"></i></div><span class="badge badge-green">Segura</span></div>
+      <div class="sec-card-title">Contraseña</div>
+      <div class="sec-card-desc">Última actualización hace 23 días. Cumple con todos los requisitos.</div>
+      <div class="sec-status"><span class="sec-dot on"></span><span class="sec-status-txt on">Contraseña fuerte</span></div>
+      <button class="btn btn-dark btn-sm" onclick="openModal('modalPass')"><i class="bi bi-pencil"></i>Cambiar</button>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-hdr"><div class="sec-card-icon"><i class="bi bi-envelope-check-fill"></i></div><span class="badge badge-green">Verificado</span></div>
+      <div class="sec-card-title">Email Verificado</div>
+      <div class="sec-card-desc">andrea.castro@gmail.com confirmado. Alertas de seguridad activas.</div>
+      <div class="sec-status"><span class="sec-dot on"></span><span class="sec-status-txt on">Correo confirmado</span></div>
+      <button class="btn btn-dark btn-sm" onclick="toast('Email de verificación enviado','success')"><i class="bi bi-send"></i>Reenviar</button>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-hdr"><div class="sec-card-icon"><i class="bi bi-phone-fill"></i></div><span class="badge badge-amber">Inactivo</span></div>
+      <div class="sec-card-title">Autenticación 2FA</div>
+      <div class="sec-card-desc">Protección extra recomendada para cuentas Gold y Platinum.</div>
+      <div class="sec-status"><span class="sec-dot warn"></span><span class="sec-status-txt warn">No activado — Recomendado</span></div>
+      <button class="btn btn-gold btn-sm" onclick="showView('2fa',document.getElementById('nav-2fa'))"><i class="bi bi-shield-plus"></i>Activar 2FA</button>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-hdr"><div class="sec-card-icon"><i class="bi bi-laptop"></i></div><span class="badge badge-cyan">3 activas</span></div>
+      <div class="sec-card-title">Sesiones Activas</div>
+      <div class="sec-card-desc">Tienes 3 dispositivos conectados. Revisa los que no reconozcas.</div>
+      <div class="sec-status"><span class="sec-dot on"></span><span class="sec-status-txt on">Chrome · Lima · Ahora</span></div>
+      <button class="btn btn-dark btn-sm" onclick="showView('sesiones',document.getElementById('nav-sesiones'))"><i class="bi bi-eye"></i>Ver sesiones</button>
+    </div>
+  </div>
+
+  <!-- Historial -->
+  <div class="panel">
+    <div class="panel-hdr"><div class="panel-title">Historial de <em>Actividad</em></div></div>
+    <div class="panel-body np">
+      <div class="notif-list">
+        <div class="notif-item"><div class="notif-ico ai-green"><i class="bi bi-box-arrow-in-right"></i></div><div class="notif-body-text"><div class="notif-title">Inicio de sesión exitoso</div><div class="notif-desc">Chrome 124 · Win 11 · Lima · IP 181.64.x.x</div></div><div class="notif-meta"><span class="notif-time">Hace 2h</span></div></div>
+        <div class="notif-item"><div class="notif-ico ai-amber"><i class="bi bi-key"></i></div><div class="notif-body-text"><div class="notif-title">Contraseña actualizada</div><div class="notif-desc">Cambio exitoso desde Chrome · Lima</div></div><div class="notif-meta"><span class="notif-time">Hace 23d</span></div></div>
+        <div class="notif-item"><div class="notif-ico ai-red"><i class="bi bi-shield-exclamation"></i></div><div class="notif-body-text"><div class="notif-title">Intento de acceso bloqueado</div><div class="notif-desc">IP 45.33.x.x — Bloqueado automáticamente</div></div><div class="notif-meta"><span class="notif-time">Hace 5d</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>

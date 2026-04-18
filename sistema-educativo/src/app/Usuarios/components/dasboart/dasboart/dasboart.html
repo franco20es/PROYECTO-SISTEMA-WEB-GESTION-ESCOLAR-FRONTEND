@@ -1,0 +1,119 @@
+<!-- ════════════════════════════════════════
+     VIEW: DASHBOARD
+════════════════════════════════════════ -->
+<div class="view active" id="view-dashboard">
+
+  <div class="section-tag">Mi Cuenta</div>
+  <h1 class="page-title">Bienvenida, <em>Andrea</em> ✦</h1>
+  <p class="page-subtitle">Aquí tienes el resumen de tu cuenta AdminRC Gold.</p>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="bi bi-ticket-perforated-fill"></i></div>
+      <span class="stat-val">8</span>
+      <span class="stat-lbl">Tickets Activos</span>
+      <span class="stat-meta">3 próximos eventos</span>
+      <span class="stat-ghost">8</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon"><i class="bi bi-calendar-check-fill"></i></div>
+      <span class="stat-val">24</span>
+      <span class="stat-lbl">Eventos Asistidos</span>
+      <span class="stat-meta">Desde Feb 2024</span>
+      <span class="stat-ghost">24</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon"><i class="bi bi-cash-stack"></i></div>
+      <span class="stat-val">S/ 1,240</span>
+      <span class="stat-lbl">Total Gastado</span>
+      <span class="stat-meta">Promedio S/ 51 / evento</span>
+      <span class="stat-ghost">$</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon"><i class="bi bi-crown-fill"></i></div>
+      <span class="stat-val">GOLD</span>
+      <span class="stat-lbl">Plan Activo</span>
+      <span class="stat-meta">Renueva 15 May 2026</span>
+      <span class="stat-ghost">★</span>
+    </div>
+  </div>
+
+  <!-- Acciones rápidas -->
+  <div class="panel">
+    <div class="panel-hdr">
+      <div class="panel-title">Acciones <em>Rápidas</em></div>
+    </div>
+    <div class="quick-grid">
+      <div class="quick-item" onclick="showView('tickets',document.getElementById('nav-tickets'))">
+        <div class="quick-icon"><i class="bi bi-ticket-perforated"></i></div>
+        <span class="quick-label">Ver Tickets</span>
+      </div>
+      <div class="quick-item" onclick="showView('notificaciones',document.getElementById('nav-notificaciones'))">
+        <div class="quick-icon"><i class="bi bi-bell-fill"></i></div>
+        <span class="quick-label">Notificaciones</span>
+        <span class="quick-badge">5 nuevas</span>
+      </div>
+      <div class="quick-item" onclick="showView('2fa',document.getElementById('nav-2fa'))">
+        <div class="quick-icon"><i class="bi bi-shield-lock-fill"></i></div>
+        <span class="quick-label">Activar 2FA</span>
+      </div>
+      <div class="quick-item" onclick="showView('perfil',document.getElementById('nav-perfil'))">
+        <div class="quick-icon"><i class="bi bi-person-gear"></i></div>
+        <span class="quick-label">Editar Perfil</span>
+      </div>
+      <div class="quick-item" onclick="toast('Redirigiendo a eventos...','')">
+        <div class="quick-icon"><i class="bi bi-compass"></i></div>
+        <span class="quick-label">Explorar Eventos</span>
+      </div>
+      <div class="quick-item" onclick="showView('plan',document.getElementById('nav-plan'))">
+        <div class="quick-icon"><i class="bi bi-crown-fill"></i></div>
+        <span class="quick-label">Mi Plan</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actividad reciente -->
+  <div class="panel">
+    <div class="panel-hdr">
+      <div class="panel-title">Actividad <em>Reciente</em></div>
+      <button class="btn btn-dark btn-sm" onclick="showView('notificaciones',document.getElementById('nav-notificaciones'))"><i class="bi bi-arrow-right"></i>Ver todo</button>
+    </div>
+    <div class="panel-body np">
+      <div class="activity-list">
+        <div class="activity-item">
+          <div class="activity-icon ai-gold"><i class="bi bi-ticket-perforated"></i></div>
+          <div class="activity-body">
+            <div class="activity-title">Ticket comprado — Gran Festival Electrónico</div>
+            <div class="activity-desc">Zona General · 1 entrada · S/ 89</div>
+          </div>
+          <div class="activity-time">Hace 2h</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon ai-green"><i class="bi bi-check-circle-fill"></i></div>
+          <div class="activity-body">
+            <div class="activity-title">Pago confirmado via Culqi</div>
+            <div class="activity-desc">Tarjeta Visa ****4521 · S/ 89.00</div>
+          </div>
+          <div class="activity-time">Hace 2h</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon ai-cyan"><i class="bi bi-crown-fill"></i></div>
+          <div class="activity-body">
+            <div class="activity-title">Plan Gold activado</div>
+            <div class="activity-desc">Acceso a preventas 48h antes habilitado</div>
+          </div>
+          <div class="activity-time">Hace 3d</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon ai-red"><i class="bi bi-shield-exclamation"></i></div>
+          <div class="activity-body">
+            <div class="activity-title">Intento de acceso bloqueado</div>
+            <div class="activity-desc">IP desconocida · Bloqueado automáticamente</div>
+          </div>
+          <div class="activity-time">Hace 5d</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

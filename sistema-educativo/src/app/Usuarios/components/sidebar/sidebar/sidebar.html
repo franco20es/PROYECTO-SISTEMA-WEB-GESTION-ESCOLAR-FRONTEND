@@ -1,0 +1,134 @@
+<!-- ════════════════════════════
+     SIDEBAR
+════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+
+  <!-- Logo -->
+  <div class="sb-logo">
+    <div class="sb-logo-icon">
+      
+      <img src="https://res.cloudinary.com/dgrdonnsk/image/upload/v1776485574/id06UOHZwm_logos_rw3lus.png" alt="">
+      
+    </div>
+    <div class="sb-logo-text">
+      <div><span class="brand-a">UPC</span><span class="brand-r">STUDEND</span></div>
+      <small>Mi Cuenta</small>
+    </div>
+  </div>
+
+  <!-- User card -->
+  <div class="sb-user" (click)="emitNavigate('dashboard')">
+    <div class="sb-avatar">
+      FC
+      <span class="sb-avatar-plan">Gold</span>
+    </div>
+    <div class="sb-user-info">
+      <span class="sb-user-name">franco Castro</span>
+      <span class="sb-user-email">franco.castro@gmail.com</span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="sb-nav">
+    <span class="sb-section">Principal</span>
+
+     <a class="nav-item active" id="nav-dashboard"
+       data-tip="Dashboard"
+       href="#"
+       (click)="emitNavigate('dashboard'); $event.preventDefault()">
+      <i class="bi bi-grid-1x2 nav-icon"></i>
+      <span class="nav-label">Dashboard</span>
+    </a>
+
+    <a class="nav-item" id="nav-tickets"
+       data-tip="Tickets"
+       href="#"
+       (click)="emitNavigate('tickets'); $event.preventDefault()">
+      <i class="bi bi-ticket-perforated nav-icon"></i>
+      <span class="nav-label">Estudiantes</span>
+      <span class="nav-badge">8</span>
+    </a>
+     <a class="nav-item" id="nav-tickets"
+       data-tip="Tickets"
+       href="#"
+       (click)="emitNavigate('tickets'); $event.preventDefault()">
+      <i class="bi bi-ticket-perforated nav-icon"></i>
+      <span class="nav-label">Profesores</span>
+      <span class="nav-badge">8</span>
+    </a>
+     <a class="nav-item" id="nav-tickets"
+       data-tip="Tickets"
+       href="#"
+       (click)="emitNavigate('tickets'); $event.preventDefault()">
+      <i class="bi bi-ticket-perforated nav-icon"></i>
+      <span class="nav-label">Cursos</span>
+      <span class="nav-badge">8</span>
+    </a>
+
+
+    <span class="sb-section">Administración</span>
+
+    <a class="nav-item" id="nav-perfil"
+       data-tip="Mi Perfil"
+       href="#"
+       (click)="emitNavigate('perfil'); $event.preventDefault()">
+      <i class="bi bi-person-circle nav-icon"></i>
+      <span class="nav-label">Matriculas</span>
+    </a>
+
+    <a class="nav-item" id="nav-seguridad"
+       data-tip="Seguridad"
+       onclick="showView('seguridad',this)">
+      <i class="bi bi-shield-lock nav-icon"></i>
+      <span class="nav-label">Asistencia</span>
+    </a>
+
+    <a class="nav-item" id="nav-2fa"
+       data-tip="2FA & OTP"
+       onclick="showView('2fa',this)">
+      <i class="bi bi-phone nav-icon"></i>
+      <span class="nav-label">Calificaciones</span>
+    </a>
+
+    <a class="nav-item" id="nav-sesiones"
+       data-tip="Sesiones"
+       onclick="showView('sesiones',this)">
+      <i class="bi bi-laptop nav-icon"></i>
+      <span class="nav-label">Finanzas</span>
+    </a>
+
+    <span class="sb-section">Sistema</span>
+
+    <a class="nav-item" id="nav-plan"
+       data-tip="Mi Plan"
+       onclick="showView('plan',this)">
+      <i class="bi bi-crown nav-icon"></i>
+      <span class="nav-label">Notificaciones</span>
+    </a>
+
+    <a class="nav-item" id="nav-historial"
+       data-tip="Historial"
+       onclick="showView('historial',this)">
+      <i class="bi bi-clock-history nav-icon"></i>
+      <span class="nav-label">Configuración</span>
+    </a>
+  </nav>
+
+  <!-- Footer -->
+  <div class="sb-footer">
+    <button class="sb-collapse-btn" id="collapseBtn" onclick="toggleCollapse()">
+      <i class="bi bi-layout-sidebar-reverse"></i>
+      <span class="sb-collapse-text">Colapsar</span>
+    </button>
+    <a class="nav-item" style="color:rgba(239,68,68,.6);border-left:2px solid transparent"
+       data-tip="Salir"
+       onclick="toast('Sesión cerrada. ¡Hasta pronto!','success')">
+      <i class="bi bi-box-arrow-left nav-icon"></i>
+      <span class="nav-label">Cerrar Sesión</span>
+    </a>
+  </div>
+
+</aside>
+
+<!-- Overlay mobile -->
+<div class="sb-overlay" id="sbOverlay" onclick="closeMobileSidebar()"></div>
