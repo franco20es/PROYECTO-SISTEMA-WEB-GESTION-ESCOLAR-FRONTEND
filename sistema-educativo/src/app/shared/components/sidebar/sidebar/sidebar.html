@@ -1,0 +1,72 @@
+
+<!-- ════════════════════════════
+     SIDEBAR
+════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+
+  <!-- Logo -->
+  <div class="sb-logo">
+    <div class="sb-logo-icon">
+      
+      <img src="https://res.cloudinary.com/dgrdonnsk/image/upload/v1776485574/id06UOHZwm_logos_rw3lus.png" alt="">
+      
+    </div>
+    <div class="sb-logo-text">
+      <div><span class="brand-a">UPC</span><span class="brand-r">STUDEND</span></div>
+      <small>Mi Cuenta</small>
+    </div>
+  </div>
+
+  <!-- User card -->
+  <div class="sb-user" (click)="emitNavigate('dashboard')">
+    <div class="sb-avatar">
+      FC
+      <span class="sb-avatar-plan">Gold</span>
+    </div>
+    <div class="sb-user-info">
+      <span class="sb-user-name">franco Castro</span>
+      <span class="sb-user-email">franco.castro@gmail.com</span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+
+  <nav class="sb-nav">
+
+  <ng-container *ngFor="let section of menuItems">
+
+    <!-- Título de sección -->
+    <span class="sb-section">{{ section.section }}</span>
+
+    <!-- Items -->
+    <a class="nav-item"
+       *ngFor="let item of section.items"
+       (click)="emitNavigate(item.route)">
+
+      <i [class]="item.icon + ' nav-icon'"></i>
+      <span class="nav-label">{{ item.label }}</span>
+
+    </a>
+
+  </ng-container>
+
+</nav>
+
+  <!-- Footer -->
+  <div class="sb-footer">
+    <button class="sb-collapse-btn" id="collapseBtn" onclick="toggleCollapse()">
+      <i class="bi bi-layout-sidebar-reverse"></i>
+      <span class="sb-collapse-text">Colapsar</span>
+    </button>
+    <a class="nav-item" style="color:rgba(239,68,68,.6);border-left:2px solid transparent"
+       data-tip="Salir"
+       onclick="toast('Sesión cerrada. ¡Hasta pronto!','success')">
+      <i class="bi bi-box-arrow-left nav-icon"></i>
+      <span class="nav-label">Cerrar Sesión</span>
+    </a>
+  </div>
+
+</aside>
+
+<!-- Overlay mobile -->
+<div class="sb-overlay" id="sbOverlay" onclick="closeMobileSidebar()"></div>

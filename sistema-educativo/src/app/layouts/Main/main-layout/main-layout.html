@@ -1,0 +1,24 @@
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <app-sidebar
+
+  [menuItems]="menu"
+  (navigate)="onNavigate($event)">
+
+</app-sidebar>
+
+  <!-- MAIN -->
+  <div class="main-wrapper" id="mainWrapper">
+
+    <!-- TOPBAR -->
+    <app-navbar (toggleSidebar)="toggleSidebar()" (navigate)="onNavigate($event)"></app-navbar>
+
+    <!-- CONTENIDO DINAMICO -->
+    <main class="page-content">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+
+</div>

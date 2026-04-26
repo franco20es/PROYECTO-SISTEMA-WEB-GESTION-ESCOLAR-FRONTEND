@@ -1,0 +1,596 @@
+
+<div class="cursos-page">
+ 
+  <!-- ══ PAGE HEADER ══════════════════════════════ -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="breadcrumb">
+        <span class="bc-link" routerLink="/admin/dashboard">EduCore</span>
+        <i class="bi bi-chevron-right bc-sep"></i>
+        <span class="bc-current">Gestión de Cursos</span>
+      </div>
+      <h1 class="page-title">Cursos <span class="title-count">({{ totalCourses }})</span></h1>
+      <p class="page-sub">Administra el catálogo de cursos, asignaciones y contenido académico</p>
+    </div>
+    <div class="page-header-right">
+      <button class="btn btn-outline" (click)="exportCourses()">
+        <i class="bi bi-download"></i> Exportar
+      </button>
+      <button class="btn btn-primary" (click)="openModal('create')">
+        <i class="bi bi-plus-lg"></i> Nuevo Curso
+      </button>
+    </div>
+  </div>
+ 
+  <!-- ══ KPI STRIP ════════════════════════════════ -->
+  <div class="kpi-strip">
+    <div class="kpi-item" *ngFor="let kpi of kpis">
+      <div class="kpi-icon" [class]="'kpi-icon--' + kpi.color">
+        <i class="bi {{ kpi.icon }}"></i>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-value">{{ kpi.value }}</span>
+        <span class="kpi-label">{{ kpi.label }}</span>
+      </div>
+      <span class="kpi-delta" [class.up]="kpi.up" [class.down]="!kpi.up">
+        <i class="bi" [class.bi-arrow-up-short]="kpi.up" [class.bi-arrow-down-short]="!kpi.up"></i>
+        {{ kpi.delta }}
+      </span>
+    </div>
+  </div>
+ 
+  <!-- ══ FILTERS BAR ══════════════════════════════ -->
+  <div class="filters-bar">
+ 
+    <!-- Search -->
+    <div class="filter-search">
+      <i class="bi bi-search"></i>
+      <input
+        type="text"
+        placeholder="Buscar por nombre, código o profesor..."
+        [(ngModel)]="searchQuery"
+        (input)="applyFilters()"
+      />
+      <button
+        class="clear-search"
+        *ngIf="searchQuery"
+        (click)="clearSearch()"
+      >
+        <i class="bi bi-x-circle-fill"></i>
+      </button>
+    </div>
+ 
+    <!-- Level filter -->
+    <div class="filter-select-wrap">
+      <i class="bi bi-filter"></i>
+      <select [(ngModel)]="selectedLevel" (change)="applyFilters()" class="filter-select">
+        <option value="">Todos los niveles</option>
+        <option *ngFor="let l of levels" [value]="l">{{ l }}</option>
+      </select>
+    </div>
+ 
+    <!-- Area filter -->
+    <div class="filter-select-wrap">
+      <i class="bi bi-grid-3x3-gap"></i>
+      <select [(ngModel)]="selectedArea" (change)="applyFilters()" class="filter-select">
+        <option value="">Todas las áreas</option>
+        <option *ngFor="let a of areas" [value]="a">{{ a }}</option>
+      </select>
+    </div>
+ 
+    <!-- Status filter -->
+    <div class="status-tabs">
+      <button
+        *ngFor="let tab of statusTabs"
+        class="status-tab"
+        [class.active]="selectedStatus === tab.value"
+        (click)="setStatus(tab.value)"
+      >
+        {{ tab.label }}
+        <span class="tab-count" [class]="'tab-count--' + tab.color">{{ getCountByStatus(tab.value) }}</span>
+      </button>
+    </div>
+ 
+    <!-- View toggle -->
+    <div class="view-toggle">
+      <button
+        class="view-btn"
+        [class.active]="viewMode === 'grid'"
+        (click)="viewMode = 'grid'"
+        title="Vista tarjetas"
+      >
+        <i class="bi bi-grid-3x3-gap-fill"></i>
+      </button>
+      <button
+        class="view-btn"
+        [class.active]="viewMode === 'table'"
+        (click)="viewMode = 'table'"
+        title="Vista tabla"
+      >
+        <i class="bi bi-list-ul"></i>
+      </button>
+    </div>
+ 
+    <span class="results-count">{{ filteredCourses.length }} resultados</span>
+  </div>
+ 
+  <!-- ══ NO RESULTS ═══════════════════════════════ -->
+  <div class="empty-results" *ngIf="filteredCourses.length === 0">
+    <div class="empty-icon">
+      <i class="bi bi-search"></i>
+    </div>
+    <h3>No se encontraron cursos</h3>
+    <p>Intenta con otros términos de búsqueda o ajusta los filtros</p>
+    <button class="btn btn-outline" (click)="resetFilters()">
+      <i class="bi bi-arrow-counterclockwise"></i> Limpiar filtros
+    </button>
+  </div>
+ 
+  <!-- ══ GRID VIEW ════════════════════════════════ -->
+  <div class="courses-grid" *ngIf="viewMode === 'grid' && filteredCourses.length > 0">
+    <div
+      class="course-card"
+      *ngFor="let course of filteredCourses; trackBy: trackById"
+      [style.animation-delay]="(filteredCourses.indexOf(course) * 50) + 'ms'"
+      (click)="openModal('detail', course)"
+    >
+      <!-- Card header with area color -->
+      <div class="course-card-header" [style.background]="course.headerGradient">
+        <div class="course-card-area">{{ course.area }}</div>
+        <div class="course-card-actions" (click)="$event.stopPropagation()">
+          <button class="card-action-btn" (click)="openModal('edit', course)" title="Editar">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="card-action-btn card-action-btn--danger" (click)="confirmDelete(course)" title="Eliminar">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </div>
+        <div class="course-card-code">{{ course.code }}</div>
+        <h3 class="course-card-name">{{ course.name }}</h3>
+      </div>
+ 
+      <!-- Card body -->
+      <div class="course-card-body">
+ 
+        <!-- Status + Level -->
+        <div class="course-meta-row">
+          <span class="badge" [class]="'badge--' + course.statusColor">{{ course.status }}</span>
+          <span class="level-tag">{{ course.level }}</span>
+        </div>
+ 
+        <!-- Teacher -->
+        <div class="course-teacher">
+          <div class="teacher-avatar" [style.background]="course.teacherGradient">
+            {{ course.teacherInitials }}
+          </div>
+          <div class="teacher-info">
+            <span class="teacher-name">{{ course.teacher }}</span>
+            <span class="teacher-role">Docente responsable</span>
+          </div>
+        </div>
+ 
+        <!-- Stats row -->
+        <div class="course-stats">
+          <div class="cstat">
+            <i class="bi bi-people-fill cstat-icon"></i>
+            <span class="cstat-val">{{ course.students }}</span>
+            <span class="cstat-lbl">Alumnos</span>
+          </div>
+          <div class="cstat">
+            <i class="bi bi-clock-fill cstat-icon"></i>
+            <span class="cstat-val">{{ course.hoursPerWeek }}h</span>
+            <span class="cstat-lbl">Sem.</span>
+          </div>
+          <div class="cstat">
+            <i class="bi bi-journal-text cstat-icon"></i>
+            <span class="cstat-val">{{ course.units }}</span>
+            <span class="cstat-lbl">Unidades</span>
+          </div>
+        </div>
+ 
+        <!-- Progress -->
+        <div class="course-progress">
+          <div class="progress-labels">
+            <span class="progress-title">Avance del programa</span>
+            <span class="progress-pct">{{ course.progress }}%</span>
+          </div>
+          <div class="progress-bar">
+            <div
+              class="progress-fill"
+              [class]="'fill--' + course.progressColor"
+              [style.width]="course.progress + '%'"
+            ></div>
+          </div>
+        </div>
+ 
+        <!-- Grade avg -->
+        <div class="course-grade-row">
+          <span class="grade-label">Promedio de notas</span>
+          <span class="grade-val" [class]="'grade--' + course.gradeClass">{{ course.avgGrade }}</span>
+        </div>
+ 
+      </div>
+ 
+      <!-- Card footer -->
+      <div class="course-card-footer">
+        <div class="schedule-tags">
+          <span class="schedule-tag" *ngFor="let s of course.schedule">
+            <i class="bi bi-clock"></i> {{ s }}
+          </span>
+        </div>
+        <button class="btn btn-ghost btn-sm" (click)="$event.stopPropagation(); openModal('detail', course)">
+          Ver detalle <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- ══ TABLE VIEW ════════════════════════════════ -->
+  <div class="card" *ngIf="viewMode === 'table' && filteredCourses.length > 0">
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th (click)="sortBy('code')" class="sortable">Código <i class="bi bi-chevron-expand sort-icon"></i></th>
+            <th (click)="sortBy('name')" class="sortable">Curso <i class="bi bi-chevron-expand sort-icon"></i></th>
+            <th class="hide-sm">Área</th>
+            <th class="hide-sm">Docente</th>
+            <th class="hide-md">Nivel</th>
+            <th class="hide-md">Alumnos</th>
+            <th class="hide-lg">Promedio</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            class="table-row"
+            *ngFor="let course of filteredCourses; trackBy: trackById"
+            (click)="openModal('detail', course)"
+          >
+            <td>
+              <span class="code-badge">{{ course.code }}</span>
+            </td>
+            <td>
+              <div class="course-cell">
+                <div class="course-color-dot" [style.background]="course.dotColor"></div>
+                <div>
+                  <span class="course-cell-name">{{ course.name }}</span>
+                  <span class="course-cell-sub">{{ course.hoursPerWeek }}h / semana · {{ course.units }} unidades</span>
+                </div>
+              </div>
+            </td>
+            <td class="hide-sm">
+              <span class="area-tag" [class]="'area-tag--' + course.areaColor">{{ course.area }}</span>
+            </td>
+            <td class="hide-sm">
+              <div class="teacher-cell">
+                <div class="teacher-av-sm" [style.background]="course.teacherGradient">{{ course.teacherInitials }}</div>
+                <span>{{ course.teacher }}</span>
+              </div>
+            </td>
+            <td class="hide-md">{{ course.level }}</td>
+            <td class="hide-md">
+              <div class="students-cell">
+                <span class="students-num">{{ course.students }}</span>
+                <div class="mini-bar">
+                  <div class="mini-bar-fill" [style.width]="(course.students / 40 * 100) + '%'"></div>
+                </div>
+              </div>
+            </td>
+            <td class="hide-lg">
+              <span class="grade-tbl" [class]="'grade--' + course.gradeClass">{{ course.avgGrade }}</span>
+            </td>
+            <td>
+              <span class="badge" [class]="'badge--' + course.statusColor">{{ course.status }}</span>
+            </td>
+            <td>
+              <div class="row-actions">
+                <button class="action-icon-btn" (click)="$event.stopPropagation(); openModal('edit', course)" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="action-icon-btn" (click)="$event.stopPropagation(); openModal('detail', course)" title="Ver detalle">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button class="action-icon-btn action-icon-btn--danger" (click)="$event.stopPropagation(); confirmDelete(course)" title="Eliminar">
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+ 
+    <!-- Table pagination -->
+    <div class="table-footer">
+      <span class="pagination-info">Mostrando {{ filteredCourses.length }} de {{ totalCourses }} cursos</span>
+      <div class="pagination">
+        <button class="page-btn" [disabled]="currentPage === 1" (click)="prevPage()">‹</button>
+        <button
+          *ngFor="let p of pages"
+          class="page-btn"
+          [class.active]="p === currentPage"
+          (click)="goToPage(p)"
+        >{{ p }}</button>
+        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">›</button>
+      </div>
+    </div>
+  </div>
+ 
+</div>
+ 
+<!-- ══════════════════════════════════════════════
+     MODAL CREATE / EDIT
+══════════════════════════════════════════════ -->
+<div class="modal-backdrop" [class.open]="showModal && (modalMode === 'create' || modalMode === 'edit')" (click)="closeModal()">
+  <div class="modal modal--lg" (click)="$event.stopPropagation()">
+ 
+    <div class="modal-header">
+      <div>
+        <h2 class="modal-title">
+          {{ modalMode === 'create' ? 'Nuevo Curso' : 'Editar Curso' }}
+        </h2>
+        <p class="modal-sub">
+          {{ modalMode === 'create' ? 'Complete los datos para registrar el curso' : 'Modifica los datos del curso' }}
+        </p>
+      </div>
+      <button class="modal-close-btn" (click)="closeModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+ 
+    <div class="modal-body">
+ 
+      <!-- Section: Info básica -->
+      <div class="modal-section">
+        <div class="modal-section-title">
+          <span class="section-step">1</span>
+          Información Básica
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Código del Curso <span class="req">*</span></label>
+            <input type="text" class="form-input" [(ngModel)]="courseForm.code" placeholder="Ej: MAT-301">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nombre del Curso <span class="req">*</span></label>
+            <input type="text" class="form-input" [(ngModel)]="courseForm.name" placeholder="Ej: Matemáticas Avanzadas">
+          </div>
+        </div>
+        <div class="form-grid form-grid--3">
+          <div class="form-group">
+            <label class="form-label">Área Curricular <span class="req">*</span></label>
+            <select class="form-select" [(ngModel)]="courseForm.area">
+              <option value="">Seleccionar...</option>
+              <option *ngFor="let a of areas" [value]="a">{{ a }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nivel Educativo <span class="req">*</span></label>
+            <select class="form-select" [(ngModel)]="courseForm.level">
+              <option value="">Seleccionar...</option>
+              <option *ngFor="let l of levels" [value]="l">{{ l }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Grado <span class="req">*</span></label>
+            <select class="form-select" [(ngModel)]="courseForm.grade">
+              <option value="">Seleccionar...</option>
+              <option *ngFor="let g of grades" [value]="g">{{ g }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Descripción</label>
+          <textarea class="form-textarea" [(ngModel)]="courseForm.description" placeholder="Descripción breve del curso y sus objetivos..."></textarea>
+        </div>
+      </div>
+ 
+      <!-- Section: Docente y carga -->
+      <div class="modal-section">
+        <div class="modal-section-title">
+          <span class="section-step">2</span>
+          Docente y Carga Horaria
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Docente Responsable <span class="req">*</span></label>
+            <select class="form-select" [(ngModel)]="courseForm.teacher">
+              <option value="">Seleccionar docente...</option>
+              <option *ngFor="let t of teachers" [value]="t">{{ t }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Horas por Semana <span class="req">*</span></label>
+            <input type="number" class="form-input" [(ngModel)]="courseForm.hoursPerWeek" placeholder="Ej: 4" min="1" max="10">
+          </div>
+        </div>
+        <div class="form-grid form-grid--3">
+          <div class="form-group">
+            <label class="form-label">Máximo de Alumnos</label>
+            <input type="number" class="form-input" [(ngModel)]="courseForm.maxStudents" placeholder="40">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Unidades Didácticas</label>
+            <input type="number" class="form-input" [(ngModel)]="courseForm.units" placeholder="4">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estado</label>
+            <select class="form-select" [(ngModel)]="courseForm.status">
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
+              <option value="En revisión">En revisión</option>
+            </select>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Section: Horario -->
+      <div class="modal-section modal-section--last">
+        <div class="modal-section-title">
+          <span class="section-step">3</span>
+          Horario Semanal
+        </div>
+        <div class="schedule-builder">
+          <div class="schedule-day" *ngFor="let day of weekDays">
+            <label class="schedule-day-label">
+              <input type="checkbox" [(ngModel)]="day.selected" class="day-check">
+              {{ day.label }}
+            </label>
+            <div class="schedule-times" *ngIf="day.selected">
+              <input type="time" class="form-input time-input" [(ngModel)]="day.start">
+              <span class="time-sep">—</span>
+              <input type="time" class="form-input time-input" [(ngModel)]="day.end">
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+    </div>
+ 
+    <div class="modal-footer">
+      <button class="btn btn-ghost" (click)="closeModal()">Cancelar</button>
+      <button class="btn btn-outline" (click)="resetForm()">
+        <i class="bi bi-arrow-counterclockwise"></i> Limpiar
+      </button>
+      <button class="btn btn-primary" (click)="saveCourse()" [disabled]="!isFormValid()">
+        <i class="bi" [class.bi-check-circle-fill]="modalMode === 'edit'" [class.bi-plus-circle-fill]="modalMode === 'create'"></i>
+        {{ modalMode === 'create' ? 'Crear Curso' : 'Guardar Cambios' }}
+      </button>
+    </div>
+  </div>
+</div>
+ 
+<!-- ══════════════════════════════════════════════
+     MODAL DETAIL
+══════════════════════════════════════════════ -->
+<div class="modal-backdrop" [class.open]="showModal && modalMode === 'detail'" (click)="closeModal()">
+  <div class="modal modal--xl" (click)="$event.stopPropagation()" *ngIf="selectedCourse">
+ 
+    <div class="modal-header modal-header--colored" [style.background]="selectedCourse.headerGradient">
+      <div class="detail-header-content">
+        <span class="detail-code">{{ selectedCourse.code }}</span>
+        <h2 class="detail-title">{{ selectedCourse.name }}</h2>
+        <div class="detail-meta">
+          <span>{{ selectedCourse.area }}</span>
+          <span>·</span>
+          <span>{{ selectedCourse.level }}</span>
+          <span>·</span>
+          <span class="badge badge--white">{{ selectedCourse.status }}</span>
+        </div>
+      </div>
+      <button class="modal-close-btn modal-close-btn--white" (click)="closeModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+ 
+    <div class="modal-body modal-body--detail">
+      <div class="detail-grid">
+ 
+        <!-- Stats -->
+        <div class="detail-stats">
+          <div class="detail-stat">
+            <i class="bi bi-people-fill ds-icon"></i>
+            <span class="ds-val">{{ selectedCourse.students }}</span>
+            <span class="ds-lbl">Alumnos</span>
+          </div>
+          <div class="detail-stat">
+            <i class="bi bi-clock-fill ds-icon"></i>
+            <span class="ds-val">{{ selectedCourse.hoursPerWeek }}h</span>
+            <span class="ds-lbl">por semana</span>
+          </div>
+          <div class="detail-stat">
+            <i class="bi bi-journal-text ds-icon"></i>
+            <span class="ds-val">{{ selectedCourse.units }}</span>
+            <span class="ds-lbl">Unidades</span>
+          </div>
+          <div class="detail-stat">
+            <i class="bi bi-star-fill ds-icon"></i>
+            <span class="ds-val">{{ selectedCourse.avgGrade }}</span>
+            <span class="ds-lbl">Promedio</span>
+          </div>
+        </div>
+ 
+        <!-- Progress -->
+        <div class="detail-progress-section">
+          <div class="detail-progress-hdr">
+            <span class="dp-label">Avance del programa</span>
+             <span class="dp-pct">{{ selectedCourse.progress }}%</span>
+          </div>
+          <div class="progress-bar progress-bar--lg">
+             <div class="progress-fill" [class]="'fill--' + selectedCourse.progressColor" [style.width]="selectedCourse.progress + '%'"></div>
+          </div>
+        </div>
+ 
+        <!-- Teacher -->
+        <div class="detail-teacher">
+          <div class="detail-section-label">Docente</div>
+          <div class="detail-teacher-card">
+            <div class="teacher-avatar teacher-avatar--lg" [style.background]="selectedCourse.teacherGradient">
+              {{ selectedCourse.teacherInitials }}
+            </div>
+            <div>
+              <span class="detail-teacher-name">{{ selectedCourse.teacher }}</span>
+              <span class="detail-teacher-email">{{ selectedCourse.teacherEmail }}</span>
+            </div>
+          </div>
+        </div>
+ 
+        <!-- Schedule -->
+        <div class="detail-schedule">
+          <div class="detail-section-label">Horario</div>
+          <div class="schedule-chips">
+            <span class="schedule-chip" *ngFor="let s of selectedCourse.schedule">
+              <i class="bi bi-clock"></i> {{ s }}
+            </span>
+          </div>
+        </div>
+ 
+        <!-- Grade distribution mini chart -->
+        <div class="detail-grade-dist">
+          <div class="detail-section-label">Distribución de Notas</div>
+          <div class="grade-bars">
+            <div class="grade-bar-item" *ngFor="let gb of gradeDistBars">
+              <div class="gb-label">{{ gb.label }}</div>
+              <div class="gb-track">
+                <div class="gb-fill" [style.width]="gb.pct + '%'" [style.background]="gb.color"></div>
+              </div>
+              <div class="gb-val">{{ gb.pct }}%</div>
+            </div>
+          </div>
+        </div>
+ 
+      </div>
+    </div>
+ 
+    <div class="modal-footer">
+      <button class="btn btn-ghost" (click)="closeModal()">Cerrar</button>
+      <button class="btn btn-outline" (click)="openModal('edit', selectedCourse)">
+        <i class="bi bi-pencil"></i> Editar Curso
+      </button>
+      <button class="btn btn-primary" (click)="downloadSyllabus()">
+        <i class="bi bi-download"></i> Descargar Sílabo
+      </button>
+    </div>
+  </div>
+</div>
+ 
+<!-- ══ DELETE CONFIRM ════════════════════════════ -->
+<div class="modal-backdrop" [class.open]="showDeleteConfirm" (click)="showDeleteConfirm = false">
+  <div class="modal modal--sm confirm-modal" (click)="$event.stopPropagation()">
+    <div class="confirm-icon">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+    </div>
+    <h3 class="confirm-title">¿Eliminar este curso?</h3>
+    <p class="confirm-desc" *ngIf="courseToDelete">
+      Estás a punto de eliminar <strong>{{ courseToDelete.name }}</strong>. Esta acción no se puede deshacer.
+    </p>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" (click)="showDeleteConfirm = false">Cancelar</button>
+      <button class="btn btn-danger" (click)="deleteCourse()">
+        <i class="bi bi-trash3"></i> Sí, eliminar
+      </button>
+    </div>
+  </div>
+</div>

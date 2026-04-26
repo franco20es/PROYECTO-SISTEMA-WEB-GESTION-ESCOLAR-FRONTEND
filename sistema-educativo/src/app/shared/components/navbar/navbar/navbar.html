@@ -1,0 +1,50 @@
+
+<!-- ── TOPBAR ── -->
+<header class="topbar" id="topbar">
+
+    <!-- Hamburger -->
+    <button class="hamburger" id="hamburger" (click)="requestToggleSidebar()" aria-label="Menú">
+      <div class="hb-bar">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </button>
+
+    <!-- Breadcrumb -->
+    <div class="topbar-breadcrumb">
+      <i class="bi bi-house bc-root"></i>
+      <span class="bc-root" style="font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase">Mi Cuenta</span>
+      <i class="bi bi-chevron-right"></i>
+      <span class="bc-active" id="bcLabel">Dashboard</span>
+    </div>
+
+    <!-- Right side -->
+    <div class="topbar-right">
+
+      <!-- Search -->
+      <div class="topbar-search">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Buscar...">
+      </div>
+
+      <!-- Notifications -->
+      <div class="topbar-icon-btn" (click)="navigateTo('notificaciones')" title="Notificaciones">
+        <i class="bi bi-bell"></i>
+        <span class="notif-pip"></span>
+      </div>
+
+      <!-- Settings -->
+      <div class="topbar-icon-btn" (click)="navigateTo('seguridad')" title="Seguridad">
+        <i class="bi bi-shield-lock"></i>
+      </div>
+
+      <!-- User chip -->
+      <div class="topbar-user" (click)="navigateTo('perfil')">
+        <div class="topbar-user-avatar">AC</div>
+        <span class="topbar-user-name">Andrea Castro</span>
+        <i class="bi bi-chevron-down" style="font-size:.6rem;color:rgba(255,255,255,.4)"></i>
+      </div>
+
+    </div>
+  </header>

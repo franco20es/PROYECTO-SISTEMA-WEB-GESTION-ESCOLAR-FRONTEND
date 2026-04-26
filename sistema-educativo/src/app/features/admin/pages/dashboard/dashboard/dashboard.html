@@ -1,0 +1,334 @@
+<div class="layout" [class.sidebar-collapsed]="!sidebarOpen">
+
+ 
+
+  <!-- ══ MAIN AREA ════════════════════════════════════════════════════════ -->
+  <div class="main-area">
+
+  
+
+    <!-- ── PAGE CONTENT ────────────────────────────────────────────────── -->
+    <main class="page-content">
+
+      <!-- Page Title -->
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Panel Principal</h1>
+          <p class="page-sub">Resumen general del sistema educativo EduCore</p>
+        </div>
+        <div class="page-header-actions">
+          <button class="btn btn-outline btn-sm">
+            <i class="bi bi-download"></i> Exportar Reporte
+          </button>
+          <button class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg"></i> Acción Rápida
+          </button>
+        </div>
+      </div>
+
+      <!-- ── KPI GRID ───────────────────────────────────────────────────── -->
+      <div class="kpi-grid">
+        <div
+          class="kpi-card"
+          *ngFor="let kpi of kpis; let i = index"
+          [style.animation-delay]="(i * 60) + 'ms'"
+        >
+          <div class="kpi-icon-wrap" [class]="'kpi-icon--' + kpi.color">
+            <i class="bi {{ kpi.icon }}"></i>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-value">{{ kpi.value }}</span>
+            <span class="kpi-label">{{ kpi.label }}</span>
+          </div>
+          <span class="kpi-delta" [class.up]="kpi.up" [class.down]="!kpi.up">
+            <i class="bi" [class.bi-arrow-up-short]="kpi.up" [class.bi-arrow-down-short]="!kpi.up"></i>
+            {{ kpi.delta }}
+          </span>
+        </div>
+      </div>
+
+      <!-- ── MAIN DASHBOARD GRID ─────────────────────────────────────── -->
+      <div class="dashboard-grid">
+
+        <!-- ── TOP COURSES TABLE (wide) ──────────────────────────────── -->
+        <div class="panel panel--wide">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <div class="panel-title-dot" style="background: linear-gradient(135deg,#6366f1,#8b5cf6)"></div>
+              <h2 class="panel-title">Cursos con Mejor Rendimiento</h2>
+            </div>
+            <button class="btn-link">Ver todos <i class="bi bi-arrow-right"></i></button>
+          </div>
+
+          <div class="panel-body">
+            <div class="top-courses-list">
+              <div
+                class="top-course-item"
+                *ngFor="let c of topCourses; let i = index"
+                [style.animation-delay]="(i * 80) + 'ms'"
+              >
+                <div class="tc-rank">{{ i + 1 }}</div>
+                <div class="tc-color-bar" [style.background]="c.headerGradient"></div>
+                <div class="tc-info">
+                  <div class="tc-name-row">
+                    <span class="tc-name">{{ c.name }}</span>
+                    <span class="tc-code">{{ c.code }}</span>
+                  </div>
+                  <div class="tc-teacher-row">
+                    <div class="tc-av" [style.background]="c.teacherGradient">{{ c.teacherInitials }}</div>
+                    <span class="tc-teacher">{{ c.teacher }}</span>
+                    <span class="tc-students"><i class="bi bi-people-fill"></i> {{ c.students }}</span>
+                  </div>
+                </div>
+                <div class="tc-progress">
+                  <div class="tc-progress-bar">
+                    <div class="tc-progress-fill" [class]="'fill--' + c.progressColor" [style.width]="c.progress + '%'"></div>
+                  </div>
+                  <span class="tc-pct">{{ c.progress }}%</span>
+                </div>
+                <div class="tc-grade" [class]="'grade--' + c.gradeClass">
+                  <span class="tc-grade-val">{{ c.avgGrade }}</span>
+                  <span class="tc-grade-lbl">prom.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── GRADE DISTRIBUTION ─────────────────────────────────────── -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <div class="panel-title-dot" style="background: linear-gradient(135deg,#10b981,#06b6d4)"></div>
+              <h2 class="panel-title">Distribución de Notas</h2>
+            </div>
+            <span class="panel-badge">1,248 alumnos</span>
+          </div>
+
+          <div class="panel-body">
+            <!-- Donut-style summary -->
+            <div class="grade-summary">
+              <div class="grade-donut">
+                <div class="donut-ring">
+                  <svg viewBox="0 0 120 120" class="donut-svg">
+                    <circle class="donut-bg" cx="60" cy="60" r="50" />
+                    <!-- AD slice -->
+                    <circle class="donut-slice" cx="60" cy="60" r="50"
+                      stroke="#10b981"
+                      stroke-dasharray="69.1 244.9"
+                      stroke-dashoffset="0"
+                    />
+                    <!-- A slice -->
+                    <circle class="donut-slice" cx="60" cy="60" r="50"
+                      stroke="#6366f1"
+                      stroke-dasharray="141.3 172.7"
+                      stroke-dashoffset="-69.1"
+                    />
+                    <!-- B slice -->
+                    <circle class="donut-slice" cx="60" cy="60" r="50"
+                      stroke="#f59e0b"
+                      stroke-dasharray="75.4 238.6"
+                      stroke-dashoffset="-210.4"
+                    />
+                    <!-- C slice -->
+                    <circle class="donut-slice" cx="60" cy="60" r="50"
+                      stroke="#ef4444"
+                      stroke-dasharray="28.3 285.7"
+                      stroke-dashoffset="-285.8"
+                    />
+                  </svg>
+                  <div class="donut-center">
+                    <span class="donut-pct">67%</span>
+                    <span class="donut-lbl">AD + A</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grade bars -->
+            <div class="grade-bars">
+              <div class="grade-bar-row" *ngFor="let g of gradeDistribution">
+                <div class="gbr-label">{{ g.label }}</div>
+                <div class="gbr-track">
+                  <div class="gbr-fill" [style.width]="g.pct + '%'" [style.background]="g.color"></div>
+                </div>
+                <div class="gbr-meta">
+                  <span class="gbr-pct" [style.color]="g.color">{{ g.pct }}%</span>
+                  <span class="gbr-count">{{ g.count }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── ATTENDANCE ─────────────────────────────────────────────── -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <div class="panel-title-dot" style="background: linear-gradient(135deg,#06b6d4,#0ea5e9)"></div>
+              <h2 class="panel-title">Asistencia Semanal</h2>
+            </div>
+            <span class="panel-badge panel-badge--green">Semana actual</span>
+          </div>
+
+          <div class="panel-body">
+            <!-- Big number -->
+            <div class="attendance-hero">
+              <span class="ah-value">92%</span>
+              <div class="ah-meta">
+                <span class="ah-label">Promedio semanal</span>
+                <span class="ah-delta up"><i class="bi bi-arrow-up-short"></i> +2% vs semana anterior</span>
+              </div>
+            </div>
+
+            <!-- Bar chart -->
+            <div class="att-chart">
+              <div class="att-bar-group" *ngFor="let d of attendanceDays">
+                <div class="att-bar-wrap">
+                  <div class="att-bar-fill" [style.height]="d.pct + '%'"></div>
+                </div>
+                <span class="att-pct">{{ d.pct }}%</span>
+                <span class="att-day">{{ d.day }}</span>
+              </div>
+            </div>
+
+            <!-- Status breakdown -->
+            <div class="att-breakdown">
+              <div class="att-bd-item">
+                <span class="att-bd-dot" style="background:#10b981"></span>
+                <span class="att-bd-label">Presentes</span>
+                <span class="att-bd-val">1,148</span>
+              </div>
+              <div class="att-bd-item">
+                <span class="att-bd-dot" style="background:#f59e0b"></span>
+                <span class="att-bd-label">Tardanzas</span>
+                <span class="att-bd-val">62</span>
+              </div>
+              <div class="att-bd-item">
+                <span class="att-bd-dot" style="background:#ef4444"></span>
+                <span class="att-bd-label">Ausentes</span>
+                <span class="att-bd-val">38</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── UPCOMING EVENTS ────────────────────────────────────────── -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <div class="panel-title-dot" style="background: linear-gradient(135deg,#f59e0b,#f97316)"></div>
+              <h2 class="panel-title">Próximos Eventos</h2>
+            </div>
+            <button class="btn-link">Ver calendario <i class="bi bi-arrow-right"></i></button>
+          </div>
+
+          <div class="panel-body">
+            <div class="events-list">
+              <div class="event-item" *ngFor="let ev of upcomingEvents">
+                <div class="ev-icon" [style.background]="ev.bgColor" [style.color]="ev.color">
+                  <i class="bi {{ getEventIcon(ev.type) }}"></i>
+                </div>
+                <div class="ev-body">
+                  <span class="ev-title">{{ ev.title }}</span>
+                  <span class="ev-time"><i class="bi bi-clock"></i> {{ ev.time }}</span>
+                </div>
+                <div class="ev-date" [style.color]="ev.color">{{ ev.date }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── RECENT ACTIVITY (wide) ─────────────────────────────────── -->
+        <div class="panel panel--wide">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <div class="panel-title-dot" style="background: linear-gradient(135deg,#8b5cf6,#6366f1)"></div>
+              <h2 class="panel-title">Actividad Reciente</h2>
+            </div>
+            <button class="btn-link">Ver historial <i class="bi bi-arrow-right"></i></button>
+          </div>
+
+          <div class="panel-body">
+            <div class="activity-feed">
+              <div
+                class="activity-item"
+                *ngFor="let a of recentActivity; trackBy: trackById; let last = last"
+                [class.last]="last"
+              >
+                <div class="act-icon-wrap">
+                  <div class="act-icon" [style.background]="a.iconColor + '20'" [style.color]="a.iconColor">
+                    <i class="bi {{ a.icon }}"></i>
+                  </div>
+                  <div class="act-line" *ngIf="!last"></div>
+                </div>
+                <div class="act-body">
+                  <div class="act-title-row">
+                    <span class="act-title">{{ a.title }}</span>
+                    <span class="act-badge" *ngIf="a.badge" [class]="'act-badge--' + a.badgeColor">{{ a.badge }}</span>
+                  </div>
+                  <span class="act-desc">{{ a.description }}</span>
+                  <span class="act-time"><i class="bi bi-clock"></i> {{ a.time }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── QUICK STATS ─────────────────────────────────────────────── -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <div class="panel-title-dot" style="background: linear-gradient(135deg,#ef4444,#f43f5e)"></div>
+              <h2 class="panel-title">Alertas Activas</h2>
+            </div>
+            <span class="panel-badge panel-badge--red">7 pendientes</span>
+          </div>
+
+          <div class="panel-body">
+            <div class="alerts-list">
+              <div class="alert-item alert-item--amber">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <div class="alert-body">
+                  <span class="alert-title">Asistencia crítica</span>
+                  <span class="alert-desc">4 alumnos con &lt; 70% asistencia en Matemáticas</span>
+                </div>
+                <button class="alert-btn">Ver</button>
+              </div>
+              <div class="alert-item alert-item--red">
+                <i class="bi bi-x-circle-fill"></i>
+                <div class="alert-body">
+                  <span class="alert-title">Notas pendientes</span>
+                  <span class="alert-desc">TEC-101 sin calificaciones del bimestre 2</span>
+                </div>
+                <button class="alert-btn">Ver</button>
+              </div>
+              <div class="alert-item alert-item--indigo">
+                <i class="bi bi-info-circle-fill"></i>
+                <div class="alert-body">
+                  <span class="alert-title">Curso en revisión</span>
+                  <span class="alert-desc">Tecnología e Informática requiere aprobación</span>
+                </div>
+                <button class="alert-btn">Ver</button>
+              </div>
+              <div class="alert-item alert-item--amber">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <div class="alert-body">
+                  <span class="alert-title">Docente sin cursos</span>
+                  <span class="alert-desc">Prof. Pedro Castro — 0 cursos asignados</span>
+                </div>
+                <button class="alert-btn">Ver</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- end dashboard-grid -->
+
+    </main>
+  </div>
+  <!-- end main-area -->
+
+</div>
+<!-- end layout -->

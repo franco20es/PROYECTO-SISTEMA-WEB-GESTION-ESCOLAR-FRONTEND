@@ -1,0 +1,111 @@
+
+ <div class="master-container">
+ 
+        <div class="brand-side">
+            <span class="brand-tag">Sovereign System v2.0</span>
+            <h1>Admin<span>RC</span> <br> Ecosistema.</h1>
+            <p>La arquitectura más limpia para la gestión de datos en tiempo real. Diseñado para ingenieros, optimizado para el éxito.</p>
+        </div>
+ 
+        <div class="form-side">
+            <div class="form-box">
+                <div class="form-header">
+                    <h2>Iniciar Sesión</h2>
+                    <p>Bienvenido de nuevo a tu panel de control.</p>
+                </div>
+
+                <!-- Mensaje de Error -->
+                <div *ngIf="errorMessage" class="alert alert-error" (click)="clearMessages()">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <span>{{ errorMessage }}</span>
+                </div>
+
+                <!-- Mensaje de Éxito -->
+                <div *ngIf="successMessage" class="alert alert-success">
+                    <i class="bi bi-check-circle"></i>
+                    <span>{{ successMessage }}</span>
+                </div>
+
+                <form (ngSubmit)="onSubmit()" #form="ngForm">
+                    <!-- Email Input -->
+                    <div class="input-group">
+                        <label>Email</label>
+                        <div class="input-wrapper">
+                            <i class="bi bi-person-badge"></i>
+                            <input 
+                                type="email" 
+                                class="input-field" 
+                                placeholder="f.roca@adminrc.com"
+                                [(ngModel)]="loginForm.email"
+                                name="email"
+                                required>
+                        </div>
+                    </div>
+
+                    <!-- Contraseña Input -->
+                    <div class="input-group">
+                        <label>Contraseña</label>
+                        <div class="input-wrapper">
+                            <i class="bi bi-shield-lock"></i>
+                            <input 
+                                [type]="showPassword ? 'text' : 'password'" 
+                                class="input-field" 
+                                placeholder="••••••••"
+                                [(ngModel)]="loginForm.password"
+                                name="password"
+                                required>
+                            <button 
+                                type="button" 
+                                class="toggle-password"
+                                (click)="togglePasswordVisibility()"
+                                [title]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                                <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recordarme y Olvide contraseña -->
+                    <div class="flex-row">
+                        <div style="font-size: 0.8rem; color: var(--text-gray); display: flex; align-items: center; gap: 5px;">
+                            <input 
+                                type="checkbox" 
+                                [(ngModel)]="rememberMe"
+                                name="rememberMe"
+                                style="accent-color: var(--rose);"> 
+                            Recordarme
+                        </div>
+                        <a routerLink="/recuperar-contrasena-form" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <!-- Botón de Login -->
+                    <button 
+                        type="submit" 
+                        class="btn-primary"
+                        [disabled]="isLoading">
+                        <span *ngIf="!isLoading">Acceder al Sistema</span>
+                        <span *ngIf="isLoading">
+                            <i class="bi bi-hourglass-split"></i> Iniciando sesión...
+                        </span>
+                    </button>
+
+                    <!-- Google Login -->
+                    <button 
+                        type="button"
+                        id="google-login-btn"
+                        class="btn-ghost"
+                        (click)="onGoogleLogin()"
+                        [disabled]="isLoading || googleLoading">
+                        <i class="bi bi-google"></i> 
+                        <span *ngIf="!googleLoading">Continuar con Google</span>
+                        <span *ngIf="googleLoading">
+                            <i class="bi bi-hourglass-split"></i> Conectando...
+                        </span>
+                    </button>
+
+                    <!-- Registro -->
+                    <p class="footer-text">¿No tienes una cuenta? <a routerLink="/registro" class="create-account-link">Crea una ahora</a></p>
+                </form>
+            </div>
+        </div>
+ 
+    </div>
