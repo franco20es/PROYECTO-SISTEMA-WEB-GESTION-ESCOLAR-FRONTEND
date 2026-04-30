@@ -1,0 +1,177 @@
+:host {
+  /* Variables de Color Premium - Basadas en tu AdminRC */
+  --admin-blue: #00A6E0;      /* Tu azul actual, más vibrante */
+  --admin-red: #D1204C;       /* Rojo institucional más refinado */
+  --admin-dark: #2C2C2C;      /* Gris casi negro para texto */
+  --admin-neutral: #F7F9FB;    /* Fondo sutil */
+  --border-color: #E8EDF2;     /* Bordes finos */
+}
+
+.horario-container {
+  max-width: 1200px; /* Un poco más ancho para respirar */
+  margin: 60px auto; /* Más espacio superior */
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; /* Fuentes más técnicas */
+  padding: 0 40px; /* Más aire a los lados */
+  background-color: white;
+}
+
+/* --- ENCABEZADO REFINADO --- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 40px;
+  border-bottom: 1.5px solid var(--border-color); /* Separación sutil */
+  padding-bottom: 20px;
+}
+
+h2 {
+  color: var(--admin-blue);
+  margin: 0;
+  text-transform: uppercase;
+  font-weight: 800;
+  font-size: 26px;
+  letter-spacing: -0.8px;
+  position: relative;
+}
+
+/* Subrayado decorativo sutil en el título */
+h2::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 50px;
+  height: 2.5px;
+  background-color: var(--admin-blue);
+}
+
+.info-alumno {
+  text-align: right;
+  line-height: 1.6;
+}
+
+.info-alumno p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--admin-dark);
+}
+
+.info-alumno p strong {
+  color: #888;
+  font-weight: 400;
+  margin-right: 5px;
+}
+
+/* --- TABLA DE ALTA PRECISIÓN --- */
+.horario-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+  border: 1px solid var(--border-color);
+  font-size: 13px;
+}
+
+/* Cabecera con contraste medio/alto */
+.horario-table thead {
+  background-color: var(--admin-blue);
+  color: white;
+}
+
+.horario-table th {
+  padding: 18px 15px; /* Más padding para jerarquía */
+  text-transform: uppercase;
+  font-size: 10px; /* Más pequeño para estilo técnico */
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  border: none;
+}
+
+/* Estilo de Filas Cuerpo */
+.horario-table td {
+  padding: 16px 15px;
+  color: #444;
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+}
+
+/* Texto de Cursos más legible */
+.horario-table td:first-child {
+  font-weight: 600;
+  color: var(--admin-dark);
+}
+
+/* Filas intercaladas */
+.horario-table tbody tr:nth-child(even) {
+  background-color: var(--admin-neutral);
+}
+
+/* Hover técnico */
+.horario-table tbody tr:hover {
+  background-color: #EEF2F6;
+  transition: background-color 0.2s ease;
+}
+
+/* Totales (Footer) Sólido y Claro */
+tfoot {
+  background-color: var(--admin-blue);
+  color: white;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+tfoot td {
+  padding: 18px 15px;
+  border: none;
+}
+
+tfoot td[colspan] {
+  text-align: left; /* Alineamos Totales a la izquierda */
+}
+
+/* --- ACCIONES RECTILÍNEAS PREMIUM --- */
+.horario-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+button {
+  padding: 14px 28px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  border-radius: 0; /* Rectilíneo total */
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-pdf {
+  background-color: var(--admin-red);
+  color: white;
+}
+
+.btn-print {
+  background-color: var(--admin-dark);
+  color: white;
+}
+
+/* Micro-interacción premium */
+button:hover {
+  filter: brightness(1.15);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Optimización para Impresión */
+@media print {
+  .horario-actions, .header-global-adminrc { display: none; } /* Ocultamos header global */
+  .horario-container { margin: 0; width: 100%; max-width: 100%; padding: 0; }
+  .horario-table { border: 1px solid #CCC; }
+}

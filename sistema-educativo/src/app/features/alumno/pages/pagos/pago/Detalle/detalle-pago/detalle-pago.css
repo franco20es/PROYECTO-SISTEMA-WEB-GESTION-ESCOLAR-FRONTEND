@@ -1,0 +1,223 @@
+/* Variables de color basadas en la imagen */
+:host {
+  --color-fondo-pagina: #F0F4F8; /* Gris muy azulado muy claro del fondo */
+  --color-ticket: #FFFFFF;
+  --color-texto-principal: #1F2937; /* Gris oscuro / casi negro */
+  --color-texto-secundario: #6B7280; /* Gris medio para etiquetas */
+  --color-borde: #E5E7EB; /* Gris claro para líneas separadoras */
+  --color-vencido-fondo: #A0153E; /* Rojo oscuro/vino del estado */
+  --color-vencido-texto: #FFFFFF;
+  --color-mora: #EF4444; /* Rojo brillante para el monto de mora */
+  --color-boton-fondo: #6366F1; /* Violeta/Indigo del botón */
+  --color-boton-texto: #FFFFFF;
+  
+  /* Fuente */
+  --fuente-principal: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.contenedor-principal {
+ 
+max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* --- Estilos del Ticket (Efecto Festoneado) --- */
+.ticket-pago {
+  background-color: var(--color-ticket);
+  width: 100%;
+  max-width: 1000px; /* Ajusta según necesites */
+  padding: 2.5rem 2rem;
+  position: relative;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  margin-bottom: 2rem;
+  /* Espacio para los cortes de ticket */
+  margin-top: 15px; 
+  margin-bottom: calc(2rem + 15px);
+}
+
+/* Replicando el borde festoneado superior e inferior */
+.ticket-pago::before,
+.ticket-pago::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 15px; /* Altura del patrón festoneado */
+  /* Patrón de círculos usando gradiente radial */
+  background-image: radial-gradient(circle at 10px -5px, transparent 12px, var(--color-ticket) 13px);
+  background-size: 20px 20px;
+}
+
+.ticket-pago::before {
+  top: -15px;
+}
+
+.ticket-pago::after {
+  bottom: -15px;
+  transform: rotate(180deg); /* Voltea el patrón para abajo */
+}
+
+/* --- Estilos de Contenido --- */
+
+.fila-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.titulo-cuota {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-texto-principal);
+}
+
+.estado-badge {
+  padding: 0.25rem 1rem;
+  font-size: 0.813rem;
+  font-weight: 600;
+  border-radius: 9999px; /* Botón ovalado */
+  text-transform: capitalize;
+}
+
+.estado-badge.vencido {
+  background-color: var(--color-vencido-fondo);
+  color: var(--color-vencido-texto);
+}
+/* Agrega estilos para .pagado .pendiente si los necesitas */
+
+.fila-detalle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.etiqueta {
+  font-size: 0.938rem;
+  color: var(--color-texto-secundario);
+}
+
+.valor {
+  font-size: 0.938rem;
+  font-weight: 500;
+  color: var(--color-texto-principal);
+}
+
+.separador {
+  border: 0;
+  border-top: 1px solid var(--color-borde);
+  margin: 1.5rem 0;
+}
+
+/* Sección Vencimiento */
+.etiqueta-vencimiento {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-texto-principal);
+}
+
+.valor-vencimiento {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-texto-principal);
+}
+
+/* Sección Costos */
+.fila-costo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Alinea arriba para la mora con texto */
+  margin-bottom: 1rem;
+}
+
+.fila-costo.mora-fila {
+  margin-bottom: 0;
+}
+
+.etiqueta-costo {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-texto-principal);
+}
+
+.valor-costo {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-texto-principal);
+}
+
+.columna-mora {
+  display: flex;
+  flex-direction: column;
+  max-width: 70%; /* Evita que el texto de mora ocupe todo el ancho */
+}
+
+.nota-mora {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.813rem;
+  color: var(--color-texto-secundario);
+  line-height: 1.4;
+}
+
+.valor-costo.mora {
+  color: var(--color-mora);
+}
+
+/* Sección Total */
+.fila-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.etiqueta-total {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-texto-principal);
+}
+
+.valor-total {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--color-texto-principal);
+}
+
+/* --- Estilos del Botón --- */
+.btn-opciones-pago {
+  background-color: var(--color-boton-fondo);
+  color: var(--color-boton-texto);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.938rem;
+  font-weight: 600;
+  border-radius: 0.375rem; /* Bordes ligeramente redondeados */
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.btn-opciones-pago:hover {
+  background-color: #4F46E5; /* Un tono más oscuro al hover */
+}
+
+.btn-opciones-pago:active {
+  transform: scale(0.98); /* Efecto de pulsado */
+}
+
+/* Adaptación para pantallas pequeñas */
+@media (max-width: 640px) {
+  .contenedor-principal {
+    padding: 1rem;
+  }
+  
+  .ticket-pago {
+    padding: 1.5rem 1rem;
+  }
+  
+  .columna-mora {
+    max-width: 60%;
+  }
+}

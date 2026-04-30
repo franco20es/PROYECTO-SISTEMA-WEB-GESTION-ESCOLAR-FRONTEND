@@ -1,0 +1,53 @@
+<div class="asistencia-container">
+  <!-- Header -->
+  <div class="asistencia-header">
+    <h1>Mi Asistencia</h1>
+    <p>Control de asistencias por curso</p>
+  </div>
+
+  <!-- Cursos Grid -->
+  <div class="asistencia-grid">
+    <div *ngFor="let curso of cursos" class="asistencia-card">
+      <!-- Encabezado -->
+      <div class="asistencia-card-header">
+        <div>
+          <h3 class="asistencia-nombre">{{curso.nombre}}</h3>
+          <p class="asistencia-profesor">{{curso.profesor}}</p>
+        </div>
+        <div class="asistencia-porcentaje" [ngClass]="'porcentaje-' + getColorEstado(curso.estado)">
+          {{curso.porcentaje}}%
+        </div>
+      </div>
+
+      <!-- Detalles -->
+      <div class="asistencia-card-body">
+        <div class="asistencia-fila">
+          <span class="asistencia-label">Clases:</span>
+          <span class="asistencia-valor">{{curso.clasesAsistidas}}/{{curso.clasesTotal}}</span>
+        </div>
+        <div class="asistencia-fila">
+          <span class="asistencia-label">Estado:</span>
+          <span class="asistencia-estado" [ngClass]="'estado-' + curso.estado">
+            <span *ngIf="curso.estado === 'aprobado'">✓ Aprobado</span>
+            <span *ngIf="curso.estado === 'enRiesgo'">✗ En riesgo</span>
+          </span>
+        </div>
+        
+        <!-- Barra de progreso -->
+        <div class="asistencia-barra-container">
+          <div class="asistencia-barra" [ngClass]="'barra-' + curso.estado" [style.width.%]="curso.porcentaje"></div>
+        </div>
+
+        <!-- Botón -->
+        <button class="btn-ver-asistencia" (click)="verAsistencia(curso)">Ver asistencia</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Asistencia Reutilizable -->
+<app-modal-asistencia 
+  [mostrarAsistencia]="mostrarAsistencia"
+  [cursoSeleccionadoAsistencia]="cursoSeleccionadoAsistencia"
+  (cerrarModal)="cerrarAsistencia()">
+</app-modal-asistencia>

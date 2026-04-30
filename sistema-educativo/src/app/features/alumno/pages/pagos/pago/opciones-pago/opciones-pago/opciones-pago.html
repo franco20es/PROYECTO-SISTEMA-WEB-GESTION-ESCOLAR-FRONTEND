@@ -1,0 +1,77 @@
+<div class="opciones-container">
+  <!-- Botón Atrás -->
+  <button class="btn-atras" (click)="regresar()">
+    <span class="icon">←</span> Atrás
+  </button>
+
+  <h1 class="titulo-pagina">Opciones de pago</h1>
+
+  <!-- Alerta de Advertencia -->
+  <div class="alerta-warning">
+    <span class="icon-warning">⚠</span>
+    <p>El colegio <strong>no puede realizar cambios en los pagos ya efectuados.</strong> Por favor, comprueba cuidadosamente la información y el importe antes de realizar cada transacción.</p>
+  </div>
+
+  <!-- Sección Bancos Autorizados -->
+  <section class="metodo-pago">
+    <h3>Pago en bancos autorizados</h3>
+    <p class="subtexto">Interbank, Scotiabank, BBVA y BCP.</p>
+    <div class="logos-bancos">
+      <div class="logo-box interbank"></div>
+      <div class="logo-box scotiabank"></div>
+      <div class="logo-box bbva"></div>
+      <div class="logo-box bcp"></div>
+    </div>
+
+    <!-- Acordeón 1 -->
+    <div class="acordeon-item" [class.activo]="seccionAbierta === 'apps'">
+      <div class="acordeon-header" (click)="toggleSeccion('apps')">
+        <span class="icono-metodo"> Apps y banca por internet</span>
+        <span class="flecha">{{ seccionAbierta === 'apps' ? '▼' : '▲' }}</span>
+      </div>
+      <div class="acordeon-body" *ngIf="seccionAbierta === 'apps'">
+        <ul>
+          <li>Descuento pronto pago solo en cuotas.</li>
+          <li>Paga con tarjeta de crédito del mismo banco.</li>
+          <li>Paga sin comisiones.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Acordeón 2 -->
+    <div class="acordeon-item" [class.activo]="seccionAbierta === 'presencial'">
+      <div class="acordeon-header" (click)="toggleSeccion('presencial')">
+        <span class="icono-metodo"> Presencial: Agentes o ventanillas</span>
+        <span class="flecha">{{ seccionAbierta === 'presencial' ? '▼' : '▲' }}</span>
+      </div>
+      <div class="acordeon-body" *ngIf="seccionAbierta === 'presencial'">
+        <ul>
+          <li>Ventanillas: Puede estar sujeto a comisión financiera por parte del banco.</li>
+          <li>Agentes: Paga sin comisiones en bodegas, tiendas y establecimientos autorizados.</li>
+          <li>Además de tu número de DNI o pasaporte, te pueden solicitar el código de pago.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pago en Línea -->
+  <section class="metodo-pago">
+    <h3>Pago en línea</h3>
+    <p class="subtexto">Paga con cualquier tarjeta de crédito de otras entidades financieras.</p>
+    
+    <div class="card-pago-linea">
+      <div class="card-header">
+        <span class="icono-metodo">Con otras tarjetas de crédito</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Sin comisiones.</li>
+          <li>Solo tarjetas de crédito.</li>
+          <li>No aplica descuentos.</li>
+          <li>No incluye tarjetas de BBVA, Interbank, BCP, Scotiabank.</li>
+        </ul>
+        <button class="btn-pagar-linea" (click)="irAPagarEnLinea()">Pagar en línea</button>
+      </div>
+    </div>
+  </section>
+</div>

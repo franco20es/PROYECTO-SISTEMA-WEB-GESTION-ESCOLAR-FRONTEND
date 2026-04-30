@@ -1,0 +1,67 @@
+<!-- Modal de Asistencia -->
+<div class="modal-overlay" *ngIf="mostrarAsistencia" (click)="cerrarAsistencia()">
+  <div class="modal-content-asistencia" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="cerrarAsistencia()">✕</button>
+    
+    <div class="asistencia-modal-header">
+      <h2>Detalle de asistencia</h2>
+      <p class="asistencia-curso">
+        <span *ngIf="cursoSeleccionadoAsistencia?.curso">Curso: {{cursoSeleccionadoAsistencia?.curso}} ({{cursoSeleccionadoAsistencia?.codigo}})</span>
+        <span *ngIf="cursoSeleccionadoAsistencia?.nombre && !cursoSeleccionadoAsistencia?.curso">Curso: {{cursoSeleccionadoAsistencia?.nombre}}</span>
+      </p>
+    </div>
+
+    <!-- Leyenda -->
+    <div class="leyenda">
+      <h4>Leyenda:</h4>
+      <div class="leyenda-items">
+        <div class="leyenda-item">
+          <span class="icon asistio">✓</span>
+          <span>Asistió: 
+            <span *ngIf="cursoSeleccionadoAsistencia?.asistencia?.asistio !== undefined">{{cursoSeleccionadoAsistencia?.asistencia?.asistio}}</span>
+            <span *ngIf="cursoSeleccionadoAsistencia?.asistio !== undefined && cursoSeleccionadoAsistencia?.asistencia?.asistio === undefined">{{cursoSeleccionadoAsistencia?.asistio}}</span>
+          </span>
+        </div>
+        <div class="leyenda-item">
+          <span class="icon noAsistio">✕</span>
+          <span>No asistió: 
+            <span *ngIf="cursoSeleccionadoAsistencia?.asistencia?.noAsistio !== undefined">{{cursoSeleccionadoAsistencia?.asistencia?.noAsistio}}</span>
+            <span *ngIf="cursoSeleccionadoAsistencia?.noAsistio !== undefined && cursoSeleccionadoAsistencia?.asistencia?.noAsistio === undefined">{{cursoSeleccionadoAsistencia?.noAsistio}}</span>
+          </span>
+        </div>
+        <div class="leyenda-item">
+          <span class="icon pendiente">⏱</span>
+          <span>Pendiente: 
+            <span *ngIf="cursoSeleccionadoAsistencia?.asistencia?.pendiente !== undefined">{{cursoSeleccionadoAsistencia?.asistencia?.pendiente}}</span>
+            <span *ngIf="cursoSeleccionadoAsistencia?.pendiente !== undefined && cursoSeleccionadoAsistencia?.asistencia?.pendiente === undefined">{{cursoSeleccionadoAsistencia?.pendiente}}</span>
+          </span>
+        </div>
+        <div class="leyenda-item">
+          <span class="icon sinRegistro">○</span>
+          <span>Sin registro: 
+            <span *ngIf="cursoSeleccionadoAsistencia?.asistencia?.sinRegistro !== undefined">{{cursoSeleccionadoAsistencia?.asistencia?.sinRegistro}}</span>
+            <span *ngIf="cursoSeleccionadoAsistencia?.sinRegistro !== undefined && cursoSeleccionadoAsistencia?.asistencia?.sinRegistro === undefined">{{cursoSeleccionadoAsistencia?.sinRegistro}}</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendario -->
+    <div class="calendario-container">
+      <div *ngFor="let mes of (cursoSeleccionadoAsistencia?.asistencia?.calendario || cursoSeleccionadoAsistencia?.calendario)" class="mes">
+        <h3>{{mes.mes}}</h3>
+        <div class="dias-row">
+          <div *ngFor="let dia of mes.dias" class="dia" [ngClass]="'estado-' + dia.estado">
+            <span class="dia-label">{{dia.fecha}}</span>
+            <span class="dia-icon" [ngClass]="'icon-' + dia.estado">
+              <span *ngIf="dia.estado === 'asistio'">✓</span>
+              <span *ngIf="dia.estado === 'noAsistio'">✕</span>
+              <span *ngIf="dia.estado === 'pendiente'">⏱</span>
+              <span *ngIf="dia.estado === 'sinRegistro'">○</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

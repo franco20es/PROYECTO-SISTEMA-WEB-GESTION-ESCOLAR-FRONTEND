@@ -1,0 +1,163 @@
+<div class="notas-container">
+  <!-- Header -->
+  <div class="notas-header">
+    <h1>Mis Notas</h1>
+  </div>
+
+  <!-- Resumen General -->
+  <div class="resumen-general">
+    <h3>Resumen general</h3>
+    <div class="resumen-grid">
+      <div class="resumen-item">
+        <span class="resumen-label">Campus</span>
+        <span class="resumen-value">Ica</span>
+      </div>
+      <div class="resumen-item">
+        <span class="resumen-label">Cantidad de créditos</span>
+        <span class="resumen-value">22</span>
+      </div>
+      <div class="resumen-item">
+        <span class="resumen-label">Cursos matriculados</span>
+        <span class="resumen-value">{{notas.length}}</span>
+      </div>
+      <div class="resumen-item">
+        <span class="resumen-label">Mérito - Orden</span>
+        <span class="resumen-value">-</span>
+      </div>
+      <div class="resumen-item">
+        <span class="resumen-label">Promedio</span>
+        <span class="resumen-value">{{promedio | number:'1.1-1'}}</span>
+      </div>
+      <div class="resumen-item">
+        <span class="resumen-label">Horas semanales</span>
+        <span class="resumen-value">26</span>
+      </div>
+      <div class="resumen-item">
+        <span class="resumen-label">Ciclo relativo</span>
+        <span class="resumen-value">07</span>
+      </div>
+      <div class="resumen-item">
+        <span class="resumen-label">Mérito - Pertenece</span>
+        <span class="resumen-value">-</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cursos Accordion -->
+  <div class="cursos-accordion">
+    <div *ngFor="let nota of notas; let i = index" class="accordion-item">
+      <div class="accordion-header" (click)="toggleAccordion(i)" [ngClass]="{'active': expandedIndex === i}">
+        <div class="accordion-left">
+          <span class="accordion-title">{{nota.curso}} ({{nota.codigo}})</span>
+          <span class="accordion-status">En curso</span>
+        </div>
+        <div class="accordion-icon">
+          <svg [class.rotated]="expandedIndex === i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M7 10l5 5 5-5z"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Contenido expandible -->
+      <div class="accordion-content" [class.expanded]="expandedIndex === i">
+        <div class="accordion-body">
+          <!-- Docente e Información Básica -->
+          <div class="content-section">
+            <div class="info-row">
+              <div class="info-col">
+                <span class="info-label">Docente:</span>
+                <span class="info-value">{{nota.docente}}</span>
+              </div>
+              <div class="info-col">
+                <span class="info-label">Horario:</span>
+                <span class="info-value">{{nota.horario}}</span>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-col">
+                <span class="info-label">Modalidad de curso:</span>
+                <span class="info-value">{{nota.modalidad}}</span>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- Estadísticas -->
+          <div class="stats-section">
+            <div class="stats-row">
+              <div class="stat-item">
+                <span class="stat-label">Horas semanales:</span>
+                <span class="stat-value">{{nota.horasSemanales}}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Créditos:</span>
+                <span class="stat-value">{{nota.creditos}}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Nro vez:</span>
+                <span class="stat-value">{{nota.nroVez}}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Sección:</span>
+                <span class="stat-value">{{nota.seccion}}</span>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- Evaluaciones -->
+          <div class="evaluaciones-section">
+            <h4>Evaluaciones:</h4>
+            <ul class="evaluaciones-list">
+              <li>
+                <span class="eval-name">{{nota.eval1Name}} ({{nota.eval1Code}})</span>
+                <span class="eval-value">{{nota.eval1Value}}</span>
+              </li>
+              <li>
+                <span class="eval-name">{{nota.eval2Name}} ({{nota.eval2Code}})</span>
+                <span class="eval-value">{{nota.eval2Value}}</span>
+              </li>
+              <li>
+                <span class="eval-name">{{nota.eval3Name}} ({{nota.eval3Code}})</span>
+                <span class="eval-value">{{nota.eval3Value}}</span>
+              </li>
+              <li>
+                <span class="eval-name">{{nota.eval4Name}} ({{nota.eval4Code}})</span>
+                <span class="eval-value">{{nota.eval4Value}}</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Fórmula -->
+          <div class="formula-section">
+            <span class="formula-label">Fórmula:</span>
+            <span class="formula-value">{{nota.formula}}</span>
+          </div>
+
+          <!-- Promedio -->
+          <div class="promedio-section" [ngClass]="{'promedio-success': nota.promedio >= 11, 'promedio-warning': nota.promedio < 11}">
+            <span>Promedio:</span>
+            <span class="promedio-value">{{nota.promedio | number:'1.1-1'}}</span>
+            <span class="promedio-status">En curso</span>
+          </div>
+
+          <!-- Asistencia -->
+          <div class="asistencia-section">
+            <h4>Registro de asistencia</h4>
+            <p class="asistencia-text">Conoce el detalle de tu asistencia al curso.</p>
+            <button class="btn-asistencia" (click)="verAsistencia(nota)">Ver asistencia</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Asistencia Reutilizable -->
+<app-modal-asistencia 
+  [mostrarAsistencia]="mostrarAsistencia"
+  [cursoSeleccionadoAsistencia]="cursoSeleccionadoAsistencia"
+  (cerrarModal)="cerrarAsistencia()">
+</app-modal-asistencia>

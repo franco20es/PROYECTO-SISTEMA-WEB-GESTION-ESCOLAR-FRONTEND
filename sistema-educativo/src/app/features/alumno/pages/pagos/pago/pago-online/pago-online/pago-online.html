@@ -1,0 +1,139 @@
+<div class="pago-container">
+  <button class="btn-atras" (click)="regresar()">← Atrás</button>
+  <h1 class="titulo-seccion">Pago en línea</h1>
+
+  <!-- Alerta Informativa -->
+  <div class="alerta-info">
+    <span class="icon">ⓘ</span>
+    <div class="alerta-contenido">
+      <p>Toma en cuenta lo siguiente:</p>
+      <ul>
+        <li>Sin comisiones.</li>
+        <li>Solo tarjetas de crédito.</li>
+        <li>No aplica descuentos.</li>
+        <li>No permite pagos con tarjetas de BBVA, BCP, Interbank y Scotiabank.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="subtitulo">Selecciona el monto a pagar</h3>
+  <p class="instruccion">Empieza por el más antiguo según la fecha de vencimiento.</p>
+  
+  <div class="ciclo-label">2026 - Ciclo 1 Marzo</div>
+
+  <!-- Lista de Cuotas -->
+  <div class="tabla-cuotas">
+    <div class="cuota-item" *ngFor="let cuota of cuotas" [class.seleccionada]="cuota.seleccionada">
+      <div class="cuota-info">
+        <input type="checkbox" [(ngModel)]="cuota.seleccionada" [id]="'c' + cuota.id">
+        <div class="detalles-texto">
+          <label [for]="'c' + cuota.id" class="nombre-cuota">{{ cuota.nombre }}</label>
+          <span class="vencimiento">Vencimiento: {{ cuota.vencimiento }}</span>
+        </div>
+      </div>
+      <div class="cuota-monto-estado">
+        <span class="monto-rojo">{{ formatearMoneda(cuota.monto) }}</span>
+        <span class="badge-vencido" *ngIf="cuota.estado === 'Vencido'">Vencido</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer de Pago -->
+  <div class="footer-pago">
+    <div class="total-row">
+      <span>Total a pagar:</span>
+      <span class="monto-total">{{ formatearMoneda(totalPagar) }}</span>
+    </div>
+    <button class="btn-confirmar" [disabled]="totalPagar === 0" (click)="abrirPasarela()">
+      Confirmar {{ formatearMoneda(totalPagar) }}
+    </button>
+  </div>
+</div>
+
+<!-- Modal Pasarela (Izipay Style) -->
+<div class="modal-overlay" *ngIf="mostrarModal">
+  <div class="modal-pasarela">
+    <button class="btn-cerrar-modal" (click)="cerrarPasarela()">x</button>
+    <button class="btn-cerrar-modal" (click)="cancelarPago()">×</button>
+    
+    <div class="modal-header">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Utplogonuevo.svg/960px-Utplogonuevo.svg.png" alt="UTP" class="logo-modal">
+      <div class="pedido-info">
+        <span>Número de pedido</span>
+        <strong>a2V0820260430</strong>
+      </div>
+    </div>
+    <hr class="linea-divisora">
+    
+    <p class="recuerda-txt">Recuerda activar tus compras por internet</p>
+
+    <form class="form-pasarela">
+      <div class="input-group full">
+        <input type="text" placeholder="Número de tarjeta">
+        <div class="card-icons"></div>
+      </div>
+      
+      <div class="row">
+        <input type="text" placeholder="Caducidad" class="half">
+        <input type="text" placeholder="CVV" class="half">
+      </div>
+
+      <div class="row">
+        <input type="text" placeholder="Nombres" class="half">
+        <input type="text" placeholder="Apellidos" class="half">
+      </div>
+
+      <input type="email" placeholder="Correo electrónico" class="full">
+
+      <div class="row">
+        <select class="half">
+          <option>DNI</option>
+          <option>Pasaporte</option>
+          <option>Ruc</option>
+        </select>
+        <div class="input-error-wrapper half">
+          <input type="text" placeholder="Número de documento" class="error-input">
+          <span class="error-msg">Ingrese un número de documento.</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn-pagar-final">
+        Pagar {{ formatearMoneda(totalPagar) }}
+      </button>
+    </form>
+    
+    <div class="footer-izipay">
+      POWERED BY <strong>izipay</strong>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal de Pago no Completado -->
+<div class="modal-overlay" *ngIf="mostrarModalError">
+  <div class="modal-error">
+    <!-- Botón cerrar (X) -->
+    <button class="btn-cerrar-x" (click)="cerrarModalError()">×</button>
+
+    <div class="modal-cuerpo">
+      <!-- Icono de Advertencia -->
+      <div class="icono-alerta-contenedor">
+        <div class="ventana-mockup">
+          <div class="barra-superior">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="triangulo-alerta">!</div>
+        </div>
+      </div>
+
+      <h2 class="titulo-error">Pago no completado</h2>
+      <p class="mensaje-error">
+        El formulario de compra fue cerrado. La transacción ha sido cancelada.
+      </p>
+
+      <button class="btn-reintentar" (click)="reintentarPago()">
+        Volver a Intentar
+      </button>
+    </div>
+  </div>
+</div>

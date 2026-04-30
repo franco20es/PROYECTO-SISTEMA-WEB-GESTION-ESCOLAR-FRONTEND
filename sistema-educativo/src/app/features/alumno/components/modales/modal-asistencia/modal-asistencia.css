@@ -1,0 +1,232 @@
+:host {
+  --primary: #007AFF;
+  --fondo: #F2F2F7;
+  --texto: #000000;
+  --border: #E5E5EA;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content-asistencia {
+  background: white;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 32px;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #999;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  color: var(--texto);
+  background: var(--fondo);
+  border-radius: 50%;
+}
+
+.asistencia-modal-header {
+  margin-bottom: 24px;
+}
+
+.asistencia-modal-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--texto);
+  margin: 0 0 8px 0;
+}
+
+.asistencia-curso {
+  font-size: 13px;
+  color: var(--primary);
+  margin: 0;
+}
+
+/* Leyenda */
+.leyenda {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: var(--fondo);
+  border-radius: 8px;
+}
+
+.leyenda h4 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: var(--texto);
+}
+
+.leyenda-items {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.leyenda-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.leyenda-item .icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.leyenda-item .icon.asistio {
+  background: #10b981;
+  color: white;
+}
+
+.leyenda-item .icon.noAsistio {
+  background: #ef4444;
+  color: white;
+}
+
+.leyenda-item .icon.pendiente {
+  background: #6366f1;
+  color: white;
+}
+
+.leyenda-item .icon.sinRegistro {
+  background: #e5e7eb;
+  color: #666;
+}
+
+/* Calendario */
+.calendario-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mes {
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.mes:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.mes h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--texto);
+  margin: 0 0 12px 0;
+}
+
+.dias-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid var(--border);
+  flex: 0 0 calc(25% - 9px);
+  transition: all 0.2s ease;
+}
+
+.dia:hover {
+  transform: translateY(-2px);
+}
+
+.dia-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--texto);
+}
+
+.dia-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: white;
+}
+
+.dia.estado-asistio .dia-icon {
+  background: #10b981;
+}
+
+.dia.estado-noAsistio .dia-icon {
+  background: #ef4444;
+}
+
+.dia.estado-pendiente .dia-icon {
+  background: #6366f1;
+}
+
+.dia.estado-sinRegistro .dia-icon {
+  background: #e5e7eb;
+  color: #666;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .modal-content-asistencia {
+    max-width: 95vw;
+    padding: 20px;
+    max-height: 90vh;
+  }
+
+  .leyenda-items {
+    grid-template-columns: 1fr;
+  }
+
+  .dia {
+    flex: 0 0 calc(33.333% - 8px);
+  }
+}

@@ -1,1 +1,78 @@
-<h1>componente de cursos</h1>
+<div class="cursos-container">
+  <!-- Header -->
+  <div class="cursos-header">
+    <h1>Mis Cursos</h1>
+    <p>{{cursos.length}} cursos matriculados</p>
+  </div>
+
+  <!-- Grid de Cursos -->
+  <div class="cursos-grid">
+    <div *ngFor="let curso of cursos" class="curso-card" (click)="verDetalle(curso)">
+      <!-- Imagen y Badge -->
+      <div class="curso-card-image">
+        <img src="https://mitocode.com/wp-content/uploads/2023/12/564x270_DO_SO-540x270.png" alt="{{curso.nombre}}">
+        <div class="curso-badge">
+          {{(curso.nota / 20 * 100) | number:'1.0-0'}}%
+        </div>
+      </div>
+
+      <!-- Encabezado -->
+      <div class="curso-card-header">
+        <div class="curso-abrev">{{curso.abrev}}</div>
+        <div class="curso-nota" [ngClass]="{'nota-buena': curso.nota >= 14, 'nota-media': curso.nota < 14}">{{curso.nota | number:'1.1-1'}}</div>
+      </div>
+
+      <!-- Cuerpo -->
+      <div class="curso-card-body">
+        <h3 class="curso-nombre">{{curso.nombre}}</h3>
+        <p class="curso-profesor">{{curso.profesor}}</p>
+        <p class="curso-codigo">{{curso.codigo}}</p>
+
+        <!-- Stats -->
+        <div class="curso-stats">
+          <div class="stat">
+            <span class="stat-label">Asistencia</span>
+            <span class="stat-value">{{curso.asistencia}}%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Avance</span>
+            <span class="stat-value">{{curso.progreso}}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Detalle -->
+  <div *ngIf="cursoSeleccionado" class="modal-overlay" (click)="cerrarDetalle()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{cursoSeleccionado.nombre}}</h2>
+        <button class="modal-close" (click)="cerrarDetalle()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="detail-row">
+          <div class="detail-item">
+            <label>Profesor</label>
+            <p>{{cursoSeleccionado.profesor}}</p>
+          </div>
+          <div class="detail-item">
+            <label>Horario</label>
+            <p>{{cursoSeleccionado.horario}}</p>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-item">
+            <label>Nota</label>
+            <p class="detail-nota">{{cursoSeleccionado.nota | number:'1.1-1'}}</p>
+          </div>
+          <div class="detail-item">
+            <label>Asistencia</label>
+            <p class="detail-asistencia">{{cursoSeleccionado.asistencia}}%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

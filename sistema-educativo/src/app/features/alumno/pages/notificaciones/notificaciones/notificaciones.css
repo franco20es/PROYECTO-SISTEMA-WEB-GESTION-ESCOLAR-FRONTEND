@@ -1,0 +1,64 @@
+:host {
+  --primary: #007AFF;
+  --fondo: #F2F2F7;
+  --texto: #000000;
+}
+
+.notificaciones-container {
+  padding: 24px;
+ 
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notificacion {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  /* Sombra más sutil y profunda */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.notificacion:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.notificacion .icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+/* Optimización: Agrupamos todos los botones en una sola regla */
+.btn-ver-horario, 
+.btn-ver-notas, 
+.btn-ver-tarea {
+  margin-left: auto; /* Empuja el botón a la derecha */
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.1s ease;
+}
+
+/* Estados de interacción sin añadir colores nuevos */
+.btn-ver-horario:hover, 
+.btn-ver-notas:hover, 
+.btn-ver-tarea:hover {
+  filter: brightness(0.9); /* Oscurece un poco el azul original */
+}
+
+.btn-ver-horario:active, 
+.btn-ver-notas:active, 
+.btn-ver-tarea:active {
+  transform: scale(0.95); /* Efecto de pulsación */
+}

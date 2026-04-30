@@ -1,0 +1,165 @@
+:host {
+    --color-brand: #6366F1;
+    --color-warning: #fc8619e7;
+    --color-warning-bg: #FEF3C7;
+    --color-text: #1F2937;
+    --color-text-light: #6B7280;
+    --color-bg: #F9FAFB;
+    --border-color: #E5E7EB;
+}
+
+.opciones-container {
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    font-family: 'Inter', sans-serif;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+}
+
+/* Botón Atrás */
+.btn-atras {
+    background: none;
+    border: none;
+    color: #EF4444;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.titulo-pagina {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+}
+
+/* Alerta */
+.alerta-warning {
+    background-color: #ff4d4d;
+    padding: 1rem 1.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-radius: 7px;
+}
+
+.alerta-warning p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Secciones */
+.metodo-pago h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.subtexto {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    margin-bottom: 1rem;
+}
+
+/* Logos Bancos ficticios */
+.logos-bancos {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.logo-box {
+    width: 40px;
+    height: 25px;
+    border: 1px solid var(--border-color);
+}
+
+.interbank {
+    background-color: #00A859;
+}
+
+.scotiabank {
+    background-color: #ED1C24;
+}
+
+.bbva {
+    background-color: #004481;
+}
+
+.bcp {
+    background-color: #FF8200;
+}
+
+/* Acordeón y Cards con Bordes Rectos */
+.acordeon-item,
+.card-pago-linea {
+    background: white;
+    border-radius: 7px;
+    margin-bottom: 1rem;
+}
+
+.acordeon-header,
+.card-header {
+    padding: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.acordeon-body,
+.card-body {
+    padding: 0 1.25rem 1.25rem 1.25rem;
+    border-top: 1px solid transparent;
+}
+
+ul {
+    padding-left: 1.5rem;
+    margin: 0;
+}
+
+ul li {
+    font-size: 0.85rem;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+}
+
+/* Botón Pagar en Línea */
+.btn-pagar-linea {
+    margin-top: 1.5rem;
+    padding: 0.75rem 2rem;
+    background: white;
+    border: 1px solid var(--color-brand);
+    color: var(--color-brand);
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 0;
+    /* Recto */
+    transition: all 0.2s;
+}
+
+.btn-pagar-linea:hover {
+    background: var(--color-brand);
+    color: white;
+}
+
+/* Estilo para sección activa */
+.activo {
+    border-color: var(--color-brand);
+}
+
+.flecha {
+    color: var(--color-brand);
+    font-size: 0.8rem;
+}
+@media(max-width:600px){
+    .btn-pagar-linea{
+        width: 100%;
+        margin-top: 1rem;
+    }
+}

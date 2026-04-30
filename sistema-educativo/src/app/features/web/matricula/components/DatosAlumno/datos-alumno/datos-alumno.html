@@ -1,0 +1,10 @@
+<app-spiner [isLoading]="cargandoDatos"></app-spiner>
+
+
+<div *ngIf="!cargandoDatos">
+  <div class="datos">
+    <h2>Datos del Alumno</h2>
+    <p><strong>Alumno:</strong> {{ alumno.codigo }} - {{ alumno.nombre }}</p>
+    <p><strong>Periodo:</strong> {{ alumno.periodo }}</p>
+  </div>
+</div>

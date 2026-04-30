@@ -1,0 +1,271 @@
+:host {
+  --primary: #007AFF;
+  --fondo: #F2F2F7;
+  --texto: #000000;
+}
+
+.cursos-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.cursos-header {
+  margin-bottom: 32px;
+}
+
+.cursos-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--texto);
+  margin: 0 0 4px 0;
+}
+
+.cursos-header p {
+  font-size: 14px;
+  color: #999;
+  margin: 0;
+}
+
+.cursos-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+/* Tablet - 2 columnas */
+@media (max-width: 1024px) {
+  .cursos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Móvil - 1 columna */
+@media (max-width: 768px) {
+  .cursos-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.curso-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid var(--fondo);
+}
+
+.curso-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.curso-card-image {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+}
+
+.curso-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.curso-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--primary);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.curso-card-header {
+  background: var(--primary);
+  color: white;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.curso-abrev {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.curso-nota {
+  background: rgba(255, 255, 255, 0.25);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.curso-nota.nota-buena {
+  background: rgba(34, 197, 94, 0.3);
+  color: #166534;
+}
+
+.curso-nota.nota-media {
+  background: rgba(244, 114, 44, 0.3);
+  color: #ea580c;
+}
+
+.curso-card-body {
+  padding: 16px 20px 20px;
+}
+
+.curso-nombre {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--texto);
+  margin: 0 0 6px 0;
+}
+
+.curso-profesor {
+  font-size: 13px;
+  color: #666;
+  margin: 0 0 2px 0;
+}
+
+.curso-codigo {
+  font-size: 12px;
+  color: #999;
+  margin: 0 0 12px 0;
+}
+
+.curso-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.stat {
+  background: var(--fondo);
+  padding: 10px 12px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #999;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid var(--fondo);
+}
+
+.modal-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--texto);
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #999;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.detail-item {
+  background: var(--fondo);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.detail-item label {
+  display: block;
+  font-size: 11px;
+  color: #999;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.detail-item p {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--texto);
+  margin: 0;
+}
+
+.detail-nota,
+.detail-asistencia {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: var(--primary) !important;
+}
+
+@media (max-width: 640px) {
+  .cursos-container {
+    padding: 16px;
+  }
+
+  .cursos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-row {
+    grid-template-columns: 1fr;
+  }
+}

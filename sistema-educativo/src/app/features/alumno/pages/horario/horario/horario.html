@@ -1,0 +1,61 @@
+
+<app-spiner [isLoading]="cargandoDatos"></app-spiner>
+
+<div class="horario-container">
+
+  <!-- ENCABEZADO -->
+  <div class="header">
+    <h2>Horario de Clases</h2>
+    <div class="info-alumno">
+      <p><strong>Alumno:</strong> U13206542 - JAN MARCO LOPEZ</p>
+      <p><strong>Periodo:</strong> 2024-2</p>
+    </div>
+  </div>
+
+  <!-- TABLA -->
+  <table class="horario-table">
+    <thead>
+      <tr>
+     
+        <th>Curso</th>
+        <th>Docente</th>
+        <th>Sección - Horario</th>
+        <th>Veces Desaprobadas</th>
+        <th>Horas Semanales</th>
+        <th>Créditos</th>
+        <th>Grado</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let h of horario">
+      
+        <td>{{ h.curso }}</td>
+        <td>{{ h.docente }}</td>
+        <td>{{ h.seccion }} - {{ h.HorasSemanales }}</td>
+        <td>{{ h.vecesDesaprobado }}</td>
+        <td>{{ h.HorasSemanales }}</td>
+        <td>{{ h.Creditos }}</td>
+        <td>{{ h.Grado }}</td>
+      </tr>
+    </tbody>
+
+    <!-- TOTALES -->
+    <tfoot>
+      <tr>
+        <td colspan="4"><strong>Totales</strong></td>
+        <td></td>
+        <td>{{ totalHoras }}</td>
+        <td>{{ totalCreditos }}</td>
+        <td>{{ horario.length }} cursos</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <!-- ACCIONES -->
+  <div class="horario-actions">
+    <button class="btn-pdf" (click)="descargarPDF()">Descargar PDF</button>
+    <button class="btn-print" onclick="window.print()">Imprimir</button>
+  </div>
+
+</div>

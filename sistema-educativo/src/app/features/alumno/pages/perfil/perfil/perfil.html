@@ -1,0 +1,78 @@
+<div class="perfil-container">
+  <!-- Header -->
+  <div class="perfil-header">
+    <h1>Mi Perfil</h1>
+    <p>Información personal del estudiante</p>
+  </div>
+
+  <!-- Card Principal -->
+  <div class="perfil-card">
+    <!-- Avatar y Nombre -->
+    <div class="perfil-avatar-section">
+      <div class="perfil-avatar">{{alumno.iniciales}}</div>
+      <div class="perfil-nombre-info">
+        <h2 class="perfil-nombre">{{alumno.nombre}}</h2>
+        <p class="perfil-grado">{{alumno.grado}}</p>
+      </div>
+    </div>
+
+    <!-- Botón Editar -->
+    <div style="margin-bottom: 24px;">
+      <button *ngIf="!editando" (click)="editando = true" class="btn-editar">Editar Información</button>
+      <div *ngIf="editando" class="btn-group-acciones">
+        <button (click)="cancelar()" class="btn-cancelar">Cancelar</button>
+        <button (click)="guardar()" class="btn-guardar">Guardar Cambios</button>
+      </div>
+    </div>
+
+    <!-- Datos No Editables -->
+    <div class="perfil-seccion">
+      <h3 class="perfil-seccion-titulo">Información de Matrícula</h3>
+      <div class="perfil-fila">
+        <div class="perfil-campo-readonly">
+          <label>Código de Estudiante</label>
+          <p>{{form.codigo}}</p>
+        </div>
+        <div class="perfil-campo-readonly">
+          <label>Documento de Identidad</label>
+          <p>{{form.dni}}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Datos Editables -->
+    <div class="perfil-seccion">
+      <h3 class="perfil-seccion-titulo">Datos de Contacto</h3>
+      <div class="perfil-campo">
+        <label>Correo Electrónico</label>
+        <input *ngIf="editando" type="email" [(ngModel)]="form.correo" class="perfil-input" />
+        <p *ngIf="!editando">{{form.correo}}</p>
+      </div>
+
+      <div class="perfil-campo">
+        <label>Teléfono</label>
+        <input *ngIf="editando" type="tel" [(ngModel)]="form.telefono" class="perfil-input" />
+        <p *ngIf="!editando">{{form.telefono}}</p>
+      </div>
+    </div>
+
+    <!-- Datos del Apoderado -->
+    <div class="perfil-seccion">
+      <h3 class="perfil-seccion-titulo">Apoderado</h3>
+      <div class="perfil-campo">
+        <label>Nombre del Apoderado</label>
+        <input *ngIf="editando" type="text" [(ngModel)]="form.apoderado" class="perfil-input" />
+        <p *ngIf="!editando">{{form.apoderado}}</p>
+      </div>
+
+      <div class="perfil-campo">
+        <label>Teléfono del Apoderado</label>
+        <input *ngIf="editando" type="tel" [(ngModel)]="form.telefonoApoderado" class="perfil-input" />
+        <p *ngIf="!editando">{{form.telefonoApoderado}}</p>
+      </div>
+    </div>
+
+    <!-- Mensaje de Guardado -->
+    <div *ngIf="guardado" class="perfil-success">✓ Cambios guardados exitosamente</div>
+  </div>
+</div>

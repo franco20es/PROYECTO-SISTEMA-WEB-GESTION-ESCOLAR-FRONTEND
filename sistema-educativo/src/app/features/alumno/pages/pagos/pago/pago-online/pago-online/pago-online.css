@@ -1,0 +1,344 @@
+:host {
+    --primary: #ff4d4d;
+    --fondo: white;
+    --texto: #080808;
+    --CuotaVencida: #d63031;
+    --azul:#003A8F;
+}
+
+.pago-container {
+    padding: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+}
+
+.titulo-seccion {
+    margin: 10px 0 20px 0;
+}
+
+.btn-atras {
+    color: #ff4d4d;
+    background: none;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+.alerta-info {
+
+    background: var(--primary);
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-radius: 7px;
+}
+
+.alerta-info ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    font-size: 0.85rem;
+}
+
+.ciclo-label {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    color: #666;
+}
+
+/* Tabla de Cuotas */
+.cuota-item {
+    display: flex;
+    background-color: white;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    transition: background 0.2s;
+    border-radius: 7px;
+}
+
+.cuota-item.seleccionada {
+    background-color: var(--fondo);
+
+}
+
+.cuota-info {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.detalles-texto {
+    display: flex;
+    flex-direction: column;
+}
+
+.nombre-cuota {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.vencimiento {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/*linea divisora*/
+.linea-divisora {
+    height: 1px;
+    background: #919090;
+    margin: 1rem 0;
+}
+
+.monto-rojo {
+    color: var(--CuotaVencida);
+    font-weight: bold;
+}
+
+.badge-vencido {
+    background: var(--CuotaVencida);
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    margin-left: 10px;
+}
+
+/* Modal Estilo Izipay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 15px;
+}
+
+/* texto recuerda */
+.recuerda-txt {
+    text-align: center;
+    font-size: 0.7rem;
+    margin: 0 0 20px 0;
+}
+
+.modal-pasarela {
+    background: white;
+    width: 450px;
+    padding: 2rem;
+    position: relative;
+    border-radius: 8px;
+    /* Izipay usa un poco de redondeo, pero puedes poner 0 si prefieres */
+}
+
+.btn-cerrar-modal {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    height: 25px;
+    width: 30px;
+    border: 1px solid #ccc;
+   background-color: white;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+.logo-modal {
+    height: 30px;
+}
+
+.form-pasarela input,
+.form-pasarela select {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #6366f1;
+    border-radius: 4px;
+}
+
+.row {
+    display: flex;
+
+    gap: 10px;
+}
+
+.half{
+
+    flex: 1;
+
+}
+
+.btn-pagar-final {
+    width: 100%;
+    background: #6366f1;
+    color: white;
+    padding: 1rem;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.error-input {
+    border-color: #ff4d4d !important;
+}
+
+.error-msg {
+    color: #ff4d4d;
+    font-size: 0.75rem;
+    display: block;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+.footer-pago {
+    margin-top: 2rem;
+    text-align: right;
+}
+
+.btn-confirmar {
+    background: #6366f1;
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    cursor: pointer;
+}
+
+.btn-confirmar:disabled {
+    background: #e0e0e0;
+    cursor: not-allowed;
+}
+.footer-izipay{
+    font-size: 0.8rem;
+    color :#888;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+/*modal de pago no completado*/
+/* Overlay para oscurecer el fondo */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.btn-cerrar-x:hover{
+    color:var(--azul);
+}
+.modal-error {
+  background: white;
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  text-align: center;
+  border-radius: 8px; /* O 0 si prefieres mantener todo 100% recto */
+}
+
+.btn-cerrar-x {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #ff4d4d;
+  cursor: pointer;
+}
+
+/* Ilustración del icono */
+.icono-alerta-contenedor {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.ventana-mockup {
+  width: 80px;
+  height: 80px;
+  background: #eef2ff;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #d1d5db;
+}
+
+.barra-superior {
+  height: 15px;
+  background: #a5b4fc;
+  display: flex;
+  gap: 4px;
+  padding-left: 8px;
+  align-items: center;
+}
+
+.barra-superior span {
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+}
+
+.triangulo-alerta {
+  color: #ef4444;
+  font-size: 3rem;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+/* Tipografía */
+.titulo-error {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.mensaje-error {
+  color: #4b5563;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+/* Botón Volver a Intentar */
+.btn-reintentar {
+  background-color: #583aff; /* El morado de la imagen */
+  color: white;
+  width: 100%;
+  padding: 0.85rem;
+  border: none;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.btn-reintentar:hover {
+  background-color: #4326d9;
+}

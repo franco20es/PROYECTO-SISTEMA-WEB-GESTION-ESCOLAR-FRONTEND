@@ -1,0 +1,70 @@
+<div class="pago-container">
+  <div class="pago-header">
+    <h2>HISTORIAL DE PAGOS</h2>
+    <p>Consulta tus transacciones y estados de cuenta pendientes.</p>
+  </div>
+
+  <hr class="separador">
+
+  <!--  PENDIENTES -->
+  <div class="pagos-estado" (click)="togglePendientes()">
+    <h2>Pendientes</h2>
+    <span class="flecha" [class.abierto]="mostrarPendientes">▼</span>
+  </div>
+
+  <hr class="separador">
+
+  <div class="pagos-list" *ngIf="mostrarPendientes">
+    <div class="pago-item"
+         *ngFor="let pago of pagosPendientes"
+         (click)="verDetalle(pago)">
+
+      <div class="pago-main-info">
+        <span class="pago-concepto">{{ pago.concepto }}</span>
+        <span class="pago-fecha">{{ pago.fecha }}</span>
+      </div>
+
+      <div class="pago-details">
+        <span class="pago-monto">S/ {{ pago.monto }}</span>
+        <span class="pago-estado"
+              [ngClass]="pago.estado.toLowerCase()">
+          {{ pago.estado }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="separador">
+
+  <!--  PAGADOS -->
+  <div class="pagos-estado" (click)="togglePagados()">
+    <h2>Pagados</h2>
+    <span class="flecha" [class.abierto]="mostrarPagados">▼</span>
+  </div>
+
+  <hr class="separador">
+
+  <div class="pagos-list" *ngIf="mostrarPagados">
+    <div class="pago-item"
+         *ngFor="let pago of pagosPagados"
+         (click)="verDetalle(pago)">
+
+      <div class="pago-main-info">
+        <span class="pago-concepto">{{ pago.concepto }}</span>
+        <span class="pago-fecha">{{ pago.fecha }}</span>
+      </div>
+
+      <div class="pago-details">
+        <span class="pago-monto">S/ {{ pago.monto }}</span>
+        <span class="pago-estado"
+              [ngClass]="pago.estado.toLowerCase()">
+          {{ pago.estado }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-pago" (click)="historialPagos()">
+    HISTORIAL DE PAGOS
+  </button>
+</div>
