@@ -1,1 +1,547 @@
-<h1>componente de alumnos</h1>
+<div class="page">
+
+  <!-- ══════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════ -->
+  <div class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">Gestión de Estudiantes</h1>
+      <p class="page-sub">
+        {{ todos.length }} estudiantes registrados ·
+        <span class="sub-activos">{{ kpiActivos }} activos</span>
+      </p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-export" title="Exportar Excel">
+        <span>⬇</span> Exportar
+      </button>
+      <button class="btn-primary" (click)="abrirNuevo()">
+        <span>＋</span> Nuevo estudiante
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       KPI STRIP
+  ══════════════════════════════════════ -->
+  <div class="kpi-strip">
+    <div class="kpi-item">
+      <div class="kpi-dot dot-activo"></div>
+      <div>
+        <p class="kpi-num">{{ kpiActivos }}</p>
+        <p class="kpi-lbl">Activos</p>
+      </div>
+    </div>
+    <div class="kpi-sep"></div>
+    <div class="kpi-item">
+      <div class="kpi-dot dot-inactivo"></div>
+      <div>
+        <p class="kpi-num">{{ kpiInactivos }}</p>
+        <p class="kpi-lbl">Inactivos</p>
+      </div>
+    </div>
+    <div class="kpi-sep"></div>
+    <div class="kpi-item">
+      <div class="kpi-dot dot-egresado"></div>
+      <div>
+        <p class="kpi-num">{{ kpiEgresados }}</p>
+        <p class="kpi-lbl">Egresados</p>
+      </div>
+    </div>
+    <div class="kpi-sep"></div>
+    <div class="kpi-item">
+      <div class="kpi-dot dot-suspendido"></div>
+      <div>
+        <p class="kpi-num">{{ kpiSuspendidos }}</p>
+        <p class="kpi-lbl">Suspendidos</p>
+      </div>
+    </div>
+    <div class="kpi-sep"></div>
+    <div class="kpi-item">
+      <div class="kpi-icon-wrap">📊</div>
+      <div>
+        <p class="kpi-num blue">{{ kpiPromGlobal }}</p>
+        <p class="kpi-lbl">Prom. global</p>
+      </div>
+    </div>
+    <div class="kpi-sep"></div>
+    <div class="kpi-item">
+      <div class="kpi-icon-wrap">🎓</div>
+      <div>
+        <p class="kpi-num blue">{{ todos.length }}</p>
+        <p class="kpi-lbl">Total registros</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PANEL DE FILTROS
+  ══════════════════════════════════════ -->
+  <div class="filtros-panel">
+
+    <!-- Fila 1: búsqueda general + código -->
+    <div class="filtros-row">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input
+          class="search-input"
+          [(ngModel)]="busqueda"
+          (ngModelChange)="onFiltroChange()"
+          placeholder="Buscar por nombre, apellido, email o DNI...">
+        <button class="clear-search" *ngIf="busqueda" (click)="busqueda='';onFiltroChange()">✕</button>
+      </div>
+
+      <div class="input-wrap">
+        <span class="input-label">Código</span>
+        <input
+          class="filter-input"
+          [(ngModel)]="filtroCodigo"
+          (ngModelChange)="onFiltroChange()"
+          placeholder="Ej: 22001">
+      </div>
+    </div>
+
+    <!-- Fila 2: selects -->
+    <div class="filtros-row filtros-selects">
+      <div class="select-group">
+        <label>Carrera</label>
+        <select [(ngModel)]="filtroCarrera" (ngModelChange)="onFiltroChange()">
+          <option value="">Todas las carreras</option>
+          <option *ngFor="let c of carreras" [value]="c">{{ c }}</option>
+        </select>
+      </div>
+      <div class="select-group">
+        <label>Ciclo</label>
+        <select [(ngModel)]="filtroCiclo" (ngModelChange)="onFiltroChange()">
+          <option value="">Todos los ciclos</option>
+          <option *ngFor="let c of ciclos" [value]="c">Ciclo {{ c }}</option>
+        </select>
+      </div>
+      <div class="select-group">
+        <label>Sección</label>
+        <select [(ngModel)]="filtroSeccion" (ngModelChange)="onFiltroChange()">
+          <option value="">Todas</option>
+          <option *ngFor="let s of secciones" [value]="s">Sección {{ s }}</option>
+        </select>
+      </div>
+      <div class="select-group">
+        <label>Turno</label>
+        <select [(ngModel)]="filtroTurno" (ngModelChange)="onFiltroChange()">
+          <option value="">Todos</option>
+          <option value="mañana">Mañana</option>
+          <option value="tarde">Tarde</option>
+          <option value="noche">Noche</option>
+        </select>
+      </div>
+      <div class="select-group">
+        <label>Estado</label>
+        <select [(ngModel)]="filtroEstado" (ngModelChange)="onFiltroChange()">
+          <option value="">Todos</option>
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+          <option value="egresado">Egresado</option>
+          <option value="suspendido">Suspendido</option>
+        </select>
+      </div>
+      <div class="filtros-actions">
+        <button class="btn-clear" *ngIf="hayFiltros" (click)="limpiarFiltros()">
+          ✕ Limpiar filtros
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TOOLBAR TABLA
+  ══════════════════════════════════════ -->
+  <div class="table-toolbar">
+    <div class="toolbar-left">
+      <span class="result-count">
+        <strong>{{ filtrados.length }}</strong> resultados
+        <span *ngIf="hayFiltros" class="filtered-tag">filtrado</span>
+      </span>
+      <div class="seleccion-actions" *ngIf="seleccionados.size > 0">
+        <span class="sel-count">{{ seleccionados.size }} seleccionados</span>
+        <button class="btn-danger-sm" (click)="eliminarSeleccionados()">
+          🗑 Eliminar selección
+        </button>
+      </div>
+    </div>
+    <div class="toolbar-right">
+      <!-- Vista toggle -->
+      <div class="vista-toggle">
+        <button [class.active]="vistaTabla"  (click)="vistaTabla=true"  title="Vista tabla">⊞</button>
+        <button [class.active]="!vistaTabla" (click)="vistaTabla=false" title="Vista tarjetas">⊟</button>
+      </div>
+      <!-- Por página -->
+      <div class="per-page">
+        <label>Mostrar</label>
+        <select [(ngModel)]="porPagina" (ngModelChange)="irPagina(1)">
+          <option *ngFor="let n of opcionesPorPagina" [value]="n">{{ n }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       VISTA TABLA
+  ══════════════════════════════════════ -->
+  <div class="table-container" *ngIf="vistaTabla">
+    <table>
+      <thead>
+        <tr>
+          <th class="th-check">
+            <input type="checkbox" [checked]="todosMarcados" (change)="toggleTodos()">
+          </th>
+          <th class="th-sort" (click)="ordenar('codigo')">
+            Código <span class="sort-icon">{{ ordenIcon('codigo') }}</span>
+          </th>
+          <th class="th-sort" (click)="ordenar('apellidos')">
+            Estudiante <span class="sort-icon">{{ ordenIcon('apellidos') }}</span>
+          </th>
+          <th class="th-sort" (click)="ordenar('carrera')">
+            Carrera <span class="sort-icon">{{ ordenIcon('carrera') }}</span>
+          </th>
+          <th class="th-sort" (click)="ordenar('ciclo')">
+            Ciclo / Secc. <span class="sort-icon">{{ ordenIcon('ciclo') }}</span>
+          </th>
+          <th>Turno</th>
+          <th class="th-sort" (click)="ordenar('promedio')">
+            Promedio <span class="sort-icon">{{ ordenIcon('promedio') }}</span>
+          </th>
+          <th class="th-sort" (click)="ordenar('asistencia')">
+            Asistencia <span class="sort-icon">{{ ordenIcon('asistencia') }}</span>
+          </th>
+          <th class="th-sort" (click)="ordenar('estado')">
+            Estado <span class="sort-icon">{{ ordenIcon('estado') }}</span>
+          </th>
+          <th class="th-actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let e of pagina"
+            [class.row-selected]="estaSeleccionado(e.id)"
+            (click)="verEstudiante(e)"
+            class="table-row">
+          <td class="td-check" (click)="$event.stopPropagation()">
+            <input type="checkbox" [checked]="estaSeleccionado(e.id)" (change)="toggleSeleccion(e.id)">
+          </td>
+          <td class="td-codigo">{{ e.codigo }}</td>
+          <td class="td-alumno">
+            <div class="alumno-cell">
+              <div class="avatar" [style.background]="e.avatar">{{ iniciales(e) }}</div>
+              <div class="alumno-info">
+                <p class="alumno-nombre">{{ e.apellidos }}, {{ e.nombres }}</p>
+                <p class="alumno-email">{{ e.email }}</p>
+              </div>
+            </div>
+          </td>
+          <td class="td-carrera">
+            <span class="carrera-text">{{ e.carrera }}</span>
+          </td>
+          <td class="td-ciclo">
+            <span class="ciclo-badge">C{{ e.ciclo }}</span>
+            <span class="secc-badge">§{{ e.seccion }}</span>
+          </td>
+          <td>
+            <span class="turno-badge turno-{{ e.turno }}">{{ e.turno }}</span>
+          </td>
+          <td>
+            <span class="nota-pill" [ngClass]="notaClass(e.promedio)">
+              {{ e.promedio | number:'1.1-1' }}
+            </span>
+          </td>
+          <td>
+            <div class="asist-mini">
+              <div class="asist-bar-sm">
+                <div class="asist-fill-sm"
+                     [style.width.%]="e.asistencia"
+                     [style.background]="asistColor(e.asistencia)"></div>
+              </div>
+              <span class="asist-pct">{{ e.asistencia }}%</span>
+            </div>
+          </td>
+          <td>
+            <span class="estado-pill" [ngClass]="estadoClass(e.estado)">
+              {{ e.estado | titlecase }}
+            </span>
+          </td>
+          <td class="td-actions" (click)="$event.stopPropagation()">
+            <button class="act-btn" title="Ver detalle"  (click)="verEstudiante(e)">👁</button>
+            <button class="act-btn" title="Editar"       (click)="abrirEditar(e)">✏</button>
+            <button class="act-btn act-del" title="Eliminar" (click)="confirmarEliminar(e)">🗑</button>
+          </td>
+        </tr>
+        <tr *ngIf="pagina.length === 0">
+          <td colspan="10">
+            <div class="empty-state">
+              <p class="empty-icon">🔍</p>
+              <p class="empty-title">Sin resultados</p>
+              <p class="empty-sub">Intenta con otros filtros</p>
+              <button class="btn-ghost" (click)="limpiarFiltros()">Limpiar filtros</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       VISTA TARJETAS
+  ══════════════════════════════════════ -->
+  <div class="cards-grid" *ngIf="!vistaTabla">
+    <div class="student-card" *ngFor="let e of pagina" (click)="verEstudiante(e)">
+      <div class="sc-top" [style.background]="e.avatar">
+        <div class="sc-check" (click)="$event.stopPropagation()">
+          <input type="checkbox" [checked]="estaSeleccionado(e.id)" (change)="toggleSeleccion(e.id)">
+        </div>
+        <div class="sc-avatar">{{ iniciales(e) }}</div>
+        <span class="estado-pill" [ngClass]="estadoClass(e.estado)">{{ e.estado | titlecase }}</span>
+      </div>
+      <div class="sc-body">
+        <p class="sc-nombre">{{ e.nombres }} {{ e.apellidos }}</p>
+        <p class="sc-cod">{{ e.codigo }} · DNI {{ e.dni }}</p>
+        <p class="sc-carr">{{ e.carrera }}</p>
+        <div class="sc-badges">
+          <span class="ciclo-badge">C{{ e.ciclo }}</span>
+          <span class="secc-badge">§{{ e.seccion }}</span>
+          <span class="turno-badge turno-{{ e.turno }}">{{ e.turno }}</span>
+        </div>
+        <div class="sc-stats">
+          <div class="sc-stat">
+            <label>Promedio</label>
+            <span class="nota-pill" [ngClass]="notaClass(e.promedio)">{{ e.promedio | number:'1.1-1' }}</span>
+          </div>
+          <div class="sc-stat">
+            <label>Asistencia</label>
+            <span [style.color]="asistColor(e.asistencia)" style="font-weight:700;font-size:13px">{{ e.asistencia }}%</span>
+          </div>
+        </div>
+        <div class="sc-actions">
+          <button class="btn-ghost-sm" (click)="$event.stopPropagation(); abrirEditar(e)">✏ Editar</button>
+          <button class="btn-danger-sm" (click)="$event.stopPropagation(); confirmarEliminar(e)">🗑</button>
+        </div>
+      </div>
+    </div>
+    <div class="empty-state" *ngIf="pagina.length === 0" style="grid-column:1/-1">
+      <p class="empty-icon">🔍</p>
+      <p class="empty-title">Sin resultados</p>
+      <button class="btn-ghost" (click)="limpiarFiltros()">Limpiar filtros</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PAGINACIÓN
+  ══════════════════════════════════════ -->
+  <div class="pagination-bar" *ngIf="filtrados.length > 0">
+    <span class="pag-info">
+      Mostrando {{ inicioReg }}–{{ finReg }} de {{ filtrados.length }} registros
+    </span>
+    <div class="pag-controls">
+      <button class="pag-btn" [disabled]="paginaActual === 1" (click)="irPagina(1)">«</button>
+      <button class="pag-btn" [disabled]="paginaActual === 1" (click)="irPagina(paginaActual - 1)">‹</button>
+      <button
+        class="pag-btn"
+        *ngFor="let p of paginas"
+        [class.pag-active]="p === paginaActual"
+        (click)="irPagina(p)">
+        {{ p }}
+      </button>
+      <button class="pag-btn" [disabled]="paginaActual === totalPaginas" (click)="irPagina(paginaActual + 1)">›</button>
+      <button class="pag-btn" [disabled]="paginaActual === totalPaginas" (click)="irPagina(totalPaginas)">»</button>
+    </div>
+    <div class="pag-jump">
+      <label>Ir a página</label>
+      <input type="number" min="1" [max]="totalPaginas"
+             #jumpInput
+             (keydown.enter)="irPagina(+jumpInput.value); jumpInput.value=''"
+             placeholder="N°">
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL VER DETALLE
+══════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="estudianteModal" (click)="cerrarModal()">
+  <div class="modal-box modal-lg" (click)="$event.stopPropagation()">
+
+    <div class="modal-head" [style.background]="estudianteModal.avatar">
+      <div class="mh-left">
+        <div class="mh-avatar">{{ iniciales(estudianteModal) }}</div>
+        <div>
+          <h3 class="mh-nombre">{{ estudianteModal.nombres }} {{ estudianteModal.apellidos }}</h3>
+          <p class="mh-sub">{{ estudianteModal.codigo }} · {{ estudianteModal.carrera }}</p>
+        </div>
+      </div>
+      <div class="mh-right">
+        <span class="estado-pill" [ngClass]="estadoClass(estudianteModal.estado)">
+          {{ estudianteModal.estado | titlecase }}
+        </span>
+        <button class="modal-close" (click)="cerrarModal()">✕</button>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <div class="detail-grid">
+        <div class="detail-section">
+          <p class="ds-title">📋 Datos personales</p>
+          <div class="ds-row"><label>DNI</label><span>{{ estudianteModal.dni }}</span></div>
+          <div class="ds-row"><label>Género</label><span>{{ estudianteModal.genero === 'M' ? 'Masculino' : 'Femenino' }}</span></div>
+          <div class="ds-row"><label>Nacimiento</label><span>{{ estudianteModal.fechaNacimiento | date:'d MMM yyyy' }}</span></div>
+          <div class="ds-row"><label>Teléfono</label><span>{{ estudianteModal.telefono }}</span></div>
+          <div class="ds-row"><label>Email</label><span>{{ estudianteModal.email }}</span></div>
+        </div>
+        <div class="detail-section">
+          <p class="ds-title">🎓 Datos académicos</p>
+          <div class="ds-row"><label>Carrera</label><span>{{ estudianteModal.carrera }}</span></div>
+          <div class="ds-row"><label>Ciclo</label><span>{{ estudianteModal.ciclo }}°</span></div>
+          <div class="ds-row"><label>Sección</label><span>{{ estudianteModal.seccion }}</span></div>
+          <div class="ds-row"><label>Turno</label><span class="turno-badge turno-{{ estudianteModal.turno }}">{{ estudianteModal.turno }}</span></div>
+          <div class="ds-row"><label>Ingreso</label><span>{{ estudianteModal.fechaIngreso | date:'d MMM yyyy' }}</span></div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="modal-stats">
+        <div class="ms-item">
+          <label>Promedio</label>
+          <span class="nota-pill nota-lg" [ngClass]="notaClass(estudianteModal.promedio)">
+            {{ estudianteModal.promedio | number:'1.1-1' }}/20
+          </span>
+        </div>
+        <div class="ms-item">
+          <label>Asistencia</label>
+          <span class="ms-val" [style.color]="asistColor(estudianteModal.asistencia)">
+            {{ estudianteModal.asistencia }}%
+          </span>
+        </div>
+      </div>
+
+      <div class="modal-footer-actions">
+        <button class="btn-ghost" (click)="abrirEditar(estudianteModal)">✏ Editar estudiante</button>
+        <button class="btn-danger" (click)="confirmarEliminar(estudianteModal)">🗑 Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL FORMULARIO NUEVO / EDITAR
+══════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="modoFormulario" (click)="cancelarFormulario()">
+  <div class="modal-box modal-form" (click)="$event.stopPropagation()">
+
+    <div class="modal-head" style="background:#007AFF">
+      <h3 class="mh-nombre">
+        {{ modoFormulario === 'nuevo' ? '+ Nuevo estudiante' : '✏ Editar estudiante' }}
+      </h3>
+      <button class="modal-close" (click)="cancelarFormulario()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-section-title">Datos personales</div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label>Nombres *</label>
+          <input [(ngModel)]="formData.nombres" placeholder="Nombres completos">
+        </div>
+        <div class="form-group">
+          <label>Apellidos *</label>
+          <input [(ngModel)]="formData.apellidos" placeholder="Apellido paterno y materno">
+        </div>
+        <div class="form-group">
+          <label>DNI *</label>
+          <input [(ngModel)]="formData.dni" placeholder="00000000" maxlength="8">
+        </div>
+        <div class="form-group">
+          <label>Género</label>
+          <select [(ngModel)]="formData.genero">
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Fecha de nacimiento</label>
+          <input type="date" [(ngModel)]="formData.fechaNacimiento">
+        </div>
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input [(ngModel)]="formData.telefono" placeholder="9XXXXXXXX">
+        </div>
+        <div class="form-group fg-full">
+          <label>Email *</label>
+          <input type="email" [(ngModel)]="formData.email" placeholder="correo@educampus.edu.pe">
+        </div>
+      </div>
+
+      <div class="form-section-title" style="margin-top:18px">Datos académicos</div>
+      <div class="form-grid-2">
+        <div class="form-group fg-full">
+          <label>Carrera *</label>
+          <select [(ngModel)]="formData.carrera">
+            <option value="">Seleccionar carrera</option>
+            <option *ngFor="let c of carreras" [value]="c">{{ c }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Ciclo</label>
+          <select [(ngModel)]="formData.ciclo">
+            <option *ngFor="let c of ciclos" [value]="c">Ciclo {{ c }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Sección</label>
+          <select [(ngModel)]="formData.seccion">
+            <option *ngFor="let s of secciones" [value]="s">Sección {{ s }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Turno</label>
+          <select [(ngModel)]="formData.turno">
+            <option value="mañana">Mañana</option>
+            <option value="tarde">Tarde</option>
+            <option value="noche">Noche</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select [(ngModel)]="formData.estado">
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+            <option value="egresado">Egresado</option>
+            <option value="suspendido">Suspendido</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-ghost" (click)="cancelarFormulario()">Cancelar</button>
+        <button class="btn-primary" (click)="guardarFormulario()">
+          {{ modoFormulario === 'nuevo' ? 'Crear estudiante' : 'Guardar cambios' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CONFIRM ELIMINAR
+══════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="mostrarConfirmEliminar" (click)="mostrarConfirmEliminar=false">
+  <div class="modal-box modal-confirm" (click)="$event.stopPropagation()">
+    <div class="confirm-icon">⚠️</div>
+    <h3 class="confirm-title">¿Eliminar estudiante?</h3>
+    <p class="confirm-sub">
+      Vas a eliminar a
+      <strong>{{ estudianteAEliminar?.nombres }} {{ estudianteAEliminar?.apellidos }}</strong>.
+      Esta acción no se puede deshacer.
+    </p>
+    <div class="confirm-actions">
+      <button class="btn-ghost" (click)="mostrarConfirmEliminar=false">Cancelar</button>
+      <button class="btn-danger" (click)="ejecutarEliminar()">Sí, eliminar</button>
+    </div>
+  </div>
+</div>
