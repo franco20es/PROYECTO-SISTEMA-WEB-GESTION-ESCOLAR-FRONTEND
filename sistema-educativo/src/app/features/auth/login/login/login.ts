@@ -25,11 +25,18 @@ isLoading: boolean = false;
   constructor(private router: Router) {}
 
   login() {
-    if (this.loginForm.email === 'rocacalderonjeanfranco@gmail.com' && this.loginForm.password === '12345678') {
+    if (this.loginForm.email === 'admin@ejemplo.com' && this.loginForm.password === '12345678') {
       // Login exitoso (ficticio)
       this.router.navigate(['/admin/dashboard']);
       this.successMessage = 'Login exitoso';
-    } else {
+    }
+      if(this.loginForm.email==='alumno@ejemplo.com' && this.loginForm.password==='12345678') {
+        this.router.navigate(['/alumno/dashboard']);
+      }
+      if(this.loginForm.email==='profesor@ejemplo.com' && this.loginForm.password==='12345678') {
+        this.router.navigate(['/profesor/cursos']);
+      }
+     else {
       this.errorMessage = 'Credenciales incorrectas';
     }
   }

@@ -1,5 +1,5 @@
 :host {
-    --gold: #1762d3;
+    --gold: #0A1A3E;
     --gold-dim: rgba(215, 37, 221, 0.15);
     --gold-glow: rgba(215, 37, 221, 0.4);
     --dark: #0d0b0f;
@@ -15,14 +15,15 @@
     --border: rgba(215, 37, 221, 0.2);
     --transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
     --radius: 0px;
+    --blue-mid: #1340A0;
 }
 
 /* ── TOP BAR ── */
 .top-bar {
-    background: var(--gold);
+    background: var(--blue-mid);
     color: #fff;
     text-align: center;
-    padding: 10px 16px;
+    padding: 10px 48px;
     font-size: 10px;
     letter-spacing: 3px;
     font-family: 'DM Sans', sans-serif;
@@ -32,12 +33,6 @@
     overflow: hidden;
 }
 
-.top-bar::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(255, 255, 255, 0.05) 80px, rgba(255, 255, 255, 0.05) 81px);
-}
 
 /* ── NAVBAR ── */
 .navbar-web {
@@ -223,6 +218,7 @@
     padding: 0;
     z-index: 1001;
 }
+
 /* ── ANIMATIONS ── */
 @keyframes fadeIn {
     from {

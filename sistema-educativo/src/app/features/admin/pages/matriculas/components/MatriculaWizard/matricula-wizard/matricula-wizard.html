@@ -1,0 +1,126 @@
+<div class="page-area">
+    <!-- Header de la Página -->
+    <div class="page-hdr">
+        <h1 class="page-title">Formulario de Matrícula</h1>
+        <p class="page-sub">Registro de nuevo ingreso - Ciclo Académico 2026</p>
+    </div>
+
+    <!-- Stepper Indicador -->
+    <div class="stepper-wrapper">
+        <!-- Stepper -->
+        <div style="position:relative;margin-bottom:44px">
+            <div class="stepper">
+
+                <!-- STEP 1 -->
+                <div class="step" [class.done]="alumno?.formAlumno?.valid" [class.active]="currentStep === 1">
+
+                    <div class="step-circle">
+                        <ng-container *ngIf="alumno?.formAlumno?.valid; else s1">
+                            <i class="bi bi-check-lg"></i>
+                        </ng-container>
+                        <ng-template #s1>1</ng-template>
+
+                        <span class="step-label">Alumno</span>
+                    </div>
+
+                    <div class="step-line"></div>
+                </div>
+
+                <!-- STEP 2 -->
+                <div class="step" [class.done]="apoderado?.formApoderado?.valid" [class.active]="currentStep === 2">
+
+                    <div class="step-circle">
+                        <ng-container *ngIf="apoderado?.formApoderado?.valid; else s2">
+                            <i class="bi bi-check-lg"></i>
+                        </ng-container>
+                        <ng-template #s2>2</ng-template>
+
+                        <span class="step-label">Apoderado</span>
+                    </div>
+
+                    <div class="step-line"></div>
+                </div>
+
+                <!-- STEP 3 -->
+                <div class="step" [class.done]="grado?.formGrado?.valid" [class.active]="currentStep === 3">
+
+                    <div class="step-circle">
+                        <ng-container *ngIf="grado?.formGrado?.valid; else s3">
+                            <i class="bi bi-check-lg"></i>
+                        </ng-container>
+                        <ng-template #s3>3</ng-template>
+
+                        <span class="step-label">Grado & Docs</span>
+                    </div>
+
+                    <div class="step-line"></div>
+                </div>
+
+                <!-- STEP 4 -->
+                <div class="step" [class.done]="pago?.formPago?.valid" [class.active]="currentStep === 4">
+
+                    <div class="step-circle">
+                        <ng-container *ngIf="pago?.formPago?.valid; else s4">
+                            <i class="bi bi-check-lg"></i>
+                        </ng-container>
+                        <ng-template #s4>4</ng-template>
+
+                        <span class="step-label">Pago</span>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Cuerpo del Formulario Modularizado -->
+    <div class="enrollment-layout">
+        <form id="formMatricula" class="form-container-stack">
+
+            <section *ngIf="currentStep === 1">
+                <app-alumno-form></app-alumno-form>
+            </section>
+
+            <section *ngIf="currentStep === 2">
+                <app-apoderado-form></app-apoderado-form>
+            </section>
+
+            <section *ngIf="currentStep === 3">
+                <app-grado-form></app-grado-form>
+            </section>
+
+            <section *ngIf="currentStep === 4">
+                <app-pago-form></app-pago-form>
+            </section>
+
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:4px 0">
+
+                <!-- Cancelar -->
+                <button class="btn btn-ghost" (click)="cancelar()">
+                    <i class="bi bi-arrow-left"></i> Cancelar
+                </button>
+
+                <div style="display:flex;gap:10px">
+
+                    <!-- Guardar -->
+                    <button class="btn btn-secondary" (click)="guardarBorrador()">
+                        <i class="bi bi-floppy"></i> Guardar Borrador
+                    </button>
+
+                    <button type="button" class="btn btn-primary btn-lg" (click)="currentStep < 4 ? next() : submit()"
+                        [disabled]="!canGoNext()" [style.opacity]="canGoNext() ? 1 : 0.4"
+                        [style.cursor]="canGoNext() ? 'pointer' : 'not-allowed'">
+
+                        <i class="bi bi-check-circle-fill"></i>
+                        {{ currentStep < 4 ? 'Siguiente' : 'Confirmar Matrícula' }} </button>
+
+                </div>
+            </div>
+        </form>
+
+        <app-confirmacion-matricula [showModal]="showModal" [confirmacion]="confirmacion" (cerrar)="showModal = false"
+            (nueva)="nuevaMatricula()">
+        </app-confirmacion-matricula>
+    </div>
+</div>

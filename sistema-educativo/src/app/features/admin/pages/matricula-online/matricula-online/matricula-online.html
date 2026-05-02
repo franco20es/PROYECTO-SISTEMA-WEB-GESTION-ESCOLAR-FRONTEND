@@ -1,0 +1,539 @@
+
+ 
+<!-- ════════ CONTENIDO PRINCIPAL — pegar dentro de tu layout ════════ -->
+<div class="main-content">
+ 
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="ph-left">
+      <div class="ph-title">
+        <div class="ph-title-icon">
+          <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        </div>
+        Solicitudes Online
+      </div>
+      <div class="ph-subtitle">Gestiona las solicitudes de contacto y tramita matrículas desde aquí</div>
+    </div>
+    <div class="ph-right">
+      <button class="btn-secondary" (click)="exportar()">
+        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Exportar
+      </button>
+      <button class="btn-primary" (click)="marcarTodas()">
+        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        Marcar revisadas
+      </button>
+    </div>
+  </div>
+ 
+  <!-- KPI STRIP -->
+  <div class="kpi-strip">
+    <div class="kpi-card">
+      <div class="kpi-icon new">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      </div>
+      <div class="kpi-data"><strong id="kpi-new">4</strong><span>Nuevas</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon pending">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      </div>
+      <div class="kpi-data"><strong id="kpi-pend">2</strong><span>Pendientes</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon progress">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+      </div>
+      <div class="kpi-data"><strong id="kpi-prog">3</strong><span>En proceso</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon done">
+        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+      </div>
+      <div class="kpi-data"><strong id="kpi-done">12</strong><span>Matriculados</span></div>
+    </div>
+  </div>
+ 
+  <!-- FILTERS BAR -->
+  <div class="filters-bar">
+    <span class="filter-label">Estado</span>
+    <div class="filter-tabs">
+      <button class="ftab active" data-filter="all" (click)="filtrar('all')">Todos <span class="badge">21</span></button>
+      <button class="ftab" data-filter="nueva" (click)="filtrar('nueva')">Nuevas <span class="badge">4</span></button>
+      <button class="ftab" data-filter="pendiente" (click)="filtrar('pendiente')">Pendientes <span class="badge">2</span></button>
+      <button class="ftab" data-filter="en-proceso" (click)="filtrar('en-proceso')">En proceso <span class="badge">3</span></button>
+      <button class="ftab" data-filter="matriculado" (click)="filtrar('matriculado')">Matriculados <span class="badge">12</span></button>
+    </div>
+    <div class="filter-sep"></div>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input type="text" placeholder="Buscar por nombre, correo o asunto..." (input)="buscar($any($event.target).value)">
+    </div>
+    <select class="sort-select" (change)="ordenar($any($event.target).value)">
+      <option value="reciente">Más recientes</option>
+      <option value="antigua">Más antiguas</option>
+      <option value="nombre">Por nombre</option>
+    </select>
+  </div>
+ 
+  <!-- LISTA DE SOLICITUDES -->
+  <div class="solicitudes-list" id="solicitudesList">
+ 
+    <!-- SOLICITUD 1 — NUEVA -->
+    <div class="sol-card nueva" data-status="nueva" data-id="SOL-0021">
+      <div class="sol-header" (click)="toggleCard('SOL-0021')">
+        <div class="sol-num">#SOL-0021</div>
+        <div class="sol-avatar">MG</div>
+        <div class="sol-info">
+          <div class="sol-name">María Elena García Quispe</div>
+          <div class="sol-meta">
+            <div class="sol-meta-item"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>garcia.maria@gmail.com</div>
+            <div class="sol-meta-item"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>987 321 456</div>
+          </div>
+        </div>
+        <div class="sol-asunto">
+          <span class="sol-asunto-tag">Matrícula nueva — Primaria</span>
+          <div class="sol-nivel-tag">Para: Carlos García (7 años)</div>
+        </div>
+        <div class="sol-fecha">
+          <div class="sol-fecha-val">02 May 2025</div>
+          <div class="sol-fecha-time">09:14 am</div>
+        </div>
+        <div class="sol-status"><span class="status-pill nueva">Nueva</span></div>
+        <div class="sol-actions" (click)="$event.stopPropagation()">
+          <button class="action-btn success" title="Iniciar matrícula" (click)="abrirModal({id: 'SOL-0021', estudiante: 'Carlos García', apoderado: 'María Elena García Quispe', grado: '2° Grado', nivel: 'Primaria', email: 'garcia.maria@gmail.com', phone: '987 321 456'})">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+          </button>
+          <button class="action-btn" title="Ver detalle" (click)="toggleCard('SOL-0021')">
+            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+          </button>
+          <button class="action-btn danger" title="Archivar" (click)="archivar('SOL-0021')">
+            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="sol-detail">
+        <div class="sol-detail-inner">
+          <div class="detail-grid">
+            <div class="detail-section">
+              <h4>Datos del Apoderado</h4>
+              <div class="detail-row"><label>Nombre completo</label><span>María Elena García Quispe</span></div>
+              <div class="detail-row"><label>Correo electrónico</label><span>garcia.maria@gmail.com</span></div>
+              <div class="detail-row"><label>Teléfono / Celular</label><span>987 321 456</span></div>
+              <div class="detail-row"><label>Asunto de consulta</label><span>Información sobre matrículas — Primaria</span></div>
+            </div>
+            <div class="detail-section">
+              <h4>Mensaje del Apoderado</h4>
+              <div class="detail-mensaje">"Buenos días, me gustaría matricular a mi hijo Carlos García (7 años) en 2° grado de Primaria. ¿Qué documentos necesito? ¿Tienen cupos disponibles en el turno mañana? Quedo a su disposición."</div>
+            </div>
+            <div class="detail-section">
+              <h4>Acciones</h4>
+              <div class="detail-actions">
+                <span class="section-label">Cambiar estado</span>
+                <select class="status-select" (change)="cambiarEstado($any($event.target).value,'SOL-0021')">
+                  <option value="nueva" selected>Nueva</option>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="en-proceso">En proceso</option>
+                  <option value="matriculado">Matriculado</option>
+                </select>
+                <textarea class="nota-input" placeholder="Agregar nota interna..."></textarea>
+                <button class="dact-btn iniciar" onclick="abrirModal('SOL-0021','Carlos García','María Elena García Quispe','2° Grado','Primaria','garcia.maria@gmail.com','987 321 456')">
+                  <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+                  Iniciar trámite de matrícula
+                </button>
+                <button class="dact-btn outline" onclick="showToast('Notificación enviada a garcia.maria@gmail.com','info')">
+                  <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                  Enviar respuesta al padre
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- SOLICITUD 2 — NUEVA -->
+    <div class="sol-card nueva" data-status="nueva" data-id="SOL-0020">
+      <div class="sol-header" (click)="toggleCard('SOL-0020')">
+        <div class="sol-num">#SOL-0020</div>
+        <div class="sol-avatar">JR</div>
+        <div class="sol-info">
+          <div class="sol-name">José Luis Ramírez Torres</div>
+          <div class="sol-meta">
+            <div class="sol-meta-item"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>jose.ramirez@hotmail.com</div>
+            <div class="sol-meta-item"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>956 788 234</div>
+          </div>
+        </div>
+        <div class="sol-asunto">
+          <span class="sol-asunto-tag">Traslado — Secundaria</span>
+          <div class="sol-nivel-tag">Para: Alejandra Ramírez (14 años)</div>
+        </div>
+        <div class="sol-fecha">
+          <div class="sol-fecha-val">01 May 2025</div>
+          <div class="sol-fecha-time">03:45 pm</div>
+        </div>
+        <div class="sol-status"><span class="status-pill nueva">Nueva</span></div>
+        <div class="sol-actions" (click)="$event.stopPropagation()">
+          <button class="action-btn success" title="Iniciar matrícula" (click)="abrirModal({id: 'SOL-0020', estudiante: 'Alejandra Ramírez', apoderado: 'José Luis Ramírez Torres', grado: '3° Año', nivel: 'Secundaria', email: 'jose.ramirez@hotmail.com', phone: '956 788 234'})">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+          </button>
+          <button class="action-btn" title="Ver detalle" (click)="toggleCard('SOL-0020')">
+            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+          </button>
+          <button class="action-btn danger" title="Archivar" (click)="archivar('SOL-0020')">
+            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="sol-detail">
+        <div class="sol-detail-inner">
+          <div class="detail-grid">
+            <div class="detail-section">
+              <h4>Datos del Apoderado</h4>
+              <div class="detail-row"><label>Nombre completo</label><span>José Luis Ramírez Torres</span></div>
+              <div class="detail-row"><label>Correo electrónico</label><span>jose.ramirez@hotmail.com</span></div>
+              <div class="detail-row"><label>Teléfono / Celular</label><span>956 788 234</span></div>
+              <div class="detail-row"><label>Asunto de consulta</label><span>Traslado de otro colegio — Secundaria</span></div>
+            </div>
+            <div class="detail-section">
+              <h4>Mensaje del Apoderado</h4>
+              <div class="detail-mensaje">"Mi hija Alejandra (14 años) necesita trasladarse de su colegio actual al de ustedes para 3° de secundaria. ¿Qué requisitos necesitan para el traslado? ¿Tienen cupos disponibles?"</div>
+            </div>
+            <div class="detail-section">
+              <h4>Acciones</h4>
+              <div class="detail-actions">
+                <span class="section-label">Cambiar estado</span>
+                <select class="status-select" (change)="cambiarEstado($any($event.target).value, 'SOL-0020')">
+                  <option value="nueva" selected>Nueva</option>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="en-proceso">En proceso</option>
+                  <option value="matriculado">Matriculado</option>
+                </select>
+                <textarea class="nota-input" placeholder="Agregar nota interna..."></textarea>
+                <button class="dact-btn iniciar" (click)="abrirModal({id: 'SOL-0020', estudiante: 'Alejandra Ramírez', apoderado: 'José Luis Ramírez Torres', grado: '3° Año', nivel: 'Secundaria', email: 'jose.ramirez@hotmail.com', phone: '956 788 234'})">
+                  <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+                  Iniciar trámite de matrícula
+                </button>
+                <button class="dact-btn outline" (click)="showToast('Notificación enviada al apoderado','info')">
+                  <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                  Enviar respuesta al padre
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- SOLICITUD 3 — PENDIENTE -->
+    <div class="sol-card pendiente" data-status="pendiente" data-id="SOL-0019">
+      <div class="sol-header" (click)="toggleCard('SOL-0019')">
+        <div class="sol-num">#SOL-0019</div>
+        <div class="sol-avatar">LP</div>
+        <div class="sol-info">
+          <div class="sol-name">Lucía Paredes Vega</div>
+          <div class="sol-meta">
+            <div class="sol-meta-item"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>luparedes@gmail.com</div>
+            <div class="sol-meta-item"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>912 456 789</div>
+          </div>
+        </div>
+        <div class="sol-asunto">
+          <span class="sol-asunto-tag">Matrícula nueva — Inicial</span>
+          <div class="sol-nivel-tag">Para: Valentina Paredes (4 años)</div>
+        </div>
+        <div class="sol-fecha">
+          <div class="sol-fecha-val">30 Abr 2025</div>
+          <div class="sol-fecha-time">11:22 am</div>
+        </div>
+        <div class="sol-status"><span class="status-pill pendiente">Pendiente</span></div>
+        <div class="sol-actions" (click)="$event.stopPropagation()">
+          <button class="action-btn success" title="Iniciar matrícula" (click)="abrirModal({id: 'SOL-0019', estudiante: 'Valentina Paredes', apoderado: 'Lucía Paredes Vega', grado: '4 años', nivel: 'Inicial', email: 'luparedes@gmail.com', phone: '912 456 789'})">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+          </button>
+          <button class="action-btn" title="Ver detalle" (click)="toggleCard('SOL-0019')">
+            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+          </button>
+          <button class="action-btn danger" title="Archivar" (click)="archivar('SOL-0019')">
+            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="sol-detail">
+        <div class="sol-detail-inner">
+          <div class="detail-grid">
+            <div class="detail-section">
+              <h4>Datos del Apoderado</h4>
+              <div class="detail-row"><label>Nombre completo</label><span>Lucía Paredes Vega</span></div>
+              <div class="detail-row"><label>Correo electrónico</label><span>luparedes@gmail.com</span></div>
+              <div class="detail-row"><label>Teléfono / Celular</label><span>912 456 789</span></div>
+              <div class="detail-row"><label>Asunto de consulta</label><span>Información sobre matrículas — Inicial 4 años</span></div>
+            </div>
+            <div class="detail-section">
+              <h4>Mensaje del Apoderado</h4>
+              <div class="detail-mensaje">"Hola, quisiera información para matricular a mi hija Valentina de 4 años en el nivel inicial. ¿Tienen espacio en el turno tarde? Ya les envié los documentos por correo."</div>
+            </div>
+            <div class="detail-section">
+              <h4>Acciones</h4>
+              <div class="detail-actions">
+                <span class="section-label">Cambiar estado</span>
+                <select class="status-select" (change)="cambiarEstado($any($event.target).value, 'SOL-0019')">
+                  <option value="nueva">Nueva</option>
+                  <option value="pendiente" selected>Pendiente</option>
+                  <option value="en-proceso">En proceso</option>
+                  <option value="matriculado">Matriculado</option>
+                </select>
+                <textarea class="nota-input" placeholder="Nota: Se recibieron documentos el 30/04. Pendiente confirmar cupo..."></textarea>
+                <button class="dact-btn iniciar" (click)="abrirModal({id: 'SOL-0019', estudiante: 'Valentina Paredes', apoderado: 'Lucía Paredes Vega', grado: '4 años', nivel: 'Inicial', email: 'luparedes@gmail.com', phone: '912 456 789'})">
+                  <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+                  Iniciar trámite de matrícula
+                </button>
+                <button class="dact-btn outline" (click)="showToast('Notificación enviada al apoderado','info')">
+                  <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                  Enviar respuesta al padre
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- SOLICITUD 4 — EN PROCESO -->
+    <div class="sol-card en-proceso" data-status="en-proceso" data-id="SOL-0018">
+      <div class="sol-header" (click)="toggleCard('SOL-0018')">
+        <div class="sol-num">#SOL-0018</div>
+        <div class="sol-avatar">AT</div>
+        <div class="sol-info">
+          <div class="sol-name">Andrés Quispe Tello</div>
+          <div class="sol-meta">
+            <div class="sol-meta-item"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>andresqt@yahoo.com</div>
+            <div class="sol-meta-item"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>934 112 567</div>
+          </div>
+        </div>
+        <div class="sol-asunto">
+          <span class="sol-asunto-tag">Ratificación — Primaria</span>
+          <div class="sol-nivel-tag">Para: Sofía Quispe (10 años)</div>
+        </div>
+        <div class="sol-fecha">
+          <div class="sol-fecha-val">28 Abr 2025</div>
+          <div class="sol-fecha-time">02:10 pm</div>
+        </div>
+        <div class="sol-status"><span class="status-pill en-proceso">En proceso</span></div>
+        <div class="sol-actions" (click)="$event.stopPropagation()">
+          <button class="action-btn success" title="Completar matrícula" (click)="completarMatricula('SOL-0018','Sofía Quispe')">
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          </button>
+          <button class="action-btn" title="Ver detalle" (click)="toggleCard('SOL-0018')">
+            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+          </button>
+          <button class="action-btn danger" title="Archivar" (click)="archivar('SOL-0018')">
+            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="sol-detail">
+        <div class="sol-detail-inner">
+          <div class="detail-grid">
+            <div class="detail-section">
+              <h4>Datos del Apoderado</h4>
+              <div class="detail-row"><label>Nombre completo</label><span>Andrés Quispe Tello</span></div>
+              <div class="detail-row"><label>Correo electrónico</label><span>andresqt@yahoo.com</span></div>
+              <div class="detail-row"><label>Teléfono / Celular</label><span>934 112 567</span></div>
+              <div class="detail-row"><label>Asunto de consulta</label><span>Ratificación de alumno actual — 5° Primaria</span></div>
+            </div>
+            <div class="detail-section">
+              <h4>Mensaje del Apoderado</h4>
+              <div class="detail-mensaje">"Soy padre de Sofía Quispe, alumna de 5° grado. Quiero ratificarla para el próximo año. ¿Cómo es el proceso? Entiendo que debo acercarme con su libreta de notas."</div>
+            </div>
+            <div class="detail-section">
+              <h4>Acciones</h4>
+              <div class="detail-actions">
+                <span class="section-label">Cambiar estado</span>
+                <select class="status-select" (change)="cambiarEstado($any($event.target).value, 'SOL-0018')">
+                  <option value="nueva">Nueva</option>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="en-proceso" selected>En proceso</option>
+                  <option value="matriculado">Matriculado</option>
+                </select>
+                <textarea class="nota-input" placeholder="Nota interna...">Padre citado para el 05/05. Documentos en revisión.</textarea>
+                <button class="dact-btn completar" (click)="completarMatricula('SOL-0018','Sofía Quispe')">
+                  <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                  Marcar como matriculado
+                </button>
+                <button class="dact-btn outline" (click)="showToast('Notificación enviada al apoderado','info')">
+                  <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                  Enviar respuesta al padre
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- SOLICITUD 5 — MATRICULADO -->
+    <div class="sol-card matriculado" data-status="matriculado" data-id="SOL-0017">
+      <div class="sol-header" (click)="toggleCard('SOL-0017')">
+        <div class="sol-num">#SOL-0017</div>
+        <div class="sol-avatar">CM</div>
+        <div class="sol-info">
+          <div class="sol-name">Carmen Morales Díaz</div>
+          <div class="sol-meta">
+            <div class="sol-meta-item"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>cmorales@gmail.com</div>
+            <div class="sol-meta-item"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>978 654 321</div>
+          </div>
+        </div>
+        <div class="sol-asunto">
+          <span class="sol-asunto-tag">Matrícula nueva — Inicial</span>
+          <div class="sol-nivel-tag">Para: Diego Morales (3 años)</div>
+        </div>
+        <div class="sol-fecha">
+          <div class="sol-fecha-val">25 Abr 2025</div>
+          <div class="sol-fecha-time">10:05 am</div>
+        </div>
+        <div class="sol-status"><span class="status-pill matriculado">Matriculado</span></div>
+        <div class="sol-actions" (click)="$event.stopPropagation()">
+          <button class="action-btn" title="Ver detalle" (click)="toggleCard('SOL-0017')">
+            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+          </button>
+          <button class="action-btn" title="Descargar constancia" (click)="showToast('Constancia SM-2025-00017 generada','info')">
+            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="sol-detail">
+        <div class="sol-detail-inner">
+          <div class="detail-grid">
+            <div class="detail-section">
+              <h4>Datos del Apoderado</h4>
+              <div class="detail-row"><label>Nombre completo</label><span>Carmen Morales Díaz</span></div>
+              <div class="detail-row"><label>Correo electrónico</label><span>cmorales@gmail.com</span></div>
+              <div class="detail-row"><label>Teléfono / Celular</label><span>978 654 321</span></div>
+              <div class="detail-row"><label>Código de matrícula</label><span style="color:var(--success);font-family:'DM Mono',monospace;font-weight:700">SM-2025-00017</span></div>
+            </div>
+            <div class="detail-section">
+              <h4>Mensaje del Apoderado</h4>
+              <div class="detail-mensaje">"Quiero matricular a mi hijo Diego de 3 años. ¿Tienen cupo en el turno mañana? El niño viene de una cuna particular."</div>
+            </div>
+            <div class="detail-section">
+              <h4>Acciones</h4>
+              <div class="detail-actions">
+                <span class="section-label">Estado final</span>
+                <select class="status-select" disabled>
+                  <option value="matriculado" selected>✓ Matriculado</option>
+                </select>
+                <button class="dact-btn completar" (click)="showToast('Constancia SM-2025-00017 descargada','info')" style="background:var(--blue-mid)">
+                  <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                  Descargar constancia de matrícula
+                </button>
+                <button class="dact-btn outline" (click)="showToast('Correo de confirmación reenviado','info')">
+                  <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                  Reenviar confirmación al padre
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+  </div><!-- /solicitudes-list -->
+ 
+  <!-- PAGINATION -->
+  <div class="pagination">
+    <div class="pag-info">Mostrando <strong>5</strong> de <strong>21</strong> solicitudes</div>
+    <div class="pag-btns">
+      <button class="pag-btn"><svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button>
+      <button class="pag-btn active">1</button>
+      <button class="pag-btn">2</button>
+      <button class="pag-btn">3</button>
+      <button class="pag-btn">4</button>
+      <button class="pag-btn">5</button>
+      <button class="pag-btn"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button>
+    </div>
+  </div>
+ 
+</div><!-- /main-content -->
+ 
+<!-- ════════ MODAL INICIAR MATRÍCULA ════════ -->
+<div class="modal-overlay" id="modalMatricula">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+        Iniciar Trámite de Matrícula
+      </h3>
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-alert">
+        Completando el trámite para <strong id="modal-apoderado">—</strong>. Revisa y completa los datos del estudiante antes de proceder. Se notificará automáticamente al apoderado.
+      </div>
+      <div class="modal-form-grid">
+        <div class="mf-field">
+          <label>Apellidos y Nombres del estudiante <span class="req">*</span></label>
+          <input type="text" id="m-estudiante" placeholder="Apellidos y nombres">
+        </div>
+        <div class="mf-field">
+          <label>N° de Solicitud</label>
+          <input type="text" id="m-sol" readonly style="background:var(--gray-100);color:var(--gray-400)">
+        </div>
+        <div class="mf-field">
+          <label>Nivel educativo <span class="req">*</span></label>
+          <select id="m-nivel">
+            <option>Inicial</option><option>Primaria</option><option>Secundaria</option>
+          </select>
+        </div>
+        <div class="mf-field">
+          <label>Grado / Año <span class="req">*</span></label>
+          <select id="m-grado">
+            <option>3 años</option><option>4 años</option><option>5 años</option>
+            <option>1° Grado</option><option>2° Grado</option><option>3° Grado</option>
+            <option>4° Grado</option><option>5° Grado</option><option>6° Grado</option>
+            <option>1° Año</option><option>2° Año</option><option>3° Año</option><option>4° Año</option><option>5° Año</option>
+          </select>
+        </div>
+        <div class="mf-field">
+          <label>Turno preferido</label>
+          <select>
+            <option>Sin preferencia</option>
+            <option>Mañana (7:15 — 12:45)</option>
+            <option>Tarde (1:00 — 6:30)</option>
+          </select>
+        </div>
+        <div class="mf-field">
+          <label>Tipo de matrícula</label>
+          <select id="m-tipo">
+            <option>Alumno nuevo</option>
+            <option>Traslado de otra IE</option>
+            <option>Ratificación</option>
+          </select>
+        </div>
+        <div class="mf-field">
+          <label>Correo del apoderado</label>
+          <input type="email" id="m-email" placeholder="correo@ejemplo.com">
+        </div>
+        <div class="mf-field">
+          <label>Teléfono del apoderado</label>
+          <input type="tel" id="m-telefono" placeholder="987 654 321">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-primary" onclick="confirmarMatricula()">
+        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        Confirmar y tramitar
+      </button>
+    </div>
+  </div>
+</div>
+ 
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+  <span id="toast-msg">Operación exitosa</span>
+</div>
+ 
+
+ 

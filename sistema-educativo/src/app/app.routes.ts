@@ -4,21 +4,22 @@ import { ADMIN_ROUTES } from './features/admin/admin-routing.module';
 import { Login } from './features/auth/login/login/login';
 import { Matricula } from './features/web/matricula/matricula/matricula';
 import { Inicio } from './features/web/inicio/inicio/inicio';
+import { INICIO_ROUTER } from './features/web/matricula/inicio-routing.module'; 
 // Rutas principales de la aplicación
 export const routes: Routes = [
   {
     path: 'login',
     component: Login
   },
-{
-  path: '',
-  redirectTo: 'inicio',
-  pathMatch: 'full'
-},
-{
-  path: 'inicio',
-  component: Inicio
-},
+  {
+    path: '',
+    redirectTo: 'inicio',
+    pathMatch: 'full'
+  },
+  {
+    path: 'inicio',
+    loadChildren: () => import('./features/web/matricula/inicio-routing.module').then(m => m.INICIO_ROUTER)
+  },
   {
     path: 'admin',
     component: MainLayout,
@@ -57,9 +58,4 @@ export const routes: Routes = [
       }
     ]
   },
-
-  {
-    path: 'matricula',
-    component: Matricula
-  }
 ];

@@ -11,7 +11,13 @@ export const MENU_ADMIN = [
   {
     section: 'Administración',
     items: [
-      { label: 'Matriculas', icon: 'bi bi-person-circle', route: 'admin/matriculas' },
+      // Nueva gestión de Solicitudes Online
+      { 
+        label: 'Solicitudes Online', 
+        icon: 'bi bi-clipboard-check', 
+        route: 'admin/solicitudes' // Aquí llegan los formularios de las imágenes
+      },
+      { label: 'Matricula Directa', icon: 'bi bi-person-circle', route: 'admin/matricula' },
       { label: 'Asistencia', icon: 'bi bi-shield-lock', route: 'admin/asistencia' },
       { label: 'Calificaciones', icon: 'bi bi-phone', route: 'admin/calificaciones' },
       { label: 'Finanzas', icon: 'bi bi-cash', route: 'admin/finanzas' }

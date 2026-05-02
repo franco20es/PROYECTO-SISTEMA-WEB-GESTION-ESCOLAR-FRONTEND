@@ -88,19 +88,7 @@
                         </span>
                     </button>
 
-                    <!-- Google Login -->
-                    <button 
-                        type="button"
-                        id="google-login-btn"
-                        class="btn-ghost"
-                        (click)="onGoogleLogin()"
-                        [disabled]="isLoading || googleLoading">
-                        <i class="bi bi-google"></i> 
-                        <span *ngIf="!googleLoading">Continuar con Google</span>
-                        <span *ngIf="googleLoading">
-                            <i class="bi bi-hourglass-split"></i> Conectando...
-                        </span>
-                    </button>
+                    
 
                     <!-- Registro -->
                     <p class="footer-text">¿No tienes una cuenta? <a routerLink="/registro" class="create-account-link">Crea una ahora</a></p>

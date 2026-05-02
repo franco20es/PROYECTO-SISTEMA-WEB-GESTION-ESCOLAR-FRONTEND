@@ -1,0 +1,148 @@
+<form [formGroup]="formAlumno" class="card">
+
+  <!-- HEADER -->
+  <div class="card-hdr">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="step-circle">1</div>
+      <div class="card-title">Datos del Estudiante</div>
+    </div>
+
+    <span class="badge badge-green" *ngIf="formAlumno.valid">
+      <i class="bi bi-check-circle-fill"></i> Completado
+    </span>
+  </div>
+
+  <!-- BODY -->
+  <div class="card-body">
+    <div class="form-section">
+
+      <!-- Apellidos / Nombres -->
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">
+            Apellidos <span class="req">*</span>
+          </label>
+          <input 
+            type="text"
+            class="form-input"
+            [class.is-invalid]="formAlumno.get('apellidos')?.invalid && formAlumno.get('apellidos')?.touched"
+            formControlName="apellidos"
+            placeholder="Apellido paterno y materno">
+          
+          <!-- Mensaje de Error -->
+          <div class="form-hint error" *ngIf="formAlumno.get('apellidos')?.invalid && formAlumno.get('apellidos')?.touched">
+            <small *ngIf="formAlumno.get('apellidos')?.errors?.['required']">Los apellidos son obligatorios.</small>
+            <small *ngIf="formAlumno.get('apellidos')?.errors?.['pattern']">Solo se permiten letras.</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            Nombres <span class="req">*</span>
+          </label>
+          <input 
+            type="text"
+            class="form-input"
+            [class.is-invalid]="formAlumno.get('nombres')?.invalid && formAlumno.get('nombres')?.touched"
+            formControlName="nombres"
+            placeholder="Nombres completos">
+            
+          <!-- Mensaje de Error -->
+          <div class="form-hint error" *ngIf="formAlumno.get('nombres')?.invalid && formAlumno.get('nombres')?.touched">
+            <small *ngIf="formAlumno.get('nombres')?.errors?.['required']">Los nombres son obligatorios.</small>
+            <small *ngIf="formAlumno.get('nombres')?.errors?.['pattern']">Solo se permiten letras.</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Documento -->
+      <div class="form-grid col-3">
+        <div class="form-group">
+          <label class="form-label">
+            Tipo Documento <span class="req">*</span>
+          </label>
+          <select class="form-select" formControlName="tipoDocumento"
+                  [class.is-invalid]="formAlumno.get('tipoDocumento')?.invalid && formAlumno.get('tipoDocumento')?.touched">
+            <option value="">Seleccione</option>
+            <option value="DNI">DNI</option>
+            <option value="CE">Carné de Extranjería</option>
+            <option value="PAS">Pasaporte</option>
+          </select>
+          <div class="form-hint error" *ngIf="formAlumno.get('tipoDocumento')?.invalid && formAlumno.get('tipoDocumento')?.touched">
+            <small>Obligatorio.</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            N° Documento <span class="req">*</span>
+          </label>
+          <input 
+            type="text"
+            maxlength="8"
+            class="form-input"
+            [class.is-invalid]="formAlumno.get('numeroDocumento')?.invalid && formAlumno.get('numeroDocumento')?.touched"
+            formControlName="numeroDocumento"
+            placeholder="00000000">
+          
+          <!-- Mensaje de Error -->
+          <div class="form-hint error" *ngIf="formAlumno.get('numeroDocumento')?.invalid && formAlumno.get('numeroDocumento')?.touched">
+            <small *ngIf="formAlumno.get('numeroDocumento')?.errors?.['required']">El DNI es obligatorio.</small>
+            <small *ngIf="formAlumno.get('numeroDocumento')?.errors?.['pattern']">Deben ser 8 dígitos numéricos.</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            Fecha de Nacimiento <span class="req">*</span>
+          </label>
+          <input 
+            type="date"
+            class="form-input"
+            [class.is-invalid]="formAlumno.get('fechaNacimiento')?.invalid && formAlumno.get('fechaNacimiento')?.touched"
+            formControlName="fechaNacimiento">
+          <div class="form-hint error" *ngIf="formAlumno.get('fechaNacimiento')?.invalid && formAlumno.get('fechaNacimiento')?.touched">
+            <small>Dato obligatorio.</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sexo / Dirección -->
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">
+            Sexo <span class="req">*</span>
+          </label>
+
+          <div class="radio-group">
+            <label class="radio-card">
+              <input type="radio" value="F" formControlName="sexo">
+              <span class="radio-dot"></span>
+              <span class="radio-text">Femenino</span>
+            </label>
+
+            <label class="radio-card">
+              <input type="radio" value="M" formControlName="sexo">
+              <span class="radio-dot"></span>
+              <span class="radio-text">Masculino</span>
+            </label>
+          </div>
+          <div class="form-hint error" *ngIf="formAlumno.get('sexo')?.invalid && formAlumno.get('sexo')?.touched">
+            <small>Seleccione una opción.</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Dirección</label>
+          <input 
+            type="text"
+            class="form-input"
+            formControlName="direccion"
+            placeholder="Dirección completa">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</form>

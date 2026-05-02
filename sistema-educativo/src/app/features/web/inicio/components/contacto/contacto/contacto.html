@@ -1,0 +1,230 @@
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb">
+      <a href="inicio.html">Inicio</a>
+      <span>›</span>
+      <span class="current">Contacto</span>
+    </div>
+    <h1>Ponte en<br><em>Contacto</em></h1>
+    <p class="page-hero-sub">Estamos aquí para responder tus preguntas sobre matrículas, niveles, horarios o cualquier consulta que tengas. Escríbenos o visítanos.</p>
+  </div>
+  <div class="page-hero-bg">@</div>
+  <div class="hero-bar" style="margin-top:48px;"></div>
+</section>
+
+<!-- SECCIÓN 1: FORMULARIO + DATOS -->
+<section class="section-contacto">
+  <div class="section-inner">
+    <div class="section-label">Comunícate con nosotros</div>
+    <h2 class="section-title">Envíanos un <em>Mensaje</em></h2>
+
+    <div class="contacto-layout">
+      <!-- Info -->
+      <div>
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="ic-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+            <div class="ic-content">
+              <span class="ic-label">Dirección</span>
+              <div class="ic-main">Av. Los Maestros 456</div>
+              <div class="ic-sub">Ica, Región Ica, Perú<br>Frente al Parque Industrial</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="ic-icon"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
+            <div class="ic-content">
+              <span class="ic-label">Teléfonos</span>
+              <div class="ic-main">056-223456</div>
+              <div class="ic-sub">Celular / WhatsApp: 987 123 456<br>Secretaría: 056-223457</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="ic-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+            <div class="ic-content">
+              <span class="ic-label">Correo Electrónico</span>
+              <div class="ic-main" style="font-size:14px">matriculas@iesanmarcos.edu.pe</div>
+              <div class="ic-sub">direccion@iesanmarcos.edu.pe<br>Respuesta en 24–48 horas hábiles</div>
+            </div>
+          </div>
+        </div>
+        <div class="horario-box">
+          <span class="ic-label">Horario de atención presencial</span>
+          <div class="horario-row"><span class="h-dia">Lunes a Viernes</span><span class="h-hora">8:00 — 4:30 pm</span></div>
+          <div class="horario-row"><span class="h-dia">Sábados</span><span class="h-hora">8:00 — 12:00 pm</span></div>
+          <div class="horario-row"><span class="h-dia">Domingos y feriados</span><span class="h-cerrado">Cerrado</span></div>
+        </div>
+      </div>
+
+      <!-- Formulario -->
+      <div class="form-contact">
+        <div class="form-title">Enviar Consulta</div>
+        <div class="form-subtitle">Completa el formulario y nos comunicaremos contigo a la brevedad.</div>
+        <div class="form-grid cols2">
+          <div class="field">
+            <label>Nombres <span class="req">*</span></label>
+            <input type="text" [(ngModel)]="form.nombre" name="nombre" placeholder="Tu nombre">
+          </div>
+          <div class="field">
+            <label>Apellidos <span class="req">*</span></label>
+            <input type="text" [(ngModel)]="form.apellido" name="apellido" placeholder="Tus apellidos">
+          </div>
+          <div class="field">
+            <label>Correo Electrónico <span class="req">*</span></label>
+            <input type="email" [(ngModel)]="form.email" name="email" placeholder="correo@ejemplo.com">
+          </div>
+          <div class="field">
+            <label>Teléfono / Celular</label>
+            <input type="tel" placeholder="987 654 321">
+          </div>
+          <div class="field span2">
+            <label>Asunto <span class="req">*</span></label>
+            <select [(ngModel)]="form.asunto" name="asunto">
+              <option value="">Seleccionar motivo...</option>
+              <option>Información sobre matrículas</option>
+              <option>Consulta sobre nivel Inicial</option>
+              <option>Consulta sobre nivel Primaria</option>
+              <option>Consulta sobre nivel Secundaria</option>
+              <option>Horarios y turnos</option>
+              <option>Pensiones y costos</option>
+              <option>Traslado de otro colegio</option>
+              <option>Agendar visita a la institución</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="field span2">
+            <label>Mensaje <span class="req">*</span></label>
+            <textarea [(ngModel)]="form.mensaje" name="mensaje" placeholder="Escribe tu consulta o mensaje aquí. Mientras más detalle nos des, mejor podremos ayudarte..."></textarea>
+          </div>
+        </div>
+        <button class="btn-submit" (click)="sendContact()">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          Enviar Mensaje
+        </button>
+        <p class="form-footer-note">Al enviar, aceptas nuestra Política de Privacidad. No compartimos tus datos con terceros.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECCIÓN 2: UBICACIÓN -->
+<section class="section-ubicacion">
+  <div class="section-inner">
+    <div class="section-label">Cómo encontrarnos</div>
+    <h2 class="section-title">Nuestra <em>Ubicación</em></h2>
+
+    <div class="ubicacion-layout">
+      <div class="ubicacion-info">
+        <div class="ub-card">
+          <h4>Datos de Ubicación</h4>
+          <div class="ub-detail">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+            <span><strong>Av. Los Maestros 456</strong><br>Urbanización Los Docentes, Ica<br>Provincia de Ica — Región Ica</span>
+          </div>
+          <div class="ub-detail">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            <span>A 200 metros del mercado central de Ica, frente al Parque Industrial</span>
+          </div>
+          <div class="ub-detail">
+            <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg>
+            <span>Zona de fácil acceso con estacionamiento disponible en la calle</span>
+          </div>
+        </div>
+        <div class="como-llegar">
+          <h4>Cómo Llegar</h4>
+          <div class="transporte-item">
+            <div class="trans-icon"><svg viewBox="0 0 24 24"><path d="M17 5H3c-1.1 0-2 .89-2 2v9h2c0 1.65 1.34 3 3 3s3-1.35 3-3h5.5c0 1.65 1.34 3 3 3s3-1.35 3-3H23v-5l-6-6zm-11 11.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm12 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div>
+            <div class="trans-text"><strong>En vehículo propio</strong><span>Ingresar por Av. Los Maestros desde el Centro de Ica (5 min)</span></div>
+          </div>
+          <div class="transporte-item">
+            <div class="trans-icon"><svg viewBox="0 0 24 24"><path d="M12 2c-4.42 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-3.58-4-8-4zm0 2c3.84 0 5.7.48 6 2H6c.3-1.52 2.16-2 6-2zm1 5h-2V7h2v2zm-5 0H6V7h2v2zm8 0h-2V7h2v2z"/></svg></div>
+            <div class="trans-text"><strong>Transporte público</strong><span>Combis Lima–Ica o mototaxi desde el Terminal Terrestre (10 min)</span></div>
+          </div>
+          <div class="transporte-item">
+            <div class="trans-icon"><svg viewBox="0 0 24 24"><path d="M13.5 5.5c1.09 0 2 .91 2 2s-.91 2-2 2-2-.91-2-2 .91-2 2-2M9.5 8.5C9.5 6.01 11.51 4 14 4s4.5 2.01 4.5 4.5c0 3.5-4.5 9-4.5 9s-4.5-5.5-4.5-9z"/></svg></div>
+            <div class="trans-text"><strong>A pie desde el centro</strong><span>15 minutos caminando desde la Plaza de Armas de Ica</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="mapa-placeholder">
+        <div class="mapa-pin">
+          <div class="pin-icon"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg></div>
+          <div class="pin-label">IE San Marcos</div>
+          <div class="pin-addr">Av. Los Maestros 456, Ica</div>
+          <a href="https://maps.google.com/?q=Ica+Peru" target="_blank" class="mapa-btn">
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            Ver en Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECCIÓN 3: PREGUNTAS FRECUENTES -->
+<section class="section-faq">
+  <div class="section-inner">
+    <div class="faq-layout">
+      <div class="faq-aside">
+        <div class="section-label">¿Tienes dudas?</div>
+        <h3>Preguntas Frecuentes</h3>
+        <p>Aquí respondemos las consultas más comunes de padres y apoderados sobre nuestro proceso de matrícula y vida institucional.</p>
+        <p>Si no encuentras tu respuesta aquí, escríbenos directamente.</p>
+        <a href="#" class="faq-cta" onclick="document.getElementById('c_nombre').focus(); return false;">
+          <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          Hacer una pregunta
+        </a>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            ¿Cuándo inicia el proceso de matrícula para el 2026?
+            <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+          </div>
+          <div class="faq-a">Las ratificaciones para alumnos actuales inician el 10 de junio hasta el 30 de junio de 2025. El proceso para alumnos nuevos abre el 1 de julio y se extiende hasta el 31 de julio. Las clases para el año 2026 comienzan el 11 de marzo.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            ¿Qué documentos necesito para matricular a mi hijo?
+            <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+          </div>
+          <div class="faq-a">Los documentos requeridos son: partida de nacimiento original o copia legalizada, DNI del estudiante (si lo tiene), DNI del padre/madre/apoderado, libreta de notas del año anterior o certificado de estudios, 2 fotografías tamaño carnet y constancia de vacunas para Inicial y Primaria. Puedes cargarlos digitalmente en nuestro formulario en línea.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            ¿Cuánto cuesta la matrícula y las pensiones?
+            <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+          </div>
+          <div class="faq-a">La matrícula nueva tiene un costo de S/ 150.00 y la ratificación S/ 80.00. Los materiales educativos tienen un costo adicional de S/ 45.00. La pensión mensual es de S/ 230.00. Ofrecemos descuentos a partir del segundo hermano matriculado. Contáctanos para más información sobre facilidades de pago.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            ¿Puedo visitar las instalaciones antes de matricular a mi hijo?
+            <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+          </div>
+          <div class="faq-a">¡Por supuesto! Realizamos visitas guiadas de lunes a viernes de 9:00 am a 12:00 pm y los sábados de 9:00 am a 11:00 am. Te recomendamos llamarnos con anticipación para coordinar la visita y asegurarte atención personalizada de algún directivo.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            ¿Aceptan traslados de otras instituciones educativas?
+            <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+          </div>
+          <div class="faq-a">Sí, aceptamos traslados de otras instituciones durante el período de matrícula para nuevos alumnos (1 al 31 de julio) y también en el transcurso del año escolar, sujeto a disponibilidad de cupos. El alumno deberá presentar su certificado de estudios y la constancia de traslado emitida por su institución de origen.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            ¿La institución atiende a estudiantes con necesidades educativas especiales?
+            <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+          </div>
+          <div class="faq-a">Sí, somos una institución inclusiva. Contamos con apoyo del equipo SAANEE para estudiantes con necesidades educativas especiales. Durante el proceso de matrícula puedes indicar si tu hijo/a requiere apoyo especial y nuestro equipo coordinará la atención adecuada. Se requiere presentar la constancia correspondiente del CEBE o especialista.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+  ¡Mensaje enviado! Te contactaremos pronto.
+</div>

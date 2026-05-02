@@ -1,0 +1,212 @@
+  :root {
+    --white: #FFFFFF;
+    --off-white: #F4F6FA;
+    --blue-dark: #0A1A3E;
+    --blue-mid: #1340A0;
+    --blue-light: #2A63E6;
+    --blue-sky: #5B8FF9;
+    --orange: #FF5B1F;
+    --orange-hover: #E04800;
+    --orange-light: #FF8050;
+    --gray-100: #EEF1F8;
+    --gray-200: #D8DDE8;
+    --gray-400: #8A95B0;
+    --gray-600: #4A5470;
+    --text-dark: #0A1220;
+    --text-body: #2D3555;
+    --success: #00C27C;
+    --error: #E53030;
+    --border: #C8D0E4;
+    --shadow-card: 0 2px 24px rgba(10,26,62,0.10);
+    --shadow-lift: 0 8px 40px rgba(10,26,62,0.15);
+    --transition: 0.22s cubic-bezier(.4,0,.2,1);
+    --inicial: #5B8FF9;
+    --primaria: #FF5B1F;
+    --secundaria: #00C27C;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--off-white); color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--blue-dark); border-bottom: 3px solid var(--orange); display: flex; align-items: center; justify-content: space-between; padding: 0 48px; height: 68px; }
+  .nav-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+  .nav-logo-icon { width: 40px; height: 40px; background: var(--orange); display: flex; align-items: center; justify-content: center; clip-path: polygon(0 0, 100% 0, 100% 75%, 50% 100%, 0 75%); }
+  .nav-logo-icon span { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: #fff; letter-spacing: 1px; }
+  .nav-brand { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--white); letter-spacing: 2px; line-height: 1; }
+  .nav-brand small { display: block; font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 400; letter-spacing: 3px; color: var(--blue-sky); text-transform: uppercase; }
+  .nav-links { display: flex; align-items: center; gap: 6px; list-style: none; }
+  .nav-links a { display: block; padding: 8px 16px; color: var(--gray-200); font-size: 13.5px; font-weight: 400; text-decoration: none; letter-spacing: .4px; transition: color var(--transition); }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links .active a { color: var(--orange); font-weight: 500; }
+  .nav-cta { background: var(--orange); color: var(--white) !important; font-weight: 600 !important; padding: 8px 20px !important; font-size: 13px !important; border-top: 2px solid var(--orange-light); transition: background var(--transition) !important; }
+  .nav-cta:hover { background: var(--orange-hover) !important; }
+
+  /* PAGE HERO */
+  .page-hero { margin-top: 68px; background: var(--blue-dark); padding: 80px 48px 64px; position: relative; overflow: hidden; }
+  .page-hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(32,80,180,0.25) 0%, transparent 60%), repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(255,255,255,0.015) 80px, rgba(255,255,255,0.015) 81px), repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(255,255,255,0.015) 80px, rgba(255,255,255,0.015) 81px); pointer-events: none; }
+  .page-hero-bg { position: absolute; right: -10px; bottom: -30px; font-family: 'Bebas Neue', sans-serif; font-size: 180px; color: rgba(255,255,255,0.03); line-height: 1; user-select: none; pointer-events: none; }
+  .page-hero-inner { max-width: 1300px; margin: 0 auto; position: relative; z-index: 2; }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+  .breadcrumb a { font-size: 12px; color: var(--gray-400); text-decoration: none; transition: color var(--transition); }
+  .breadcrumb a:hover { color: var(--white); }
+  .breadcrumb span { font-size: 12px; color: var(--gray-400); }
+  .breadcrumb .current { color: var(--orange-light); font-weight: 500; }
+  .page-hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 6vw, 84px); color: var(--white); line-height: .96; letter-spacing: 1px; }
+  .page-hero h1 em { color: var(--orange); font-style: normal; }
+  .page-hero-sub { margin-top: 16px; color: var(--gray-200); font-size: 15px; font-weight: 300; line-height: 1.75; max-width: 560px; }
+  .hero-bar { height: 4px; background: var(--orange); width: 100%; position: relative; }
+  .hero-bar::after { content: ''; position: absolute; right: 0; top: 0; height: 4px; width: 40%; background: var(--blue-light); }
+
+  /* TABS NIVEL */
+  .niveles-tabs {
+    background: var(--blue-mid); padding: 0 48px;
+    display: flex; align-items: stretch;
+    border-bottom: 2px solid rgba(255,255,255,0.08);
+    overflow-x: auto;
+  }
+  .nivel-tab {
+    display: flex; align-items: center; gap: 12px;
+    padding: 20px 32px; cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all var(--transition);
+    white-space: nowrap; flex-shrink: 0;
+    text-decoration: none; color: var(--gray-200);
+  }
+  .nivel-tab:hover { background: rgba(255,255,255,0.06); }
+  .nivel-tab.active-inicial { border-bottom-color: var(--inicial); color: var(--white); }
+  .nivel-tab.active-primaria { border-bottom-color: var(--primaria); color: var(--white); }
+  .nivel-tab.active-secundaria { border-bottom-color: var(--secundaria); color: var(--white); }
+  .tab-dot { width: 10px; height: 10px; flex-shrink: 0; }
+  .dot-inicial { background: var(--inicial); }
+  .dot-primaria { background: var(--primaria); }
+  .dot-secundaria { background: var(--secundaria); }
+  .tab-text { font-size: 14px; font-weight: 500; }
+
+  /* SECTION UTILS */
+  .section-inner { max-width: 1300px; margin: 0 auto; }
+  .section-label { display: flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
+  .section-label::before { content: ''; width: 32px; height: 2px; background: var(--orange); }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(36px, 4vw, 56px); color: var(--blue-dark); letter-spacing: 1px; line-height: 1; margin-bottom: 16px; }
+  .section-title em { color: var(--blue-light); font-style: normal; }
+
+  /* SECCIÓN 1: NIVELES GRANDES */
+  .section-niveles { padding: 80px 48px; background: var(--white); }
+  .niveles-big-grid { display: flex; flex-direction: column; gap: 2px; margin-top: 52px; }
+
+  .nivel-big {
+    display: grid; grid-template-columns: 280px 1fr; min-height: 200px;
+    border-left: 6px solid transparent; overflow: hidden;
+  }
+  .nivel-big.inicial { border-left-color: var(--inicial); }
+  .nivel-big.primaria { border-left-color: var(--primaria); }
+  .nivel-big.secundaria { border-left-color: var(--secundaria); }
+
+  .nivel-big-left {
+    background: var(--blue-dark); padding: 36px 32px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    position: relative; overflow: hidden;
+  }
+  .nivel-big-left::before { content: ''; position: absolute; bottom: -20px; right: -20px; font-family: 'Bebas Neue', sans-serif; font-size: 100px; color: rgba(255,255,255,0.04); line-height: 1; width: 140px; height: 100px; display: flex; align-items: center; justify-content: flex-end; }
+  .nivel-big.inicial .nivel-big-left { background: linear-gradient(135deg, #0A1A3E, #1B4080); }
+  .nivel-big.primaria .nivel-big-left { background: linear-gradient(135deg, #0A1A3E, #3D1700); }
+  .nivel-big.secundaria .nivel-big-left { background: linear-gradient(135deg, #0A1A3E, #003D28); }
+  .nivel-tipo { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 12px; }
+  .nivel-big.inicial .nivel-tipo { color: var(--inicial); }
+  .nivel-big.primaria .nivel-tipo { color: var(--primaria); }
+  .nivel-big.secundaria .nivel-tipo { color: var(--secundaria); }
+  .nivel-big-left h3 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--white); letter-spacing: 1px; line-height: 1.1; }
+  .nivel-edad { font-size: 12px; color: var(--gray-400); margin-top: 8px; }
+  .nivel-badge { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 5px 12px; }
+  .nivel-big.inicial .nivel-badge { background: rgba(91,143,249,0.2); color: var(--inicial); }
+  .nivel-big.primaria .nivel-badge { background: rgba(255,91,31,0.2); color: var(--primaria); }
+  .nivel-big.secundaria .nivel-badge { background: rgba(0,194,124,0.2); color: var(--secundaria); }
+
+  .nivel-big-right { background: var(--off-white); padding: 36px 40px; display: flex; gap: 40px; }
+  .nivel-desc { flex: 1; }
+  .nivel-desc p { font-size: 14px; color: var(--text-body); line-height: 1.8; margin-bottom: 16px; }
+  .nivel-grados-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+  .grado-chip {
+    background: var(--white); border: 1px solid var(--border);
+    padding: 6px 14px; font-size: 12px; font-weight: 600; color: var(--blue-dark);
+    transition: all var(--transition);
+  }
+  .grado-chip:hover { background: var(--blue-dark); color: var(--white); border-color: var(--blue-dark); }
+  .nivel-features { display: flex; flex-direction: column; gap: 10px; min-width: 200px; }
+  .feat-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .feat-item:last-child { border-bottom: none; }
+  .feat-icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .feat-icon svg { width: 14px; height: 14px; }
+  .nivel-big.inicial .feat-icon { background: rgba(91,143,249,0.15); }
+  .nivel-big.inicial .feat-icon svg { fill: var(--inicial); }
+  .nivel-big.primaria .feat-icon { background: rgba(255,91,31,0.12); }
+  .nivel-big.primaria .feat-icon svg { fill: var(--primaria); }
+  .nivel-big.secundaria .feat-icon { background: rgba(0,194,124,0.12); }
+  .nivel-big.secundaria .feat-icon svg { fill: var(--secundaria); }
+  .feat-text { font-size: 12.5px; color: var(--text-body); line-height: 1.5; }
+  .feat-text strong { display: block; font-weight: 600; color: var(--text-dark); font-size: 12px; margin-bottom: 1px; }
+
+  /* SECCIÓN 2: HORARIOS */
+  .section-horarios { padding: 80px 48px; background: var(--off-white); }
+  .horarios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 52px; }
+  .horario-card {
+    background: var(--white); border: 1px solid var(--border);
+    box-shadow: var(--shadow-card); overflow: hidden;
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+  .horario-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+  .horario-header { padding: 24px; background: var(--blue-dark); }
+  .h-nivel-name { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--white); letter-spacing: 1px; }
+  .h-dot { display: inline-block; width: 8px; height: 8px; margin-right: 8px; vertical-align: middle; }
+  .horario-body { padding: 24px; }
+  .turno-item { padding: 14px 0; border-bottom: 1px solid var(--gray-100); }
+  .turno-item:last-child { border-bottom: none; }
+  .turno-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray-400); margin-bottom: 6px; }
+  .turno-horario { font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 500; color: var(--blue-dark); }
+  .turno-dias { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+  .turno-disponible { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; }
+  .disponible { background: rgba(0,194,124,0.12); color: var(--success); }
+  .limitado { background: rgba(255,91,31,0.10); color: var(--orange); }
+
+  /* SECCIÓN 3: METODOLOGÍA */
+  .section-metodologia { padding: 80px 48px; background: var(--blue-dark); }
+  .section-metodologia .section-label { color: var(--orange-light); }
+  .section-metodologia .section-label::before { background: var(--orange); }
+  .section-metodologia .section-title { color: var(--white); }
+  .section-metodologia .section-title em { color: var(--orange); }
+  .section-metodologia .section-desc { font-size: 15px; color: var(--gray-200); line-height: 1.8; max-width: 560px; margin-bottom: 52px; }
+  .metodologia-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+  .met-item {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    padding: 32px 28px;
+    transition: all var(--transition); cursor: default;
+  }
+  .met-item:hover { background: rgba(255,255,255,0.09); transform: translateY(-4px); }
+  .met-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--orange-light); margin-bottom: 16px; display: block; letter-spacing: 1px; }
+  .met-icon { width: 44px; height: 44px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .met-icon svg { width: 20px; height: 20px; fill: var(--orange); }
+  .met-item h4 { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--white); letter-spacing: .5px; margin-bottom: 10px; }
+  .met-item p { font-size: 13px; color: var(--gray-400); line-height: 1.7; }
+  .met-cta {
+    margin-top: 48px; display: flex; align-items: center; gap: 20px;
+    padding: 28px; background: rgba(255,91,31,0.12); border: 1px solid rgba(255,91,31,0.25);
+    flex-wrap: wrap;
+  }
+  .met-cta p { font-size: 15px; color: var(--gray-200); flex: 1; line-height: 1.6; }
+  .met-cta p strong { color: var(--white); }
+  .btn-orange { background: var(--orange); color: var(--white); border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 12px 28px; text-decoration: none; display: inline-block; transition: background var(--transition); white-space: nowrap; }
+  .btn-orange:hover { background: var(--orange-hover); }
+
+  @media (max-width: 1024px) {
+    .metodologia-grid { grid-template-columns: 1fr 1fr; }
+    .horarios-grid { grid-template-columns: 1fr; }
+    .nivel-big { grid-template-columns: 1fr; }
+    .nivel-big-right { flex-direction: column; gap: 24px; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .page-hero, .section-niveles, .section-horarios, .section-metodologia { padding-left: 20px; padding-right: 20px; }
+    .niveles-tabs { padding: 0 20px; }
+    .metodologia-grid { grid-template-columns: 1fr; }
+  }

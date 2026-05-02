@@ -15,14 +15,15 @@
   </div>
 
   <div class="navbar-menu" id="navMenu" [class.active]="isMenuOpen">
-    <a class="nav-link" [class.active-link]="activeLink === 'datos'" (click)="setActive('datos')" routerLink="/matricula/datos">Inicio</a>
-    <a class="nav-link" [class.active-link]="activeLink === 'matricula'" (click)="setActive('matricula')" routerLink="/matricula/matricula-alumno">Nosotros</a>
-    <a class="nav-link" [class.active-link]="activeLink === 'horario'" (click)="setActive('horario')" routerLink="/matricula/horario">Contacto</a>
-    <a class="nav-link" [class.active-link]="activeLink === 'finalizar-matricula'" (click)="setActive('finalizar-matricula')" routerLink="/matricula/finalizar-matricula"> Matriculate</a>
+    <a class="nav-link" [class.active-link]="activeLink === 'inicio'" (click)="setActive('inicio')" routerLink="/inicio/inicio">Inicio</a>
+    <a class="nav-link" [class.active-link]="activeLink === 'nosotros'" (click)="setActive('nosotros')" routerLink="/inicio/nosotros">Nosotros</a>
+    <a class="nav-link" [class.active-link]="activeLink === 'niveles'" (click)="setActive('niveles')" routerLink="/inicio/niveles">Niveles</a>
+    <a class="nav-link" [class.active-link]="activeLink === 'contacto'" (click)="setActive('contacto')" routerLink="/inicio/contacto">Contacto</a>
   </div>
 
   <div class="navbar-actions">
     <a routerLink="/login" class="btn btn-outline">Ingresar</a>
+   
     
     <button class="navbar-toggle" (click)="toggleMenu()">
       <i class="bi" [class.bi-list]="!isMenuOpen" [class.bi-x-lg]="isMenuOpen"></i>

@@ -8,32 +8,34 @@
 
 /* VARIABLES DEL TEMA CLARO (Default) */
 :root {
-    /* COLORES DE MARCA */
-    --rose: #FF007F;
-    --rose-hover: #E60072;
-    --rose-light: #FFF0F6;
-    --rose-bg: #FFE8F5;
     
-    /* COLORES PRINCIPAL (AdminRC Events) */
-    --gold: #d725dd;
-    --gold-dim: rgba(215, 37, 221, 0.15);
-    --gold-glow: rgba(215, 37, 221, 0.4);
-    --dark: #0d0b0f;
-    --dark-2: #141118;
-    --dark-3: #1c1820;
-    --cream: #faf7f2;
-    --cream-2: #f2edea;
-    --text: #2a2229;
-    --muted: #7a717a;
-    --accent-cyan: #00e5ff;
-    --accent-warm: #ff6b35;
+    /*colres para inicio,nosotrso,contacto y matriculas*/
+     --white: #FFFFFF;
+     --off-white: #F4F6FA;
+     --blue-dark: #0A1A3E;
+     --blue-mid: #1340A0;
+     --blue-light: #2A63E6;
+     --blue-sky: #5B8FF9;
+     --orange: #FF5B1F;
+     --orange-hover: #E04800;
+     --orange-light: #FF8050;
+     --gray-100: #EEF1F8;
+     --gray-200: #D8DDE8;
+     --gray-400: #8A95B0;
+     --gray-600: #4A5470;
+     --text-dark: #0A1220;
+     --text-body: #2D3555;
+     --success: #00C27C;
+     --error: #E53030;
+     --border: #C8D0E4;
+     --shadow-card: 0 2px 24px rgba(10, 26, 62, 0.10);
+     --shadow-lift: 0 8px 40px rgba(10, 26, 62, 0.15);
+     --transition: 0.22s cubic-bezier(.4, 0, .2, 1);
     
     /* COLORES BASE */
     --white: #FFFFFF;
     --light-bg: #FAFBFC;
     --light-gray: #F3F4F6;
-    --border: rgba(215, 37, 221, 0.18);
-    --border-soft: rgba(42, 34, 41, 0.1);
     --text-dark: #111827;
     --text-gray: #6B7280;
     --text-light: #9CA3AF;
@@ -57,15 +59,10 @@
     /* TRANSICIONES */
     --transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
     --transition-fast: all 0.15s cubic-bezier(0.23, 1, 0.32, 1);
-    
-    /* BORDES */
-    --border-principal: rgba(215, 37, 221, 0.2);
-    
 }
  
 /* VARIABLES DEL TEMA OSCURO */
 body.dark-mode {
-    /* COLORES BASE - INVERTIDOS */
     --white: #121212;
     --light-bg: #0A0A0A;
     --light-gray: #1E1E1E;
@@ -73,13 +70,10 @@ body.dark-mode {
     --text-dark: #F9FAFB;
     --text-gray: #9CA3AF;
     --text-light: #6B7280;
-    
-    /* COMPONENTES - TEMA OSCURO */
     --header-bg: rgba(18, 18, 18, 0.98);
     --header-border: #2D2D2D;
     --sidebar-bg: #121212;
     --card-bg: #1A1A1A;
-    --rose-bg: #2D1B26;
 }
  
 /* ============================================
@@ -95,6 +89,10 @@ body.dark-mode {
  
 html {
     scroll-behavior: smooth;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
 }
  
 body {
@@ -105,17 +103,14 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
     line-height: 1.6;
     overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
 }
  
 /* ============================================
-   ELEMENTO INVISIBLE PARA DEBUG
-   ============================================ */
-.ff {
-    color: transparent;
-}
- 
-/* ============================================
-   LOADING SPINNER - DISEÑO PREMIUM
+   LOADER - SPINNER
    ============================================ */
 .loader {
     position: fixed;
@@ -139,18 +134,11 @@ body.dark-mode .loader {
     background: rgba(18, 18, 18, 0.9);
 }
  
-body.transparent-mode .loader {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
- 
 .loader.active {
     opacity: 1;
     visibility: visible;
 }
  
-/* SPINNER PREMIUM */
 .spinner {
     position: relative;
     width: 80px;
@@ -168,14 +156,14 @@ body.transparent-mode .loader {
 }
  
 .spinner::before {
-    border-top-color: var(--rose);
-    border-right-color: var(--rose);
+    border-top-color: var(--info);
+    border-right-color: var(--info);
     animation: spinOuter 0.6s linear infinite;
 }
  
 .spinner::after {
-    border-bottom-color: var(--info);
-    border-left-color: var(--info);
+    border-bottom-color: var(--danger);
+    border-left-color: var(--danger);
     animation: spinInner 0.8s linear infinite reverse;
     width: 85%;
     height: 85%;
@@ -184,7 +172,6 @@ body.transparent-mode .loader {
     transform: translate(-50%, -50%);
 }
  
-/* LOADING TEXT */
 .loader-text {
     color: var(--text-dark);
     font-size: 0.95rem;
@@ -194,40 +181,8 @@ body.transparent-mode .loader {
     animation: pulse 0.8s ease-in-out infinite;
 }
  
-body.dark-mode .loader-text {
-    color: var(--text-dark);
-}
- 
-/* DOTS ANIMATION */
-.loader-dots {
-    display: inline-block;
-    margin-left: 4px;
-}
- 
-.loader-dots span {
-    display: inline-block;
-    width: 3px;
-    height: 3px;
-    margin: 0 2px;
-    background: var(--rose);
-    border-radius: 50%;
-    animation: dotsAnimation 0.8s ease-in-out infinite;
-}
- 
-.loader-dots span:nth-child(1) {
-    animation-delay: 0s;
-}
- 
-.loader-dots span:nth-child(2) {
-    animation-delay: 0.2s;
-}
- 
-.loader-dots span:nth-child(3) {
-    animation-delay: 0.4s;
-}
- 
 /* ============================================
-   ANIMACIONES GLOBALES
+   ANIMACIONES
    ============================================ */
 @keyframes spinOuter {
     to {
@@ -250,25 +205,8 @@ body.dark-mode .loader-text {
     }
 }
  
-@keyframes dotsAnimation {
-    0%, 100% {
-        transform: translateY(0);
-        opacity: 0.6;
-    }
-    50% {
-        transform: translateY(-8px);
-        opacity: 1;
-    }
-}
- 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
- 
 /* ============================================
-   TIPOGRAFÍA GLOBAL
+   TIPOGRAFÍA
    ============================================ */
 h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
@@ -280,17 +218,17 @@ p {
 }
  
 a {
-    color: var(--rose);
+    color: var(--info);
     text-decoration: none;
     transition: var(--transition-fast);
 }
  
 a:hover {
-    color: var(--rose-hover);
+    color: var(--success);
 }
  
 /* ============================================
-   SCROLLBAR GLOBAL
+   SCROLLBAR
    ============================================ */
 ::-webkit-scrollbar {
     width: 8px;
@@ -311,7 +249,7 @@ a:hover {
 }
  
 /* ============================================
-   RESPONSIVE BASE
+   RESPONSIVE
    ============================================ */
 @media (max-width: 768px) {
     body {

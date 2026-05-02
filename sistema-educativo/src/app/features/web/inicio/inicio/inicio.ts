@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { TopbarWebComponent } from '../../matricula/components/topbar-web/topbar-web';
-import { RouterOutlet } from '@angular/router';
+import { InicioPage } from '../components/inicioPage/inicio-page/inicio-page';
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [TopbarWebComponent],
+  imports: [InicioPage],
   templateUrl: './inicio.html',
   styleUrl: './inicio.css',
 })

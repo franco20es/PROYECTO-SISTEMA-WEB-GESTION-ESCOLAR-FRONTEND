@@ -21,7 +21,7 @@ interface Evento {
 export class TopbarWebComponent implements OnInit {
   
   isMenuOpen: boolean = false;
-  activeLink: string = 'inicio';
+  activeLink: string = 'inicio';  // 'inicio' | 'nosotros' | 'contacto' | 'matricula'
 
   eventos: Evento[] = [];
 
