@@ -1,1 +1,128 @@
-<h1>componente de cursos profesor</h1>
+<section class="cursos-profesor">
+	<header class="page-header">
+		<div>
+			<p class="eyebrow">Panel docente</p>
+			<h1>Mis cursos asignados</h1>
+			<p class="subtitle">
+				Visualiza cursos de primaria y secundaria con avance del programa,
+				promedio de notas y acciones rápidas.
+			</p>
+		</div>
+	</header>
+
+	<section class="filters" aria-label="Filtros de cursos">
+		<label class="filter-input" for="buscarCurso">
+			<span>Buscar curso</span>
+			<input
+				id="buscarCurso"
+				type="search"
+				placeholder="Nombre, código o materia"
+				[ngModel]="searchTerm()"
+				(ngModelChange)="onSearchTerm($event)"
+			/>
+		</label>
+
+		<label class="filter-select" for="nivelCurso">
+			<span>Nivel</span>
+			<select
+				id="nivelCurso"
+				[ngModel]="nivelSeleccionado()"
+				(ngModelChange)="onNivel($event)"
+			>
+				<option value="Todos">Todos</option>
+				@for (nivel of niveles; track nivel) {
+					<option [value]="nivel">{{ nivel }}</option>
+				}
+			</select>
+		</label>
+
+		<label class="filter-select" for="estadoCurso">
+			<span>Estado</span>
+			<select
+				id="estadoCurso"
+				[ngModel]="estadoSeleccionado()"
+				(ngModelChange)="onEstado($event)"
+			>
+				<option value="Todos">Todos</option>
+				@for (estado of estados; track estado) {
+					<option [value]="estado">{{ estado }}</option>
+				}
+			</select>
+		</label>
+	</section>
+
+	@if (cursosFiltrados().length === 0) {
+		<article class="empty-state" aria-live="polite">
+			<h2>No hay cursos para mostrar</h2>
+			<p>Ajusta los filtros o verifica tus cursos asignados.</p>
+		</article>
+	} @else {
+		<section class="cards-grid" aria-label="Listado de cursos">
+			@for (curso of cursosFiltrados(); track curso.codigo) {
+				<article class="curso-card" [class]="'curso-card ' + areaClass(curso.area)">
+					<header class="card-header">
+						<div>
+							<p class="codigo">{{ curso.codigo }}</p>
+							<h2>{{ curso.nombre }}</h2>
+						</div>
+						<span class="estado" [class]="estadoClass(curso.estado)">
+							{{ curso.estado }}
+						</span>
+					</header>
+
+					<div class="meta-row">
+						<span class="chip">{{ curso.area }}</span>
+						<span class="chip">{{ curso.nivel }}</span>
+						<span class="chip">{{ curso.horasSemana }} h/sem</span>
+					</div>
+
+					<dl class="data-grid">
+						<div>
+							<dt>Alumnos</dt>
+							<dd>{{ curso.alumnos }}</dd>
+						</div>
+						<div>
+							<dt>Unidades</dt>
+							<dd>{{ curso.unidades }}</dd>
+						</div>
+						<div>
+							<dt>Promedio</dt>
+							<dd class="promedio">{{ formatPromedio(curso.promedioNotas) }}</dd>
+						</div>
+					</dl>
+
+					<div class="avance-wrap" aria-label="Avance del programa">
+						<div class="avance-head">
+							<span>Avance del programa</span>
+							<strong>{{ curso.avancePrograma }}%</strong>
+						</div>
+						<div class="progress-track" role="progressbar" [attr.aria-valuenow]="curso.avancePrograma" aria-valuemin="0" aria-valuemax="100">
+							<div class="progress-fill" [style.width.%]="curso.avancePrograma"></div>
+						</div>
+					</div>
+
+					<div class="horarios">
+						<h3>Horarios</h3>
+						<ul>
+							@for (horario of curso.horarios; track horario) {
+								<li>{{ horario }}</li>
+							}
+						</ul>
+					</div>
+
+					<footer class="card-actions">
+						<button type="button" class="btn ghost" (click)="verDetalle(curso)">
+							Ver detalle
+						</button>
+						<button type="button" class="btn secondary" (click)="editarCurso(curso)">
+							Editar curso
+						</button>
+						<button type="button" class="btn primary" (click)="registrarNotasAsistencia(curso)">
+							Registrar notas/asistencia
+						</button>
+					</footer>
+				</article>
+			}
+		</section>
+	}
+</section>

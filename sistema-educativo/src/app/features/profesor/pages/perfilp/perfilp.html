@@ -1,0 +1,413 @@
+<section class="prf-page">
+
+  <!-- ── Toasts ─────────────────────────────────────────────────────── -->
+  @if (mensajeExito()) {
+    <div class="toast toast-ok"><i class="bi bi-check-circle-fill"></i> {{ mensajeExito() }}</div>
+  }
+  @if (mensajeError()) {
+    <div class="toast toast-err"><i class="bi bi-exclamation-circle-fill"></i> {{ mensajeError() }}</div>
+  }
+
+  <!-- ── Header ────────────────────────────────────────────────────────── -->
+  <div class="prf-header">
+    <div class="prf-header-left">
+      <div class="prf-header-icon"><i class="bi bi-person-circle"></i></div>
+      <div>
+        <h1 class="prf-title">Mi Perfil</h1>
+        <p class="prf-subtitle">Consulta y actualiza tu información personal</p>
+      </div>
+    </div>
+    <div class="prf-header-actions">
+      @if (!modoEdicion()) {
+        <button class="btn-primary" (click)="iniciarEdicion()">
+          <i class="bi bi-pencil-square"></i> Editar Perfil
+        </button>
+      }
+      <button class="btn-secondary" (click)="abrirModalPass()">
+        <i class="bi bi-shield-lock"></i> Cambiar Contraseña
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Card principal ────────────────────────────────────────────────── -->
+  <div class="prf-card-main">
+    <div class="prf-avatar-col">
+      <div class="prf-avatar-wrap">
+        @if (profesor().foto) {
+          <img [src]="profesor().foto" alt="Foto de perfil" class="prf-avatar-img" />
+        } @else {
+          <div class="prf-avatar-initials">{{ iniciales }}</div>
+        }
+        <label class="prf-avatar-edit" title="Cambiar foto">
+          <i class="bi bi-camera-fill"></i>
+          <input type="file" accept="image/*" class="prf-file-hidden" (change)="onFotoChange($event)" />
+        </label>
+      </div>
+      <div class="prf-avatar-name">{{ nombreCompleto }}</div>
+      <div class="prf-avatar-code"><i class="bi bi-hash"></i> {{ profesor().codigo }}</div>
+      <span class="badge-cargo">Profesora</span>
+      <span [class]="'prf-badge ' + estadoClass(profesor().estado)">
+        <i class="bi bi-circle-fill"></i> {{ profesor().estado }}
+      </span>
+    </div>
+
+    <div class="prf-info-col">
+      <div class="prf-info-grid">
+        <div class="prf-info-item">
+          <span class="prf-info-label"><i class="bi bi-envelope"></i> Correo</span>
+          <span class="prf-info-val">{{ profesor().correo }}</span>
+        </div>
+        <div class="prf-info-item">
+          <span class="prf-info-label"><i class="bi bi-telephone"></i> Teléfono</span>
+          <span class="prf-info-val">{{ profesor().telefono }}</span>
+        </div>
+        <div class="prf-info-item">
+          <span class="prf-info-label"><i class="bi bi-mortarboard"></i> Especialidad</span>
+          <span class="prf-info-val">{{ profesor().especialidad }}</span>
+        </div>
+        <div class="prf-info-item">
+          <span class="prf-info-label"><i class="bi bi-award"></i> Título</span>
+          <span class="prf-info-val">{{ profesor().titulo }}</span>
+        </div>
+        <div class="prf-info-item">
+          <span class="prf-info-label"><i class="bi bi-calendar-check"></i> Ingreso</span>
+          <span class="prf-info-val">{{ formatFecha(profesor().fechaIngreso) }}</span>
+        </div>
+        <div class="prf-info-item">
+          <span class="prf-info-label"><i class="bi bi-briefcase"></i> Experiencia</span>
+          <span class="prf-info-val">{{ profesor().aniosExperiencia }} años</span>
+        </div>
+      </div>
+
+      <!-- Stats rápidos -->
+      <div class="prf-stats-row">
+        <div class="prf-stat-card">
+          <span class="prf-stat-num">{{ materias().length }}</span>
+          <span class="prf-stat-lbl">Materias</span>
+        </div>
+        <div class="prf-stat-card">
+          <span class="prf-stat-num">{{ totalEstudiantes() }}</span>
+          <span class="prf-stat-lbl">Estudiantes</span>
+        </div>
+        <div class="prf-stat-card">
+          <span class="prf-stat-num">{{ totalHoras() }}</span>
+          <span class="prf-stat-lbl">Bloques/sem.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tabs ───────────────────────────────────────────────────────────── -->
+  <div class="prf-tabs">
+    <button [class]="'prf-tab ' + (tabActiva()==='datos'?'active':'')" (click)="setTab('datos')">
+      <i class="bi bi-person-lines-fill"></i> Datos Personales
+    </button>
+    <button [class]="'prf-tab ' + (tabActiva()==='academico'?'active':'')" (click)="setTab('academico')">
+      <i class="bi bi-book-half"></i> Información Académica
+    </button>
+    <button [class]="'prf-tab ' + (tabActiva()==='seguridad'?'active':'')" (click)="setTab('seguridad')">
+      <i class="bi bi-shield-check"></i> Seguridad
+    </button>
+  </div>
+
+  <!-- ══════════════════════ TAB: DATOS PERSONALES ══════════════════════ -->
+  @if (tabActiva() === 'datos') {
+    <div class="prf-panel">
+
+      @if (!modoEdicion()) {
+        <!-- Vista -->
+        <div class="prf-section-header">
+          <h2><i class="bi bi-person-lines-fill"></i> Datos Personales</h2>
+          <button class="btn-icon" (click)="iniciarEdicion()" title="Editar">
+            <i class="bi bi-pencil"></i>
+          </button>
+        </div>
+        <div class="prf-detail-grid">
+          <div class="prf-detail-item">
+            <span class="prf-detail-label">Nombres</span>
+            <span class="prf-detail-val">{{ profesor().nombres }}</span>
+          </div>
+          <div class="prf-detail-item">
+            <span class="prf-detail-label">Apellidos</span>
+            <span class="prf-detail-val">{{ profesor().apellidos }}</span>
+          </div>
+          <div class="prf-detail-item">
+            <span class="prf-detail-label">Correo institucional</span>
+            <span class="prf-detail-val">{{ profesor().correo }}</span>
+          </div>
+          <div class="prf-detail-item">
+            <span class="prf-detail-label">Teléfono</span>
+            <span class="prf-detail-val">{{ profesor().telefono || '—' }}</span>
+          </div>
+          <div class="prf-detail-item prf-detail-full">
+            <span class="prf-detail-label">Dirección</span>
+            <span class="prf-detail-val">{{ profesor().direccion || '—' }}</span>
+          </div>
+        </div>
+
+      } @else {
+        <!-- Formulario edición -->
+        <div class="prf-section-header">
+          <h2><i class="bi bi-pencil-square"></i> Editar Datos Personales</h2>
+        </div>
+        <form class="prf-form" (ngSubmit)="guardarCambios()">
+          <div class="prf-form-grid">
+            <div class="prf-form-group">
+              <label class="prf-label">Nombres <span class="req">*</span></label>
+              <input class="prf-input" type="text" [ngModel]="editNombres()" (ngModelChange)="editNombres.set($event)" name="editNombres" placeholder="Ej: María Elena" required />
+            </div>
+            <div class="prf-form-group">
+              <label class="prf-label">Apellidos <span class="req">*</span></label>
+              <input class="prf-input" type="text" [ngModel]="editApellidos()" (ngModelChange)="editApellidos.set($event)" name="editApellidos" placeholder="Ej: Rodríguez Paredes" required />
+            </div>
+            <div class="prf-form-group">
+              <label class="prf-label">Correo institucional <span class="req">*</span></label>
+              <input class="prf-input" type="email" [ngModel]="editCorreo()" (ngModelChange)="editCorreo.set($event)" name="editCorreo" placeholder="correo@colegio.edu.pe" required />
+            </div>
+            <div class="prf-form-group">
+              <label class="prf-label">Teléfono</label>
+              <input class="prf-input" type="tel" [ngModel]="editTelefono()" (ngModelChange)="editTelefono.set($event)" name="editTelefono" placeholder="Ej: 987 654 321" />
+            </div>
+            <div class="prf-form-group prf-form-full">
+              <label class="prf-label">Dirección</label>
+              <input class="prf-input" type="text" [ngModel]="editDireccion()" (ngModelChange)="editDireccion.set($event)" name="editDireccion" placeholder="Av. Los Álamos 234, San Borja" />
+            </div>
+          </div>
+          <div class="prf-form-actions">
+            <button type="button" class="btn-ghost" (click)="cancelarEdicion()">
+              <i class="bi bi-x-lg"></i> Cancelar
+            </button>
+            <button type="submit" class="btn-primary">
+              <i class="bi bi-check-lg"></i> Guardar Cambios
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  }
+
+  <!-- ══════════════════════ TAB: INFORMACIÓN ACADÉMICA ═════════════════ -->
+  @if (tabActiva() === 'academico') {
+    <div class="prf-panel">
+      <div class="prf-section-header">
+        <h2><i class="bi bi-book-half"></i> Información Académica</h2>
+      </div>
+
+      <!-- Materias asignadas -->
+      <h3 class="prf-subtitle-sec"><i class="bi bi-journals"></i> Materias Asignadas</h3>
+      <div class="prf-materias-grid">
+        @for (m of materias(); track m.id) {
+          <div class="prf-materia-card">
+            <div class="prf-materia-icon"><i class="bi bi-calculator"></i></div>
+            <div class="prf-materia-info">
+              <div class="prf-materia-nombre">{{ m.nombre }}</div>
+              <div class="prf-materia-sub">{{ m.grado }} Grado — Sección {{ m.seccion }}</div>
+              <div class="prf-materia-horario"><i class="bi bi-clock"></i> {{ m.horario }}</div>
+            </div>
+            <div class="prf-materia-students">
+              <span class="prf-materia-num">{{ m.estudiantes }}</span>
+              <span class="prf-materia-lbl">alumnos</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Horario resumido -->
+      <h3 class="prf-subtitle-sec"><i class="bi bi-calendar3"></i> Horario Semanal</h3>
+      <div class="prf-horario-table">
+        @for (dia of horario(); track dia.dia; let i = $index) {
+          <div class="prf-horario-dia">
+            <div class="prf-horario-dia-header">{{ dia.dia }}</div>
+            <div class="prf-horario-bloques">
+              @for (b of dia.bloques; track b.hora) {
+                <div [class]="'prf-bloque ' + horarioColor(i)">
+                  <span class="prf-bloque-hora">{{ b.hora }}</span>
+                  <span class="prf-bloque-mat">{{ b.materia }}</span>
+                  <span class="prf-bloque-grado">{{ b.grado }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ══════════════════════ TAB: SEGURIDAD ═════════════════════════════ -->
+  @if (tabActiva() === 'seguridad') {
+    <div class="prf-panel">
+      <div class="prf-section-header">
+        <h2><i class="bi bi-shield-check"></i> Seguridad y Acceso</h2>
+      </div>
+
+      <div class="prf-seg-grid">
+        <!-- Card cambiar contraseña -->
+        <div class="prf-seg-card">
+          <div class="prf-seg-icon seg-blue"><i class="bi bi-key-fill"></i></div>
+          <div class="prf-seg-info">
+            <div class="prf-seg-title">Contraseña</div>
+            <div class="prf-seg-desc">Actualiza tu contraseña para mantener tu cuenta segura.</div>
+          </div>
+          <button class="btn-primary" (click)="abrirModalPass()">
+            <i class="bi bi-shield-lock"></i> Cambiar
+          </button>
+        </div>
+
+        <!-- Card correo -->
+        <div class="prf-seg-card">
+          <div class="prf-seg-icon seg-green"><i class="bi bi-envelope-check-fill"></i></div>
+          <div class="prf-seg-info">
+            <div class="prf-seg-title">Correo Institucional</div>
+            <div class="prf-seg-desc">{{ profesor().correo }}</div>
+          </div>
+          <button class="btn-secondary" (click)="setTab('datos'); iniciarEdicion()">
+            <i class="bi bi-pencil"></i> Editar
+          </button>
+        </div>
+
+        <!-- Card sesión -->
+        <div class="prf-seg-card">
+          <div class="prf-seg-icon seg-orange"><i class="bi bi-phone-fill"></i></div>
+          <div class="prf-seg-info">
+            <div class="prf-seg-title">Sesión activa</div>
+            <div class="prf-seg-desc">Navegador web — Lima, Perú</div>
+          </div>
+          <span class="badge-sesion-activa"><i class="bi bi-circle-fill"></i> Activa</span>
+        </div>
+
+        <!-- Card código docente -->
+        <div class="prf-seg-card">
+          <div class="prf-seg-icon seg-purple"><i class="bi bi-person-badge-fill"></i></div>
+          <div class="prf-seg-info">
+            <div class="prf-seg-title">Código Docente</div>
+            <div class="prf-seg-desc">{{ profesor().codigo }} — No modificable</div>
+          </div>
+          <span class="badge-bloqueado"><i class="bi bi-lock-fill"></i> Fijo</span>
+        </div>
+      </div>
+
+      <!-- Consejos de seguridad -->
+      <div class="prf-tips">
+        <h3 class="prf-tips-title"><i class="bi bi-lightbulb"></i> Consejos de seguridad</h3>
+        <ul class="prf-tips-list">
+          <li><i class="bi bi-check-circle text-success"></i> Usa una contraseña de al menos 8 caracteres con mayúsculas, números y símbolos.</li>
+          <li><i class="bi bi-check-circle text-success"></i> No compartas tu contraseña con nadie.</li>
+          <li><i class="bi bi-check-circle text-success"></i> Cierra sesión al terminar en dispositivos compartidos.</li>
+          <li><i class="bi bi-check-circle text-success"></i> Cambia tu contraseña cada 3 meses.</li>
+        </ul>
+      </div>
+    </div>
+  }
+
+</section>
+
+<!-- ══════════════════ MODAL: PREVIEW DE FOTO ═══════════════════════════ -->
+@if (mostrarPreview()) {
+  <div class="modal-overlay" (click)="cancelarFoto()">
+    <div class="modal-foto" (click)="$event.stopPropagation()">
+      <div class="modal-foto-header">
+        <h3><i class="bi bi-camera"></i> Vista previa de foto</h3>
+        <button class="modal-close-btn" (click)="cancelarFoto()"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="modal-foto-body">
+        <img [src]="fotoPreview()" alt="Vista previa" class="foto-preview-img" />
+      </div>
+      <div class="modal-foto-footer">
+        <p class="foto-preview-hint"><i class="bi bi-info-circle"></i> Así se verá tu foto de perfil</p>
+        <div class="modal-foto-actions">
+          <button class="btn-ghost" (click)="cancelarFoto()"><i class="bi bi-x-lg"></i> Cancelar</button>
+          <button class="btn-primary" (click)="confirmarFoto()"><i class="bi bi-check-lg"></i> Confirmar foto</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ══════════════════ MODAL: CAMBIAR CONTRASEÑA ════════════════════════ -->
+@if (mostrarModalPass()) {
+  <div class="modal-overlay" (click)="cerrarModalPass()">
+    <div class="modal-pass" (click)="$event.stopPropagation()">
+      <div class="modal-pass-header">
+        <div class="modal-pass-icon"><i class="bi bi-shield-lock-fill"></i></div>
+        <div>
+          <h3>Cambiar Contraseña</h3>
+          <p>Ingresa tu contraseña actual y la nueva</p>
+        </div>
+        <button class="modal-close-btn" (click)="cerrarModalPass()"><i class="bi bi-x-lg"></i></button>
+      </div>
+
+      @if (passError()) {
+        <div class="pass-error-msg"><i class="bi bi-exclamation-circle"></i> {{ passError() }}</div>
+      }
+
+      <form class="pass-form" (ngSubmit)="cambiarPassword()">
+        <!-- Contraseña actual -->
+        <div class="pass-group">
+          <label class="prf-label">Contraseña actual <span class="req">*</span></label>
+          <div class="pass-input-wrap">
+            <input [type]="verPassActual() ? 'text' : 'password'"
+                   class="prf-input"
+                   [ngModel]="passActual()" (ngModelChange)="passActual.set($event)"
+                   name="passActual" placeholder="Tu contraseña actual" />
+            <button type="button" class="pass-toggle" (click)="verPassActual.set(!verPassActual())">
+              <i [class]="'bi ' + (verPassActual() ? 'bi-eye-slash' : 'bi-eye')"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Contraseña nueva -->
+        <div class="pass-group">
+          <label class="prf-label">Nueva contraseña <span class="req">*</span></label>
+          <div class="pass-input-wrap">
+            <input [type]="verPassNueva() ? 'text' : 'password'"
+                   class="prf-input"
+                   [ngModel]="passNueva()" (ngModelChange)="passNueva.set($event)"
+                   name="passNueva" placeholder="Mínimo 8 caracteres" />
+            <button type="button" class="pass-toggle" (click)="verPassNueva.set(!verPassNueva())">
+              <i [class]="'bi ' + (verPassNueva() ? 'bi-eye-slash' : 'bi-eye')"></i>
+            </button>
+          </div>
+          @if (passNueva()) {
+            <div class="pass-strength">
+              <div [class]="'pass-bar ' + passFortalezaClass()">
+                <div class="pass-bar-fill" [style.width.%]="passFortaleza() * 25"></div>
+              </div>
+              <span [class]="'pass-label ' + passFortalezaClass()">{{ passFortalezaLabel() }}</span>
+            </div>
+            <div class="pass-hints">
+              <span [class]="passNueva().length >= 8 ? 'hint-ok' : 'hint-no'"><i class="bi bi-circle-fill"></i> 8+ caracteres</span>
+              <span [class]="/[A-Z]/.test(passNueva()) ? 'hint-ok' : 'hint-no'"><i class="bi bi-circle-fill"></i> Mayúscula</span>
+              <span [class]="/[0-9]/.test(passNueva()) ? 'hint-ok' : 'hint-no'"><i class="bi bi-circle-fill"></i> Número</span>
+              <span [class]="/[^A-Za-z0-9]/.test(passNueva()) ? 'hint-ok' : 'hint-no'"><i class="bi bi-circle-fill"></i> Símbolo</span>
+            </div>
+          }
+        </div>
+
+        <!-- Confirmar contraseña -->
+        <div class="pass-group">
+          <label class="prf-label">Confirmar contraseña <span class="req">*</span></label>
+          <div class="pass-input-wrap">
+            <input [type]="verPassConfirmar() ? 'text' : 'password'"
+                   class="prf-input"
+                   [ngModel]="passConfirmar()" (ngModelChange)="passConfirmar.set($event)"
+                   name="passConfirmar" placeholder="Repite la nueva contraseña" />
+            <button type="button" class="pass-toggle" (click)="verPassConfirmar.set(!verPassConfirmar())">
+              <i [class]="'bi ' + (verPassConfirmar() ? 'bi-eye-slash' : 'bi-eye')"></i>
+            </button>
+          </div>
+          @if (passConfirmar() && passNueva() !== passConfirmar()) {
+            <span class="pass-mismatch"><i class="bi bi-x-circle"></i> Las contraseñas no coinciden</span>
+          }
+          @if (passConfirmar() && passNueva() === passConfirmar() && passNueva().length >= 8) {
+            <span class="pass-match"><i class="bi bi-check-circle"></i> Las contraseñas coinciden</span>
+          }
+        </div>
+
+        <div class="pass-form-actions">
+          <button type="button" class="btn-ghost" (click)="cerrarModalPass()"><i class="bi bi-x-lg"></i> Cancelar</button>
+          <button type="submit" class="btn-primary"><i class="bi bi-shield-check"></i> Actualizar contraseña</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

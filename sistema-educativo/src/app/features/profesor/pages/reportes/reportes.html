@@ -1,0 +1,735 @@
+<section class="rep-page">
+
+  <!-- ══════════════════════ HEADER ══════════════════════ -->
+  <div class="rep-header">
+    <div class="rep-header-left">
+      <div class="rep-header-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="rep-title">Reportes Académicos</h1>
+        <p class="rep-subtitle">Consulta y analiza rendimiento, asistencia y progreso estudiantil &bull; <strong>1 de mayo 2026</strong></p>
+      </div>
+    </div>
+    <div class="rep-header-actions">
+      <button class="btn-hdr btn-vista" (click)="generarReporte('Vista')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        Vista previa
+      </button>
+      <button class="btn-hdr btn-excel" (click)="generarReporte('Excel')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Excel
+      </button>
+      <button class="btn-hdr btn-pdf" (click)="generarReporte('PDF')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ FILTROS ══════════════════════ -->
+  <div class="filtros-panel">
+    <div class="filtros-row">
+      <div class="filtro-group">
+        <label class="filtro-label">Buscar estudiante</label>
+        <div class="search-wrap">
+          <svg class="search-ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input class="search-input" type="text" placeholder="Nombre o código..."
+                 [value]="busquedaAlumno()"
+                 (input)="busquedaAlumno.set($any($event).target.value)">
+        </div>
+      </div>
+      <div class="filtro-group">
+        <label class="filtro-label">Curso</label>
+        <select class="filtro-sel" [value]="filtroCurso()" (change)="filtroCurso.set($any($event).target.value)">
+          <option value="">Todos</option>
+          @for (c of cursosDisponibles(); track c) { <option [value]="c">{{c}}</option> }
+        </select>
+      </div>
+      <div class="filtro-group">
+        <label class="filtro-label">Materia</label>
+        <select class="filtro-sel" [value]="filtroMateria()" (change)="filtroMateria.set($any($event).target.value)">
+          <option value="">Todas</option>
+          @for (m of materiasDisponibles(); track m) { <option [value]="m">{{m}}</option> }
+        </select>
+      </div>
+      <div class="filtro-group">
+        <label class="filtro-label">Sección</label>
+        <select class="filtro-sel" [value]="filtroSeccion()" (change)="filtroSeccion.set($any($event).target.value)">
+          <option value="">Todas</option>
+          @for (s of seccionesDisponibles(); track s) { <option [value]="s">{{s}}</option> }
+        </select>
+      </div>
+      <div class="filtro-group">
+        <label class="filtro-label">Periodo</label>
+        <select class="filtro-sel" [value]="filtroPeriodo()" (change)="filtroPeriodo.set($any($event).target.value)">
+          @for (p of periodos; track p) { <option [value]="p">{{p}}</option> }
+        </select>
+      </div>
+      <div class="filtro-group">
+        <label class="filtro-label">Tipo de reporte</label>
+        <select class="filtro-sel" [value]="filtroTipo()" (change)="filtroTipo.set($any($event).target.value)">
+          <option value="">Todos</option>
+          @for (t of tiposRep; track t) { <option [value]="t">{{t}}</option> }
+        </select>
+      </div>
+      <div class="filtro-group">
+        <label class="filtro-label">Estado académico</label>
+        <select class="filtro-sel" [value]="filtroEstado()" (change)="filtroEstado.set($any($event).target.value)">
+          <option value="">Todos</option>
+          @for (e of estadosAc; track e) { <option [value]="e">{{e}}</option> }
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ SUMMARY CARDS ══════════════════════ -->
+  <div class="summary-grid">
+    <div class="sum-card sc-promedio">
+      <div class="sc-icon">📊</div>
+      <div class="sc-body">
+        <span class="sc-label">Promedio general</span>
+        <span class="sc-val" [class]="promedioColor(promedioGeneral())">{{promedioGeneral()}}</span>
+        <span class="sc-sub">sobre 20</span>
+      </div>
+    </div>
+    <div class="sum-card sc-asistencia">
+      <div class="sc-icon">✅</div>
+      <div class="sc-body">
+        <span class="sc-label">Asistencia promedio</span>
+        <span class="sc-val">{{asistenciaPromedio()}}%</span>
+        <div class="mini-bar"><div class="mini-fill" [style.width]="asistenciaPromedio() + '%'"></div></div>
+      </div>
+    </div>
+    <div class="sum-card sc-riesgo">
+      <div class="sc-icon">⚠️</div>
+      <div class="sc-body">
+        <span class="sc-label">En riesgo</span>
+        <span class="sc-val sc-val-danger">{{enRiesgoCount()}}</span>
+        <span class="sc-sub">estudiantes</span>
+      </div>
+    </div>
+    <div class="sum-card sc-destacados">
+      <div class="sc-icon">⭐</div>
+      <div class="sc-body">
+        <span class="sc-label">Destacados</span>
+        <span class="sc-val sc-val-gold">{{destacadoCount()}}</span>
+        <span class="sc-sub">estudiantes</span>
+      </div>
+    </div>
+    <div class="sum-card sc-desaprobados">
+      <div class="sc-icon">❌</div>
+      <div class="sc-body">
+        <span class="sc-label">Desaprobados</span>
+        <span class="sc-val sc-val-danger">{{desaprobadoCount()}}</span>
+        <span class="sc-sub">estudiantes</span>
+      </div>
+    </div>
+    <div class="sum-card sc-participacion">
+      <div class="sc-icon">👥</div>
+      <div class="sc-body">
+        <span class="sc-label">Participación</span>
+        <span class="sc-val">{{participacionPct()}}%</span>
+        <span class="sc-sub">aprobados / total</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ TABS PRINCIPALES ══════════════════════ -->
+  <div class="tabs-bar">
+    <button class="tab-btn" [class.active]="tabActiva()==='resumen'"      (click)="tabActiva.set('resumen')">
+      📋 Resumen General
+    </button>
+    <button class="tab-btn" [class.active]="tabActiva()==='notas'"        (click)="tabActiva.set('notas')">
+      📝 Notas
+    </button>
+    <button class="tab-btn" [class.active]="tabActiva()==='asistencia'"   (click)="tabActiva.set('asistencia')">
+      📅 Asistencia
+    </button>
+    <button class="tab-btn" [class.active]="tabActiva()==='evaluaciones'" (click)="tabActiva.set('evaluaciones')">
+      📊 Evaluaciones
+    </button>
+    <button class="tab-btn" [class.active]="tabActiva()==='riesgo'"       (click)="tabActiva.set('riesgo')">
+      ⚠️ Riesgo Académico
+    </button>
+    <button class="tab-btn" [class.active]="tabActiva()==='exportaciones'" (click)="tabActiva.set('exportaciones')">
+      📤 Exportaciones
+    </button>
+  </div>
+
+  <!-- ═════════════════════ CONTENIDO TABS ═════════════════════ -->
+
+  <!-- ══ TAB: RESUMEN GENERAL ══ -->
+  @if (tabActiva() === 'resumen') {
+    <div class="tab-content">
+
+      <!-- Gráficos row -->
+      <div class="charts-row">
+
+        <!-- Distribución estados -->
+        <div class="chart-card">
+          <h3 class="chart-title">Distribución por estado</h3>
+          <div class="dist-chart">
+            @for (d of distribucionEstados(); track d.estado) {
+              <div class="dist-row">
+                <span class="dist-label">{{d.estado}}</span>
+                <div class="dist-bar-track">
+                  <div class="dist-bar" [class]="estadoClass(d.estado)"
+                       [style.width]="d.pct + '%'"></div>
+                </div>
+                <span class="dist-pct">{{d.n}} <small>({{d.pct}}%)</small></span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Promedio por curso -->
+        <div class="chart-card">
+          <h3 class="chart-title">Rendimiento por curso</h3>
+          <div class="bar-chart">
+            @for (c of promediosPorCurso(); track c.curso) {
+              <div class="bar-row">
+                <span class="bar-label">{{c.curso}}</span>
+                <div class="bar-track">
+                  <div class="bar-fill" [style.width]="barWidth(c.promedio) + '%'"
+                       [class]="promedioColor(c.promedio)"></div>
+                </div>
+                <span class="bar-val" [class]="promedioColor(c.promedio)">{{c.promedio}}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Evolución bimestral -->
+        <div class="chart-card">
+          <h3 class="chart-title">Evolución académica</h3>
+          <div class="evol-chart">
+            @for (ev of _evoluciones(); track ev.periodo) {
+              <div class="evol-col">
+                <span class="evol-pct-label">{{ev.asistencia}}%</span>
+                <div class="evol-bar-wrap">
+                  <div class="evol-bar evol-asist" [style.height]="ev.asistencia + '%'" title="Asistencia {{ev.asistencia}}%"></div>
+                  <div class="evol-bar evol-prom"  [style.height]="(ev.promedio/20*100) + '%'" title="Promedio {{ev.promedio}}"></div>
+                </div>
+                <span class="evol-nota">{{ev.promedio}}</span>
+                <span class="evol-periodo">{{ev.periodo}}</span>
+              </div>
+            }
+            <div class="evol-leyenda">
+              <span><span class="ley-dot evol-asist-dot"></span>Asistencia</span>
+              <span><span class="ley-dot evol-prom-dot"></span>Promedio</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Ranking top 5 -->
+      <div class="section-card">
+        <div class="sc-header">
+          <h3 class="sc-header-title">🏆 Ranking de rendimiento — {{filtroPeriodo()}}</h3>
+          <span class="sc-header-sub">{{estudiantesFiltrados().length}} estudiantes</span>
+        </div>
+        <div class="ranking-list">
+          @for (est of rankingEstudiantes().slice(0, 5); track est.id; let i = $index) {
+            <div class="rank-item" [class.rank-top]="i < 3">
+              <div class="rank-pos" [class]="'pos-' + (i+1)">{{i + 1}}</div>
+              <div class="rank-avatar">{{est.nombre.charAt(0)}}{{est.nombre.split(' ').pop()?.charAt(0) ?? ''}}</div>
+              <div class="rank-info">
+                <span class="rank-nombre">{{est.nombre}}</span>
+                <span class="rank-curso">{{est.curso}}</span>
+              </div>
+              <div class="rank-nota" [class]="promedioColor(est.promedio)">{{est.promedio}}</div>
+              <span class="badge" [class]="estadoClass(est.estado)">{{est.estado}}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+  }
+
+  <!-- ══ TAB: NOTAS ══ -->
+  @if (tabActiva() === 'notas') {
+    <div class="tab-content">
+      <div class="table-toolbar">
+        <span class="table-count">{{estudiantesFiltrados().length}} estudiantes — {{filtroPeriodo()}}</span>
+        <div style="display:flex;gap:8px">
+          <button class="btn-sm" (click)="generarReporte('PDF')">📄 PDF</button>
+          <button class="btn-sm" (click)="generarReporte('Excel')">📊 Excel</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="rep-table">
+          <thead>
+            <tr>
+              <th class="th-sortable" (click)="setOrden('codigo')"># {{sortIcon('codigo')}}</th>
+              <th class="th-sortable" (click)="setOrden('nombre')">Estudiante {{sortIcon('nombre')}}</th>
+              <th class="th-sortable" (click)="setOrden('curso')">Curso {{sortIcon('curso')}}</th>
+              <th class="th-sortable" (click)="setOrden('promedio')">Promedio {{sortIcon('promedio')}}</th>
+              <th>P.C. 1</th><th>Tarea 1</th><th>Examen P.</th><th>P.C. 2</th>
+              <th class="th-sortable" (click)="setOrden('estado')">Estado {{sortIcon('estado')}}</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (est of estudiantesFiltrados(); track est.id) {
+              <tr [class.row-riesgo]="est.riesgo === 'alto'">
+                <td class="td-codigo">{{est.codigo}}</td>
+                <td class="td-nombre">
+                  <div class="nombre-cell">
+                    <div class="td-avatar">{{est.nombre.charAt(0)}}{{est.nombre.split(' ').pop()?.charAt(0) ?? ''}}</div>
+                    <span>{{est.nombre}}</span>
+                  </div>
+                </td>
+                <td class="td-muted">{{est.curso}}</td>
+                <td class="td-promedio">
+                  <span class="promedio-badge" [class]="promedioColor(est.promedio)">{{est.promedio}}</span>
+                </td>
+                @for (nota of est.notas.slice(0, 4); track nota.evaluacion) {
+                  <td class="td-nota">
+                    @if (nota.nota !== null) {
+                      <span class="nota-pill" [class]="notaClass(nota.nota)">{{nota.nota}}</span>
+                    } @else {
+                      <span class="nota-pill nota-pendiente">—</span>
+                    }
+                  </td>
+                }
+                <td><span class="badge" [class]="estadoClass(est.estado)">{{est.estado}}</span></td>
+                <td>
+                  <button class="btn-detalle" (click)="verDetalle(est.id)">Ver detalle</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <!-- ══ TAB: ASISTENCIA ══ -->
+  @if (tabActiva() === 'asistencia') {
+    <div class="tab-content">
+      <div class="table-toolbar">
+        <span class="table-count">Reporte de Asistencia — {{filtroPeriodo()}}</span>
+        <div style="display:flex;gap:8px">
+          <button class="btn-sm" (click)="generarReporte('PDF')">📄 PDF</button>
+          <button class="btn-sm" (click)="generarReporte('Excel')">📊 Excel</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="rep-table">
+          <thead>
+            <tr>
+              <th>Estudiante</th>
+              <th class="th-sortable" (click)="setOrden('asistenciaPct')">Asistencia {{sortIcon('asistenciaPct')}}</th>
+              <th class="th-sortable" (click)="setOrden('faltas')">Faltas {{sortIcon('faltas')}}</th>
+              <th class="th-sortable" (click)="setOrden('tardanzas')">Tardanzas {{sortIcon('tardanzas')}}</th>
+              <th>Justificados</th>
+              <th>Tendencia</th>
+              <th>Riesgo</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (est of estudiantesFiltrados(); track est.id) {
+              <tr [class.row-riesgo]="est.asistenciaPct < 75">
+                <td class="td-nombre">
+                  <div class="nombre-cell">
+                    <div class="td-avatar">{{est.nombre.charAt(0)}}{{est.nombre.split(' ').pop()?.charAt(0) ?? ''}}</div>
+                    <div style="display:flex;flex-direction:column;gap:1px">
+                      <span>{{est.nombre}}</span>
+                      <span style="font-size:.73rem;color:var(--text-muted)">{{est.codigo}}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="asist-cell">
+                    <div class="asist-bar-track">
+                      <div class="asist-bar" [class]="est.asistenciaPct >= 85 ? 'asist-ok' : est.asistenciaPct >= 75 ? 'asist-warn' : 'asist-danger'"
+                           [style.width]="asistenciaBar(est.asistenciaPct) + '%'"></div>
+                    </div>
+                    <span class="asist-pct">{{est.asistenciaPct}}%</span>
+                  </div>
+                </td>
+                <td class="td-center"><span class="falta-badge">{{est.faltas}}</span></td>
+                <td class="td-center"><span class="tard-badge">{{est.tardanzas}}</span></td>
+                <td class="td-center td-muted">
+                  {{est.historialAsistencia.filter(h => h.estado === 'Justificado').length}}
+                </td>
+                <td class="td-center">
+                  @if (est.asistenciaPct >= 90) { <span class="trend-up">↑ Buena</span> }
+                  @else if (est.asistenciaPct >= 75) { <span class="trend-mid">→ Regular</span> }
+                  @else { <span class="trend-down">↓ Baja</span> }
+                </td>
+                <td>
+                  <span class="risk-badge" [class]="riesgoClass(est.riesgo)">{{est.riesgo}}</span>
+                </td>
+                <td>
+                  <button class="btn-detalle" (click)="verDetalle(est.id)">Historial</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <!-- ══ TAB: EVALUACIONES ══ -->
+  @if (tabActiva() === 'evaluaciones') {
+    <div class="tab-content">
+      <div class="eval-grid">
+        @for (evalItem of (estudiantesFiltrados()[0]?.notas ?? []); track evalItem.evaluacion; let idx = $index) {
+          <div class="eval-stat-card">
+            <div class="esc-type">{{evalItem.tipo}}</div>
+            <div class="esc-name">{{evalItem.evaluacion}}</div>
+            <div class="esc-meta">
+              <span>Peso: {{evalItem.peso}}%</span>
+              <span>{{evalItem.fecha}}</span>
+            </div>
+            <div class="esc-stats">
+              <span class="esc-entregados">
+                {{estudiantesFiltrados().filter(e => e.notas[idx]?.nota !== null && e.notas[idx]?.nota !== undefined).length}}/{{estudiantesFiltrados().length}} entregados
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="section-card" style="margin-top:14px">
+        <div class="sc-header">
+          <h3 class="sc-header-title">Detalle de notas por evaluación</h3>
+        </div>
+        <div class="table-wrap">
+          <table class="rep-table">
+            <thead>
+              <tr>
+                <th>Estudiante</th>
+                @for (ev of (estudiantesFiltrados()[0]?.notas ?? []); track ev.evaluacion) {
+                  <th class="th-eval" title="Peso: {{ev.peso}}%">{{ev.evaluacion}}<br><small>{{ev.peso}}%</small></th>
+                }
+                <th>Promedio</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (est of estudiantesFiltrados(); track est.id) {
+                <tr>
+                  <td class="td-nombre">
+                    <div class="nombre-cell">
+                      <div class="td-avatar">{{est.nombre.charAt(0)}}{{est.nombre.split(' ').pop()?.charAt(0) ?? ''}}</div>
+                      <span>{{est.nombre}}</span>
+                    </div>
+                  </td>
+                  @for (nota of est.notas; track nota.evaluacion) {
+                    <td class="td-nota td-center">
+                      @if (nota.nota !== null) {
+                        <span class="nota-pill" [class]="notaClass(nota.nota)">{{nota.nota}}</span>
+                      } @else {
+                        <span class="nota-pill nota-pendiente">—</span>
+                      }
+                    </td>
+                  }
+                  <td class="td-promedio td-center">
+                    <span class="promedio-badge" [class]="promedioColor(est.promedio)">{{est.promedio}}</span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ══ TAB: RIESGO ACADÉMICO ══ -->
+  @if (tabActiva() === 'riesgo') {
+    <div class="tab-content">
+      <div class="riesgo-header-row">
+        <div class="riesgo-stat riesgo-stat-alto">
+          <span class="rs-ico">🔴</span>
+          <div><span class="rs-n">{{estudiantesFiltrados().filter(e => e.riesgo === 'alto').length}}</span><span class="rs-label">Riesgo alto</span></div>
+        </div>
+        <div class="riesgo-stat riesgo-stat-medio">
+          <span class="rs-ico">🟡</span>
+          <div><span class="rs-n">{{estudiantesFiltrados().filter(e => e.riesgo === 'medio').length}}</span><span class="rs-label">Riesgo medio</span></div>
+        </div>
+        <div class="riesgo-stat riesgo-stat-bajo">
+          <span class="rs-ico">🟢</span>
+          <div><span class="rs-n">{{estudiantesFiltrados().filter(e => e.riesgo === 'bajo').length}}</span><span class="rs-label">Riesgo bajo</span></div>
+        </div>
+        <div class="riesgo-stat riesgo-stat-ninguno">
+          <span class="rs-ico">✅</span>
+          <div><span class="rs-n">{{estudiantesFiltrados().filter(e => e.riesgo === 'ninguno').length}}</span><span class="rs-label">Sin riesgo</span></div>
+        </div>
+      </div>
+
+      <div class="riesgo-lista">
+        @for (est of estudiantesFiltrados().filter(e => e.riesgo !== 'ninguno'); track est.id) {
+          <div class="riesgo-card" [class]="'rc-' + est.riesgo">
+            <div class="rc-header">
+              <div class="rc-avatar">{{est.nombre.charAt(0)}}{{est.nombre.split(' ').pop()?.charAt(0) ?? ''}}</div>
+              <div class="rc-info">
+                <span class="rc-nombre">{{est.nombre}}</span>
+                <span class="rc-meta">{{est.curso}} · {{est.codigo}}</span>
+              </div>
+              <span class="risk-badge" [class]="riesgoClass(est.riesgo)">{{est.riesgo}}</span>
+              <button class="btn-detalle" (click)="verDetalle(est.id)">Detalle</button>
+            </div>
+            <div class="rc-indicadores">
+              <div class="rc-ind" [class.rc-ind-alert]="est.promedio < 11">
+                <span class="rc-ind-label">Promedio</span>
+                <span class="rc-ind-val" [class]="promedioColor(est.promedio)">{{est.promedio}}</span>
+              </div>
+              <div class="rc-ind" [class.rc-ind-alert]="est.asistenciaPct < 75">
+                <span class="rc-ind-label">Asistencia</span>
+                <span class="rc-ind-val">{{est.asistenciaPct}}%</span>
+              </div>
+              <div class="rc-ind" [class.rc-ind-alert]="est.faltas > 4">
+                <span class="rc-ind-label">Faltas</span>
+                <span class="rc-ind-val">{{est.faltas}}</span>
+              </div>
+              <div class="rc-ind" [class.rc-ind-alert]="est.tardanzas > 4">
+                <span class="rc-ind-label">Tardanzas</span>
+                <span class="rc-ind-val">{{est.tardanzas}}</span>
+              </div>
+            </div>
+            <div class="rc-alertas">
+              @for (r of getRecomendaciones(est); track r) {
+                <div class="rc-alerta">⚠️ {{r}}</div>
+              }
+            </div>
+          </div>
+        }
+        @if (!estudiantesFiltrados().filter(e => e.riesgo !== 'ninguno').length) {
+          <div class="no-data">🎉 Sin estudiantes en riesgo para los filtros seleccionados.</div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ══ TAB: EXPORTACIONES ══ -->
+  @if (tabActiva() === 'exportaciones') {
+    <div class="tab-content">
+      <!-- Generador -->
+      <div class="export-generator">
+        <h3 class="eg-title">Generar nuevo reporte</h3>
+        <div class="eg-body">
+          <div class="eg-field">
+            <label>Tipo de reporte</label>
+            <select class="filtro-sel" [value]="filtroTipo()" (change)="filtroTipo.set($any($event).target.value)">
+              <option value="">General</option>
+              @for (t of tiposRep; track t) { <option [value]="t">{{t}}</option> }
+            </select>
+          </div>
+          <div class="eg-field">
+            <label>Periodo</label>
+            <select class="filtro-sel" [value]="filtroPeriodo()" (change)="filtroPeriodo.set($any($event).target.value)">
+              @for (p of periodos; track p) { <option [value]="p">{{p}}</option> }
+            </select>
+          </div>
+        </div>
+        <div class="eg-btns">
+          <button class="eg-btn eg-pdf"   (click)="generarReporte('PDF')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exportar PDF institucional
+          </button>
+          <button class="eg-btn eg-excel" (click)="generarReporte('Excel')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Exportar Excel editable
+          </button>
+          <button class="eg-btn eg-vista" (click)="generarReporte('Vista')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Vista de impresión
+          </button>
+        </div>
+      </div>
+
+      <!-- Historial -->
+      <div class="section-card">
+        <div class="sc-header">
+          <h3 class="sc-header-title">📁 Historial de reportes generados</h3>
+          <span class="sc-header-sub">{{_reportes().length}} reportes</span>
+        </div>
+        <div class="hist-tabla">
+          <div class="hist-header">
+            <span>Nombre</span><span>Tipo</span><span>Formato</span><span>Fecha</span><span>Tamaño</span><span>Acción</span>
+          </div>
+          @for (r of _reportes(); track r.id) {
+            <div class="hist-row">
+              <span class="hr-nombre">{{r.nombre}}</span>
+              <span class="hr-tipo">{{r.tipo}}</span>
+              <span class="fmt-badge" [class]="r.formato === 'PDF' ? 'fmt-pdf' : r.formato === 'Excel' ? 'fmt-excel' : 'fmt-vista'">
+                {{r.formato}}
+              </span>
+              <span class="hr-fecha">{{r.fecha}}</span>
+              <span class="hr-size">{{r.tamanio}}</span>
+              <button class="btn-sm">Descargar</button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ══════════════════════ MODAL DETALLE ESTUDIANTE ══════════════════════ -->
+  @if (mostrarDetalleModal()) { @if (estudianteDetalle(); as est) {
+    <div class="modal-overlay" (click)="cerrarDetalle()"></div>
+    <div class="modal-detalle" (click)="$event.stopPropagation()">
+
+      <div class="md-header">
+        <div class="md-avatar">{{est.nombre.charAt(0)}}{{est.nombre.split(' ').pop()?.charAt(0) ?? ''}}</div>
+        <div class="md-info">
+          <h2 class="md-nombre">{{est.nombre}}</h2>
+          <p class="md-meta">{{est.codigo}} · {{est.curso}} · Sección {{est.seccion}}</p>
+          <span class="badge" [class]="estadoClass(est.estado)">{{est.estado}}</span>
+        </div>
+        <div class="md-stats-mini">
+          <div class="msm-item"><span class="msm-label">Promedio</span><span class="msm-val" [class]="promedioColor(est.promedio)">{{est.promedio}}</span></div>
+          <div class="msm-item"><span class="msm-label">Asistencia</span><span class="msm-val">{{est.asistenciaPct}}%</span></div>
+          <div class="msm-item"><span class="msm-label">Faltas</span><span class="msm-val">{{est.faltas}}</span></div>
+        </div>
+        <button class="md-close" (click)="cerrarDetalle()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="md-tabs">
+        <button class="md-tab" [class.active]="tabDetalle()==='academico'"       (click)="tabDetalle.set('academico')">Académico</button>
+        <button class="md-tab" [class.active]="tabDetalle()==='asistencia'"      (click)="tabDetalle.set('asistencia')">Asistencia</button>
+        <button class="md-tab" [class.active]="tabDetalle()==='observaciones'"   (click)="tabDetalle.set('observaciones')">Observaciones</button>
+        <button class="md-tab" [class.active]="tabDetalle()==='recomendaciones'" (click)="tabDetalle.set('recomendaciones')">Recomendaciones</button>
+      </div>
+
+      <div class="md-content">
+
+        <!-- Académico -->
+        @if (tabDetalle() === 'academico') {
+          <div class="mdt-academico">
+            <h4 class="mdt-sh">Notas por evaluación — {{filtroPeriodo()}}</h4>
+            <div class="notas-grid">
+              @for (nota of est.notas; track nota.evaluacion) {
+                <div class="nota-card" [class]="nota.nota !== null ? notaClass(nota.nota) : 'nota-pendiente'">
+                  <span class="nc-tipo">{{nota.tipo}}</span>
+                  <span class="nc-nombre">{{nota.evaluacion}}</span>
+                  <span class="nc-nota">{{nota.nota ?? '—'}}</span>
+                  <span class="nc-peso">Peso: {{nota.peso}}%</span>
+                </div>
+              }
+            </div>
+            <div class="promedio-final">
+              Promedio ponderado: <strong [class]="promedioColor(est.promedio)">{{est.promedio}} / 20</strong>
+            </div>
+
+            <h4 class="mdt-sh" style="margin-top:16px">Ranking en el grupo</h4>
+            <div class="rank-pos-badge">
+              Posición <strong>#{{rankingEstudiantes().findIndex(e => e.id === est!.id) + 1}}</strong>
+              de {{rankingEstudiantes().length}} estudiantes
+            </div>
+          </div>
+        }
+
+        <!-- Asistencia -->
+        @if (tabDetalle() === 'asistencia') {
+          <div class="mdt-asistencia">
+            <div class="asist-resumen">
+              <div class="ar-item ar-presente"><span class="ar-n">{{est.historialAsistencia.filter(h => h.estado === 'Presente').length}}</span><span>Presentes</span></div>
+              <div class="ar-item ar-ausente"><span class="ar-n">{{est.faltas}}</span><span>Ausencias</span></div>
+              <div class="ar-item ar-tardanza"><span class="ar-n">{{est.tardanzas}}</span><span>Tardanzas</span></div>
+              <div class="ar-item ar-justif"><span class="ar-n">{{est.historialAsistencia.filter(h => h.estado === 'Justificado').length}}</span><span>Justificados</span></div>
+            </div>
+            <div class="asist-pct-bar">
+              <span class="apb-label">Asistencia total</span>
+              <div class="apb-track">
+                <div class="apb-fill" [style.width]="est.asistenciaPct + '%'"
+                     [class]="est.asistenciaPct >= 85 ? 'asist-ok' : est.asistenciaPct >= 75 ? 'asist-warn' : 'asist-danger'">
+                </div>
+              </div>
+              <span class="apb-val">{{est.asistenciaPct}}%</span>
+            </div>
+            <h4 class="mdt-sh">Historial detallado — Abril 2026</h4>
+            <div class="hist-cal">
+              @for (h of est.historialAsistencia; track h.fecha) {
+                <div class="hcal-day" [title]="h.fecha + ': ' + h.estado"
+                     [class]="'hcal-' + h.estado.toLowerCase()">
+                  <span>{{h.fecha.slice(-2)}}</span>
+                  <span class="hcal-ico">{{estadoAsistIcon(h.estado)}}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Observaciones -->
+        @if (tabDetalle() === 'observaciones') {
+          <div class="mdt-observaciones">
+            <div class="obs-form">
+              <h4 class="mdt-sh">Nueva observación</h4>
+              <div style="display:flex;gap:8px;margin-bottom:8px">
+                <select class="filtro-sel" style="flex:0 0 160px"
+                        [value]="nuevaObsTipo()"
+                        (change)="nuevaObsTipo.set($any($event).target.value)">
+                  <option value="Academica">Académica</option>
+                  <option value="Conducta">Conducta</option>
+                  <option value="Logro">Logro</option>
+                </select>
+                <textarea class="obs-textarea" rows="2" placeholder="Escribe una observación..."
+                          [value]="nuevaObsTexto()"
+                          (input)="nuevaObsTexto.set($any($event).target.value)"></textarea>
+              </div>
+              <button class="btn-save-obs" (click)="agregarObservacion(est)"
+                      [disabled]="!nuevaObsTexto().trim()">Guardar observación</button>
+            </div>
+            <div class="obs-lista">
+              @for (o of est.observaciones; track o.fecha) {
+                <div class="obs-item" [class]="obsClass(o.tipo)">
+                  <div class="oi-header">
+                    <span class="oi-tipo">{{o.tipo}}</span>
+                    <span class="oi-fecha">{{o.fecha}}</span>
+                  </div>
+                  <p class="oi-texto">{{o.texto}}</p>
+                </div>
+              }
+              @if (!est.observaciones.length) {
+                <p class="no-data">Sin observaciones registradas.</p>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Recomendaciones -->
+        @if (tabDetalle() === 'recomendaciones') {
+          <div class="mdt-recomendaciones">
+            <div class="rec-status">
+              <span class="badge" [class]="estadoClass(est.estado)">{{est.estado}}</span>
+              <span class="risk-badge" [class]="riesgoClass(est.riesgo)">Riesgo: {{est.riesgo}}</span>
+            </div>
+            <h4 class="mdt-sh">Recomendaciones automáticas</h4>
+            <div class="rec-lista">
+              @for (r of getRecomendaciones(est); track r) {
+                <div class="rec-item">
+                  <span class="rec-ico">💡</span>
+                  <span class="rec-text">{{r}}</span>
+                </div>
+              }
+            </div>
+            <h4 class="mdt-sh" style="margin-top:16px">Acciones sugeridas</h4>
+            <div class="accion-btns">
+              <button class="accion-btn">📨 Contactar apoderado</button>
+              <button class="accion-btn">📋 Plan de refuerzo</button>
+              <button class="accion-btn">👥 Derivar a tutoría</button>
+              <button class="accion-btn" (click)="generarReporte('PDF')">📄 Generar reporte individual</button>
+            </div>
+          </div>
+        }
+
+      </div>
+    </div>
+  } }
+
+</section>

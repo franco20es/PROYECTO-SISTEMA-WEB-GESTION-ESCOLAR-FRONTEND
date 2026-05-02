@@ -1,0 +1,153 @@
+<section class="dash-page">
+
+  <!-- ══════════════════════════════════════════
+       HERO — BIENVENIDA
+  ═══════════════════════════════════════════ -->
+  <div class="dash-hero">
+    <div class="dash-hero-bg">
+      <span class="hero-circle c1"></span>
+      <span class="hero-circle c2"></span>
+      <span class="hero-circle c3"></span>
+    </div>
+
+    <div class="dash-hero-content">
+      <!-- Marca / app -->
+      <div class="dash-brand">
+        <div class="dash-brand-icon"><i class="bi bi-mortarboard-fill"></i></div>
+        <span class="dash-brand-name">EduCampus</span>
+      </div>
+
+      <!-- Saludo principal -->
+      <div class="dash-welcome">
+        <p class="dash-saludo">{{ saludo() }}, Profesora 👩‍🏫</p>
+        <h1 class="dash-nombre">{{ nombreCompleto }}</h1>
+        <p class="dash-frase">{{ frase() }}</p>
+      </div>
+
+      <!-- Fecha + hora -->
+      <div class="dash-date-badge">
+        <i class="bi bi-calendar3"></i>
+        <span>{{ fechaHoy() }}</span>
+        <span class="dash-sep">·</span>
+        <i class="bi bi-clock"></i>
+        <span>{{ horaHoy() }}</span>
+      </div>
+    </div>
+
+    <!-- Card perfil resumido -->
+    <div class="dash-perfil-card">
+      <div class="dash-perfil-avatar">
+        @if (profesora().foto) {
+          <img [src]="profesora().foto" alt="Foto" class="perfil-img" />
+        } @else {
+          <div class="perfil-initials">{{ iniciales }}</div>
+        }
+        <span class="perfil-status-dot"></span>
+      </div>
+      <div class="dash-perfil-info">
+        <div class="perfil-nombre">{{ nombreCompleto }}</div>
+        <div class="perfil-cargo">{{ profesora().cargo }}</div>
+        <div class="perfil-especialidad">
+          <i class="bi bi-mortarboard"></i> {{ profesora().especialidad }}
+        </div>
+      </div>
+      <div class="dash-perfil-badges">
+        <span class="badge-estado">
+          <i class="bi bi-circle-fill"></i> {{ profesora().estado }}
+        </span>
+        <span class="badge-codigo">{{ profesora().codigo }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       RESUMEN DEL DÍA
+  ═══════════════════════════════════════════ -->
+  <div class="dash-section-header">
+    <h2 class="dash-section-title"><i class="bi bi-sun-fill"></i> Resumen del día</h2>
+    <span class="dash-section-sub">Lo más importante para hoy</span>
+  </div>
+
+  <div class="dash-resumen-grid">
+    <!-- Próxima clase -->
+    <div class="res-card res-clase">
+      <div class="res-card-icon"><i class="bi bi-easel2-fill"></i></div>
+      <div class="res-card-body">
+        <div class="res-card-label">Próxima clase</div>
+        <div class="res-card-val">{{ resumen().proximaClase }}</div>
+        <div class="res-card-sub">
+          <i class="bi bi-geo-alt"></i> {{ resumen().aula }}
+          &nbsp;·&nbsp;
+          <i class="bi bi-clock"></i> {{ resumen().hora }}
+        </div>
+      </div>
+      <div class="res-card-badge badge-blue">Hoy</div>
+    </div>
+
+    <!-- Recordatorios -->
+    <div class="res-card res-recordatorio">
+      <div class="res-card-icon"><i class="bi bi-bell-fill"></i></div>
+      <div class="res-card-body">
+        <div class="res-card-label">Recordatorios pendientes</div>
+        <div class="res-card-num">{{ resumen().recordatoriosPendientes }}</div>
+        <div class="res-card-sub">avisos sin atender</div>
+      </div>
+      <a [routerLink]="['/profesor/notificaciones']" class="res-card-link">Ver <i class="bi bi-arrow-right"></i></a>
+    </div>
+
+    <!-- Evaluaciones por revisar -->
+    <div class="res-card res-eval">
+      <div class="res-card-icon"><i class="bi bi-clipboard-check-fill"></i></div>
+      <div class="res-card-body">
+        <div class="res-card-label">Evaluaciones por revisar</div>
+        <div class="res-card-num">{{ resumen().evaluacionesPorRevisar }}</div>
+        <div class="res-card-sub">pendientes de calificación</div>
+      </div>
+      <a [routerLink]="['/profesor/calificaciones']" class="res-card-link">Ver <i class="bi bi-arrow-right"></i></a>
+    </div>
+
+    <!-- Estudiantes en riesgo -->
+    <div class="res-card res-riesgo">
+      <div class="res-card-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+      <div class="res-card-body">
+        <div class="res-card-label">Estudiantes en riesgo</div>
+        <div class="res-card-num">{{ resumen().estudiantesEnRiesgo }}</div>
+        <div class="res-card-sub">requieren atención</div>
+      </div>
+      <a [routerLink]="['/profesor/reportes']" class="res-card-link">Ver <i class="bi bi-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MÓDULOS DEL SISTEMA
+  ═══════════════════════════════════════════ -->
+  <div class="dash-section-header">
+    <h2 class="dash-section-title"><i class="bi bi-grid-1x2-fill"></i> Módulos del sistema</h2>
+    <span class="dash-section-sub">Accede rápidamente a todas las funciones</span>
+  </div>
+
+  <div class="dash-modulos-grid">
+    @for (mod of modulos(); track mod.route) {
+      <a [routerLink]="'/' + mod.route" class="mod-card">
+        <div [class]="'mod-icon-wrap ' + mod.color">
+          <i [class]="'bi ' + mod.icon"></i>
+        </div>
+        <div class="mod-card-body">
+          <div class="mod-card-label">{{ mod.label }}</div>
+          <div class="mod-card-desc">{{ mod.descripcion }}</div>
+        </div>
+        <div class="mod-card-arrow"><i class="bi bi-arrow-right-short"></i></div>
+      </a>
+    }
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PIE DE PÁGINA
+  ═══════════════════════════════════════════ -->
+  <footer class="dash-footer">
+    <span><i class="bi bi-mortarboard-fill"></i> EduCampus &copy; 2026</span>
+    <span class="dash-footer-sep">·</span>
+    <span>Módulo Docente</span>
+  </footer>
+
+</section>

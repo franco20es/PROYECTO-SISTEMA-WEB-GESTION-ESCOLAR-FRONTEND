@@ -1,0 +1,632 @@
+<section class="ev-page">
+
+  <!-- ════════════════════ HEADER ════════════════════ -->
+  <div class="ev-header">
+    <div class="ev-header-info">
+      <div class="ev-header-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="ev-title">Gestión de Evaluaciones</h1>
+        <p class="ev-subtitle">Crea, organiza y supervisa evaluaciones académicas</p>
+      </div>
+    </div>
+    <div class="ev-header-actions">
+      <button class="btn-grupos" (click)="mostrarGrupos.set(true)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Crear Grupo
+      </button>
+      <button class="btn-nueva" (click)="abrirFormNueva()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nueva Evaluación
+      </button>
+    </div>
+  </div>
+
+  <!-- ════════════════════ FILTROS ════════════════════ -->
+  <div class="ev-filters">
+    <div class="search-wrap">
+      <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-input" placeholder="Buscar por título o materia..."
+             [value]="busqueda()" (input)="busqueda.set($any($event).target.value)">
+    </div>
+    <select class="filter-sel" [value]="filtroCurso()" (change)="filtroCurso.set($any($event).target.value)">
+      <option value="">Todos los cursos</option>
+      @for (c of cursosDisponibles(); track c) { <option [value]="c">{{c}}</option> }
+    </select>
+    <select class="filter-sel" [value]="filtroTipo()" (change)="filtroTipo.set($any($event).target.value)">
+      <option value="">Todos los tipos</option>
+      @for (t of tipos; track t) { <option [value]="t">{{t}}</option> }
+    </select>
+    <select class="filter-sel" [value]="filtroEstado()" (change)="filtroEstado.set($any($event).target.value)">
+      <option value="">Todos los estados</option>
+      @for (e of estados; track e) { <option [value]="e">{{e}}</option> }
+    </select>
+    <input class="filter-sel" type="date" [value]="filtroFecha()" (change)="filtroFecha.set($any($event).target.value)" title="Filtrar por fecha límite desde">
+    <button class="btn-export" title="Exportar CSV">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Exportar
+    </button>
+  </div>
+
+  <!-- ════════════════════ STATS ════════════════════ -->
+  <div class="stats-grid">
+    <div class="stat-card s-activas">
+      <div class="stat-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <div class="stat-body"><span class="stat-label">Activas</span><span class="stat-val">{{stats().activas}}</span></div>
+    </div>
+    <div class="stat-card s-revisar">
+      <div class="stat-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div class="stat-body"><span class="stat-label">Pend. revisar</span><span class="stat-val">{{stats().pendRevisar}}</span></div>
+    </div>
+    <div class="stat-card s-vencidas">
+      <div class="stat-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      <div class="stat-body"><span class="stat-label">Vencidas</span><span class="stat-val">{{stats().vencidas}}</span></div>
+    </div>
+    <div class="stat-card s-entregadas">
+      <div class="stat-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+      <div class="stat-body"><span class="stat-label">Entregadas</span><span class="stat-val">{{stats().entregadas}}</span></div>
+    </div>
+    <div class="stat-card s-promedio">
+      <div class="stat-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+      <div class="stat-body"><span class="stat-label">Promedio</span><span class="stat-val">{{stats().promedio}}</span></div>
+    </div>
+    <div class="stat-card s-grupos">
+      <div class="stat-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="stat-body"><span class="stat-label">Grupos activos</span><span class="stat-val">{{stats().gruposActivos}}</span></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════ ALERTAS ════════════════════ -->
+  @if (alertas().length > 0) {
+    <div class="alertas-bar">
+      <div class="alertas-label">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
+        Alertas
+      </div>
+      <div class="alertas-chips">
+        @for (a of alertas(); track a.evalId + '_' + a.tipo) {
+          <button class="alerta-chip" [class]="alertaClass(a.tipo)" (click)="verDetalle(a.evalId)">{{a.msg}}</button>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ════════════════════ CARDS DE EVALUACIONES ════════════════════ -->
+  <div class="ev-count-row">
+    <span class="ev-count">{{evaluacionesFiltradas().length}} evaluaciones</span>
+  </div>
+
+  <div class="ev-cards">
+    @for (ev of evaluacionesFiltradas(); track ev.id) {
+      <div class="ev-card" [class]="'card-' + ev.estado.toLowerCase()">
+        <!-- Card top -->
+        <div class="ec-top">
+          <div class="ec-tipo-badge">
+            <span class="tipo-ico">{{tipoIcon(ev.tipo)}}</span>
+            <span>{{ev.tipo}}</span>
+          </div>
+          <span class="ev-estado-chip" [class]="estadoClass(ev.estado)">{{ev.estado}}</span>
+        </div>
+        <!-- Card body -->
+        <div class="ec-body">
+          <h3 class="ec-titulo">{{ev.titulo}}</h3>
+          <p class="ec-desc">{{ev.descripcion}}</p>
+          <div class="ec-meta-row">
+            <span class="ec-meta">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              {{ev.fechaLimite}}
+            </span>
+            <span class="ec-meta">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              {{ev.curso}}
+            </span>
+            <span class="ec-meta ec-modalidad" [class.ec-grupal]="ev.modalidad === 'Grupal'">{{ev.modalidad}}</span>
+          </div>
+          @if (ev.estado === 'Activa') {
+            <div class="ec-countdown" [class.near]="diasRestantes(ev.fechaLimite) <= 3">
+              @if (diasRestantes(ev.fechaLimite) > 0) {
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                {{diasRestantes(ev.fechaLimite)}} día(s) restantes
+              } @else {
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+                Vence hoy
+              }
+            </div>
+          }
+        </div>
+        <!-- Card stats -->
+        <div class="ec-stats">
+          <div class="ec-stat"><span class="ec-sn">{{totalEntregas(ev)}}</span><span class="ec-sl">Total</span></div>
+          <div class="ec-stat"><span class="ec-sn ec-sn-ok">{{entregasRealizadas(ev)}}</span><span class="ec-sl">Entregadas</span></div>
+          <div class="ec-stat"><span class="ec-sn ec-sn-pend">{{entregasPendientes(ev)}}</span><span class="ec-sl">Pendientes</span></div>
+          <div class="ec-stat"><span class="ec-sn">{{promedioEval(ev)}}</span><span class="ec-sl">Promedio</span></div>
+          <div class="ec-stat"><span class="ec-sn">{{ev.puntajeMaximo}}</span><span class="ec-sl">Max pts</span></div>
+          <div class="ec-stat"><span class="ec-sn">{{ev.pesoPorcentual}}%</span><span class="ec-sl">Peso</span></div>
+        </div>
+        <!-- Card actions -->
+        <div class="ec-actions">
+          <button class="ea-btn ea-ver" (click)="verDetalle(ev.id)" title="Ver detalle">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Ver
+          </button>
+          <button class="ea-btn ea-edit" (click)="abrirFormEditar(ev.id)" title="Editar">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Editar
+          </button>
+          <button class="ea-btn ea-dup" (click)="duplicar(ev.id)" title="Duplicar">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Duplicar
+          </button>
+          @if (ev.estado === 'Activa' || ev.estado === 'Publicada') {
+            <button class="ea-btn ea-cerrar" (click)="cambiarEstado(ev.id, 'Cerrada')" title="Cerrar">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              Cerrar
+            </button>
+          }
+          @if (ev.estado === 'Borrador') {
+            <button class="ea-btn ea-pub" (click)="cambiarEstado(ev.id, 'Publicada')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Publicar
+            </button>
+          }
+          <button class="ea-btn ea-del" (click)="confirmarEliminar(ev.id)" title="Eliminar">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+            Eliminar
+          </button>
+        </div>
+      </div>
+    } @empty {
+      <div class="ev-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <p>No hay evaluaciones con los filtros seleccionados.</p>
+        <button class="btn-nueva" (click)="abrirFormNueva()">Crear primera evaluación</button>
+      </div>
+    }
+  </div>
+
+  <!-- ════════════════════ PANEL DETALLE ════════════════════ -->
+  @if (evalDetalle(); as ev) {
+    <div class="panel-overlay" (click)="cerrarDetalle()"></div>
+    <div class="panel-detalle">
+
+      <!-- Panel header -->
+      <div class="pd-header">
+        <div class="pd-header-info">
+          <span class="pd-tipo-ico">{{tipoIcon(ev.tipo)}}</span>
+          <div>
+            <h2 class="pd-titulo">{{ev.titulo}}</h2>
+            <p class="pd-meta">{{ev.curso}} &bull; {{ev.materia}} &bull; {{ev.modalidad}}</p>
+          </div>
+        </div>
+        <div class="pd-header-right">
+          <span class="ev-estado-chip" [class]="estadoClass(ev.estado)">{{ev.estado}}</span>
+          <button class="pd-close" (click)="cerrarDetalle()">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="pd-tabs">
+        <button class="pd-tab" [class.active]="tabDetalle()==='resumen'"      (click)="tabDetalle.set('resumen')">Resumen</button>
+        <button class="pd-tab" [class.active]="tabDetalle()==='entregas'"     (click)="tabDetalle.set('entregas')">Entregas ({{ev.entregas.length}})</button>
+        <button class="pd-tab" [class.active]="tabDetalle()==='calificacion'" (click)="tabDetalle.set('calificacion')">Calificación</button>
+        <button class="pd-tab" [class.active]="tabDetalle()==='estadisticas'" (click)="tabDetalle.set('estadisticas')">Estadísticas</button>
+      </div>
+
+      <div class="pd-content">
+
+        <!-- ── Resumen ── -->
+        @if (tabDetalle() === 'resumen') {
+          <div class="tab-resumen">
+            <div class="tr-section">
+              <h4 class="tr-sh">Descripción</h4>
+              <p class="tr-text">{{ev.descripcion}}</p>
+            </div>
+            <div class="tr-section">
+              <h4 class="tr-sh">Instrucciones</h4>
+              <p class="tr-text">{{ev.instrucciones}}</p>
+            </div>
+            <div class="tr-grid2">
+              <div class="tr-info-item"><span class="tr-info-label">Publicación</span><strong>{{ev.fechaPublicacion}}</strong></div>
+              <div class="tr-info-item"><span class="tr-info-label">Fecha límite</span><strong>{{ev.fechaLimite}}</strong></div>
+              <div class="tr-info-item"><span class="tr-info-label">Puntaje máximo</span><strong>{{ev.puntajeMaximo}} pts</strong></div>
+              <div class="tr-info-item"><span class="tr-info-label">Peso porcentual</span><strong>{{ev.pesoPorcentual}}%</strong></div>
+              <div class="tr-info-item"><span class="tr-info-label">Modalidad</span><strong>{{ev.modalidad}}</strong></div>
+              <div class="tr-info-item"><span class="tr-info-label">Entrega tardía</span><strong>{{ev.permitirTardio ? 'Permitida' : 'No permitida'}}</strong></div>
+            </div>
+            @if (ev.adjuntos.length > 0) {
+              <div class="tr-section">
+                <h4 class="tr-sh">Archivos adjuntos</h4>
+                <div class="adjuntos-list">
+                  @for (adj of ev.adjuntos; track adj.nombre) {
+                    <div class="adjunto-item">
+                      <span class="adj-ico">{{adjuntoIcon(adj.tipo)}}</span>
+                      <div class="adj-info">
+                        <span class="adj-nombre">{{adj.nombre}}</span>
+                        @if (adj.tamano) { <span class="adj-size">{{adj.tamano}}</span> }
+                      </div>
+                      <button class="adj-btn" title="Descargar">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                      </button>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+            @if (ev.rubrica.length > 0) {
+              <div class="tr-section">
+                <h4 class="tr-sh">Rúbrica de Evaluación</h4>
+                <div class="rubrica-table">
+                  @for (cr of ev.rubrica; track cr.criterio) {
+                    <div class="rubrica-row">
+                      <div class="rubrica-crit">
+                        <span class="rub-nombre">{{cr.criterio}}</span>
+                        <span class="rub-desc">{{cr.descripcion}}</span>
+                      </div>
+                      <div class="rubrica-pts">
+                        <span class="rub-pts">{{cr.puntaje}} pts</span>
+                        <div class="rub-bar-track">
+                          <div class="rub-bar" [style.width]="getBarWidth(cr.puntaje, ev.puntajeMaximo)"></div>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- ── Entregas ── -->
+        @if (tabDetalle() === 'entregas') {
+          <div class="tab-entregas">
+            @if (ev.entregas.length === 0) {
+              <p class="no-data">Sin entregas registradas aún.</p>
+            } @else {
+              <table class="entregas-table">
+                <thead>
+                  <tr>
+                    <th>Estudiante / Grupo</th>
+                    <th>Código</th>
+                    <th>Fecha entrega</th>
+                    <th>Estado</th>
+                    <th>Archivo</th>
+                    <th>Retraso</th>
+                    <th>Nota</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (en of ev.entregas; track en.estudianteId) {
+                    <tr>
+                      <td class="td-nombre">{{en.nombre}}</td>
+                      <td class="td-code">{{en.codigo}}</td>
+                      <td class="td-date">{{en.fechaEntrega ?? '—'}}</td>
+                      <td><span class="entrega-chip" [class]="entregaClass(en.estadoEntrega)">{{en.estadoEntrega}}</span></td>
+                      <td>
+                        @if (en.archivoNombre) {
+                          <span class="arch-name" title="{{en.archivoNombre}}">📎 {{en.archivoNombre}}</span>
+                        } @else { <span class="no-arch">—</span> }
+                      </td>
+                      <td>
+                        @if (en.retraso) { <span class="retraso-badge">+{{en.retraso}}d</span> }
+                        @else { <span class="td-date">—</span> }
+                      </td>
+                      <td><span class="nota-badge-sm" [class]="notaColor(en.nota, ev.puntajeMaximo)">{{en.nota ?? '—'}}</span></td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          </div>
+        }
+
+        <!-- ── Calificación ── -->
+        @if (tabDetalle() === 'calificacion') {
+          <div class="tab-calificacion">
+            @if (ev.rubrica.length > 0) {
+              <div class="tc-rubrica-ref">
+                <h4 class="tc-sh">Rúbrica de referencia</h4>
+                @for (cr of ev.rubrica; track cr.criterio) {
+                  <div class="tc-rub-row"><span class="tc-rub-name">{{cr.criterio}}</span><span class="tc-rub-pts">{{cr.puntaje}} pts</span></div>
+                }
+              </div>
+            }
+            @if (ev.entregas.length === 0) {
+              <p class="no-data">No hay entregas para calificar.</p>
+            } @else {
+              @for (en of ev.entregas; track en.estudianteId) {
+                <div class="calif-card" [class.calif-editing]="editingEntregaId() === en.estudianteId">
+                  <div class="calif-student">
+                    <div class="calif-avatar">{{en.nombre.charAt(0)}}{{en.nombre.split(' ').pop()?.charAt(0) ?? ''}}</div>
+                    <div>
+                      <span class="calif-nombre">{{en.nombre}}</span>
+                      <span class="calif-code">{{en.codigo}}</span>
+                    </div>
+                    <span class="entrega-chip" [class]="entregaClass(en.estadoEntrega)">{{en.estadoEntrega}}</span>
+                  </div>
+                  @if (editingEntregaId() === en.estudianteId) {
+                    <div class="calif-form">
+                      <div class="calif-form-row">
+                        <label class="calif-label">Nota (0–{{ev.puntajeMaximo}})</label>
+                        <input class="calif-input" type="number" [min]="0" [max]="ev.puntajeMaximo" [(ngModel)]="$any(this).editNotaBuffer" (ngModelChange)="editNotaBuffer.set($event)">
+                      </div>
+                      <div class="calif-form-row">
+                        <label class="calif-label">Comentario</label>
+                        <textarea class="calif-textarea" rows="2" [(ngModel)]="$any(this).editComentBuffer" (ngModelChange)="editComentBuffer.set($event)"></textarea>
+                      </div>
+                      <div class="calif-btns">
+                        <button class="btn-calif-save" (click)="guardarCalificacion(ev.id, en.estudianteId)">Guardar</button>
+                        <button class="btn-calif-cancel" (click)="cancelarCalificacion()">Cancelar</button>
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="calif-result">
+                      <span class="nota-badge-lg" [class]="notaColor(en.nota, ev.puntajeMaximo)">{{en.nota ?? '—'}} / {{ev.puntajeMaximo}}</span>
+                      @if (en.comentario) { <p class="calif-coment">"{{en.comentario}}"</p> }
+                      <button class="btn-calif-edit" (click)="iniciarCalificar(en.estudianteId, en.nota, en.comentario)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        Calificar
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
+            }
+          </div>
+        }
+
+        <!-- ── Estadísticas ── -->
+        @if (tabDetalle() === 'estadisticas') {
+          @if (estadisticasDetalle(); as st) {
+            <div class="tab-estadisticas">
+              <div class="est-kpis">
+                <div class="est-kpi"><span class="kpi-label">Promedio</span><span class="kpi-val">{{st.prom}}</span></div>
+                <div class="est-kpi"><span class="kpi-label">Participación</span><span class="kpi-val">{{st.participacion}}%</span></div>
+                <div class="est-kpi"><span class="kpi-label">Entregadas</span><span class="kpi-val">{{st.entregadas}}</span></div>
+                <div class="est-kpi"><span class="kpi-label">Tardías</span><span class="kpi-val">{{st.tardias}}</span></div>
+                <div class="est-kpi"><span class="kpi-label">Pendientes</span><span class="kpi-val">{{st.pendientes}}</span></div>
+              </div>
+              <div class="est-bar-section">
+                <h4 class="est-sh">Progreso de entregas</h4>
+                <div class="est-progress-track">
+                  @if (st.total > 0) {
+                    <div class="est-prog-fill est-fill-ok"   [style.width]="getBarWidth(st.entregadas - st.tardias, st.total)"></div>
+                    <div class="est-prog-fill est-fill-tard" [style.width]="getBarWidth(st.tardias, st.total)"></div>
+                  }
+                </div>
+                <div class="est-legend">
+                  <span class="legend-dot dot-ok"></span>Entregadas
+                  <span class="legend-dot dot-tard" style="margin-left:12px"></span>Tardías
+                </div>
+              </div>
+              @if (ev.entregas.length > 0) {
+                <div class="est-bar-section">
+                  <h4 class="est-sh">Notas individuales</h4>
+                  @for (en of ev.entregas; track en.estudianteId) {
+                    <div class="est-nota-row">
+                      <span class="est-nombre">{{en.nombre}}</span>
+                      <div class="est-nota-track">
+                        @if (en.nota !== null) {
+                          <div class="est-nota-fill" [class]="notaColor(en.nota, ev.puntajeMaximo)" [style.width]="getBarWidth(en.nota, ev.puntajeMaximo)"></div>
+                        }
+                      </div>
+                      <span class="est-nota-val" [class]="notaColor(en.nota, ev.puntajeMaximo)">{{en.nota ?? '—'}}</span>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        }
+
+      </div>
+    </div>
+  }
+
+  <!-- ════════════════════ MODAL FORMULARIO EVALUACIÓN ════════════════════ -->
+  @if (mostrarForm()) {
+    <div class="modal-overlay" (click)="mostrarForm.set(false)"></div>
+    <div class="modal-form" (click)="$event.stopPropagation()">
+      <div class="mf-header">
+        <h3 class="mf-title">{{editandoId() !== null ? 'Editar Evaluación' : 'Nueva Evaluación'}}</h3>
+        <button class="mf-close" (click)="mostrarForm.set(false)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="mf-body">
+        <div class="mf-grid2">
+          <div class="mf-field mf-span2">
+            <label class="mf-label">Título *</label>
+            <input class="mf-input" type="text" placeholder="Ej: Tarea N°1 — Álgebra" [(ngModel)]="formEval.titulo">
+          </div>
+          <div class="mf-field mf-span2">
+            <label class="mf-label">Descripción</label>
+            <textarea class="mf-textarea" rows="2" placeholder="Breve descripción de la evaluación..." [(ngModel)]="formEval.descripcion"></textarea>
+          </div>
+          <div class="mf-field mf-span2">
+            <label class="mf-label">Instrucciones</label>
+            <textarea class="mf-textarea" rows="2" placeholder="Instrucciones detalladas para los estudiantes..." [(ngModel)]="formEval.instrucciones"></textarea>
+          </div>
+          <div class="mf-field">
+            <label class="mf-label">Curso</label>
+            <input class="mf-input" type="text" placeholder="Ej: 3ro Secundaria" [(ngModel)]="formEval.curso">
+          </div>
+          <div class="mf-field">
+            <label class="mf-label">Materia</label>
+            <input class="mf-input" type="text" placeholder="Ej: Matemática" [(ngModel)]="formEval.materia">
+          </div>
+          <div class="mf-field">
+            <label class="mf-label">Tipo</label>
+            <select class="mf-select" [(ngModel)]="formEval.tipo">
+              @for (t of tipos; track t) { <option [value]="t">{{t}}</option> }
+            </select>
+          </div>
+          <div class="mf-field">
+            <label class="mf-label">Modalidad</label>
+            <select class="mf-select" [(ngModel)]="formEval.modalidad">
+              <option value="Individual">Individual</option>
+              <option value="Grupal">Grupal</option>
+            </select>
+          </div>
+          <div class="mf-field">
+            <label class="mf-label">Estado</label>
+            <select class="mf-select" [(ngModel)]="formEval.estado">
+              @for (e of estados; track e) { <option [value]="e">{{e}}</option> }
+            </select>
+          </div>
+          <div class="mf-field">
+            <label class="mf-label">Fecha publicación</label>
+            <input class="mf-input" type="date" [(ngModel)]="formEval.fechaPublicacion">
+          </div>
+          <div class="mf-field">
+            <label class="mf-label">Fecha límite</label>
+            <input class="mf-input" type="date" [(ngModel)]="formEval.fechaLimite">
+          </div>
+          <div class="mf-field">
+            <label class="mf-label">Puntaje máximo</label>
+            <input class="mf-input" type="number" min="1" max="100" [(ngModel)]="formEval.puntajeMaximo">
+          </div>
+          <div class="mf-field">
+            <label class="mf-label">Peso porcentual (%)</label>
+            <input class="mf-input" type="number" min="0" max="100" [(ngModel)]="formEval.pesoPorcentual">
+          </div>
+          <div class="mf-field mf-span2 mf-check-row">
+            <label class="mf-check-label">
+              <input type="checkbox" [(ngModel)]="formEval.permitirTardio">
+              <span>Permitir entrega tardía</span>
+            </label>
+          </div>
+          <div class="mf-field mf-span2 mf-upload">
+            <label class="mf-label">Adjuntar archivos</label>
+            <div class="mf-upload-area">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <p>Arrastra archivos aquí o <span class="upload-link">selecciona</span></p>
+              <p class="upload-hint">PDF, Word, Excel, imágenes, enlaces</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mf-footer">
+        <button class="btn-cancel-form" (click)="mostrarForm.set(false)">Cancelar</button>
+        <button class="btn-save-form" (click)="guardarForm()" [disabled]="!formEval.titulo.trim()">
+          {{editandoId() !== null ? 'Guardar cambios' : 'Crear evaluación'}}
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ════════════════════ MODAL GRUPOS ════════════════════ -->
+  @if (mostrarGrupos()) {
+    <div class="modal-overlay" (click)="mostrarGrupos.set(false); mostrarFormGrupo.set(false)"></div>
+    <div class="modal-grupos" (click)="$event.stopPropagation()">
+      <div class="mf-header">
+        <h3 class="mf-title">Gestión de Grupos</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn-nueva btn-sm" (click)="abrirFormGrupo()">+ Nuevo grupo</button>
+          <button class="mf-close" (click)="mostrarGrupos.set(false); mostrarFormGrupo.set(false)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="mg-body">
+        @if (mostrarFormGrupo()) {
+          <div class="mg-form">
+            <h4 class="mg-form-title">{{editGrupoId() !== null ? 'Editar Grupo' : 'Nuevo Grupo'}}</h4>
+            <div class="mf-grid2">
+              <div class="mf-field">
+                <label class="mf-label">Nombre del grupo</label>
+                <input class="mf-input" type="text" placeholder="Ej: Equipo Alpha" [(ngModel)]="formGrupo.nombre">
+              </div>
+              <div class="mf-field">
+                <label class="mf-label">Líder</label>
+                <input class="mf-input" type="text" placeholder="Nombre del líder" [(ngModel)]="formGrupo.lider">
+              </div>
+              <div class="mf-field mf-span2">
+                <label class="mf-label">Integrantes (separados por coma)</label>
+                <input class="mf-input" type="text" placeholder="Ana García, Carlos Mendoza, ..." [(ngModel)]="formGrupo.integrantes">
+              </div>
+              <div class="mf-field">
+                <label class="mf-label">Estado</label>
+                <select class="mf-select" [(ngModel)]="formGrupo.estado">
+                  <option value="Activo">Activo</option>
+                  <option value="Inactivo">Inactivo</option>
+                </select>
+              </div>
+              <div class="mf-field">
+                <label class="mf-label">Proyecto asignado</label>
+                <input class="mf-input" type="text" placeholder="Opcional" [(ngModel)]="formGrupo.proyectoAsignado">
+              </div>
+            </div>
+            <div class="mg-form-btns">
+              <button class="btn-cancel-form" (click)="mostrarFormGrupo.set(false)">Cancelar</button>
+              <button class="btn-save-form" (click)="guardarGrupo()">{{editGrupoId() !== null ? 'Guardar' : 'Crear grupo'}}</button>
+            </div>
+          </div>
+        }
+        <div class="grupos-list">
+          @for (g of grupos(); track g.id) {
+            <div class="grupo-card" [class.grupo-inactivo]="g.estado === 'Inactivo'">
+              <div class="gc-header">
+                <div class="gc-nombre-wrap">
+                  <span class="gc-nombre">{{g.nombre}}</span>
+                  <span class="gc-estado-chip" [class.gc-activo]="g.estado === 'Activo'" [class.gc-inactivo]="g.estado === 'Inactivo'">{{g.estado}}</span>
+                </div>
+                <div class="gc-actions">
+                  <button class="ea-btn ea-edit" (click)="abrirFormGrupo(g.id)">Editar</button>
+                  <button class="ea-btn ea-del" (click)="confirmarEliminarGrupo(g.id)">Eliminar</button>
+                </div>
+              </div>
+              <div class="gc-body">
+                <div class="gc-info"><span class="gc-label">Líder:</span> <strong>{{g.lider}}</strong></div>
+                @if (g.proyectoAsignado) {
+                  <div class="gc-info"><span class="gc-label">Proyecto:</span> <span>{{g.proyectoAsignado}}</span></div>
+                }
+                <div class="gc-integrantes">
+                  @for (int of g.integrantes; track int) {
+                    <span class="int-chip">{{int}}</span>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ════════════════════ CONFIRM DELETE EVALUACIÓN ════════════════════ -->
+  @if (confirmDeleteId() !== null) {
+    <div class="confirm-overlay">
+      <div class="confirm-dialog">
+        <div class="confirm-ico">🗑️</div>
+        <h3 class="confirm-title">¿Eliminar evaluación?</h3>
+        <p class="confirm-msg">Esta acción no se puede deshacer. Se perderán todas las entregas y calificaciones asociadas.</p>
+        <div class="confirm-btns">
+          <button class="btn-cancel-form" (click)="cancelarEliminar()">Cancelar</button>
+          <button class="btn-confirm-del" (click)="ejecutarEliminar()">Sí, eliminar</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ════════════════════ CONFIRM DELETE GRUPO ════════════════════ -->
+  @if (confirmDeleteGrupoId() !== null) {
+    <div class="confirm-overlay">
+      <div class="confirm-dialog">
+        <div class="confirm-ico">👥</div>
+        <h3 class="confirm-title">¿Eliminar grupo?</h3>
+        <p class="confirm-msg">Se eliminará el grupo y todos sus datos asociados.</p>
+        <div class="confirm-btns">
+          <button class="btn-cancel-form" (click)="cancelarEliminarGrupo()">Cancelar</button>
+          <button class="btn-confirm-del" (click)="ejecutarEliminarGrupo()">Sí, eliminar</button>
+        </div>
+      </div>
+    </div>
+  }
+
+</section>

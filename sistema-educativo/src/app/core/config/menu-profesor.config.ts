@@ -12,7 +12,7 @@ export const MENU_PROFESOR = [
     items: [
       { label: 'Asistencia', icon: 'bi bi-check-circle', route: 'profesor/asistencia' },
       { label: 'Calificaciones', icon: 'bi bi-journal-check', route: 'profesor/calificaciones' },
-      { label: 'Evaluaciones', icon: 'bi bi-file-earmark-text', route: 'profesor/evaluaciones' }
+      { label: 'Evaluaciones', icon: 'bi bi-file-earmark-text', route: 'profesor/evaluacion' }
     ]
   },
   {

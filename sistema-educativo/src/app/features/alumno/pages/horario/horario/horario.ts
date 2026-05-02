@@ -8,7 +8,11 @@ declare global {
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { SpinnerComponent } from '../../../../../core/components/spiner/spiner/spiner';
+
+
 import jsPDF from 'jspdf';
+
+
 interface HorarioAlumno {
   curso: string;
   docente: string;

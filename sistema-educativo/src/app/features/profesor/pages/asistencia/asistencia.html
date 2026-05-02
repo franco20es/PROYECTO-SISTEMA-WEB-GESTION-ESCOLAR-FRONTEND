@@ -1,0 +1,358 @@
+<section class="attendance-page p-4 md:p-6">
+	<header class="header-block mb-4">
+		<div>
+			<h1 class="title">Control de Asistencia</h1>
+			<p class="subtitle">
+				Gestiona asistencia, tardanzas y faltas de tus estudiantes
+			</p>
+		</div>
+	</header>
+
+	@if (aviso().length > 0) {
+		<div class="notice mb-4" aria-live="polite">{{ aviso() }}</div>
+	}
+
+	<section class="filters-panel rounded-2xl p-4 mb-5" aria-label="Filtros de asistencia">
+		<div class="filters-grid">
+			<label class="field" for="fechaControl">
+				<span>Fecha</span>
+				<input
+					id="fechaControl"
+					type="date"
+					[ngModel]="fechaSeleccionada()"
+					(ngModelChange)="onFecha($event)"
+				/>
+			</label>
+
+			<label class="field" for="rangoControl">
+				<span>Rango</span>
+				<select
+					id="rangoControl"
+					[ngModel]="rangoFiltro()"
+					(ngModelChange)="onRango($event)"
+				>
+					<option value="Diario">Diario</option>
+					<option value="Semanal">Semanal</option>
+					<option value="Mensual">Mensual</option>
+				</select>
+			</label>
+
+			<label class="field" for="cursoControl">
+				<span>Curso/Grado</span>
+				<select
+					id="cursoControl"
+					[ngModel]="cursoSeleccionado()"
+					(ngModelChange)="onCurso($event)"
+				>
+					@for (curso of cursosDisponibles(); track curso) {
+						<option [value]="curso">{{ curso }}</option>
+					}
+				</select>
+			</label>
+
+			<label class="field" for="materiaControl">
+				<span>Materia</span>
+				<select
+					id="materiaControl"
+					[ngModel]="materiaSeleccionada()"
+					(ngModelChange)="onMateria($event)"
+				>
+					@for (materia of materiasDisponibles(); track materia) {
+						<option [value]="materia">{{ materia }}</option>
+					}
+				</select>
+			</label>
+
+			<label class="field" for="seccionControl">
+				<span>Seccion</span>
+				<select
+					id="seccionControl"
+					[ngModel]="seccionSeleccionada()"
+					(ngModelChange)="onSeccion($event)"
+				>
+					@for (seccion of seccionesDisponibles(); track seccion) {
+						<option [value]="seccion">{{ seccion }}</option>
+					}
+				</select>
+			</label>
+
+			<label class="field" for="estadoControl">
+				<span>Estado</span>
+				<select
+					id="estadoControl"
+					[ngModel]="estadoSeleccionado()"
+					(ngModelChange)="onEstado($event)"
+				>
+					<option value="Todos">Todos</option>
+					<option value="Presente">Presente</option>
+					<option value="Tardanza">Tardanza</option>
+					<option value="Falta">Falta</option>
+					<option value="Justificado">Justificado</option>
+				</select>
+			</label>
+
+			<label class="field search" for="buscarEstudiante">
+				<span>Buscar estudiante</span>
+				<input
+					id="buscarEstudiante"
+					type="search"
+					placeholder="Nombre, apellido o codigo"
+					[ngModel]="busqueda()"
+					(ngModelChange)="onBuscar($event)"
+				/>
+			</label>
+
+			<div class="actions">
+				<button type="button" class="btn btn-primary" (click)="tomarAsistencia()">
+					<i class="bi bi-check2-square"></i>
+					Tomar asistencia
+				</button>
+				<button type="button" class="btn btn-outline" (click)="exportarReporte()">
+					<i class="bi bi-download"></i>
+					Exportar reporte
+				</button>
+			</div>
+		</div>
+	</section>
+
+	<section class="summary-grid mb-5" aria-label="Estadisticas de asistencia">
+		<article class="summary-card rounded-2xl p-4">
+			<div class="summary-icon icon-blue"><i class="bi bi-people-fill"></i></div>
+			<div>
+				<p class="summary-value">{{ totalEstudiantes() }}</p>
+				<p class="summary-label">Total estudiantes</p>
+				<p class="summary-delta" [class]="deltaClass(deltaNumero(statsActuales().total, statsPrevias().total))">
+					{{ deltaTexto(statsActuales().total, statsPrevias().total) }}
+				</p>
+			</div>
+		</article>
+
+		<article class="summary-card rounded-2xl p-4">
+			<div class="summary-icon icon-green"><i class="bi bi-person-check-fill"></i></div>
+			<div>
+				<p class="summary-value">{{ presentesHoy() }}</p>
+				<p class="summary-label">Presentes hoy</p>
+				<p class="summary-delta" [class]="deltaClass(deltaNumero(statsActuales().presentes, statsPrevias().presentes))">
+					{{ deltaTexto(statsActuales().presentes, statsPrevias().presentes) }}
+				</p>
+			</div>
+		</article>
+
+		<article class="summary-card rounded-2xl p-4">
+			<div class="summary-icon icon-amber"><i class="bi bi-alarm-fill"></i></div>
+			<div>
+				<p class="summary-value">{{ tardanzasHoy() }}</p>
+				<p class="summary-label">Tardanzas</p>
+				<p class="summary-delta" [class]="deltaClass(deltaNumero(statsActuales().tardanzas, statsPrevias().tardanzas))">
+					{{ deltaTexto(statsActuales().tardanzas, statsPrevias().tardanzas) }}
+				</p>
+			</div>
+		</article>
+
+		<article class="summary-card rounded-2xl p-4">
+			<div class="summary-icon icon-red"><i class="bi bi-person-x-fill"></i></div>
+			<div>
+				<p class="summary-value">{{ faltasHoy() }}</p>
+				<p class="summary-label">Faltas</p>
+				<p class="summary-delta" [class]="deltaClass(deltaNumero(statsActuales().faltas, statsPrevias().faltas))">
+					{{ deltaTexto(statsActuales().faltas, statsPrevias().faltas) }}
+				</p>
+			</div>
+		</article>
+
+		<article class="summary-card rounded-2xl p-4">
+			<div class="summary-icon icon-cyan"><i class="bi bi-file-earmark-check-fill"></i></div>
+			<div>
+				<p class="summary-value">{{ justificadosHoy() }}</p>
+				<p class="summary-label">Justificados</p>
+				<p class="summary-delta" [class]="deltaClass(deltaNumero(statsActuales().justificados, statsPrevias().justificados))">
+					{{ deltaTexto(statsActuales().justificados, statsPrevias().justificados) }}
+				</p>
+			</div>
+		</article>
+
+		<article class="summary-card rounded-2xl p-4">
+			<div class="summary-icon icon-indigo"><i class="bi bi-graph-up-arrow"></i></div>
+			<div>
+				<p class="summary-value">{{ asistenciaGeneral() }}</p>
+				<p class="summary-label">Asistencia general</p>
+				<p class="summary-delta" [class]="deltaClass(deltaNumero(statsActuales().asistenciaGeneral, statsPrevias().asistenciaGeneral))">
+					{{ deltaTexto(statsActuales().asistenciaGeneral, statsPrevias().asistenciaGeneral) }}
+				</p>
+			</div>
+		</article>
+	</section>
+
+	<section class="alerts-panel rounded-2xl p-4 mb-5" aria-label="Alertas automaticas">
+		<div class="panel-title">
+			<h2>Alertas automaticas</h2>
+			<span>{{ alertas().length }} alertas</span>
+		</div>
+
+		@if (alertas().length === 0) {
+			<p class="empty-text">No se detectaron patrones de riesgo en el filtro actual.</p>
+		} @else {
+			<div class="alerts-list">
+				@for (alerta of alertas(); track alerta.estudianteId + alerta.tipo) {
+					<article class="alert-item">
+						<p class="alert-student">{{ alerta.estudiante }}</p>
+						<p class="alert-message">{{ alerta.mensaje }}</p>
+						<span class="alert-type">{{ alerta.tipo }}</span>
+					</article>
+				}
+			</div>
+		}
+	</section>
+
+	<section class="table-wrap rounded-2xl mb-5" aria-label="Lista de asistencia">
+		<div class="table-desktop">
+			<table>
+				<thead>
+					<tr>
+						<th>Estudiante</th>
+						<th>Curso</th>
+						<th>Estado</th>
+						<th>Hora ingreso</th>
+						<th>Observacion</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					@for (estudiante of estudiantesFiltrados(); track estudiante.id) {
+						<tr>
+							<td>
+								<div class="student-cell">
+								<div class="avatar"><i class="bi bi-person-fill"></i></div>
+									<div>
+										<strong>{{ estudiante.nombre }} {{ estudiante.apellido }}</strong>
+										<small>{{ estudiante.codigo }} · {{ estudiante.correo }}</small>
+									</div>
+								</div>
+							</td>
+							<td>{{ estudiante.curso }} · {{ estudiante.materia }} · {{ estudiante.seccion }}</td>
+							<td>
+								<span [class]="estadoClass(getSnapshot(estudiante.id).estado)">
+									{{ getSnapshot(estudiante.id).estado }}
+								</span>
+							</td>
+							<td>{{ getSnapshot(estudiante.id).horaIngreso }}</td>
+							<td>{{ getSnapshot(estudiante.id).observacion }}</td>
+							<td>
+								<div class="row-actions">
+									<button type="button" class="tiny-btn" (click)="marcarPresente(estudiante.id)">Presente</button>
+									<button type="button" class="tiny-btn" (click)="marcarTardanza(estudiante.id)">Tardanza</button>
+									<button type="button" class="tiny-btn" (click)="marcarFalta(estudiante.id)">Falta</button>
+									<button type="button" class="tiny-btn" (click)="justificarFalta(estudiante.id)">Justificar</button>
+									<button type="button" class="tiny-btn" (click)="agregarObservacion(estudiante.id)">Observacion</button>
+									<button type="button" class="tiny-btn" (click)="contactarApoderado(estudiante.id)">Apoderado</button>
+									<button type="button" class="tiny-btn secondary" (click)="editarRegistro(estudiante.id)">Editar</button>
+									<button type="button" class="tiny-btn secondary" (click)="abrirHistorial(estudiante.id)">Historial</button>
+								</div>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+
+		<div class="cards-mobile">
+			@for (estudiante of estudiantesFiltrados(); track estudiante.id) {
+				<article class="mobile-card rounded-2xl">
+					<div class="student-cell mb-3">
+					<div class="avatar"><i class="bi bi-person-fill"></i></div>
+						<div>
+							<strong>{{ estudiante.nombre }} {{ estudiante.apellido }}</strong>
+							<small>{{ estudiante.codigo }}</small>
+						</div>
+					</div>
+
+					<p class="mobile-line"><strong>Curso:</strong> {{ estudiante.curso }}</p>
+					<p class="mobile-line"><strong>Materia:</strong> {{ estudiante.materia }}</p>
+					<p class="mobile-line"><strong>Estado:</strong>
+						<span [class]="estadoClass(getSnapshot(estudiante.id).estado)">
+							{{ getSnapshot(estudiante.id).estado }}
+						</span>
+					</p>
+					<p class="mobile-line"><strong>Hora:</strong> {{ getSnapshot(estudiante.id).horaIngreso }}</p>
+					<p class="mobile-line"><strong>Obs:</strong> {{ getSnapshot(estudiante.id).observacion }}</p>
+
+					<div class="mobile-actions">
+						<button type="button" class="tiny-btn" (click)="marcarPresente(estudiante.id)">Presente</button>
+						<button type="button" class="tiny-btn" (click)="marcarTardanza(estudiante.id)">Tardanza</button>
+						<button type="button" class="tiny-btn" (click)="marcarFalta(estudiante.id)">Falta</button>
+						<button type="button" class="tiny-btn" (click)="justificarFalta(estudiante.id)">Justificar</button>
+						<button type="button" class="tiny-btn secondary" (click)="abrirHistorial(estudiante.id)">Historial</button>
+					</div>
+				</article>
+			}
+		</div>
+	</section>
+
+	@if (estudianteHistorial(); as estudiante) {
+		<section class="history-panel rounded-2xl p-4" aria-label="Historial individual">
+			<div class="panel-title mb-3">
+				<h2>Historial de {{ estudiante.nombre }} {{ estudiante.apellido }}</h2>
+				<button type="button" class="btn btn-outline" (click)="cerrarHistorial()">Cerrar</button>
+			</div>
+
+			<div class="history-stats mb-4">
+				<article class="history-mini-card">
+					<p class="mini-title">% mensual</p>
+					<p class="mini-value">{{ porcentajeMensualHistorial() }}</p>
+				</article>
+				<article class="history-mini-card">
+					<p class="mini-title">% anual</p>
+					<p class="mini-value">{{ porcentajeAnualHistorial() }}</p>
+				</article>
+				<article class="history-mini-card">
+					<p class="mini-title">Tardanzas acumuladas</p>
+					<p class="mini-value">{{ tardanzasAcumuladasHistorial() }}</p>
+				</article>
+			</div>
+
+			<div class="history-grid">
+				<article class="history-block">
+					<h3>Calendario (30 dias)</h3>
+					<div class="calendar-grid">
+						@for (dia of calendarioHistorial(); track dia.dia + dia.estado) {
+							<span [class]="calendarClass(dia.estado)" [attr.title]="dia.estado">{{ dia.dia }}</span>
+						}
+					</div>
+				</article>
+
+				<article class="history-block">
+					<h3>Grafico de barras</h3>
+					<div class="bars-wrap">
+						@for (bar of barrasHistorial(); track bar.label) {
+							<div class="bar-item">
+								<div class="bar-head">
+									<span>{{ bar.label }}</span>
+									<strong>{{ bar.valor }}%</strong>
+								</div>
+								<div class="bar-track">
+									<div [class]="'bar-fill ' + bar.clase" [style.width.%]="bar.valor"></div>
+								</div>
+							</div>
+						}
+					</div>
+				</article>
+
+				<article class="history-block full-width">
+					<h3>Justificaciones</h3>
+					@if (justificacionesHistorial().length === 0) {
+						<p class="empty-text">No hay justificaciones registradas.</p>
+					} @else {
+						<ul class="just-list">
+							@for (item of justificacionesHistorial(); track item.fecha + item.justificacion) {
+								<li>
+									<strong>{{ item.fecha }}</strong>
+									<span>{{ item.justificacion }}</span>
+								</li>
+							}
+						</ul>
+					}
+				</article>
+			</div>
+		</section>
+	}
+</section>

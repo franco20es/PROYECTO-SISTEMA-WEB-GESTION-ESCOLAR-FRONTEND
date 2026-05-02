@@ -1,0 +1,170 @@
+<section class="ntf-page">
+
+  <!-- ── Header ────────────────────────────────────────────────────────── -->
+  <div class="ntf-header">
+    <div class="ntf-header-left">
+      <div class="ntf-header-icon">
+        <i class="bi bi-bell-fill"></i>
+        @if (totalNoLeidas() > 0) {
+          <span class="ntf-header-badge">{{ totalNoLeidas() }}</span>
+        }
+      </div>
+      <div>
+        <h1 class="ntf-title">Notificaciones</h1>
+        <p class="ntf-subtitle">Recordatorios y avisos importantes</p>
+      </div>
+    </div>
+    <div class="ntf-header-actions">
+      @if (totalNoLeidas() > 0) {
+        <button class="btn-secondary" (click)="marcarTodasLeidas()">
+          <i class="bi bi-check2-all"></i> Marcar todas como leídas
+        </button>
+      }
+      @if (totalAtendidas() > 0) {
+        <button class="btn-danger-soft" (click)="eliminarAtendidas()">
+          <i class="bi bi-trash3"></i> Eliminar atendidas
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- ── Summary cards ──────────────────────────────────────────────────── -->
+  <div class="ntf-summary">
+    <div class="ntf-sum-card sum-nueva">
+      <div class="ntf-sum-icon"><i class="bi bi-bell-fill"></i></div>
+      <div>
+        <div class="ntf-sum-num">{{ totalNuevas() }}</div>
+        <div class="ntf-sum-lbl">Nuevas</div>
+      </div>
+    </div>
+    <div class="ntf-sum-card sum-pendiente">
+      <div class="ntf-sum-icon"><i class="bi bi-hourglass-split"></i></div>
+      <div>
+        <div class="ntf-sum-num">{{ totalPendientes() }}</div>
+        <div class="ntf-sum-lbl">Pendientes</div>
+      </div>
+    </div>
+    <div class="ntf-sum-card sum-noleidas">
+      <div class="ntf-sum-icon"><i class="bi bi-envelope-fill"></i></div>
+      <div>
+        <div class="ntf-sum-num">{{ totalNoLeidas() }}</div>
+        <div class="ntf-sum-lbl">No leídas</div>
+      </div>
+    </div>
+    <div class="ntf-sum-card sum-atendida">
+      <div class="ntf-sum-icon"><i class="bi bi-check-circle-fill"></i></div>
+      <div>
+        <div class="ntf-sum-num">{{ totalAtendidas() }}</div>
+        <div class="ntf-sum-lbl">Atendidas</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Filtros ────────────────────────────────────────────────────────── -->
+  <div class="ntf-filtros">
+    <button [class]="'ntf-filtro ' + (filtroActivo()==='todas'?'active':'')"     (click)="setFiltro('todas')">
+      <i class="bi bi-grid-3x3-gap"></i> Todas
+    </button>
+    <button [class]="'ntf-filtro ' + (filtroActivo()==='no-leidas'?'active':'')" (click)="setFiltro('no-leidas')">
+      <i class="bi bi-envelope-fill"></i> No leídas
+      @if (totalNoLeidas() > 0) { <span class="filtro-badge">{{ totalNoLeidas() }}</span> }
+    </button>
+    <button [class]="'ntf-filtro ' + (filtroActivo()==='pendientes'?'active':'')"(click)="setFiltro('pendientes')">
+      <i class="bi bi-hourglass-split"></i> Pendientes
+      @if (totalPendientes() > 0) { <span class="filtro-badge">{{ totalPendientes() }}</span> }
+    </button>
+    <button [class]="'ntf-filtro ' + (filtroActivo()==='atendidas'?'active':'')" (click)="setFiltro('atendidas')">
+      <i class="bi bi-check2-all"></i> Atendidas
+    </button>
+  </div>
+
+  <!-- ── Lista ──────────────────────────────────────────────────────────── -->
+  <div class="ntf-list">
+
+    @if (itemsFiltrados().length === 0) {
+      <div class="ntf-empty">
+        <div class="ntf-empty-icon"><i class="bi bi-bell-slash"></i></div>
+        <p class="ntf-empty-title">Sin notificaciones</p>
+        <p class="ntf-empty-sub">No hay notificaciones en esta categoría.</p>
+      </div>
+    }
+
+    @for (n of itemsFiltrados(); track n.id) {
+      <div [class]="'ntf-card ' + (!n.leida ? 'unread' : '') + ' ' + tipoColor(n.tipo)">
+
+        <!-- Barra de prioridad izquierda -->
+        <div [class]="'ntf-priority-bar ' + prioridadClass(n.prioridad)"></div>
+
+        <!-- Icono tipo -->
+        <div [class]="'ntf-icon-wrap ' + tipoColor(n.tipo)">
+          <i [class]="'bi ' + tipoIcon(n.tipo)"></i>
+        </div>
+
+        <!-- Contenido -->
+        <div class="ntf-content" (click)="toggleDetalle(n.id)">
+          <div class="ntf-content-top">
+            <div class="ntf-titulo-row">
+              @if (!n.leida) { <span class="ntf-dot"></span> }
+              <span class="ntf-titulo">{{ n.titulo }}</span>
+            </div>
+            <div class="ntf-meta">
+              <span [class]="'ntf-estado ' + estadoClass(n.estado)">{{ n.estado | titlecase }}</span>
+              <span [class]="'ntf-prioridad ' + prioridadClass(n.prioridad)">
+                <i class="bi bi-flag-fill"></i> {{ n.prioridad | titlecase }}
+              </span>
+              <span class="ntf-time"><i class="bi bi-clock"></i> {{ tiempoRelativo(n.fecha, n.hora) }}</span>
+            </div>
+          </div>
+
+          <p class="ntf-mensaje">{{ n.mensaje }}</p>
+
+          <!-- Detalle expandido -->
+          @if (detalleAbierto() === n.id) {
+            <div class="ntf-detalle">
+              <div class="ntf-detalle-grid">
+                <div class="ntf-detalle-item">
+                  <span class="ntf-det-label"><i class="bi bi-calendar3"></i> Fecha</span>
+                  <span class="ntf-det-val">{{ formatFecha(n.fecha) }}</span>
+                </div>
+                <div class="ntf-detalle-item">
+                  <span class="ntf-det-label"><i class="bi bi-clock"></i> Hora</span>
+                  <span class="ntf-det-val">{{ n.hora }}</span>
+                </div>
+                <div class="ntf-detalle-item">
+                  <span class="ntf-det-label"><i class="bi bi-tag"></i> Tipo</span>
+                  <span class="ntf-det-val" style="text-transform:capitalize">{{ n.tipo }}</span>
+                </div>
+                <div class="ntf-detalle-item">
+                  <span class="ntf-det-label"><i class="bi bi-info-circle"></i> Estado</span>
+                  <span [class]="'ntf-estado ' + estadoClass(n.estado)">{{ n.estado | titlecase }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Acciones -->
+        <div class="ntf-actions">
+          @if (!n.leida) {
+            <button class="ntf-btn ntf-btn-read" (click)="marcarLeida(n.id)" title="Marcar como leída">
+              <i class="bi bi-check2"></i>
+            </button>
+          }
+          @if (n.estado !== 'atendida') {
+            <button class="ntf-btn ntf-btn-done" (click)="marcarAtendida(n.id)" title="Marcar como atendida">
+              <i class="bi bi-check2-all"></i>
+            </button>
+          }
+          <button class="ntf-btn ntf-btn-expand" (click)="toggleDetalle(n.id)" [title]="detalleAbierto() === n.id ? 'Cerrar' : 'Ver detalle'">
+            <i [class]="'bi ' + (detalleAbierto() === n.id ? 'bi-chevron-up' : 'bi-chevron-down')"></i>
+          </button>
+          <button class="ntf-btn ntf-btn-del" (click)="eliminar(n.id)" title="Eliminar">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </div>
+
+      </div>
+    }
+  </div>
+
+</section>

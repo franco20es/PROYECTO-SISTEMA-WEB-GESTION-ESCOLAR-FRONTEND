@@ -1,0 +1,560 @@
+<section class="hor-page">
+
+  <!-- ══════════════════════ HEADER ══════════════════════ -->
+  <div class="hor-header">
+    <div class="hor-header-left">
+      <div class="hor-header-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="hor-title">Mi Horario</h1>
+        <p class="hor-subtitle">Consulta tus clases, aulas y agenda académica &bull; <strong>Miércoles, 1 de Mayo 2026</strong></p>
+      </div>
+    </div>
+    <div class="hor-header-actions">
+      <button class="btn-action btn-sync" title="Sincronizar calendario">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Sincronizar
+      </button>
+      <button class="btn-action btn-solicitar" (click)="abrirSolicitud('cambio')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Solicitar cambio
+      </button>
+      <button class="btn-action btn-export">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ ALERTAS ══════════════════════ -->
+  @if (alertas().length > 0) {
+    <div class="alertas-bar">
+      <span class="alertas-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Alertas
+      </span>
+      <div class="alertas-chips">
+        @for (a of alertas(); track a.id) {
+          <button class="alerta-chip" [class]="alertaClass(a.tipo)"
+                  (click)="a.bloqueId ? verDetalle(a.bloqueId) : null">
+            {{a.msg}}
+          </button>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ══════════════════════ STATS ══════════════════════ -->
+  <div class="stats-grid">
+    <div class="stat-card s-hoy">
+      <div class="stat-ico">📚</div>
+      <div class="stat-body"><span class="stat-label">Clases hoy</span><span class="stat-val">{{statsHoy().clases}}</span></div>
+    </div>
+    <div class="stat-card s-proxima" (click)="proximaClase() ? verDetalle(proximaClase()!.id) : null" style="cursor:pointer">
+      <div class="stat-ico">⏰</div>
+      <div class="stat-body">
+        <span class="stat-label">Próxima clase</span>
+        @if (proximaClase()) {
+          <span class="stat-val stat-val-sm">{{proximaClase()!.materia}}</span>
+          <span class="stat-sub">{{proximaClase()!.horaInicio}} · Aula {{proximaClase()!.aula}}</span>
+        } @else {
+          <span class="stat-val">—</span>
+        }
+      </div>
+    </div>
+    <div class="stat-card s-encurso" (click)="claseEnCurso() ? verDetalle(claseEnCurso()!.id) : null" style="cursor:pointer">
+      <div class="stat-ico">🟢</div>
+      <div class="stat-body">
+        <span class="stat-label">En curso ahora</span>
+        @if (claseEnCurso()) {
+          <span class="stat-val stat-val-sm">{{claseEnCurso()!.materia}}</span>
+          <span class="stat-sub">Aula {{claseEnCurso()!.aula}} · {{claseEnCurso()!.pabellon}}</span>
+        } @else {
+          <span class="stat-val">Libre</span>
+        }
+      </div>
+    </div>
+    <div class="stat-card s-libres">
+      <div class="stat-ico">☕</div>
+      <div class="stat-body"><span class="stat-label">Horas libres hoy</span><span class="stat-val">{{statsHoy().horasLibres}}h</span></div>
+    </div>
+    <div class="stat-card s-reuniones">
+      <div class="stat-ico">👥</div>
+      <div class="stat-body"><span class="stat-label">Reuniones/Tutorías</span><span class="stat-val">{{statsHoy().reuniones}}</span></div>
+    </div>
+    <div class="stat-card s-semana">
+      <div class="stat-ico">📊</div>
+      <div class="stat-body"><span class="stat-label">Total hrs/semana</span><span class="stat-val">{{totalHorasSemanales()}}h</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ FILTROS + VISTA ══════════════════════ -->
+  <div class="hor-controls">
+    <div class="vista-selector">
+      <button class="vista-btn" [class.active]="vista()==='dia'"    (click)="vista.set('dia')">Día</button>
+      <button class="vista-btn" [class.active]="vista()==='semana'" (click)="vista.set('semana')">Semana</button>
+      <button class="vista-btn" [class.active]="vista()==='mes'"    (click)="vista.set('mes')">Mes</button>
+    </div>
+    <div class="filtros-row">
+      <select class="filter-sel" [value]="filtroCurso()"   (change)="filtroCurso.set($any($event).target.value)">
+        <option value="">Todos los cursos</option>
+        @for (c of cursosDisponibles(); track c) { <option [value]="c">{{c}}</option> }
+      </select>
+      <select class="filter-sel" [value]="filtroMateria()" (change)="filtroMateria.set($any($event).target.value)">
+        <option value="">Todas las materias</option>
+        @for (m of materiasDisponibles(); track m) { <option [value]="m">{{m}}</option> }
+      </select>
+      <select class="filter-sel" [value]="filtroSeccion()" (change)="filtroSeccion.set($any($event).target.value)">
+        <option value="">Todas las secciones</option>
+        @for (s of seccionesDisponibles(); track s) { <option [value]="s">{{s}}</option> }
+      </select>
+      <select class="filter-sel" [value]="filtroAula()"   (change)="filtroAula.set($any($event).target.value)">
+        <option value="">Todas las aulas</option>
+        @for (a of aulasDisponibles(); track a) { <option [value]="a">{{a}}</option> }
+      </select>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ VISTA DÍA ══════════════════════ -->
+  @if (vista() === 'dia') {
+    <div class="vista-dia-wrap">
+      <!-- Selector de día -->
+      <div class="dia-selector">
+        @for (d of diasSemana; track d; let i = $index) {
+          <button class="dia-btn" [class.active]="diaSeleccionado() === i"
+                  (click)="diaSeleccionado.set(i)">
+            <span class="dia-nombre">{{diasCorto[i]}}</span>
+            <span class="dia-num">{{i + 1}}</span>
+          </button>
+        }
+      </div>
+
+      <!-- Timeline del día -->
+      <div class="timeline-wrap">
+        <div class="timeline-horas">
+          @for (hora of horasDia; track hora) {
+            <div class="tl-hora">{{hora}}</div>
+          }
+        </div>
+        <div class="timeline-bloques">
+          <!-- Líneas guía -->
+          @for (hora of horasDia; track hora) {
+            <div class="tl-linea"></div>
+          }
+          <!-- Bloques del día -->
+          @for (bloque of bloquesHoy(); track bloque.id) {
+            <div class="tl-bloque" [class]="colorClass(bloque)"
+                 [style.top.px]="getTopOffset(bloque.horaInicio)"
+                 [style.height.px]="getHeightPx(bloque.duracionMin)"
+                 (click)="verDetalle(bloque.id)">
+              <div class="tlb-tipo">{{tipoIcon(bloque.tipo)}} {{bloque.tipo}}</div>
+              <div class="tlb-materia">{{bloque.materia}}</div>
+              <div class="tlb-curso">{{bloque.curso}}</div>
+              <div class="tlb-meta">
+                <span>🏫 Aula {{bloque.aula}}</span>
+                <span>{{bloque.horaInicio}} – {{bloque.horaFin}}</span>
+              </div>
+              @if (bloque.estado !== 'Programada' && bloque.estado !== 'Finalizada') {
+                <span class="tlb-estado" [class]="estadoClass(bloque.estado)">{{bloque.estado}}</span>
+              }
+            </div>
+          }
+          @if (bloquesHoy().length === 0) {
+            <div class="tl-empty">Sin clases programadas para este día</div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ══════════════════════ VISTA SEMANA ══════════════════════ -->
+  @if (vista() === 'semana') {
+    <div class="timetable-wrap">
+      <!-- Cabecera días -->
+      <div class="tt-header">
+        <div class="tt-hora-col"></div>
+        @for (dia of diasSemana; track dia; let i = $index) {
+          <div class="tt-dia-header" [class.tt-hoy]="i === diaSeleccionado()">
+            <span class="tt-dia-nombre">{{dia}}</span>
+            <span class="tt-dia-num">{{i + 1}} Mayo</span>
+          </div>
+        }
+      </div>
+      <!-- Cuerpo timetable -->
+      <div class="tt-body">
+        <!-- Columna horas -->
+        <div class="tt-hora-col">
+          @for (hora of horasDia; track hora) {
+            <div class="tt-hora-cell">{{hora}}</div>
+          }
+        </div>
+        <!-- Columnas días -->
+        @for (diaIdx of [0,1,2,3,4,5]; track diaIdx) {
+          <div class="tt-dia-col" [class.tt-hoy-col]="diaIdx === diaSeleccionado()">
+            @for (hora of horasDia; track hora) {
+              <div class="tt-cell">
+                @for (bloque of getBloquesEnHora(diaIdx, hora); track bloque.id) {
+                  <div class="tt-bloque" [class]="colorClass(bloque)" (click)="verDetalle(bloque.id)">
+                    <div class="ttb-materia">{{bloque.materia}}</div>
+                    <div class="ttb-info">
+                      <span>{{bloque.aula}}</span>
+                      <span>{{bloque.horaInicio}}</span>
+                    </div>
+                    <div class="ttb-tipo">{{tipoIcon(bloque.tipo)}}</div>
+                    @if (bloque.estado === 'En curso') {
+                      <div class="ttb-encurso-dot"></div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Leyenda -->
+    <div class="leyenda-row">
+      <span class="leyenda-item"><span class="ley-dot color-encurso"></span>En curso</span>
+      <span class="leyenda-item"><span class="ley-dot color-math"></span>Matemática</span>
+      <span class="leyenda-item"><span class="ley-dot color-science"></span>Ciencias</span>
+      <span class="leyenda-item"><span class="ley-dot color-lab"></span>Laboratorio</span>
+      <span class="leyenda-item"><span class="ley-dot color-meeting"></span>Reunión/Tutoría</span>
+      <span class="leyenda-item"><span class="ley-dot color-reprogramada"></span>Reprogramada</span>
+      <span class="leyenda-item"><span class="ley-dot color-cancelada"></span>Cancelada</span>
+    </div>
+  }
+
+  <!-- ══════════════════════ VISTA MES ══════════════════════ -->
+  @if (vista() === 'mes') {
+    <div class="mes-wrap">
+      <div class="mes-header">
+        <button class="mes-nav-btn" (click)="mesAnterior()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span class="mes-titulo">{{nombreMes()}} {{mesActual().anio}}</span>
+        <button class="mes-nav-btn" (click)="mesSiguiente()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <div class="mes-grid">
+        @for (dia of ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom']; track dia) {
+          <div class="mes-dia-header">{{dia}}</div>
+        }
+        @for (celda of diasDelMes(); track $index) {
+          <div class="mes-celda" [class.mes-celda-vacia]="celda.dia === null" [class.mes-hoy]="celda.dia === 1 && mesActual().mes === 4">
+            @if (celda.dia !== null) {
+              <span class="mes-num">{{celda.dia}}</span>
+              @for (ev of celda.eventos; track ev.id) {
+                <div class="mes-evento" (click)="mostrarEventoDetalle.set(ev)" title="{{ev.titulo}}">
+                  {{eventoTipoIcon(ev.tipo)}} {{ev.titulo}}
+                </div>
+              }
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ══════════════════════ SECCIÓN INFERIOR ══════════════════════ -->
+  <div class="bottom-grid">
+
+    <!-- Cambios e historial -->
+    <div class="bottom-card">
+      <div class="bc-header">
+        <h3 class="bc-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Historial de cambios
+        </h3>
+        <div style="display:flex;gap:6px">
+          <button class="btn-sm-action" (click)="abrirSolicitud('reemplazo')">+ Reemplazo</button>
+          <button class="btn-sm-action" (click)="abrirSolicitud('conflicto')">+ Conflicto</button>
+        </div>
+      </div>
+      <div class="bc-body">
+        @for (c of _cambios(); track c.id) {
+          <div class="cambio-item">
+            <div class="cambio-tipo">{{c.tipo}}</div>
+            <p class="cambio-desc">{{c.descripcion}}</p>
+            <div class="cambio-footer">
+              <span class="cambio-fecha">{{c.fecha}}</span>
+              <span class="cambio-estado" [class]="cambioEstadoClass(c.estado)">{{c.estado}}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Eventos escolares -->
+    <div class="bottom-card">
+      <div class="bc-header">
+        <h3 class="bc-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Eventos escolares — {{nombreMes()}}
+        </h3>
+      </div>
+      <div class="bc-body">
+        @for (ev of eventosMes(); track ev.id) {
+          <div class="evento-item" (click)="mostrarEventoDetalle.set(ev)">
+            <div class="ev-ico">{{eventoTipoIcon(ev.tipo)}}</div>
+            <div class="ev-info">
+              <span class="ev-titulo">{{ev.titulo}}</span>
+              <span class="ev-meta">{{ev.fecha}} @if (ev.hora) { · {{ev.hora}} } @if (ev.lugar) { · {{ev.lugar}} }</span>
+              <span class="ev-tipo-badge">{{ev.tipo}}</span>
+            </div>
+          </div>
+        }
+        @if (eventosMes().length === 0) {
+          <p class="no-data">Sin eventos este mes.</p>
+        }
+      </div>
+    </div>
+
+    <!-- Disponibilidad / Resumen semanal -->
+    <div class="bottom-card">
+      <div class="bc-header">
+        <h3 class="bc-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Carga semanal por día
+        </h3>
+      </div>
+      <div class="bc-body">
+        @for (dia of diasSemana; track dia; let i = $index) {
+          @if (i < 5) {
+            <div class="carga-row">
+              <span class="carga-dia">{{diasCorto[i]}}</span>
+              <div class="carga-bar-track">
+                <div class="carga-bar"
+                     [style.width]="(bloquesSemanales()[i].filter(b => b.tipo !== 'Recreo').length / 4 * 100) + '%'">
+                </div>
+              </div>
+              <span class="carga-num">{{bloquesSemanales()[i].filter(b => b.tipo !== 'Recreo').length}} bloques</span>
+            </div>
+          }
+        }
+        <div class="carga-total">
+          Total semana: <strong>{{totalHorasSemanales()}} horas lectivas</strong>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════ PANEL DETALLE BLOQUE ══════════════════════ -->
+  @if (bloqueDetalle(); as bloque) {
+    <div class="panel-overlay" (click)="cerrarDetalle()"></div>
+    <div class="panel-detalle">
+
+      <div class="pd-header" [class]="colorClass(bloque)">
+        <div class="pd-header-info">
+          <span class="pd-tipo-ico">{{tipoIcon(bloque.tipo)}}</span>
+          <div>
+            <h2 class="pd-titulo">{{bloque.materia}}</h2>
+            <p class="pd-meta">{{bloque.curso}} · Sección {{bloque.seccion}}</p>
+          </div>
+        </div>
+        <div class="pd-header-right">
+          <span class="estado-chip" [class]="estadoClass(bloque.estado)">{{bloque.estado}}</span>
+          <button class="pd-close" (click)="cerrarDetalle()">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="pd-tabs">
+        <button class="pd-tab" [class.active]="tabDetalle()==='resumen'"      (click)="tabDetalle.set('resumen')">Resumen</button>
+        <button class="pd-tab" [class.active]="tabDetalle()==='estudiantes'"  (click)="tabDetalle.set('estudiantes')">Estudiantes</button>
+        <button class="pd-tab" [class.active]="tabDetalle()==='evaluaciones'" (click)="tabDetalle.set('evaluaciones')">Evaluaciones</button>
+        <button class="pd-tab" [class.active]="tabDetalle()==='recursos'"     (click)="tabDetalle.set('recursos')">Recursos</button>
+      </div>
+
+      <div class="pd-content">
+
+        <!-- Resumen -->
+        @if (tabDetalle() === 'resumen') {
+          <div class="tab-resumen">
+            <div class="tr-grid3">
+              <div class="tr-info-item">
+                <span class="tr-label">Hora inicio</span>
+                <strong class="tr-val">{{bloque.horaInicio}}</strong>
+              </div>
+              <div class="tr-info-item">
+                <span class="tr-label">Hora fin</span>
+                <strong class="tr-val">{{bloque.horaFin}}</strong>
+              </div>
+              <div class="tr-info-item">
+                <span class="tr-label">Duración</span>
+                <strong class="tr-val">{{bloque.duracionMin}} min</strong>
+              </div>
+              <div class="tr-info-item">
+                <span class="tr-label">Tipo</span>
+                <strong class="tr-val">{{bloque.tipo}}</strong>
+              </div>
+              <div class="tr-info-item">
+                <span class="tr-label">Modalidad</span>
+                <strong class="tr-val">{{bloque.modalidad ?? 'Presencial'}}</strong>
+              </div>
+              <div class="tr-info-item">
+                <span class="tr-label">Estudiantes</span>
+                <strong class="tr-val">{{bloque.cantEstudiantes}}</strong>
+              </div>
+            </div>
+
+            <!-- Ubicación -->
+            <div class="tr-section">
+              <h4 class="tr-sh">📍 Ubicación del aula</h4>
+              <div class="ubicacion-card">
+                <div class="ub-row"><span class="ub-label">Aula</span><span class="ub-val">{{bloque.aula}}</span></div>
+                <div class="ub-row"><span class="ub-label">Piso</span><span class="ub-val">{{bloque.piso}}</span></div>
+                <div class="ub-row"><span class="ub-label">Pabellón</span><span class="ub-val">{{bloque.pabellon}}</span></div>
+                <div class="ub-row"><span class="ub-label">Sede</span><span class="ub-val">{{bloque.sede}}</span></div>
+                <button class="btn-mapa">🗺️ Ver en mapa interno</button>
+              </div>
+            </div>
+
+            @if (bloque.tema) {
+              <div class="tr-section">
+                <h4 class="tr-sh">📖 Tema de la clase</h4>
+                <p class="tr-text">{{bloque.tema}}</p>
+              </div>
+            }
+            @if (bloque.observacion) {
+              <div class="tr-section obs-section">
+                <h4 class="tr-sh">⚠️ Observaciones</h4>
+                <p class="tr-text">{{bloque.observacion}}</p>
+              </div>
+            }
+
+            <div class="pd-acciones">
+              <button class="pda-btn pda-asistencia" (click)="cerrarDetalle()">
+                ✅ Tomar asistencia
+              </button>
+              <button class="pda-btn pda-evaluacion" (click)="cerrarDetalle()">
+                📝 Ver evaluación
+              </button>
+              <button class="pda-btn pda-navegar" (click)="cerrarDetalle()">
+                🗺️ Navegar al aula
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- Estudiantes -->
+        @if (tabDetalle() === 'estudiantes') {
+          <div class="tab-estudiantes">
+            <p class="te-count">{{bloque.cantEstudiantes}} estudiantes matriculados</p>
+            <div class="te-lista">
+              @for (est of getEstudiantesMock(bloque); track est; let i = $index) {
+                <div class="te-item">
+                  <div class="te-avatar">{{est.charAt(0)}}{{est.split(' ').pop()?.charAt(0) ?? ''}}</div>
+                  <span class="te-nombre">{{est}}</span>
+                  <span class="te-codigo">E{{padNum(i+1)}}</span>
+                </div>
+              }
+              @if (bloque.cantEstudiantes > 12) {
+                <p class="te-mas">... y {{bloque.cantEstudiantes - 12}} estudiantes más</p>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Evaluaciones -->
+        @if (tabDetalle() === 'evaluaciones') {
+          <div class="tab-evaluaciones">
+            <h4 class="tr-sh">Próximas evaluaciones</h4>
+            @for (ev of getEvaluacionesMock(bloque); track ev.titulo) {
+              <div class="eval-item">
+                <div class="eval-ico">📋</div>
+                <div class="eval-info">
+                  <span class="eval-titulo">{{ev.titulo}}</span>
+                  <span class="eval-meta">{{ev.tipo}} · {{ev.fecha}}</span>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Recursos -->
+        @if (tabDetalle() === 'recursos') {
+          <div class="tab-recursos">
+            <h4 class="tr-sh">Material de clase</h4>
+            @for (r of getRecursosMock(); track r.nombre) {
+              <div class="recurso-item">
+                <span class="rec-ico">
+                  @switch (r.tipo) {
+                    @case ('pdf')   { 📄 }
+                    @case ('ppt')   { 📊 }
+                    @case ('video') { 🎥 }
+                    @default        { 📎 }
+                  }
+                </span>
+                <span class="rec-nombre">{{r.nombre}}</span>
+                <button class="rec-btn">Abrir</button>
+              </div>
+            }
+          </div>
+        }
+
+      </div>
+    </div>
+  }
+
+  <!-- ══════════════════════ MODAL SOLICITUD ══════════════════════ -->
+  @if (mostrarSolicitudModal()) {
+    <div class="modal-overlay" (click)="mostrarSolicitudModal.set(false)"></div>
+    <div class="modal-solicitud" (click)="$event.stopPropagation()">
+      <div class="ms-header">
+        <h3 class="ms-title">
+          @switch (tipoSolicitud()) {
+            @case ('cambio')     { Solicitar cambio de horario }
+            @case ('reemplazo')  { Solicitar reemplazo docente }
+            @case ('conflicto')  { Reportar conflicto }
+          }
+        </h3>
+        <button class="ms-close" (click)="mostrarSolicitudModal.set(false)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="ms-body">
+        <label class="ms-label">Descripción detallada</label>
+        <textarea class="ms-textarea" rows="4"
+          placeholder="Describe el motivo de tu solicitud..."
+          [value]="solicitudDesc()"
+          (input)="solicitudDesc.set($any($event).target.value)"></textarea>
+      </div>
+      <div class="ms-footer">
+        <button class="btn-cancel-form" (click)="mostrarSolicitudModal.set(false)">Cancelar</button>
+        <button class="btn-save-form" (click)="enviarSolicitud()" [disabled]="!solicitudDesc().trim()">Enviar solicitud</button>
+      </div>
+    </div>
+  }
+
+  <!-- ══════════════════════ MODAL EVENTO DETALLE ══════════════════════ -->
+  @if (mostrarEventoDetalle(); as ev) {
+    <div class="modal-overlay" (click)="mostrarEventoDetalle.set(null)"></div>
+    <div class="modal-evento" (click)="$event.stopPropagation()">
+      <div class="ms-header">
+        <h3 class="ms-title">{{eventoTipoIcon(ev.tipo)}} {{ev.titulo}}</h3>
+        <button class="ms-close" (click)="mostrarEventoDetalle.set(null)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="ms-body">
+        <div class="ev-det-grid">
+          <div class="ev-det-item"><span class="ev-det-label">Tipo</span><span>{{ev.tipo}}</span></div>
+          <div class="ev-det-item"><span class="ev-det-label">Fecha</span><span>{{ev.fecha}}</span></div>
+          @if (ev.hora) { <div class="ev-det-item"><span class="ev-det-label">Hora</span><span>{{ev.hora}}</span></div> }
+          @if (ev.lugar) { <div class="ev-det-item"><span class="ev-det-label">Lugar</span><span>{{ev.lugar}}</span></div> }
+        </div>
+        <p class="ev-det-desc">{{ev.descripcion}}</p>
+      </div>
+    </div>
+  }
+
+</section>

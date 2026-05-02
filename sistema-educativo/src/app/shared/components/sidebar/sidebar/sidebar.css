@@ -180,7 +180,7 @@
 .sidebar.collapsed .sb-logo-text { opacity: 0; width: 0; }
 
 /* ─── Tarjeta de usuario ─── */
-.sb-user {
+/* .sb-user {
   margin: 12px 10px;
   padding: 12px 14px;
   background: var(--gold-dim);
@@ -256,7 +256,95 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+} */
+
+
+/* nuevo sidervar */
+.sb-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  border: 0.5px solid rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  transition: background 0.15s ease;
+  margin: 20px 10px 20px 10px;
+
+
+  &:hover {
+    background: #f5f5f3;
+  }
 }
+
+.sb-avatar {
+  position: relative;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #eeedfe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: #3c3489;
+  letter-spacing: 0.5px;
+}
+
+.sb-avatar-status {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #1d9e75;
+  border: 2px solid #ffffff;
+}
+
+.sb-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sb-user-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sb-user-name {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sb-user-role {
+  font-size: 10px;
+  font-weight: 500;
+  color: #3c3489;
+  background: #eeedfe;
+  padding: 1px 7px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sb-user-email {
+  font-size: 12px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
 
 /* Ocultar info en mini */
 .sidebar.collapsed .sb-user-info { opacity: 0; width: 0; }
