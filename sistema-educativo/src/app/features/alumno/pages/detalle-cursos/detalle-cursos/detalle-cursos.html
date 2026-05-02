@@ -1,0 +1,90 @@
+<div class="semanas-wrap" *ngIf="curso; else sinCurso">
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <label>Semanas completadas</label>
+      <span class="val blue">{{ semanasCompletadas }}/18</span>
+    </div>
+    <div class="stat-card">
+      <label>Asistencia</label>
+      <span class="val" [ngClass]="curso.asistencia >= 80 ? 'green' : 'orange'">
+        {{ curso.asistencia }}%
+      </span>
+    </div>
+    <div class="stat-card">
+      <label>Avance</label>
+      <span class="val blue">{{ curso.progreso }}%</span>
+    </div>
+    <div class="stat-card">
+      <label>Nota actual</label>
+      <span class="val" [ngClass]="notaColorClass(curso.nota)">
+        {{ curso.nota | number:'1.1-1' }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Lista de semanas -->
+  <div class="semana-card" *ngFor="let semana of semanas">
+
+    <!-- Cabecera -->
+    <div class="semana-header" (click)="toggleSemana(semana)">
+      <div class="semana-left">
+        <div class="semana-num"
+             [ngClass]="{ 'num-done': semana.done, 'num-current': semana.current, 'num-lock': semana.locked }">
+          {{ semana.n }}
+        </div>
+        <div class="semana-info">
+          <p class="semana-titulo">Semana {{ semana.n }}</p>
+          <p class="semana-sub">{{ semana.tema }}</p>
+        </div>
+      </div>
+
+      <div class="semana-right">
+        <span class="badge b-done"    *ngIf="semana.done">Completada</span>
+        <span class="badge b-current" *ngIf="semana.current">En curso</span>
+        <span class="badge b-lock"    *ngIf="semana.locked">Pendiente</span>
+        <span class="badge b-tarea"   *ngIf="tieneTarea(semana)">Tarea</span>
+        <span class="badge b-quiz"    *ngIf="tieneQuiz(semana)">Evaluación</span>
+        <span class="chevron" [ngClass]="{ open: semana.abierta }">›</span>
+      </div>
+    </div>
+
+    <!-- Cuerpo expandible -->
+    <div class="semana-body" *ngIf="semana.abierta">
+      <div class="recurso-list">
+        <div class="recurso-item" *ngFor="let r of semana.recursos">
+
+          <div class="recurso-icon" [ngClass]="'ri-' + r.tipo">
+            {{ iconoRecurso(r.tipo) }}
+          </div>
+
+          <div class="recurso-info">
+            <p class="recurso-nombre">{{ r.nombre }}</p>
+            <p class="recurso-meta">
+              {{ r.meta }}
+              <span *ngIf="r.nota !== null"
+                    class="nota-pill"
+                    [ngClass]="notaClass(r.nota!)">
+                {{ r.nota }}/20
+              </span>
+            </p>
+          </div>
+
+          <button class="btn-accion"
+                  [ngClass]="r.done ? 'btn-done' : 'btn-open'">
+            {{ r.done ? 'Ver ✓' : 'Abrir' }}
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<ng-template #sinCurso>
+  <div class="sin-curso">
+    <p>Selecciona un curso para ver su contenido</p>
+  </div>
+</ng-template>

@@ -1,0 +1,273 @@
+/* ─── Contenedor principal ─────────────────────────────── */
+.semanas-wrap {
+  padding: 20px;
+  background: #ffffff;
+}
+
+/* ─── Sin curso seleccionado ───────────────────────────── */
+.sin-curso {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #aaa;
+  font-size: 14px;
+}
+
+/* ─── Stats ─────────────────────────────────────────────── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: #f5f7fa;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.stat-card label {
+  display: block;
+  font-size: 11px;
+  color: #999;
+  margin-bottom: 4px;
+  font-weight: 400;
+}
+
+.stat-card .val {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.val.blue   { color: #007AFF; }
+.val.green  { color: #16a34a; }
+.val.orange { color: #ea580c; }
+.val.red    { color: #dc2626; }
+
+/* ─── Tarjeta de semana ──────────────────────────────────── */
+.semana-card {
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+/* ─── Cabecera de semana ─────────────────────────────────── */
+.semana-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  cursor: pointer;
+  background: #ffffff;
+  transition: background 0.12s ease;
+  user-select: none;
+}
+
+.semana-header:hover {
+  background: #fafafa;
+}
+
+.semana-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ─── Número de semana ───────────────────────────────────── */
+.semana-num {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #ffffff;
+}
+
+.num-done    { background: #16a34a; }
+.num-current { background: #007AFF; }
+.num-lock    { background: #d1d5db; color: #6b7280; }
+
+/* ─── Texto de cabecera ──────────────────────────────────── */
+.semana-titulo {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.semana-sub {
+  font-size: 12px;
+  color: #888;
+  margin: 2px 0 0 0;
+}
+
+/* ─── Lado derecho: badges + chevron ────────────────────── */
+.semana-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.chevron {
+  font-size: 16px;
+  color: #bbb;
+  transition: transform 0.2s ease;
+  margin-left: 4px;
+  line-height: 1;
+}
+
+.chevron.open {
+  transform: rotate(90deg);
+}
+
+/* ─── Badges ─────────────────────────────────────────────── */
+.badge {
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.b-done    { background: #e6f4ea; color: #16a34a; }
+.b-current { background: #e6f0ff; color: #007AFF; }
+.b-lock    { background: #f3f4f6; color: #9ca3af; }
+.b-tarea   { background: #fff3e0; color: #e65100; }
+.b-quiz    { background: #fce8e8; color: #c62828; }
+
+/* ─── Cuerpo expandible ──────────────────────────────────── */
+.semana-body {
+  background: #fafbfc;
+  border-top: 1px solid #f0f0f0;
+  padding: 12px 14px;
+}
+
+/* ─── Lista de recursos ──────────────────────────────────── */
+.recurso-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.recurso-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  background: #ffffff;
+}
+
+/* ─── Ícono de recurso ───────────────────────────────────── */
+.recurso-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.ri-video { background: #e6f0ff; }
+.ri-doc   { background: #e6f9f0; }
+.ri-task  { background: #fff8e6; }
+.ri-quiz  { background: #fff0f0; }
+
+/* ─── Info del recurso ───────────────────────────────────── */
+.recurso-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.recurso-nombre {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recurso-meta {
+  font-size: 11px;
+  color: #aaa;
+  margin: 2px 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ─── Nota pill ──────────────────────────────────────────── */
+.nota-pill {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.nota-pill.good { background: #e6f4ea; color: #16a34a; }
+.nota-pill.mid  { background: #fff8e6; color: #e65100; }
+.nota-pill.bad  { background: #fce8e8; color: #c62828; }
+
+/* ─── Botón de acción ────────────────────────────────────── */
+.btn-accion {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: none;
+  flex-shrink: 0;
+  transition: opacity 0.15s ease;
+}
+
+.btn-accion:hover {
+  opacity: 0.85;
+}
+
+.btn-open { background: #ff4d4d; color: #ffffff; }
+.btn-done { background: #f0f0f0; color: #888888; }
+
+/* ─── Responsive ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .semana-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .semana-right {
+    flex-wrap: wrap;
+  }
+
+  .recurso-nombre {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .semanas-wrap {
+    padding: 12px;
+  }
+}

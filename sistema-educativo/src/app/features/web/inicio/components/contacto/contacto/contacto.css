@@ -1,0 +1,211 @@
+  :host {
+    --white: #FFFFFF;
+    --off-white: #F4F6FA;
+    --blue-dark: #0A1A3E;
+    --blue-mid: #1340A0;
+    --blue-light: #2A63E6;
+    --blue-sky: #5B8FF9;
+    --orange: #FF5B1F;
+    --orange-hover: #E04800;
+    --orange-light: #FF8050;
+    --gray-100: #EEF1F8;
+    --gray-200: #D8DDE8;
+    --gray-400: #8A95B0;
+    --gray-600: #4A5470;
+    --text-dark: #0A1220;
+    --text-body: #2D3555;
+    --success: #00C27C;
+    --error: #E53030;
+    --border: #C8D0E4;
+    --shadow-card: 0 2px 24px rgba(10,26,62,0.10);
+    --shadow-lift: 0 8px 40px rgba(10,26,62,0.15);
+    --transition: 0.22s cubic-bezier(.4,0,.2,1);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--off-white); color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--blue-dark); border-bottom: 3px solid var(--orange); display: flex; align-items: center; justify-content: space-between; padding: 0 48px; height: 68px; }
+  .nav-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+  .nav-logo-icon { width: 40px; height: 40px; background: var(--orange); display: flex; align-items: center; justify-content: center; clip-path: polygon(0 0, 100% 0, 100% 75%, 50% 100%, 0 75%); }
+  .nav-logo-icon span { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: #fff; letter-spacing: 1px; }
+  .nav-brand { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--white); letter-spacing: 2px; line-height: 1; }
+  .nav-brand small { display: block; font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 400; letter-spacing: 3px; color: var(--blue-sky); text-transform: uppercase; }
+  .nav-links { display: flex; align-items: center; gap: 6px; list-style: none; }
+  .nav-links a { display: block; padding: 8px 16px; color: var(--gray-200); font-size: 13.5px; font-weight: 400; text-decoration: none; letter-spacing: .4px; transition: color var(--transition); }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links .active a { color: var(--orange); font-weight: 500; }
+  .nav-cta { background: var(--orange); color: var(--white) !important; font-weight: 600 !important; padding: 8px 20px !important; font-size: 13px !important; border-top: 2px solid var(--orange-light); transition: background var(--transition) !important; }
+  .nav-cta:hover { background: var(--orange-hover) !important; }
+
+  /* PAGE HERO */
+  .page-hero { margin-top: 68px; background: var(--blue-dark); padding: 80px 48px 64px; position: relative; overflow: hidden; }
+  .page-hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(32,80,180,0.25) 0%, transparent 60%), repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(255,255,255,0.015) 80px, rgba(255,255,255,0.015) 81px), repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(255,255,255,0.015) 80px, rgba(255,255,255,0.015) 81px); pointer-events: none; }
+  .page-hero-bg { position: absolute; right: -10px; bottom: -30px; font-family: 'Bebas Neue', sans-serif; font-size: 180px; color: rgba(255,255,255,0.03); line-height: 1; user-select: none; pointer-events: none; }
+  .page-hero-inner { max-width: 1300px; margin: 0 auto; position: relative; z-index: 2; }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+  .breadcrumb a { font-size: 12px; color: var(--gray-400); text-decoration: none; transition: color var(--transition); }
+  .breadcrumb a:hover { color: var(--white); }
+  .breadcrumb span { font-size: 12px; color: var(--gray-400); }
+  .breadcrumb .current { color: var(--orange-light); font-weight: 500; }
+  .page-hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 6vw, 84px); color: var(--white); line-height: .96; letter-spacing: 1px; }
+  .page-hero h1 em { color: var(--orange); font-style: normal; }
+  .page-hero-sub { margin-top: 16px; color: var(--gray-200); font-size: 15px; font-weight: 300; line-height: 1.75; max-width: 560px; }
+  .hero-bar { height: 4px; background: var(--orange); width: 100%; position: relative; }
+  .hero-bar::after { content: ''; position: absolute; right: 0; top: 0; height: 4px; width: 40%; background: var(--blue-light); }
+
+  /* UTILS */
+  .section-inner { max-width: 1300px; margin: 0 auto; }
+  .section-label { display: flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
+  .section-label::before { content: ''; width: 32px; height: 2px; background: var(--orange); }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(36px, 4vw, 56px); color: var(--blue-dark); letter-spacing: 1px; line-height: 1; margin-bottom: 16px; }
+  .section-title em { color: var(--blue-light); font-style: normal; }
+
+  /* SECCIÓN 1: CONTACTO PRINCIPAL */
+  .section-contacto { padding: 80px 48px; background: var(--white); }
+  .contacto-layout { display: grid; grid-template-columns: 1fr 480px; gap: 60px; align-items: start; margin-top: 52px; }
+
+  /* INFO CARDS */
+  .info-cards { display: flex; flex-direction: column; gap: 2px; }
+  .info-card {
+    display: flex; align-items: flex-start; gap: 20px;
+    padding: 28px 32px; background: var(--off-white);
+    border-left: 4px solid transparent;
+    transition: all var(--transition);
+  }
+  .info-card:hover { background: var(--blue-dark); border-left-color: var(--orange); }
+  .ic-icon { width: 44px; height: 44px; background: var(--blue-dark); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background var(--transition); }
+  .info-card:hover .ic-icon { background: var(--orange); }
+  .ic-icon svg { width: 20px; height: 20px; fill: var(--orange); transition: fill var(--transition); }
+  .info-card:hover .ic-icon svg { fill: var(--white); }
+  .ic-content { flex: 1; }
+  .ic-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--orange-light); margin-bottom: 6px; display: block; }
+  .ic-main { font-family: 'DM Mono', monospace; font-size: 16px; color: var(--blue-dark); font-weight: 500; transition: color var(--transition); }
+  .info-card:hover .ic-main { color: var(--white); }
+  .ic-sub { font-size: 12px; color: var(--gray-400); margin-top: 3px; line-height: 1.5; transition: color var(--transition); }
+  .info-card:hover .ic-sub { color: var(--gray-200); }
+
+  .horario-box { background: var(--blue-mid); padding: 28px 32px; margin-top: 2px; }
+  .horario-box .ic-label { color: var(--orange-light); }
+  .horario-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .horario-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .h-dia { font-size: 13px; color: var(--gray-200); font-weight: 400; }
+  .h-hora { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--white); font-weight: 500; }
+  .h-cerrado { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gray-400); }
+
+  /* FORMULARIO */
+  .form-contact { background: var(--off-white); border: 1px solid var(--border); padding: 40px; box-shadow: var(--shadow-card); }
+  .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--blue-dark); letter-spacing: 1px; margin-bottom: 6px; }
+  .form-subtitle { font-size: 13px; color: var(--gray-400); margin-bottom: 28px; line-height: 1.6; }
+  .form-grid { display: grid; gap: 16px; }
+  .form-grid.cols2 { grid-template-columns: 1fr 1fr; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field.span2 { grid-column: span 2; }
+  label { font-size: 11px; font-weight: 600; color: var(--blue-dark); letter-spacing: .8px; text-transform: uppercase; }
+  label .req { color: var(--orange); margin-left: 2px; }
+  input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+    width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
+    background: var(--white); font-family: 'DM Sans', sans-serif;
+    font-size: 14px; color: var(--text-dark); outline: none; appearance: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue-light); box-shadow: 0 0 0 3px rgba(42,99,230,0.12); }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%234A5470'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer; }
+  textarea { resize: vertical; min-height: 100px; }
+  .btn-submit {
+    width: 100%; background: var(--orange); color: var(--white); border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; padding: 14px 32px; margin-top: 4px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    position: relative; overflow: hidden;
+  }
+  .btn-submit::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%); pointer-events: none; }
+  .btn-submit:hover { background: var(--orange-hover); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,91,31,0.4); }
+  .btn-submit svg { width: 18px; height: 18px; fill: currentColor; }
+  .form-footer-note { font-size: 11px; color: var(--gray-400); text-align: center; margin-top: 12px; line-height: 1.6; }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 32px; right: 32px; z-index: 300; background: var(--success); color: var(--white); padding: 14px 24px; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-lift); transform: translateX(200%); transition: transform 0.4s cubic-bezier(.4,0,.2,1); }
+  .toast.show { transform: translateX(0); }
+  .toast svg { width: 18px; height: 18px; fill: var(--white); flex-shrink: 0; }
+
+  /* SECCIÓN 2: MAPA / UBICACIÓN */
+  .section-ubicacion { padding: 80px 48px; background: var(--off-white); }
+  .ubicacion-layout { display: grid; grid-template-columns: 380px 1fr; gap: 40px; align-items: start; margin-top: 52px; }
+  .ubicacion-info { display: flex; flex-direction: column; gap: 16px; }
+  .ub-card { background: var(--white); border: 1px solid var(--border); padding: 24px; box-shadow: var(--shadow-card); }
+  .ub-card h4 { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--blue-dark); letter-spacing: .5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .ub-card h4::before { content: ''; width: 4px; height: 18px; background: var(--orange); display: inline-block; flex-shrink: 0; }
+  .ub-card p { font-size: 13.5px; color: var(--text-body); line-height: 1.7; }
+  .ub-detail { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--gray-100); }
+  .ub-detail:last-child { border-bottom: none; }
+  .ub-detail svg { width: 14px; height: 14px; fill: var(--orange); flex-shrink: 0; margin-top: 3px; }
+  .ub-detail span { font-size: 13px; color: var(--text-body); line-height: 1.5; }
+  .como-llegar { background: var(--blue-dark); padding: 24px; }
+  .como-llegar h4 { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--white); letter-spacing: .5px; margin-bottom: 16px; }
+  .transporte-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .transporte-item:last-child { border-bottom: none; }
+  .trans-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .trans-icon svg { width: 14px; height: 14px; fill: var(--orange); }
+  .trans-text strong { display: block; font-size: 12px; color: var(--white); font-weight: 600; }
+  .trans-text span { font-size: 11.5px; color: var(--gray-400); }
+  .mapa-placeholder {
+    background: var(--blue-dark); position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 420px; border: 1px solid var(--border);
+  }
+  .mapa-placeholder::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 41px), repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 41px); }
+  .mapa-pin { position: relative; z-index: 2; text-align: center; }
+  .pin-icon { width: 60px; height: 60px; background: var(--orange); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; clip-path: polygon(50% 100%, 0 35%, 100% 35%); padding-top: 8px; }
+  .pin-icon svg { width: 24px; height: 24px; fill: var(--white); }
+  .pin-label { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--white); letter-spacing: 1px; margin-bottom: 6px; }
+  .pin-addr { font-size: 13px; color: var(--gray-400); }
+  .mapa-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; background: var(--orange); color: var(--white); padding: 10px 24px; font-size: 13px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; text-decoration: none; transition: background var(--transition); }
+  .mapa-btn:hover { background: var(--orange-hover); }
+
+  /* SECCIÓN 3: FAQ */
+  .section-faq { padding: 80px 48px; background: var(--white); }
+  .faq-layout { display: grid; grid-template-columns: 300px 1fr; gap: 60px; align-items: start; margin-top: 52px; }
+  .faq-aside { position: sticky; top: 100px; }
+  .faq-aside h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--blue-dark); letter-spacing: .5px; margin-bottom: 14px; }
+  .faq-aside p { font-size: 13.5px; color: var(--gray-600); line-height: 1.7; margin-bottom: 20px; }
+  .faq-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--blue-dark); color: var(--white); padding: 12px 24px; font-size: 13px; font-weight: 600; text-decoration: none; transition: background var(--transition); }
+  .faq-cta:hover { background: var(--blue-mid); }
+  .faq-list { display: flex; flex-direction: column; gap: 2px; }
+  .faq-item { background: var(--off-white); border: 1px solid var(--border); overflow: hidden; }
+  .faq-q {
+    padding: 20px 24px; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    font-size: 14.5px; font-weight: 600; color: var(--blue-dark);
+    transition: background var(--transition);
+    user-select: none;
+  }
+  .faq-q:hover { background: var(--gray-100); }
+  .faq-item.open .faq-q { background: var(--blue-dark); color: var(--white); }
+  .faq-chevron { width: 18px; height: 18px; flex-shrink: 0; transition: transform var(--transition); }
+  .faq-item.open .faq-chevron { transform: rotate(180deg); }
+  .faq-chevron path { fill: currentColor; }
+  .faq-a {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.35s ease;
+    font-size: 13.5px; color: var(--text-body); line-height: 1.75;
+    padding: 0 24px;
+  }
+  .faq-item.open .faq-a { max-height: 300px; padding: 16px 24px 20px; }
+
+  @media (max-width: 1024px) {
+    .contacto-layout { grid-template-columns: 1fr; }
+    .ubicacion-layout { grid-template-columns: 1fr; }
+    .faq-layout { grid-template-columns: 1fr; }
+    .faq-aside { position: static; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .page-hero, .section-contacto, .section-ubicacion, .section-faq { padding-left: 20px; padding-right: 20px; }
+    .form-grid.cols2 { grid-template-columns: 1fr; }
+    .field.span2 { grid-column: span 1; }
+    .toast { right: 16px; bottom: 16px; left: 16px; }
+  }

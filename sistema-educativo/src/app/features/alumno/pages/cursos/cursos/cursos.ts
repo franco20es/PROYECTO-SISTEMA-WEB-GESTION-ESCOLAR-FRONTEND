@@ -1,6 +1,6 @@
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { Component } from '@angular/core';
-
+import { Router } from '@angular/router';
 export interface Curso {
   id: number;
   nombre: string;
@@ -135,12 +135,11 @@ export class CursosAlumno {
       ]
     }
   ];
+   
+  constructor(private router: Router) {}
 
   verDetalle(curso: Curso) {
-    this.cursoSeleccionado = curso;
+    this.router.navigate(['/alumno/detalle-curso', curso.id]);
   }
 
-  cerrarDetalle() {
-    this.cursoSeleccionado = null;
-  }
 }

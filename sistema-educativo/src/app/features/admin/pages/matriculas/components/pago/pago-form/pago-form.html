@@ -1,0 +1,137 @@
+<form [formGroup]="formPago" class="card">
+
+  <!-- HEADER -->
+  <div class="card-hdr">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="step-circle step-gray">4</div>
+      <div class="card-title">Configuración de Pago</div>
+    </div>
+
+    @if (formPago.valid) {
+      <span class="badge badge-green">
+        <i class="bi bi-check-circle-fill"></i> Completado
+      </span>
+    } @else {
+      <span class="badge badge-gray">Pendiente</span>
+    }
+  </div>
+
+  <!-- BODY -->
+  <div class="card-body">
+    <div class="form-section">
+
+      <!-- Modalidad / Descuento -->
+      <div class="form-grid col-2">
+
+        <div class="form-group">
+          <label class="form-label">Modalidad de Pago <span class="req">*</span></label>
+          <select class="form-select" formControlName="modalidad"
+                  [class.is-invalid]="formPago.get('modalidad')?.invalid && formPago.get('modalidad')?.touched">
+            <option value="MENSUAL">Mensual</option>
+            <option value="TRIMESTRAL">Trimestral</option>
+            <option value="ANUAL">Anual (Descuento 5%)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Descuento Especial <span class="req">*</span></label>
+          <select class="form-select" formControlName="descuento"
+                  [class.is-invalid]="formPago.get('descuento')?.invalid && formPago.get('descuento')?.touched">
+            <option value="NINGUNO">Ninguno</option>
+            <option value="HERMANO">Hermano en colegio (10%)</option>
+            <option value="CONVENIO">Convenio empresa (15%)</option>
+            <option value="BECA">Beca (50%)</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- RESUMEN (Caja SaaS Minimalista) -->
+      <div class="resumen-box" style="background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 4px; margin-top: 20px;">
+        <div class="resumen-title" style="font-weight: 700; font-size: 0.9rem; color: var(--txt-primary); margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+          Resumen de Tarifas — {{ resumen.grado }}
+        </div>
+
+        <div class="resumen-list" style="display: flex; flex-direction: column; gap: 10px;">
+          <div class="resumen-item" style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+            <span style="color: var(--txt-muted);">Matrícula</span>
+            <span style="font-weight: 600;">S/ {{ resumen.matricula | number:'1.2-2' }}</span>
+          </div>
+
+          <div class="resumen-item" style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+            <span style="color: var(--txt-muted);">Pensión Mensual</span>
+            <span style="font-weight: 600;">S/ {{ resumen.pension | number:'1.2-2' }}</span>
+          </div>
+
+          <div class="resumen-item" style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+            <span style="color: var(--txt-muted);">Materiales</span>
+            <span style="font-weight: 600;">S/ {{ resumen.materiales | number:'1.2-2' }}</span>
+          </div>
+
+          <div class="divider" style="height: 1px; background: var(--border); margin: 5px 0;"></div>
+
+          <div class="resumen-total" style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; color: var(--txt-primary);">Total primer pago</span>
+            <span style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">S/ {{ total | number:'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Observaciones -->
+      <div style="margin-top:20px">
+        <label class="form-label">Observaciones / Acuerdos</label>
+        <textarea 
+          class="form-textarea"
+          formControlName="observaciones"
+          placeholder="Notas adicionales sobre el plan de pagos..."
+          style="width: 100%; min-height: 80px; border-radius: 4px; border: 1px solid var(--border); padding: 10px;">
+        </textarea>
+      </div>
+
+      <!-- Toggles -->
+      <div class="toggle-group" style="margin-top: 24px; display: grid; gap: 12px;">
+
+        <!-- Términos (Obligatorio) -->
+        <label class="toggle-wrap" [class.error-text]="formPago.get('aceptaTerminos')?.invalid && formPago.get('aceptaTerminos')?.touched">
+          <label class="toggle">
+            <input type="checkbox" formControlName="aceptaTerminos">
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </label>
+          <span class="toggle-label" style="font-size: 0.85rem;">
+            Acepto los <a href="#" style="color: var(--primary); font-weight: 600;">Términos y Condiciones de Pago</a> <span class="req">*</span>
+          </span>
+        </label>
+        @if (formPago.get('aceptaTerminos')?.invalid && formPago.get('aceptaTerminos')?.touched) {
+          <small style="color: var(--red); margin-left: 45px;">Es obligatorio aceptar los términos para proceder.</small>
+        }
+
+        <!-- Email -->
+        <label class="toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" formControlName="enviarEmail">
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </label>
+          <span class="toggle-label" style="font-size: 0.85rem; color: var(--txt-muted);">
+            Enviar comprobante de compromiso por email
+          </span>
+        </label>
+
+        <!-- Portal -->
+        <label class="toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" formControlName="accesoPortal">
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </label>
+          <span class="toggle-label" style="font-size: 0.85rem; color: var(--txt-muted);">
+            Activar acceso inmediato al portal académico
+          </span>
+        </label>
+
+      </div>
+
+    </div>
+  </div>
+</form>

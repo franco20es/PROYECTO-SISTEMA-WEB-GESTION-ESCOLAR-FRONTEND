@@ -48,6 +48,10 @@ export const ALUMNO_ROUTES: Routes = [
   {
     path: 'pago-online',
     loadComponent: () => import('./pages/pagos/pago/pago-online/pago-online/pago-online').then(m => m.PagoOnline)
+  },
+  {
+    path: 'detalle-curso/:id',
+    loadComponent: () => import('./pages/detalle-cursos/detalle-cursos/detalle-cursos').then(m => m.DetalleCursos)
   }
 
 ];
