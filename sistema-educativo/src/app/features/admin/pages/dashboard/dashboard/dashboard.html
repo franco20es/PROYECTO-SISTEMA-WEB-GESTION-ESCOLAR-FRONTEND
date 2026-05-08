@@ -1,334 +1,617 @@
-<div class="layout" [class.sidebar-collapsed]="!sidebarOpen">
-
- 
-
-  <!-- ══ MAIN AREA ════════════════════════════════════════════════════════ -->
-  <div class="main-area">
-
-  
-
-    <!-- ── PAGE CONTENT ────────────────────────────────────────────────── -->
-    <main class="page-content">
-
-      <!-- Page Title -->
-      <div class="page-header">
-        <div>
-          <h1 class="page-title">Panel Principal</h1>
-          <p class="page-sub">Resumen general del sistema educativo EduCore</p>
-        </div>
-        <div class="page-header-actions">
-          <button class="btn btn-outline btn-sm">
-            <i class="bi bi-download"></i> Exportar Reporte
-          </button>
-          <button class="btn btn-primary btn-sm">
-            <i class="bi bi-plus-lg"></i> Acción Rápida
-          </button>
-        </div>
-      </div>
-
-      <!-- ── KPI GRID ───────────────────────────────────────────────────── -->
-      <div class="kpi-grid">
-        <div
-          class="kpi-card"
-          *ngFor="let kpi of kpis; let i = index"
-          [style.animation-delay]="(i * 60) + 'ms'"
-        >
-          <div class="kpi-icon-wrap" [class]="'kpi-icon--' + kpi.color">
-            <i class="bi {{ kpi.icon }}"></i>
-          </div>
-          <div class="kpi-body">
-            <span class="kpi-value">{{ kpi.value }}</span>
-            <span class="kpi-label">{{ kpi.label }}</span>
-          </div>
-          <span class="kpi-delta" [class.up]="kpi.up" [class.down]="!kpi.up">
-            <i class="bi" [class.bi-arrow-up-short]="kpi.up" [class.bi-arrow-down-short]="!kpi.up"></i>
-            {{ kpi.delta }}
-          </span>
-        </div>
-      </div>
-
-      <!-- ── MAIN DASHBOARD GRID ─────────────────────────────────────── -->
-      <div class="dashboard-grid">
-
-        <!-- ── TOP COURSES TABLE (wide) ──────────────────────────────── -->
-        <div class="panel panel--wide">
-          <div class="panel-header">
-            <div class="panel-title-wrap">
-              <div class="panel-title-dot" style="background: linear-gradient(135deg,#6366f1,#8b5cf6)"></div>
-              <h2 class="panel-title">Cursos con Mejor Rendimiento</h2>
-            </div>
-            <button class="btn-link">Ver todos <i class="bi bi-arrow-right"></i></button>
-          </div>
-
-          <div class="panel-body">
-            <div class="top-courses-list">
-              <div
-                class="top-course-item"
-                *ngFor="let c of topCourses; let i = index"
-                [style.animation-delay]="(i * 80) + 'ms'"
-              >
-                <div class="tc-rank">{{ i + 1 }}</div>
-                <div class="tc-color-bar" [style.background]="c.headerGradient"></div>
-                <div class="tc-info">
-                  <div class="tc-name-row">
-                    <span class="tc-name">{{ c.name }}</span>
-                    <span class="tc-code">{{ c.code }}</span>
-                  </div>
-                  <div class="tc-teacher-row">
-                    <div class="tc-av" [style.background]="c.teacherGradient">{{ c.teacherInitials }}</div>
-                    <span class="tc-teacher">{{ c.teacher }}</span>
-                    <span class="tc-students"><i class="bi bi-people-fill"></i> {{ c.students }}</span>
-                  </div>
-                </div>
-                <div class="tc-progress">
-                  <div class="tc-progress-bar">
-                    <div class="tc-progress-fill" [class]="'fill--' + c.progressColor" [style.width]="c.progress + '%'"></div>
-                  </div>
-                  <span class="tc-pct">{{ c.progress }}%</span>
-                </div>
-                <div class="tc-grade" [class]="'grade--' + c.gradeClass">
-                  <span class="tc-grade-val">{{ c.avgGrade }}</span>
-                  <span class="tc-grade-lbl">prom.</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── GRADE DISTRIBUTION ─────────────────────────────────────── -->
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title-wrap">
-              <div class="panel-title-dot" style="background: linear-gradient(135deg,#10b981,#06b6d4)"></div>
-              <h2 class="panel-title">Distribución de Notas</h2>
-            </div>
-            <span class="panel-badge">1,248 alumnos</span>
-          </div>
-
-          <div class="panel-body">
-            <!-- Donut-style summary -->
-            <div class="grade-summary">
-              <div class="grade-donut">
-                <div class="donut-ring">
-                  <svg viewBox="0 0 120 120" class="donut-svg">
-                    <circle class="donut-bg" cx="60" cy="60" r="50" />
-                    <!-- AD slice -->
-                    <circle class="donut-slice" cx="60" cy="60" r="50"
-                      stroke="#10b981"
-                      stroke-dasharray="69.1 244.9"
-                      stroke-dashoffset="0"
-                    />
-                    <!-- A slice -->
-                    <circle class="donut-slice" cx="60" cy="60" r="50"
-                      stroke="#6366f1"
-                      stroke-dasharray="141.3 172.7"
-                      stroke-dashoffset="-69.1"
-                    />
-                    <!-- B slice -->
-                    <circle class="donut-slice" cx="60" cy="60" r="50"
-                      stroke="#f59e0b"
-                      stroke-dasharray="75.4 238.6"
-                      stroke-dashoffset="-210.4"
-                    />
-                    <!-- C slice -->
-                    <circle class="donut-slice" cx="60" cy="60" r="50"
-                      stroke="#ef4444"
-                      stroke-dasharray="28.3 285.7"
-                      stroke-dashoffset="-285.8"
-                    />
-                  </svg>
-                  <div class="donut-center">
-                    <span class="donut-pct">67%</span>
-                    <span class="donut-lbl">AD + A</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Grade bars -->
-            <div class="grade-bars">
-              <div class="grade-bar-row" *ngFor="let g of gradeDistribution">
-                <div class="gbr-label">{{ g.label }}</div>
-                <div class="gbr-track">
-                  <div class="gbr-fill" [style.width]="g.pct + '%'" [style.background]="g.color"></div>
-                </div>
-                <div class="gbr-meta">
-                  <span class="gbr-pct" [style.color]="g.color">{{ g.pct }}%</span>
-                  <span class="gbr-count">{{ g.count }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── ATTENDANCE ─────────────────────────────────────────────── -->
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title-wrap">
-              <div class="panel-title-dot" style="background: linear-gradient(135deg,#06b6d4,#0ea5e9)"></div>
-              <h2 class="panel-title">Asistencia Semanal</h2>
-            </div>
-            <span class="panel-badge panel-badge--green">Semana actual</span>
-          </div>
-
-          <div class="panel-body">
-            <!-- Big number -->
-            <div class="attendance-hero">
-              <span class="ah-value">92%</span>
-              <div class="ah-meta">
-                <span class="ah-label">Promedio semanal</span>
-                <span class="ah-delta up"><i class="bi bi-arrow-up-short"></i> +2% vs semana anterior</span>
-              </div>
-            </div>
-
-            <!-- Bar chart -->
-            <div class="att-chart">
-              <div class="att-bar-group" *ngFor="let d of attendanceDays">
-                <div class="att-bar-wrap">
-                  <div class="att-bar-fill" [style.height]="d.pct + '%'"></div>
-                </div>
-                <span class="att-pct">{{ d.pct }}%</span>
-                <span class="att-day">{{ d.day }}</span>
-              </div>
-            </div>
-
-            <!-- Status breakdown -->
-            <div class="att-breakdown">
-              <div class="att-bd-item">
-                <span class="att-bd-dot" style="background:#10b981"></span>
-                <span class="att-bd-label">Presentes</span>
-                <span class="att-bd-val">1,148</span>
-              </div>
-              <div class="att-bd-item">
-                <span class="att-bd-dot" style="background:#f59e0b"></span>
-                <span class="att-bd-label">Tardanzas</span>
-                <span class="att-bd-val">62</span>
-              </div>
-              <div class="att-bd-item">
-                <span class="att-bd-dot" style="background:#ef4444"></span>
-                <span class="att-bd-label">Ausentes</span>
-                <span class="att-bd-val">38</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── UPCOMING EVENTS ────────────────────────────────────────── -->
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title-wrap">
-              <div class="panel-title-dot" style="background: linear-gradient(135deg,#f59e0b,#f97316)"></div>
-              <h2 class="panel-title">Próximos Eventos</h2>
-            </div>
-            <button class="btn-link">Ver calendario <i class="bi bi-arrow-right"></i></button>
-          </div>
-
-          <div class="panel-body">
-            <div class="events-list">
-              <div class="event-item" *ngFor="let ev of upcomingEvents">
-                <div class="ev-icon" [style.background]="ev.bgColor" [style.color]="ev.color">
-                  <i class="bi {{ getEventIcon(ev.type) }}"></i>
-                </div>
-                <div class="ev-body">
-                  <span class="ev-title">{{ ev.title }}</span>
-                  <span class="ev-time"><i class="bi bi-clock"></i> {{ ev.time }}</span>
-                </div>
-                <div class="ev-date" [style.color]="ev.color">{{ ev.date }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── RECENT ACTIVITY (wide) ─────────────────────────────────── -->
-        <div class="panel panel--wide">
-          <div class="panel-header">
-            <div class="panel-title-wrap">
-              <div class="panel-title-dot" style="background: linear-gradient(135deg,#8b5cf6,#6366f1)"></div>
-              <h2 class="panel-title">Actividad Reciente</h2>
-            </div>
-            <button class="btn-link">Ver historial <i class="bi bi-arrow-right"></i></button>
-          </div>
-
-          <div class="panel-body">
-            <div class="activity-feed">
-              <div
-                class="activity-item"
-                *ngFor="let a of recentActivity; trackBy: trackById; let last = last"
-                [class.last]="last"
-              >
-                <div class="act-icon-wrap">
-                  <div class="act-icon" [style.background]="a.iconColor + '20'" [style.color]="a.iconColor">
-                    <i class="bi {{ a.icon }}"></i>
-                  </div>
-                  <div class="act-line" *ngIf="!last"></div>
-                </div>
-                <div class="act-body">
-                  <div class="act-title-row">
-                    <span class="act-title">{{ a.title }}</span>
-                    <span class="act-badge" *ngIf="a.badge" [class]="'act-badge--' + a.badgeColor">{{ a.badge }}</span>
-                  </div>
-                  <span class="act-desc">{{ a.description }}</span>
-                  <span class="act-time"><i class="bi bi-clock"></i> {{ a.time }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── QUICK STATS ─────────────────────────────────────────────── -->
-        <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title-wrap">
-              <div class="panel-title-dot" style="background: linear-gradient(135deg,#ef4444,#f43f5e)"></div>
-              <h2 class="panel-title">Alertas Activas</h2>
-            </div>
-            <span class="panel-badge panel-badge--red">7 pendientes</span>
-          </div>
-
-          <div class="panel-body">
-            <div class="alerts-list">
-              <div class="alert-item alert-item--amber">
-                <i class="bi bi-exclamation-triangle-fill"></i>
-                <div class="alert-body">
-                  <span class="alert-title">Asistencia crítica</span>
-                  <span class="alert-desc">4 alumnos con &lt; 70% asistencia en Matemáticas</span>
-                </div>
-                <button class="alert-btn">Ver</button>
-              </div>
-              <div class="alert-item alert-item--red">
-                <i class="bi bi-x-circle-fill"></i>
-                <div class="alert-body">
-                  <span class="alert-title">Notas pendientes</span>
-                  <span class="alert-desc">TEC-101 sin calificaciones del bimestre 2</span>
-                </div>
-                <button class="alert-btn">Ver</button>
-              </div>
-              <div class="alert-item alert-item--indigo">
-                <i class="bi bi-info-circle-fill"></i>
-                <div class="alert-body">
-                  <span class="alert-title">Curso en revisión</span>
-                  <span class="alert-desc">Tecnología e Informática requiere aprobación</span>
-                </div>
-                <button class="alert-btn">Ver</button>
-              </div>
-              <div class="alert-item alert-item--amber">
-                <i class="bi bi-exclamation-triangle-fill"></i>
-                <div class="alert-body">
-                  <span class="alert-title">Docente sin cursos</span>
-                  <span class="alert-desc">Prof. Pedro Castro — 0 cursos asignados</span>
-                </div>
-                <button class="alert-btn">Ver</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-      <!-- end dashboard-grid -->
-
-    </main>
+<!-- PAGE HEADER -->
+  <div class="page-header">
+    <div>
+      <!-- <div class="ph-date" id="phDate">Cargando...</div> -->
+      <div class="ph-title">Panel de <em>Control</em></div>
+      <div class="ph-subtitle">Resumen general de la IE San Marcos — Año Escolar 2025</div>
+    </div>
+    <div class="ph-right">
+      <button class="btn-ghost" (click)="showToast('Generando reporte PDF del día...','info')">
+        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Reporte del día
+      </button>
+      <button class="btn-primary" routerLink="/admin/matricula" (click)="showToast('Abriendo nueva solicitud de matrícula...','info')">
+        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Nueva Matrícula
+      </button>
+    </div>
   </div>
-  <!-- end main-area -->
-
+ 
+<!-- ALERTAS -->
+<div class="alerts-strip">
+  <div 
+    *ngFor="let alerta of alertas" 
+    [class.alert-item]="true"
+    [class.err]="alerta.tipo === 'err'"
+    [class.warn]="alerta.tipo === 'warn'"
+    [class.info]="alerta.tipo === 'info'"
+    [class.closing]="alerta.cerrando"
+  >
+    <svg viewBox="0 0 24 24">
+      <path [attr.d]="alerta.icono"/>
+    </svg>
+    <span>
+      <strong>{{ alerta.titulo }}</strong> 
+      {{ alerta.mensaje }}
+    </span>
+    <button class="alert-close" (click)="cerrarAlerta(alerta.id)">✕</button>
+  </div>
 </div>
-<!-- end layout -->
+ 
+  <!-- KPI STRIP -->
+<div class="kpi-strip">
+  <div *ngFor="let card of kpiCards" class="kpi-card" [ngClass]="card.class">
+    
+    <div class="kpi-icon" [ngClass]="card.icon">
+      <svg viewBox="0 0 24 24">
+        <path [attr.d]="card.svg"/>
+      </svg>
+    </div>
+
+    <div class="kpi-data">
+      <!-- El valor animado -->
+      <strong>{{ kpis[card.key] | number }}</strong>
+      <span>{{ card.label }}</span>
+    </div>
+
+    <!-- Tendencia dinámica -->
+    <div class="kpi-trend" [ngClass]="card.trendDir">
+      <svg viewBox="0 0 24 24">
+        <path [attr.d]="card.trendDir === 'up' ? 'M7 14l5-5 5 5z' : 'M7 10l5 5 5-5z'"/>
+      </svg>
+      {{ card.trend }}
+    </div>
+
+  </div>
+</div>
+ 
+  <!-- DASHBOARD GRID -->
+  <div class="dashboard-grid">
+ 
+    <!-- ══ COLUMNA IZQUIERDA ══ -->
+    <div class="col-left">
+ 
+      <!-- GRÁFICO MATRÍCULAS POR NIVEL Y MES -->
+      <div class="dash-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg></div>
+            <h3>Matrículas por <em>Nivel</em></h3>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <select style="padding:5px 20px 5px 8px;border:1.5px solid var(--border);background:var(--off-white);font-size:11px;color:var(--gray-600);outline:none;appearance:none;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%227%22%3E%3Cpath d=%22M0 0l5 7 5-7z%22 fill=%22%234A5470%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 6px center;cursor:pointer;" onchange="showToast('Filtrando por '+this.value,'info')">
+              <option>2025</option><option>2024</option><option>2023</option>
+            </select>
+            <a class="card-link" (click)="showToast('Ir a módulo Matrículas','info')">Ver todo →</a>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-legend" style="margin-bottom:14px;">
+            <div class="cl-item"><div class="cl-dot" style="background:#5B8FF9"></div>Inicial</div>
+            <div class="cl-item"><div class="cl-dot" style="background:#FF5B1F"></div>Primaria</div>
+            <div class="cl-item"><div class="cl-dot" style="background:#00C27C"></div>Secundaria</div>
+          </div>
+          <div class="bars-chart" id="barsChart">
+            <!-- JS rellena -->
+          </div>
+        </div>
+      </div>
+ 
+      <!-- SPARKLINES INDICADORES -->
+      <div class="dash-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg></div>
+            <h3>Indicadores <em>Clave</em></h3>
+          </div>
+          <a class="card-link" (click)="showToast('Ver reportes detallados','info')">Reportes →</a>
+        </div>
+        <div class="card-body">
+          <div class="spark-grid">
+            <div class="spark-item">
+              <div class="spark-item-top">
+                <div><div class="si-label">Asistencia media</div><div class="si-val" style="color:var(--success)">91<span style="font-size:16px">%</span></div></div>
+                <div class="si-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>+2.3%</div>
+              </div>
+              <svg width="100%" height="34" viewBox="0 0 120 34"><polyline points="0,28 20,22 40,25 60,18 80,14 100,10 120,8" fill="none" stroke="#00C27C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="120" cy="8" r="3" fill="#00C27C"/></svg>
+            </div>
+            <div class="spark-item">
+              <div class="spark-item-top">
+                <div><div class="si-label">Promedio notas</div><div class="si-val" style="color:var(--blue-light)">14.8</div></div>
+                <div class="si-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>+0.4</div>
+              </div>
+              <svg width="100%" height="34" viewBox="0 0 120 34"><polyline points="0,26 20,24 40,20 60,22 80,18 100,15 120,12" fill="none" stroke="#2A63E6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="120" cy="12" r="3" fill="#2A63E6"/></svg>
+            </div>
+            <div class="spark-item">
+              <div class="spark-item-top">
+                <div><div class="si-label">Tasa aprobación</div><div class="si-val" style="color:var(--orange)">97<span style="font-size:16px">%</span></div></div>
+                <div class="si-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>+1.2%</div>
+              </div>
+              <svg width="100%" height="34" viewBox="0 0 120 34"><polyline points="0,22 20,20 40,24 60,16 80,14 100,10 120,6" fill="none" stroke="#FF5B1F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="120" cy="6" r="3" fill="#FF5B1F"/></svg>
+            </div>
+            <div class="spark-item">
+              <div class="spark-item-top">
+                <div><div class="si-label">Nuevas solicitudes</div><div class="si-val" style="color:var(--warning)">21</div></div>
+                <div class="si-trend up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>+4 hoy</div>
+              </div>
+              <svg width="100%" height="34" viewBox="0 0 120 34"><polyline points="0,30 20,28 40,26 60,24 80,20 100,16 120,10" fill="none" stroke="#F5A623" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="120" cy="10" r="3" fill="#F5A623"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- PROGRESO MATRÍCULA POR NIVEL -->
+      <div class="dash-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
+            <h3>Progreso de <em>Matrícula</em></h3>
+          </div>
+          <span class="card-badge">2025</span>
+        </div>
+        <div class="card-body">
+          <div class="mat-progress">
+            <div class="mp-row">
+              <div class="mp-label">Inicial <span style="font-size:11px;color:var(--gray-400)">(186 / 200)</span></div>
+              <div class="mp-bar"><div class="mp-fill" style="width:93%;background:var(--blue-sky)"></div></div>
+              <div class="mp-val">93%</div>
+            </div>
+            <div class="mp-row">
+              <div class="mp-label">1° Primaria <span style="font-size:11px;color:var(--gray-400)">(98 / 110)</span></div>
+              <div class="mp-bar"><div class="mp-fill" style="width:89%;background:var(--orange)"></div></div>
+              <div class="mp-val">89%</div>
+            </div>
+            <div class="mp-row">
+              <div class="mp-label">2° Primaria <span style="font-size:11px;color:var(--gray-400)">(102 / 110)</span></div>
+              <div class="mp-bar"><div class="mp-fill" style="width:93%;background:var(--orange)"></div></div>
+              <div class="mp-val">93%</div>
+            </div>
+            <div class="mp-row">
+              <div class="mp-label">3° Primaria <span style="font-size:11px;color:var(--gray-400)">(95 / 110)</span></div>
+              <div class="mp-bar"><div class="mp-fill" style="width:86%;background:var(--orange)"></div></div>
+              <div class="mp-val">86%</div>
+            </div>
+            <div class="mp-row">
+              <div class="mp-label">1° Secundaria <span style="font-size:11px;color:var(--gray-400)">(88 / 100)</span></div>
+              <div class="mp-bar"><div class="mp-fill" style="width:88%;background:var(--success)"></div></div>
+              <div class="mp-val">88%</div>
+            </div>
+            <div class="mp-row">
+              <div class="mp-label">5° Secundaria <span style="font-size:11px;color:var(--gray-400)">(75 / 100)</span></div>
+              <div class="mp-bar"><div class="mp-fill" style="width:75%;background:var(--success)"></div></div>
+              <div class="mp-val">75%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+    </div>
+ 
+    <!-- ══ COLUMNA CENTRAL ══ -->
+    <div class="col-mid">
+ 
+      <!-- DISTRIBUCIÓN NIVELES DONUT -->
+      <div class="dash-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg></div>
+            <h3>Distribución <em>Alumnos</em></h3>
+          </div>
+          <a class="card-link" (click)="showToast('Ir a módulo Estudiantes','info')">Ver alumnos →</a>
+        </div>
+        <div class="card-body">
+          <div class="donut-wrap">
+            <svg class="donut-svg" width="130" height="130" viewBox="0 0 130 130">
+              <!-- Inicial 14.9% -->
+              <circle cx="65" cy="65" r="50" fill="none" stroke="#5B8FF9" stroke-width="22" stroke-dasharray="46.8 267.2" stroke-dashoffset="0" transform="rotate(-90 65 65)"/>
+              <!-- Primaria 49% -->
+              <circle cx="65" cy="65" r="50" fill="none" stroke="#FF5B1F" stroke-width="22" stroke-dasharray="154 160" stroke-dashoffset="-46.8" transform="rotate(-90 65 65)"/>
+              <!-- Secundaria 36.1% -->
+              <circle cx="65" cy="65" r="50" fill="none" stroke="#00C27C" stroke-width="22" stroke-dasharray="113.5 200.5" stroke-dashoffset="-200.8" transform="rotate(-90 65 65)"/>
+              <text x="65" y="62" text-anchor="middle" font-family="Bebas Neue,sans-serif" font-size="22" fill="#0A1A3E">1,248</text>
+              <text x="65" y="76" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#8A95B0" letter-spacing="1">ALUMNOS</text>
+            </svg>
+            <div class="donut-legend">
+              <div class="dl-item"><div class="dl-left"><div class="dl-dot" style="background:#5B8FF9"></div><div class="dl-label">Inicial</div></div><div><span class="dl-val">186</span><span class="dl-pct">(14.9%)</span></div></div>
+              <div class="dl-item"><div class="dl-left"><div class="dl-dot" style="background:#FF5B1F"></div><div class="dl-label">Primaria</div></div><div><span class="dl-val">612</span><span class="dl-pct">(49%)</span></div></div>
+              <div class="dl-item"><div class="dl-left"><div class="dl-dot" style="background:#00C27C"></div><div class="dl-label">Secundaria</div></div><div><span class="dl-val">450</span><span class="dl-pct">(36.1%)</span></div></div>
+              <div class="dl-item" style="border-top:1px solid var(--gray-100);padding-top:8px;margin-top:2px;"><div class="dl-left"><div class="dl-dot" style="background:var(--gray-400)"></div><div class="dl-label">Retirados</div></div><div><span class="dl-val">18</span><span class="dl-pct">(1.4%)</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- SOLICITUDES RECIENTES -->
+      <div class="dash-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+            <h3>Solicitudes <em>Recientes</em></h3>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="card-badge">4 nuevas</span>
+            <a class="card-link" (click)="showToast('Ir a Solicitudes Online','info')">Ver todas →</a>
+          </div>
+        </div>
+        <div class="sol-list">
+          <div class="sol-row" (click)="showToast('Abriendo solicitud SOL-0021','info')">
+            <div class="sol-av" style="background:linear-gradient(135deg,#0A1A3E,#FF5B1F 130%)">MG</div>
+            <div class="sol-info"><div class="sol-name">García Quispe, María Elena</div><div class="sol-sub">Matrícula nueva · Primaria 2° grado</div></div>
+            <span class="sol-tag st-nueva">Nueva</span>
+            <div class="sol-time">09:14</div>
+          </div>
+          <div class="sol-row" (click)="showToast('Abriendo solicitud SOL-0020','info')">
+            <div class="sol-av" style="background:linear-gradient(135deg,#0A1A3E,#1340A0)">JR</div>
+            <div class="sol-info"><div class="sol-name">Ramírez Torres, José Luis</div><div class="sol-sub">Traslado · Secundaria 3° año</div></div>
+            <span class="sol-tag st-nueva">Nueva</span>
+            <div class="sol-time">ayer</div>
+          </div>
+          <div class="sol-row" (click)="showToast('Abriendo solicitud SOL-0019','info')">
+            <div class="sol-av" style="background:linear-gradient(135deg,#1B4080,#5B8FF9)">LP</div>
+            <div class="sol-info"><div class="sol-name">Paredes Vega, Lucía</div><div class="sol-sub">Matrícula nueva · Inicial 4 años</div></div>
+            <span class="sol-tag st-pendiente">Pendiente</span>
+            <div class="sol-time">30 Abr</div>
+          </div>
+          <div class="sol-row" (click)="showToast('Abriendo solicitud SOL-0018','info')">
+            <div class="sol-av" style="background:linear-gradient(135deg,#007a4d,#00C27C)">AQ</div>
+            <div class="sol-info"><div class="sol-name">Quispe Tello, Andrés</div><div class="sol-sub">Ratificación · Primaria 5° grado</div></div>
+            <span class="sol-tag st-proceso">En proceso</span>
+            <div class="sol-time">28 Abr</div>
+          </div>
+          <div class="sol-row" (click)="showToast('Abriendo solicitud SOL-0017','info')">
+            <div class="sol-av" style="background:linear-gradient(135deg,#3D1700,#FF5B1F)">CM</div>
+            <div class="sol-info"><div class="sol-name">Morales Díaz, Carmen</div><div class="sol-sub">Matrícula nueva · Inicial 3 años</div></div>
+            <span class="sol-tag st-proceso">En proceso</span>
+            <div class="sol-time">25 Abr</div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- ASISTENCIA SEMÁFORO -->
+      <div class="dash-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg></div>
+            <h3>Semáforo de <em>Asistencia</em></h3>
+          </div>
+          <a class="card-link" (click)="showToast('Ver reporte completo asistencia','info')">Detalle →</a>
+        </div>
+        <div class="card-body" style="padding-bottom:16px;">
+          <div class="asist-semaforo" style="margin-bottom:14px;">
+            <div class="as-item as-prom"><strong>1,140</strong><span>Normal ≥85%</span></div>
+            <div class="as-item as-ries"><strong>104</strong><span>Riesgo 70–84%</span></div>
+            <div class="as-item as-crit"><strong>4</strong><span>Crítico &lt;70%</span></div>
+          </div>
+          <div style="font-size:12px;color:var(--gray-400);padding:0 4px;line-height:1.6;">
+            <strong style="color:var(--error)">Alumnos en estado crítico:</strong> García M. (2°A), Torres K. (3°B), Quispe S. (1°C), Vega L. (5°A) — requieren notificación urgente a apoderados.
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <button class="btn-ghost" (click)="showToast('Notificaciones enviadas a 4 apoderados','info')" style="flex:1;justify-content:center;">
+              <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>Notificar a todos
+            </button>
+            <button class="btn-ghost" (click)="showToast('Exportando reporte asistencia...','info')" style="flex:1;justify-content:center;">
+              <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar
+            </button>
+          </div>
+        </div>
+      </div>
+ 
+    </div>
+ 
+    <!-- ══ COLUMNA DERECHA ══ -->
+    <div class="col-right">
+ 
+      <!-- ACCESOS RÁPIDOS -->
+      <div class="dash-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
+            <h3>Acceso <em>Rápido</em></h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="quick-grid">
+            <a class="quick-btn" (click)="showToast('Ir a Nueva Matrícula','info')" routerLink="/admin/matricula">
+              <div class="qb-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg></div>
+              <div class="qb-label" >Nueva matrícula</div>
+            </a>
+            <a class="quick-btn" (click)="showToast('Ir a Estudiantes','info')" routerLink="/admin/estudiantes">
+              <div class="qb-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3z"/></svg></div>
+              <div class="qb-label">Estudiantes</div>
+            </a>
+            <a class="quick-btn" (click)="showToast('Ir a Profesores','info')" routerLink="/admin/profesores">
+              <div class="qb-icon"><svg viewBox="0 0 24 24"><path d="M20 17a2 2 0 002-2V4a2 2 0 00-2-2H9.46c.35.61.54 1.3.54 2h10v11h-9v2h9z"/></svg></div>
+              <div class="qb-label">Profesores</div>
+            </a>
+            <a class="quick-btn" (click)="showToast('Ir a Solicitudes','info')" routerLink="/admin/solicitudes">
+              <div class="qb-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg></div>
+              <div class="qb-label">Solicitudes</div>
+            </a>
+            <a class="quick-btn" (click)="showToast('Generar reporte PDF...','info')" routerLink="/admin/reportes">
+              <div class="qb-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg></div>
+              <div class="qb-label">Reportes</div>
+            </a>
+            <a class="quick-btn" (click)="showToast('Ir a Configuración','info')" routerLink="/admin/configuracion">
+              <div class="qb-icon"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></div>
+              <div class="qb-label" >Configuración</div>
+            </a>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- DOCENTES STATS -->
+      <div class="dash-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M20 17a2 2 0 002-2V4a2 2 0 00-2-2H9.46c.35.61.54 1.3.54 2h10v11h-9v2h9z"/></svg></div>
+            <h3>Panel <em>Docentes</em></h3>
+          </div>
+          <a class="card-link" (click)="showToast('Ir a módulo Profesores','info')">Ver todos →</a>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <div class="docentes-grid">
+            <div class="dg-item dg-activos"><strong>21</strong><span>Activos</span></div>
+            <div class="dg-item dg-licencia"><strong>3</strong><span>Con licencia</span></div>
+            <div class="dg-item dg-nombrados"><strong>14</strong><span>Nombrados</span></div>
+            <div class="dg-item dg-contratados"><strong>10</strong><span>Contratados</span></div>
+          </div>
+          <div style="padding:12px 16px;border-top:1px solid var(--gray-100);">
+            <div style="font-size:11.5px;color:var(--gray-600);margin-bottom:8px;font-weight:600;">Docentes con licencia activa:</div>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-body);"><span>Prof. Ana Torres</span><span style="font-family:'DM Mono',monospace;color:var(--warning);font-size:11px">hasta 30/05</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-body);"><span>Prof. Carlos Flores</span><span style="font-family:'DM Mono',monospace;color:var(--warning);font-size:11px">hasta 15/06</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-body);"><span>Prof. María Huanca</span><span style="font-family:'DM Mono',monospace;color:var(--error);font-size:11px">indefinida</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- DOCUMENTOS PENDIENTES -->
+      <div class="dash-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg></div>
+            <h3>Docs. <em>Pendientes</em></h3>
+          </div>
+          <span class="card-badge">38</span>
+        </div>
+        <div class="docs-pend-list">
+          <div class="dp-row" (click)="showToast('Abriendo ficha García Quispe','info')">
+            <div class="dp-icon"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div>
+            <div class="dp-info"><div class="dp-name">García Quispe, Carlos</div><div class="dp-doc">Libreta de notas · 2° Primaria</div></div>
+            <div class="dp-cnt">1 doc</div>
+          </div>
+          <div class="dp-row" (click)="showToast('Abriendo ficha Paredes Vega','info')">
+            <div class="dp-icon"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div>
+            <div class="dp-info"><div class="dp-name">Paredes Vega, Valentina</div><div class="dp-doc">DNI · Libreta de notas · Inicial</div></div>
+            <div class="dp-cnt">2 docs</div>
+          </div>
+          <div class="dp-row" (click)="showToast('Abriendo ficha Flores Vega','info')">
+            <div class="dp-icon"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div>
+            <div class="dp-info"><div class="dp-name">Flores Vega, Luis</div><div class="dp-doc">DNI apoderado · Libreta · 1° Primaria</div></div>
+            <div class="dp-cnt">2 docs</div>
+          </div>
+          <div class="dp-row" (click)="showToast('Ver todos los pendientes','info')" style="justify-content:center;color:var(--blue-light);font-size:12px;font-weight:600;padding:10px;">
+            Ver los 38 documentos pendientes →
+          </div>
+        </div>
+      </div>
+ 
+      <!-- ACTIVIDAD RECIENTE -->
+      <div class="dash-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.81 6-4.72 7.72L13 17v5h5l-1.22-1.22C19.91 19.07 22 15.76 22 12c0-5.18-3.95-9.45-9-9.95zM11 2.05C5.95 2.55 2 6.82 2 12c0 3.76 2.09 7.07 5.22 8.78L6 22h5V2.05z"/></svg></div>
+            <h3>Actividad <em>Reciente</em></h3>
+          </div>
+        </div>
+        <div class="activity-list">
+          <div class="act-row">
+            <div class="act-icon ai-mat"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="act-text"><strong>Morales Díaz, Diego</strong> fue matriculado en Inicial 3 años.</div>
+            <div class="act-time">09:30</div>
+          </div>
+          <div class="act-row">
+            <div class="act-icon ai-sol"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg></div>
+            <div class="act-text">Nueva solicitud de contacto de <strong>García Quispe, María Elena</strong>.</div>
+            <div class="act-time">09:14</div>
+          </div>
+          <div class="act-row">
+            <div class="act-icon ai-doc"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg></div>
+            <div class="act-text">Documentos validados de <strong>Quispe Tello, Sofía</strong> · 5° Primaria.</div>
+            <div class="act-time">08:51</div>
+          </div>
+          <div class="act-row">
+            <div class="act-icon ai-prof"><svg viewBox="0 0 24 24"><path d="M20 17a2 2 0 002-2V4a2 2 0 00-2-2H9.46c.35.61.54 1.3.54 2h10v11h-9v2h9z"/></svg></div>
+            <div class="act-text">Estado de <strong>Prof. Ana Torres</strong> actualizado a "Con licencia".</div>
+            <div class="act-time">ayer</div>
+          </div>
+          <div class="act-row">
+            <div class="act-icon ai-note"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg></div>
+            <div class="act-text">Notas B3 registradas para <strong>2° A Primaria</strong> por Prof. Lucía Paredes.</div>
+            <div class="act-time">ayer</div>
+          </div>
+          <div class="act-row">
+            <div class="act-icon ai-mat"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="act-text"><strong>Ramírez Torres, Alejandra</strong> tramitó traslado a 3° Secundaria.</div>
+            <div class="act-time">30 Abr</div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- PRÓXIMOS EVENTOS -->
+      <div class="dash-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg></div>
+            <h3>Próximos <em>Eventos</em></h3>
+          </div>
+          <a class="card-link" (click)="showToast('Ver calendario institucional','info')">Calendario →</a>
+        </div>
+        <div class="eventos-list">
+          <div class="evento-item" (click)="showToast('Ver detalle del evento','info')">
+            <div class="ev-stripe" style="background:var(--success)"></div>
+            <div class="ev-body">
+              <div class="ev-date"><div class="ev-date-day">10</div><div class="ev-date-mon">Jun</div></div>
+              <div class="ev-sep"></div>
+              <div class="ev-info"><div class="ev-title">Inicio ratificación alumnos actuales</div><div class="ev-sub">Proceso de matrícula 2026</div></div>
+              <span class="ev-badge eb-mat">Matrícula</span>
+            </div>
+          </div>
+          <div class="evento-item" (click)="showToast('Ver detalle del evento','info')">
+            <div class="ev-stripe" style="background:var(--blue-light)"></div>
+            <div class="ev-body">
+              <div class="ev-date"><div class="ev-date-day">28</div><div class="ev-date-mon">Jun</div></div>
+              <div class="ev-sep"></div>
+              <div class="ev-info"><div class="ev-title">Festival Artístico y Cultural</div><div class="ev-sub">Todos los niveles · Coliseo institucional</div></div>
+              <span class="ev-badge eb-evt">Evento</span>
+            </div>
+          </div>
+          <div class="evento-item" (click)="showToast('Ver detalle del evento','info')">
+            <div class="ev-stripe" style="background:var(--orange)"></div>
+            <div class="ev-body">
+              <div class="ev-date"><div class="ev-date-day">01</div><div class="ev-date-mon">Jul</div></div>
+              <div class="ev-sep"></div>
+              <div class="ev-info"><div class="ev-title">Inicio matrículas nuevos alumnos</div><div class="ev-sub">Hasta el 31 de julio 2025</div></div>
+              <span class="ev-badge eb-mat">Matrícula</span>
+            </div>
+          </div>
+          <div class="evento-item" (click)="showToast('Ver detalle del evento','info')">
+            <div class="ev-stripe" style="background:var(--blue-mid)"></div>
+            <div class="ev-body">
+              <div class="ev-date"><div class="ev-date-day">15</div><div class="ev-date-mon">Jul</div></div>
+              <div class="ev-sep"></div>
+              <div class="ev-info"><div class="ev-title">Día del Maestro — Ceremonia</div><div class="ev-sub">Auditorio principal · 10:00 am</div></div>
+              <span class="ev-badge eb-inst">Institucional</span>
+            </div>
+          </div>
+          <div class="evento-item" (click)="showToast('Ver detalle del evento','info')">
+            <div class="ev-stripe" style="background:var(--warning)"></div>
+            <div class="ev-body">
+              <div class="ev-date"><div class="ev-date-day">08</div><div class="ev-date-mon">Ago</div></div>
+              <div class="ev-sep"></div>
+              <div class="ev-info"><div class="ev-title">Olimpiada Matemática Nacional</div><div class="ev-sub">6 alumnos clasificados de San Marcos</div></div>
+              <span class="ev-badge eb-acad">Académico</span>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- NOTIFICACIONES -->
+      <div class="dash-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
+            <h3>Notificaciones <em>Sistema</em></h3>
+          </div>
+          <a class="card-link" (click)="showToast('Todas las notificaciones marcadas como leídas', 'info')">Marcar leídas</a>
+        </div>
+        <div class="notif-list">
+          <div class="notif-item unread" (click)="showToast('Notificación marcada como leída','info')">
+            <div class="ni-dot"></div>
+            <div class="ni-text"><strong>4 solicitudes nuevas</strong> recibidas desde el formulario de contacto.</div>
+            <div class="ni-time">09:14</div>
+          </div>
+          <div class="notif-item unread" (click)="showToast('Notificación marcada como leída','info')">
+            <div class="ni-dot"></div>
+            <div class="ni-text">Documentos de <strong>Valentina Paredes</strong> pendientes hace 12 días.</div>
+            <div class="ni-time">ayer</div>
+          </div>
+          <div class="notif-item unread" (click)="showToast('Notificación marcada como leída','info')">
+            <div class="ni-dot"></div>
+            <div class="ni-text"><strong>Prof. Ana Torres</strong> inició licencia médica. Asignar reemplazante.</div>
+            <div class="ni-time">30 Abr</div>
+          </div>
+          <div class="notif-item" (click)="showToast('Notificación marcada como leída','info')">
+            <div class="ni-dot"></div>
+            <div class="ni-text">Reporte mensual de asistencia generado correctamente.</div>
+            <div class="ni-time">29 Abr</div>
+          </div>
+          <div class="notif-item" (click)="showToast('Notificación marcada como leída','info')">
+            <div class="ni-dot"></div>
+            <div class="ni-text">Notas del 3° bimestre <strong>cargadas</strong> para 18 secciones.</div>
+            <div class="ni-time">28 Abr</div>
+          </div>
+        </div>
+      </div>
+ 
+    </div><!-- /col-right -->
+ 
+  </div><!-- /dashboard-grid -->
+
+<!-- TOAST COMPONENT -->
+<app-toast></app-toast>
+ 
+<!-- <script>
+  /* ── FECHA ── */
+  const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const now = new Date();
+  document.getElementById('phDate').innerHTML = `<span></span> ${dias[now.getDay()]}, ${now.getDate()} de ${meses[now.getMonth()]} ${now.getFullYear()} — Sistema activo`;
+ 
+  /* ── GRÁFICO DE BARRAS ── */
+  const dataBarras = [
+    { mes:'Ene', ini:24, pri:65, sec:48 },
+    { mes:'Feb', ini:30, pri:78, sec:55 },
+    { mes:'Mar', ini:40, pri:95, sec:72 },
+    { mes:'Abr', ini:60, pri:130, sec:90 },
+    { mes:'May', ini:75, pri:155, sec:110 },
+    { mes:'Jun', ini:80, pri:160, sec:115 },
+  ];
+  const maxVal = Math.max(...dataBarras.flatMap(d => [d.ini+d.pri+d.sec]));
+  const chart = document.getElementById('barsChart');
+  dataBarras.forEach(d => {
+    const total = d.ini + d.pri + d.sec;
+    const pct = total / maxVal;
+    chart.innerHTML += `
+      <div class="bar-group">
+        <div class="bar" style="height:${(d.ini/maxVal)*100}%;background:#5B8FF9;"><div class="bar-val">${d.ini}</div></div>
+        <div class="bar" style="height:${(d.pri/maxVal)*100}%;background:#FF5B1F;"><div class="bar-val">${d.pri}</div></div>
+        <div class="bar" style="height:${(d.sec/maxVal)*100}%;background:#00C27C;"><div class="bar-val">${d.sec}</div></div>
+        <div class="bar-label">${d.mes}</div>
+      </div>`;
+  });
+ 
+  /* ── ALERTAS ── */
+  function cerrarAlerta(btn) {
+    const al = btn.closest('.alert-item');
+    al.style.opacity = '0';
+    al.style.height = al.offsetHeight + 'px';
+    al.style.transition = 'opacity .3s, height .3s, margin .3s';
+    setTimeout(() => { al.style.height = '0'; al.style.margin = '0'; al.style.overflow = 'hidden'; }, 300);
+    setTimeout(() => al.remove(), 600);
+  }
+ 
+  /* ── NOTIFICACIONES ── */
+  function marcarTodas() {
+    document.querySelectorAll('.notif-item.unread').forEach(n => n.classList.remove('unread'));
+    showToast('Todas las notificaciones marcadas como leídas', 'info');
+  }
+ 
+  /* ── CONTADORES ANIMADOS ── */
+  function animarContador(el, target) {
+    let current = 0;
+    const step = Math.ceil(target / 40);
+    const interval = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = current.toLocaleString('es-PE');
+      if (current >= target) clearInterval(interval);
+    }, 30);
+  }
+  window.addEventListener('load', () => {
+    animarContador(document.getElementById('kAlumnos'), 1248);
+    animarContador(document.getElementById('kDocentes'), 24);
+    animarContador(document.getElementById('kMatriculas'), 1161);
+    animarContador(document.getElementById('kSolicitudes'), 21);
+    animarContador(document.getElementById('kDocs'), 38);
+  });
+ 
+  /* ── TOAST ── */
+  let toastTimer;
+  function showToast(msg, type = 'ok') {
+    clearTimeout(toastTimer);
+    const t = document.getElementById('toast');
+    t.className = `toast t-${type}`;
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+  }
+</script> -->

@@ -1,1 +1,506 @@
-<p>notificaciones works!</p>
+ <!-- HEADER -->
+  <div class="page-header">
+    <div class="ph-left">
+      <div class="ph-breadcrumb">Administración <span>›</span> <span>Notificaciones</span></div>
+      <div class="ph-title">
+        <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
+        Centro de Notificaciones
+      </div>
+      <div class="ph-subtitle">Envía, programa y gestiona comunicaciones a padres, docentes y alumnos</div>
+    </div>
+    <div class="ph-right">
+      <button class="btn-ghost" (click)="showToast('Marcando todas como leídas...','info')">
+        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Marcar leídas
+      </button>
+      <button class="btn-primary" onclick="scrollToCompose()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>Nueva notificación
+      </button>
+    </div>
+  </div>
+ 
+  <!-- KPI -->
+  <div class="kpi-strip">
+    <div class="kpi-card kc-blue">
+      <div class="k-icon ki-b"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5S10.5 3.17 10.5 4v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
+      <div class="k-data"><strong id="kTotal">247</strong><span>Total enviadas</span></div>
+      <span class="k-unread">12 nuevas</span>
+    </div>
+    <div class="kpi-card kc-green">
+      <div class="k-icon ki-g"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+      <div class="k-data"><strong>218</strong><span>Entregadas</span></div>
+    </div>
+    <div class="kpi-card kc-orange">
+      <div class="k-icon ki-o"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg></div>
+      <div class="k-data"><strong>189</strong><span>Leídas</span></div>
+    </div>
+    <div class="kpi-card kc-warn">
+      <div class="k-icon ki-w"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg></div>
+      <div class="k-data"><strong>5</strong><span>Programadas</span></div>
+    </div>
+  </div>
+ 
+  <!-- LAYOUT PRINCIPAL -->
+  <div class="notif-layout">
+ 
+    <!-- BANDEJA -->
+    <div class="bandeja-card">
+      <div class="bandeja-header">
+        <div class="bh-title">
+          <div class="bh-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg></div>
+          Bandeja
+        </div>
+        <span class="bh-cnt">12 sin leer</span>
+      </div>
+      <div class="bandeja-filters">
+        <button class="bf-tab active" onclick="filtrarBandeja('todos',this)">Todos</button>
+        <button class="bf-tab" onclick="filtrarBandeja('unread',this)">Sin leer</button>
+        <button class="bf-tab" onclick="filtrarBandeja('mat',this)">Matrícula</button>
+        <button class="bf-tab" onclick="filtrarBandeja('asist',this)">Asistencia</button>
+        <button class="bf-tab" onclick="filtrarBandeja('pago',this)">Pagos</button>
+      </div>
+      <div class="notif-list" id="notifList">
+ 
+        <div class="notif-item unread" data-cat="mat" (click)="mostrarDetalle($event,'mat')">
+          <div class="ni-dot"></div>
+          <div class="ni-icon nii-sol"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+          <div class="ni-content">
+            <div class="ni-top"><div class="ni-title">Nueva solicitud de matrícula</div><div class="ni-time">09:14</div></div>
+            <div class="ni-preview">García Quispe, María Elena · Primaria 2°</div>
+            <div class="ni-channel"><span class="nc-tag nct-email">Email</span><span class="nc-tag nct-panel">Panel</span></div>
+          </div>
+        </div>
+ 
+        <div class="notif-item unread" data-cat="asist" (click)="mostrarDetalle($event,'asist')">
+          <div class="ni-dot"></div>
+          <div class="ni-icon nii-asist"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div>
+          <div class="ni-content">
+            <div class="ni-top"><div class="ni-title">Alerta inasistencia crítica</div><div class="ni-time">08:30</div></div>
+            <div class="ni-preview">4 alumnos con +30% de faltas</div>
+            <div class="ni-channel"><span class="nc-tag nct-whatsapp">WhatsApp</span><span class="nc-tag nct-email">Email</span></div>
+          </div>
+        </div>
+ 
+        <div class="notif-item unread" data-cat="pago" (click)="mostrarDetalle($event,'pago')">
+          <div class="ni-dot"></div>
+          <div class="ni-icon nii-pago"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg></div>
+          <div class="ni-content">
+            <div class="ni-top"><div class="ni-title">Pago confirmado — Recibo generado</div><div class="ni-time">08:05</div></div>
+            <div class="ni-preview">Quispe Tello, Sofía · S/ 230.00</div>
+            <div class="ni-channel"><span class="nc-tag nct-email">Email</span></div>
+          </div>
+        </div>
+ 
+        <div class="notif-item unread" data-cat="doc" (click)="mostrarDetalle($event,'doc')">
+          <div class="ni-dot"></div>
+          <div class="ni-icon nii-doc"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg></div>
+          <div class="ni-content">
+            <div class="ni-top"><div class="ni-title">Documentos pendientes de entrega</div><div class="ni-time">ayer</div></div>
+            <div class="ni-preview">Paredes Vega, Valentina · 2 documentos</div>
+            <div class="ni-channel"><span class="nc-tag nct-whatsapp">WhatsApp</span></div>
+          </div>
+        </div>
+ 
+        <div class="notif-item" data-cat="sys" (click)="mostrarDetalle($event,'sys')">
+          <div class="ni-dot"></div>
+          <div class="ni-icon nii-sys"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58z"/></svg></div>
+          <div class="ni-content">
+            <div class="ni-top"><div class="ni-title">Backup automático completado</div><div class="ni-time">ayer</div></div>
+            <div class="ni-preview">backup_20250503_0200.zip — 47.9 MB</div>
+            <div class="ni-channel"><span class="nc-tag nct-panel">Panel</span></div>
+          </div>
+        </div>
+ 
+        <div class="notif-item" data-cat="mat" (click)="mostrarDetalle($event,'mat')">
+          <div class="ni-dot"></div>
+          <div class="ni-icon nii-mat"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+          <div class="ni-content">
+            <div class="ni-top"><div class="ni-title">Matrícula completada</div><div class="ni-time">30 Abr</div></div>
+            <div class="ni-preview">Torres Huanca, Kiara · Inicial 3 años</div>
+            <div class="ni-channel"><span class="nc-tag nct-email">Email</span><span class="nc-tag nct-whatsapp">WhatsApp</span></div>
+          </div>
+        </div>
+ 
+        <div class="notif-item" data-cat="asist" (click)="mostrarDetalle($event,'asist')">
+          <div class="ni-dot"></div>
+          <div class="ni-icon nii-asist"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div>
+          <div class="ni-content">
+            <div class="ni-top"><div class="ni-title">Reporte de asistencia semanal</div><div class="ni-time">29 Abr</div></div>
+            <div class="ni-preview">Todos los niveles · Promedio 91.4%</div>
+            <div class="ni-channel"><span class="nc-tag nct-email">Email</span></div>
+          </div>
+        </div>
+ 
+        <div class="notif-item" data-cat="anuncio" (click)="mostrarDetalle($event,'anuncio')">
+          <div class="ni-dot"></div>
+          <div class="ni-icon nii-anuncio"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
+          <div class="ni-content">
+            <div class="ni-top"><div class="ni-title">Anuncio institucional — Inicio matrículas</div><div class="ni-time">28 Abr</div></div>
+            <div class="ni-preview">Enviado a 1,248 apoderados</div>
+            <div class="ni-channel"><span class="nc-tag nct-email">Email</span><span class="nc-tag nct-whatsapp">WhatsApp</span><span class="nc-tag nct-sms">SMS</span></div>
+          </div>
+        </div>
+ 
+      </div>
+    </div>
+ 
+    <!-- PANEL DETALLE -->
+    <div id="detailPanel">
+      <div class="detail-card" id="detailEmpty" *ngIf="!mostrarDetallePanel">
+        <div class="detail-empty">
+          <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+          <p>Selecciona una notificación para ver el detalle</p>
+        </div>
+      </div>
+
+      <div class="detail-card" id="detailContent" *ngIf="mostrarDetallePanel && detalleActual">
+        <div class="detail-header">
+          <div class="dh-left">
+            <div class="dh-type">{{ detalleActual.type }}</div>
+            <div class="dh-title">{{ detalleActual.title }}</div>
+            <div class="dh-meta">
+              <div class="dh-meta-item"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg><span>{{ detalleActual.fecha }}</span></div>
+              <div class="dh-meta-item"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3z"/></svg><span>{{ detalleActual.dest }}</span></div>
+            </div>
+          </div>
+          <div class="dh-actions">
+            <button class="dh-btn" title="Reenviar" (click)="showToast('Reenviando notificación...','info')"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+            <button class="dh-btn" title="Descargar" (click)="showToast('Descargando...','info')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></button>
+            <button class="dh-btn" title="Archivar" (click)="showToast('Notificación archivada','info')"><svg viewBox="0 0 24 24"><path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27z"/></svg></button>
+          </div>
+        </div>
+        <div class="detail-body">
+          <div class="dest-section">
+            <div class="dest-label">Destinatarios</div>
+            <div class="dest-tags">
+              <div class="dest-tag" *ngFor="let tag of detalleActual.tags">
+                <div class="dt-av" [style.background]="tag.color">{{ tag.av }}</div>
+                <span class="dt-name">{{ tag.name }}</span>
+                <div class="dt-status" [ngClass]="'ds-' + tag.s"></div>
+              </div>
+            </div>
+          </div>
+          <div class="channels-used">
+            <div class="cu-item" *ngFor="let canal of detalleActual.channels" [ngClass]="canal === 'email' ? 'cu-email' : 'cu-whatsapp'">
+              <div class="cu-icon" [innerHTML]="obtenerCanalIcon(canal)"></div>
+              <div class="cu-info">
+                <div class="label">{{ obtenerCanalNombre(canal) }}</div>
+                <div class="sub">{{ canal === 'email' ? 'Enviado al correo registrado' : canal === 'whatsapp' ? 'Mensaje de WhatsApp' : 'Mensaje de texto' }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="send-stats">
+            <div class="ss-item ss-entregado"><strong>{{ detalleActual.ent }}</strong><span>Entregadas</span></div>
+            <div class="ss-item ss-leido"><strong>{{ detalleActual.lei }}</strong><span>Leídas</span></div>
+            <div class="ss-item ss-pendiente"><strong>{{ detalleActual.pen }}</strong><span>Pendientes</span></div>
+            <div class="ss-item ss-fallido"><strong>{{ detalleActual.fal }}</strong><span>Fallidas</span></div>
+          </div>
+          <div class="dest-label">Mensaje enviado</div>
+          <div class="msg-box" [innerHTML]="detalleActual.msg"></div>
+          <div class="reply-box">
+            <div class="reply-label">Responder / Reenviar</div>
+            <textarea class="reply-input" placeholder="Escribe tu respuesta o mensaje adicional para los mismos destinatarios..."></textarea>
+            <div class="reply-footer">
+              <div class="reply-channels">
+                <button class="rch-btn on" onclick="this.classList.toggle('on')"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>Email</button>
+                <button class="rch-btn" onclick="this.classList.toggle('on')"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>WhatsApp</button>
+                <button class="rch-btn" onclick="this.classList.toggle('on')"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>SMS</button>
+              </div>
+              <button class="btn-primary" style="padding:9px 18px;font-size:12px;" (click)="showToast('Respuesta enviada correctamente')">
+                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>Enviar respuesta
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+  </div><!-- /notif-layout -->
+ 
+  <!-- COMPOSICIÓN -->
+  <div class="compose-card" id="composeSection" style="margin-top:24px;">
+    <div class="compose-header">
+      <h3><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>Redactar Nueva Notificación</h3>
+    </div>
+    <div class="compose-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 24px;align-items:start;">
+        <div>
+          <div class="cf">
+            <label>Tipo de notificación <span class="req">*</span></label>
+            <select onchange="cargarPlantilla(this.value)">
+              <option value="">Seleccionar tipo...</option>
+              <option value="mat">Matrícula / Solicitud</option>
+              <option value="asist">Alerta de inasistencia</option>
+              <option value="pago">Recordatorio de pago</option>
+              <option value="doc">Documentos pendientes</option>
+              <option value="notas">Resultados académicos</option>
+              <option value="anuncio">Anuncio institucional</option>
+              <option value="evento">Evento / Actividad</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <div class="cf">
+            <label>Destinatarios <span class="req">*</span></label>
+            <div class="recep-input-wrap" id="recepWrap">
+              <div class="rtag" style="background:var(--blue-mid)">Todos los apoderados <button onclick="removeTag(this)">✕</button></div>
+              <input type="text" placeholder="Agregar más..." onkeydown="addTagOnEnter(event)">
+            </div>
+            <div class="hint">Ej: "5° A Primaria", "Padres con deuda", nombre específico</div>
+          </div>
+          <div class="cf">
+            <label>Asunto / Título <span class="req">*</span></label>
+            <input type="text" id="msgAsunto" placeholder="Ej: Recordatorio de pensión — Mayo 2025">
+          </div>
+          <div class="cf">
+            <label>Mensaje <span class="req">*</span></label>
+            <textarea id="msgBody" placeholder="Escribe aquí el contenido de la notificación...&#10;&#10;Puedes usar variables: {nombre_alumno}, {grado}, {monto}, {fecha}"></textarea>
+          </div>
+          <div class="cf">
+            <label>Canales de envío <span class="req">*</span></label>
+            <div class="canal-selector">
+              <button class="cs-btn on" onclick="this.classList.toggle('on')">
+                <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>Correo electrónico
+              </button>
+              <button class="cs-btn" onclick="this.classList.toggle('on')">
+                <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606z"/></svg>WhatsApp
+              </button>
+              <button class="cs-btn" onclick="this.classList.toggle('on')">
+                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>SMS
+              </button>
+              <button class="cs-btn" onclick="this.classList.toggle('on')">
+                <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5S10.5 3.17 10.5 4v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>Panel
+              </button>
+            </div>
+          </div>
+          <div class="cf">
+            <label>Programación</label>
+            <div class="schedule-wrap">
+              <label class="schedule-toggle" onclick="toggleSchedule()">
+                <div class="sch-box" id="schBox">✓</div>
+                <span>Enviar ahora</span>
+              </label>
+              <div id="scheduleDate" style="display:none;gap:8px;display:none;align-items:center;">
+                <input type="date" style="padding:7px 10px;border:1.5px solid var(--border);background:var(--off-white);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;">
+                <input type="time" style="padding:7px 10px;border:1.5px solid var(--border);background:var(--off-white);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="cf">
+            <label>Plantillas rápidas</label>
+            <div class="plantillas-grid">
+              <div class="plt-item" onclick="usarPlantilla(this,'Recordatorio de Pago Mayo 2025','Estimado/a apoderado/a:\n\nLe recordamos que la pensión del mes de mayo 2025 se encuentra pendiente de pago. El monto a cancelar es de S/ 230.00.\n\nPuede acercarse a secretaría de lunes a viernes de 8am a 4:30pm o realizar la transferencia a la cuenta BCP N° 193-XXXXXXX-0-XX.\n\nAgradecemos su puntualidad.\n\nAtentamente,\nIE San Marcos')">
+                <div class="plt-title"> Recordatorio de pago</div>
+                <div class="plt-prev">Aviso de pensión pendiente con datos de cuenta bancaria.</div>
+              </div>
+              <div class="plt-item" onclick="usarPlantilla(this,'Alerta de Inasistencias','Estimado/a apoderado/a:\n\nComunicamos que su hijo/a {nombre_alumno} ha acumulado un número de inasistencias que supera el límite permitido.\n\nSolicitamos su presencia en la institución para conversar con el docente tutor.\n\nAtentamente,\nIE San Marcos')">
+                <div class="plt-title"> Alerta inasistencia</div>
+                <div class="plt-prev">Comunicado a padres sobre faltas acumuladas del alumno.</div>
+              </div>
+              <div class="plt-item" onclick="usarPlantilla(this,'Documentos Pendientes de Entrega','Estimado/a apoderado/a:\n\nLe informamos que quedan documentos pendientes de entrega para completar el expediente de {nombre_alumno}.\n\nDocumentos faltantes:\n• Libreta de notas\n• Constancia de vacunas\n\nFavor hacer entrega en secretaría.\n\nAtentamente,\nIE San Marcos')">
+                <div class="plt-title"> Docs. pendientes</div>
+                <div class="plt-prev">Recordatorio de documentación incompleta en el expediente.</div>
+              </div>
+              <div class="plt-item" onclick="usarPlantilla(this,'Inicio del Proceso de Matrículas 2026','Estimados padres de familia:\n\nCon agrado comunicamos que el proceso de matrículas para el año 2026 está ahora abierto.\n\n📅 Alumnos actuales: 10 al 30 de junio\n📅 Nuevos alumnos: 01 al 31 de julio\n\nVisítenos en Av. Los Maestros 456, Ica o ingrese a nuestro portal web.\n\nAtentamente,\nIE San Marcos')">
+                <div class="plt-title"> Aviso matrícula</div>
+                <div class="plt-prev">Comunicado masivo de apertura del proceso de matrícula.</div>
+              </div>
+              <div class="plt-item" onclick="usarPlantilla(this,'Reunión de Padres de Familia','Estimados padres de familia:\n\nLos convocamos a la reunión de padres de familia que se realizará el próximo viernes {fecha} a las 6:00 pm en el aula de {grado}.\n\nTemas a tratar:\n• Avance académico del bimestre\n• Comportamiento y disciplina\n• Actividades del siguiente período\n\nSu asistencia es muy importante.\n\nAtentamente,\nDirección IE San Marcos')">
+                <div class="plt-title"> Reunión de padres</div>
+                <div class="plt-prev">Convocatoria para reunión de padres con agenda de temas.</div>
+              </div>
+              <div class="plt-item" onclick="usarPlantilla(this,'Entrega de Libretas de Notas','Estimados padres de familia:\n\nLes comunicamos que la entrega de libretas de notas del {bimestre} se realizará el día {fecha} de 8am a 12pm en la institución.\n\nEs indispensable la presencia del apoderado registrado.\n\nAtentamente,\nIE San Marcos')">
+                <div class="plt-title"> Entrega de notas</div>
+                <div class="plt-prev">Aviso para retiro de libretas con fecha y hora específica.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:8px;padding-top:16px;border-top:1px solid var(--gray-100);flex-wrap:wrap;">
+        <button class="btn-ghost" (click)="showToast('Vista previa generada','info')">
+          <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5z"/></svg>Vista previa
+        </button>
+        <button class="btn-ghost" (click)="showToast('Borrador guardado','info')">
+          <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4z"/></svg>Guardar borrador
+        </button>
+        <button class="btn-primary" onclick="enviarNotificacion()">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>Enviar notificación
+        </button>
+      </div>
+    </div>
+  </div>
+ 
+
+ <app-toast></app-toast>
+ 
+<script>
+// const detalles = {
+//   mat: {
+//     type:'Solicitud de Matrícula', title:'Nueva solicitud de matrícula recibida',
+//     fecha:'02 May 2025 · 09:14', dest:'1 destinatario (administración)',
+//     tags:[{av:'CF',color:'#0A1A3E',name:'Lic. Carmen Flores',s:'ok'},{av:'AS',color:'#1340A0',name:'Ana Soto',s:'ok'}],
+//     channels:['email','panel'], ent:2, lei:1, pen:0, fal:0,
+//     msg:'<strong>Nueva solicitud de matrícula</strong> recibida a través del formulario de contacto del sitio web.<br><br>📋 <strong>Apoderado:</strong> María Elena García Quispe<br>📧 <strong>Email:</strong> garcia.maria@gmail.com<br>📱 <strong>Celular:</strong> 987 321 456<br>🎓 <strong>Nivel solicitado:</strong> 2° Grado — Primaria<br>👦 <strong>Nombre del alumno:</strong> Carlos Andrés García Quispe<br><br>La solicitud ha sido registrada con el código <strong>SOL-0021</strong>. Ingresa al módulo de Solicitudes Online para tramitar la matrícula.'
+//   },
+//   asist: {
+//     type:'Alerta de Inasistencia', title:'Alerta crítica de inasistencias — 4 alumnos',
+//     fecha:'02 May 2025 · 08:30', dest:'4 apoderados notificados',
+//     tags:[{av:'MG',color:'#FF5B1F',name:'García Quispe, M.',s:'ok'},{av:'DM',color:'#4A5470',name:'Morales Díaz, D.',s:'ok'},{av:'KT',color:'#1340A0',name:'Torres Huanca, K.',s:'pend'},{av:'+1',color:'#8A95B0',name:'1 más',s:'pend'}],
+//     channels:['whatsapp','email'], ent:3, lei:2, pen:1, fal:0,
+//     msg:'Estimado/a apoderado/a:<br><br>Le comunicamos que su hijo/a ha acumulado un número de inasistencias que <strong>supera el límite permitido (30%)</strong>. Esta situación puede comprometer la promoción al siguiente grado.<br><br>⚠️ Inasistencias registradas: <strong>28 de 66 días</strong> (42%)<br>📅 Último período evaluado: Enero — Mayo 2025<br><br>Le solicitamos acercarse a la institución para coordinar con el docente tutor a la brevedad posible.<br><br>Atentamente, IE San Marcos.'
+//   },
+//   pago: {
+//     type:'Confirmación de Pago', title:'Pago confirmado — Recibo generado',
+//     fecha:'02 May 2025 · 08:05', dest:'Andrés Quispe (apoderado)',
+//     tags:[{av:'AQ',color:'#007a4d',name:'Andrés Quispe',s:'ok'}],
+//     channels:['email'], ent:1, lei:1, pen:0, fal:0,
+//     msg:'Estimado Sr. Andrés Quispe:<br><br>✅ Confirmamos la recepción del pago correspondiente a:<br><br>📚 <strong>Alumno:</strong> Quispe Tello, Sofía Valentina<br>🎓 <strong>Grado:</strong> 5° Grado A — Primaria<br>💳 <strong>Concepto:</strong> Pensión mensual — Mayo 2025<br>💰 <strong>Monto pagado:</strong> S/ 230.00<br>📄 <strong>N° de recibo:</strong> REC-2025-0140<br>📅 <strong>Fecha:</strong> 01/05/2025<br><br>Puede descargar su recibo ingresando al portal de padres o solicitándolo en secretaría.<br><br>Gracias por su puntualidad. IE San Marcos.'
+//   },
+//   doc: {
+//     type:'Documentos Pendientes', title:'Recordatorio: documentos pendientes de entrega',
+//     fecha:'01 May 2025 · 15:00', dest:'Lucía Paredes (apoderada)',
+//     tags:[{av:'LP',color:'#1B4080',name:'Lucía Paredes',s:'pend'}],
+//     channels:['whatsapp'], ent:1, lei:0, pen:1, fal:0,
+//     msg:'Estimada Sra. Lucía Paredes:<br><br>📋 Le recordamos que faltan documentos por entregar para completar el expediente de su hija:<br><br>👧 <strong>Alumna:</strong> Paredes Vega, Valentina — 4 años B<br><br>📄 <strong>Documentos pendientes:</strong><br>• DNI de la estudiante<br>• Libreta de notas / Certificado de estudios<br><br>📍 Favor hacer entrega en secretaría de la institución de lunes a viernes de 8:00 am a 4:30 pm.<br><br>Atentamente, IE San Marcos.'
+//   },
+//   sys: {
+//     type:'Sistema', title:'Backup automático completado exitosamente',
+//     fecha:'03 May 2025 · 02:00', dest:'Administración (sistema)',
+//     tags:[{av:'SYS',color:'#0A1A3E',name:'Sistema automático',s:'ok'}],
+//     channels:['panel'], ent:1, lei:1, pen:0, fal:0,
+//     msg:'✅ <strong>Backup automático completado</strong><br><br>📦 <strong>Archivo:</strong> backup_iesanmarcos_20250503_0200.zip<br>💾 <strong>Tamaño:</strong> 47.9 MB<br>📅 <strong>Fecha/Hora:</strong> 03/05/2025 02:00 AM<br>🗄️ <strong>Destino:</strong> Servidor local + Google Drive<br>⏱️ <strong>Duración:</strong> 4 min 12 seg<br><br>El sistema ha verificado la integridad del archivo de respaldo. El backup anterior sigue disponible por 30 días.'
+//   },
+//   anuncio: {
+//     type:'Anuncio Institucional', title:'Inicio del Proceso de Matrículas 2026',
+//     fecha:'28 Abr 2025 · 10:00', dest:'1,248 apoderados',
+//     tags:[{av:'ALL',color:'#1340A0',name:'Todos los apoderados',s:'ok'},{av:'+',color:'#00C27C',name:'1,248 destinatarios',s:'ok'}],
+//     channels:['email','whatsapp','sms'], ent:1198, lei:892, pen:50, fal:0,
+//     msg:'Estimados padres de familia de la IE San Marcos:<br><br>📢 Con mucho agrado les comunicamos que el <strong>proceso de matrículas para el año escolar 2026</strong> ya está abierto.<br><br>📅 <strong>Alumnos actuales (ratificación):</strong> 10 al 30 de junio 2025<br>📅 <strong>Nuevos alumnos:</strong> 01 al 31 de julio 2025<br>🎒 <strong>Inicio de clases 2026:</strong> 11 de marzo de 2026<br><br>💻 Puede realizar el proceso en línea en nuestro portal o acercarse a secretaría en horario de atención.<br><br>¡Los esperamos! — Dirección IE San Marcos.'
+//   }
+// };
+ 
+// function mostrarDetalle(item, cat) {
+//   document.querySelectorAll('.notif-item').forEach(n => n.classList.remove('selected'));
+//   item.classList.add('selected');
+//   item.classList.remove('unread');
+//   item.querySelector('.ni-dot').style.display = 'none';
+//   const d = detalles[cat] || detalles.mat;
+//   document.getElementById('detailEmpty').style.display = 'none';
+//   document.getElementById('detailContent').style.display = 'block';
+//   document.getElementById('dhType').textContent = d.type;
+//   document.getElementById('dhTitle').textContent = d.title;
+//   document.getElementById('dhFecha').textContent = d.fecha;
+//   document.getElementById('dhDest').textContent = d.dest;
+//   document.getElementById('dhMsg').innerHTML = d.msg;
+//   document.getElementById('sEnt').textContent = d.ent;
+//   document.getElementById('sLei').textContent = d.lei;
+//   document.getElementById('sPen').textContent = d.pen;
+//   document.getElementById('sFal').textContent = d.fal;
+//   // Tags
+//   const tags = document.getElementById('dhDestTags');
+//   tags.innerHTML = d.tags.map(t=>`
+//     <div class="dest-tag">
+//       <div class="dt-av" style="background:${t.color}">${t.av}</div>
+//       <span class="dt-name">${t.name}</span>
+//       <div class="dt-status ds-${t.s}"></div>
+//     </div>`).join('');
+//   // Channels
+//   const chIcons = {
+//     email:`<svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>`,
+//     whatsapp:`<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>`,
+//     sms:`<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>`,
+//     panel:`<svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2z"/></svg>`
+//   };
+//   const chNames = {email:'Correo electrónico',whatsapp:'WhatsApp Business',sms:'SMS',panel:'Panel admin'};
+//   const chSubs = {email:'Enviado al correo registrado',whatsapp:'Mensaje de WhatsApp',sms:'Mensaje de texto',panel:'Notificación del panel'};
+//   const chClass = {email:'cu-email',whatsapp:'cu-whatsapp',sms:'cu-whatsapp',panel:'cu-email'};
+//   document.getElementById('dhChannels').innerHTML = d.channels.map(c=>`
+//     <div class="cu-item ${chClass[c]}">
+//       <div class="cu-icon">${chIcons[c]||''}</div>
+//       <div class="cu-info"><div class="label">${chNames[c]}</div><div class="sub">${chSubs[c]}</div></div>
+//     </div>`).join('');
+// }
+ 
+// function filtrarBandeja(cat, btn) {
+//   document.querySelectorAll('.bf-tab').forEach(b => b.classList.remove('active'));
+//   btn.classList.add('active');
+//   document.querySelectorAll('.notif-item').forEach(item => {
+//     if(cat === 'todos') item.style.display = '';
+//     else if(cat === 'unread') item.style.display = item.classList.contains('unread') ? '' : 'none';
+//     else item.style.display = (item.dataset.cat === cat) ? '' : 'none';
+//   });
+// }
+ 
+// function scrollToCompose() {
+//   document.getElementById('composeSection').scrollIntoView({behavior:'smooth'});
+// }
+ 
+// function usarPlantilla(el, asunto, msg) {
+//   document.querySelectorAll('.plt-item').forEach(p => p.classList.remove('active'));
+//   el.classList.add('active');
+//   document.getElementById('msgAsunto').value = asunto;
+//   document.getElementById('msgBody').value = msg;
+//   showToast('Plantilla cargada correctamente','info');
+// }
+ 
+// function cargarPlantilla(val) {
+//   const templates = {
+//     mat:'Nueva solicitud de matrícula',
+//     asist:'Alerta de inasistencias — {nombre_alumno}',
+//     pago:'Recordatorio de pago — {mes}',
+//     doc:'Documentos pendientes de entrega',
+//     notas:'Resultados académicos — {bimestre}',
+//     anuncio:'Comunicado institucional IE San Marcos',
+//     evento:'Invitación — {nombre_evento}'
+//   };
+//   if(templates[val]) document.getElementById('msgAsunto').value = templates[val];
+// }
+ 
+// let scheduleOn = false;
+// function toggleSchedule() {
+//   scheduleOn = !scheduleOn;
+//   const box = document.getElementById('schBox');
+//   const dateEl = document.getElementById('scheduleDate');
+//   box.classList.toggle('on', !scheduleOn);
+//   box.textContent = scheduleOn ? '' : '✓';
+//   document.querySelector('.schedule-toggle span').textContent = scheduleOn ? 'Programar envío' : 'Enviar ahora';
+//   dateEl.style.display = scheduleOn ? 'flex' : 'none';
+// }
+ 
+// function removeTag(btn) { btn.closest('.rtag').remove(); }
+// function addTagOnEnter(e) {
+//   if(e.key !== 'Enter') return;
+//   const input = e.target;
+//   if(!input.value.trim()) return;
+//   const tag = document.createElement('div');
+//   tag.className = 'rtag';
+//   tag.style.background = 'var(--blue-mid)';
+//   tag.innerHTML = `${input.value} <button onclick="removeTag(this)">✕</button>`;
+//   document.getElementById('recepWrap').insertBefore(tag, input);
+//   input.value = '';
+// }
+ 
+// function enviarNotificacion() {
+//   const asunto = document.getElementById('msgAsunto').value;
+//   const body = document.getElementById('msgBody').value;
+//   if(!asunto || !body) { showToast('Completa el asunto y el mensaje','warn'); return; }
+//   showToast('Notificación enviada correctamente a los destinatarios seleccionados');
+//   document.getElementById('msgAsunto').value = '';
+//   document.getElementById('msgBody').value = '';
+//   document.getElementById('kTotal').textContent = parseInt(document.getElementById('kTotal').textContent) + 1;
+// }
+ 
+// let toastTimer;
+// const tIcons = {ok:'<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',info:'<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>',warn:'<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>'};
+// function showToast(msg, type='ok') {
+//   clearTimeout(toastTimer);
+//   const t = document.getElementById('toast');
+//   t.className = `toast t-${type}`;
+//   t.querySelector('svg').innerHTML = tIcons[type]||tIcons.ok;
+//   document.getElementById('toastMsg').textContent = msg;
+//   t.classList.add('show');
+//   toastTimer = setTimeout(()=>t.classList.remove('show'), 3200);
+// }
+// </script>

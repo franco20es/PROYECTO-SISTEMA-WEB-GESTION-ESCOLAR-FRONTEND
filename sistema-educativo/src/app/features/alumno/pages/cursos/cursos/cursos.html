@@ -1,80 +1,55 @@
-<div class="cursos-container">
-  <!-- Header -->
-  <div class="cursos-header">
-    <h1>Mis Cursos</h1>
-    <p>{{cursos.length}} cursos matriculados</p>
+<!-- PAGE HEADER -->
+<div class="page-header" style="margin-top:24px;">
+  <div>
+    <div class="ph-label">Año Escolar 2025</div>
+    <div class="ph-title">Mis <em>Cursos</em></div>
+    <div class="ph-sub">Selecciona un curso para ver tareas, evaluaciones, notas y más</div>
   </div>
+  <div class="ph-right">
+    <select class="filter-sel" (click)="showToast('Filtro aplicado','info')">
+      <option>2° Bimestre — Actual</option>
+      <option>1° Bimestre</option>
+      <option>Todo el año</option>
+    </select>
+    <button class="btn-ghost" (click)="showToast('Descargando reporte académico...','info')">
+      <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Mi reporte
+    </button>
+  </div>
+</div>
 
-  <!-- Grid de Cursos -->
-  <div class="cursos-grid">
-    <div *ngFor="let curso of cursos" class="curso-card" (click)="verDetalle(curso)">
-      <!-- Imagen y Badge -->
-      <div class="curso-card-image">
-        <img src="https://mitocode.com/wp-content/uploads/2023/12/564x270_DO_SO-540x270.png" alt="{{curso.nombre}}">
-        <div class="curso-badge">
-          {{(curso.nota / 20 * 100) | number:'1.0-0'}}%
+<!-- ════ GRID DE CURSOS ════ -->
+<div class="courses-grid">
+  <div class="course-card" *ngFor="let c of courses" (click)="onOpenCourse(c)" [attr.data-id]="c.id">
+    <div class="cc-accent" [style.background]="c.color"></div>
+    <div class="cc-body">
+      <div class="cc-top">
+        <div class="cc-icon" [style.background]="'rgba(0,0,0,0.05)'">
+          <svg viewBox="0 0 24 24" [style.fill]="c.color">
+            <path [attr.d]="c.svgPath"></path>
+          </svg>
+        </div>
+        <div class="cc-nota-wrap">
+          <div class="cc-nota" [ngClass]="c.notaClass">{{c.nota}}</div>
+          <div class="cc-nota-lbl">Promedio B2</div>
         </div>
       </div>
-
-      <!-- Encabezado -->
-      <div class="curso-card-header">
-        <div class="curso-abrev">{{curso.abrev}}</div>
-        <div class="curso-nota" [ngClass]="{'nota-buena': curso.nota >= 14, 'nota-media': curso.nota < 14}">{{curso.nota | number:'1.1-1'}}</div>
+      <div class="cc-name">{{c.nombre}}</div>
+      <div class="cc-teacher">{{c.profesor}} · {{c.horario}}</div>
+      <div class="cc-progress">
+        <div class="cc-progress-fill" [style.width.%]="c.progreso" [style.background]="c.color"></div>
       </div>
-
-      <!-- Cuerpo -->
-      <div class="curso-card-body">
-        <h3 class="curso-nombre">{{curso.nombre}}</h3>
-        <p class="curso-profesor">{{curso.profesor}}</p>
-        <p class="curso-codigo">{{curso.codigo}}</p>
-
-        <!-- Stats -->
-        <div class="curso-stats">
-          <div class="stat">
-            <span class="stat-label">Asistencia</span>
-            <span class="stat-value">{{curso.asistencia}}%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Avance</span>
-            <span class="stat-value">{{curso.progreso}}%</span>
-          </div>
-        </div>
+      <div class="cc-prog-label">
+        <span>Progreso del bimestre</span>
+        <span>{{c.progreso}}%</span>
       </div>
     </div>
-    
-  </div>
-
-  <!-- Modal de Detalle de Curso 
-  <div *ngIf="cursoSeleccionado" class="modal-overlay" (click)="cerrarDetalle()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>{{cursoSeleccionado.nombre}}</h2>
-        <button class="modal-close" (click)="cerrarDetalle()">✕</button>
+    <div class="cc-footer">
+      <div class="cc-tags">
+        <span *ngFor="let t of c.tags" class="cc-tag" [ngClass]="t.class">{{t.text}}</span>
       </div>
-
-      <div class="modal-body">
-        <div class="detail-row">
-          <div class="detail-item">
-            <label>Profesor</label>
-            <p>{{cursoSeleccionado.profesor}}</p>
-          </div>
-          <div class="detail-item">
-            <label>Horario</label>
-            <p>{{cursoSeleccionado.horario}}</p>
-          </div>
-        </div>
-        <div class="detail-row">
-          <div class="detail-item">
-            <label>Nota</label>
-            <p class="detail-nota">{{cursoSeleccionado.nota | number:'1.1-1'}}</p>
-          </div>
-          <div class="detail-item">
-            <label>Asistencia</label>
-            <p class="detail-asistencia">{{cursoSeleccionado.asistencia}}%</p>
-          </div>
-        </div>
-      </div>
+      <div class="cc-arrow">→</div>
     </div>
   </div>
 </div>
--->
+
+<app-toast></app-toast>

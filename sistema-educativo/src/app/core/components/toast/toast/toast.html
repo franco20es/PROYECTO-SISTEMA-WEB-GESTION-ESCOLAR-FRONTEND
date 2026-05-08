@@ -1,0 +1,16 @@
+<!-- TOAST -->
+<div 
+  class="toast"
+  [class.show]="toastService.toast().show"
+  [class.t-ok]="toastService.toast().tipo === 'ok'"
+  [class.t-success]="toastService.toast().tipo === 'success'"
+  [class.t-info]="toastService.toast().tipo === 'info'"
+  [class.t-error]="toastService.toast().tipo === 'error'"
+  [class.t-warning]="toastService.toast().tipo === 'warning'"
+>
+  <svg viewBox="0 0 24 24">
+    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+  </svg>
+
+  <span>{{ toastService.toast().mensaje }}</span>
+</div>

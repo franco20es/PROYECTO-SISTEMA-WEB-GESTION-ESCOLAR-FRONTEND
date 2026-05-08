@@ -1,90 +1,200 @@
-<div class="semanas-wrap" *ngIf="curso; else sinCurso">
-
-  <!-- Stats -->
-  <div class="stats-row">
-    <div class="stat-card">
-      <label>Semanas completadas</label>
-      <span class="val blue">{{ semanasCompletadas }}/18</span>
+<!-- ════ PANEL DETALLE CON TABS ════ -->
+<div *ngIf="selectedCourse" class="detail-panel" style="margin-top:32px;padding:24px;background:white;border-radius:8px;animation:slideIn 0.3s ease;">
+  
+  <!-- HEADER -->
+  <div [ngStyle]="{'background': 'linear-gradient(135deg, ' + selectedCourse.color + ', rgba(0,0,0,0.05))', 'padding': '24px', 'border-radius': '8px', 'margin': '-24px -24px 24px -24px', 'display': 'flex', 'justify-content': 'space-between', 'align-items': 'start'}">
+    <div>
+      <div style="font-size:12px;color:rgba(0,0,0,0.6);margin-bottom:4px;">Área Curricular</div>
+      <h2 style="margin:0 0 12px 0;color:white;font-size:28px;">{{selectedCourse.nombre}}</h2>
+      <div style="display:flex;gap:20px;color:rgba(255,255,255,0.9);font-size:13px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:white;"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12z"/></svg>
+          {{selectedCourse.teacher}}
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:white;"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg>
+          {{selectedCourse.horario}}
+        </div>
+      </div>
     </div>
-    <div class="stat-card">
-      <label>Asistencia</label>
-      <span class="val" [ngClass]="curso.asistencia >= 80 ? 'green' : 'orange'">
-        {{ curso.asistencia }}%
-      </span>
+    <button (click)="onOpenCourse(selectedCourse)" style="background:none;border:none;color:white;font-size:28px;cursor:pointer;padding:0;width:32px;height:32px;display:flex;align-items:center;justify-content:center;">✕</button>
+  </div>
+  
+  <!-- NOTAS POR BIMESTRE -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px;margin-bottom:24px;background:#f9f9f9;padding:16px;border-radius:6px;">
+    <div [ngStyle]="{'background':'white','padding':'12px','border-radius':'6px','text-align':'center','border-left':'4px','border-left-color':selectedCourse.color}">
+      <div style="font-size:11px;color:#666;margin-bottom:4px;">B1</div>
+      <div [ngStyle]="{'font-size':'18px','font-weight':'700','color':selectedCourse.color}">{{selectedCourse.b1}}</div>
     </div>
-    <div class="stat-card">
-      <label>Avance</label>
-      <span class="val blue">{{ curso.progreso }}%</span>
+    <div [ngStyle]="{'background':'white','padding':'12px','border-radius':'6px','text-align':'center','border-left':'4px','border-left-color':selectedCourse.color}">
+      <div style="font-size:11px;color:#666;margin-bottom:4px;">B2</div>
+      <div [ngStyle]="{'font-size':'18px','font-weight':'700','color':selectedCourse.color}">{{selectedCourse.b2}}</div>
     </div>
-    <div class="stat-card">
-      <label>Nota actual</label>
-      <span class="val" [ngClass]="notaColorClass(curso.nota)">
-        {{ curso.nota | number:'1.1-1' }}
-      </span>
+    <div [ngStyle]="{'background':'white','padding':'12px','border-radius':'6px','text-align':'center','border-left':'4px','border-left-color':selectedCourse.color}">
+      <div style="font-size:11px;color:#666;margin-bottom:4px;">Promedio</div>
+      <div [ngStyle]="{'font-size':'18px','font-weight':'700','color':selectedCourse.color}">{{selectedCourse.prom}}</div>
     </div>
   </div>
-
-  <!-- Lista de semanas -->
-  <div class="semana-card" *ngFor="let semana of semanas">
-
-    <!-- Cabecera -->
-    <div class="semana-header" (click)="toggleSemana(semana)">
-      <div class="semana-left">
-        <div class="semana-num"
-             [ngClass]="{ 'num-done': semana.done, 'num-current': semana.current, 'num-lock': semana.locked }">
-          {{ semana.n }}
-        </div>
-        <div class="semana-info">
-          <p class="semana-titulo">Semana {{ semana.n }}</p>
-          <p class="semana-sub">{{ semana.tema }}</p>
+  
+  <!-- TABS -->
+  <div style="display:flex;gap:0;border-bottom:2px solid #f0f0f0;margin-bottom:24px;overflow-x:auto;">
+    <button (click)="switchTab('resumen')" [style.color]="activeTab === 'resumen' ? selectedCourse.color : '#999'" [style.border-bottom]="activeTab === 'resumen' ? '3px solid ' + selectedCourse.color : 'none'" style="background:none;border:none;padding:12px 16px;cursor:pointer;font-weight:600;white-space:nowrap;transition:all 0.3s;">📋 Resumen</button>
+    <button (click)="switchTab('tareas')" [style.color]="activeTab === 'tareas' ? selectedCourse.color : '#999'" [style.border-bottom]="activeTab === 'tareas' ? '3px solid ' + selectedCourse.color : 'none'" style="background:none;border:none;padding:12px 16px;cursor:pointer;font-weight:600;white-space:nowrap;transition:all 0.3s;">✓ Tareas ({{selectedCourse.tareas?.length || 0}})</button>
+    <button (click)="switchTab('evaluaciones')" [style.color]="activeTab === 'evaluaciones' ? selectedCourse.color : '#999'" [style.border-bottom]="activeTab === 'evaluaciones' ? '3px solid ' + selectedCourse.color : 'none'" style="background:none;border:none;padding:12px 16px;cursor:pointer;font-weight:600;white-space:nowrap;transition:all 0.3s;">📊 Evaluaciones</button>
+    <button (click)="switchTab('material')" [style.color]="activeTab === 'material' ? selectedCourse.color : '#999'" [style.border-bottom]="activeTab === 'material' ? '3px solid ' + selectedCourse.color : 'none'" style="background:none;border:none;padding:12px 16px;cursor:pointer;font-weight:600;white-space:nowrap;transition:all 0.3s;">📄 Material</button>
+    <button (click)="switchTab('foro')" [style.color]="activeTab === 'foro' ? selectedCourse.color : '#999'" [style.border-bottom]="activeTab === 'foro' ? '3px solid ' + selectedCourse.color : 'none'" style="background:none;border:none;padding:12px 16px;cursor:pointer;font-weight:600;white-space:nowrap;transition:all 0.3s;">💬 Foro</button>
+  </div>
+  
+  <!-- RESUMEN -->
+  <div *ngIf="activeTab === 'resumen'" style="animation:slideIn 0.3s ease;">
+    <h3 style="margin-top:0;">Información del Curso</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-bottom:20px;">
+      <div [ngStyle]="{'background':'#f9f9f9','padding':'16px','border-radius':'6px','border-left':'4px','border-left-color':selectedCourse.color}">
+        <div style="font-size:12px;color:#666;margin-bottom:8px;font-weight:600;">Progreso del Bimestre</div>
+        <div [ngStyle]="{'font-size':'28px','font-weight':'700','color':selectedCourse.color}">{{selectedCourse.progreso}}%</div>
+        <div style="background:white;margin-top:8px;border-radius:4px;height:6px;overflow:hidden;">
+          <div [ngStyle]="{'background':selectedCourse.color,'height':'100%','width':selectedCourse.progreso+'%'}"></div>
         </div>
       </div>
-
-      <div class="semana-right">
-        <span class="badge b-done"    *ngIf="semana.done">Completada</span>
-        <span class="badge b-current" *ngIf="semana.current">En curso</span>
-        <span class="badge b-lock"    *ngIf="semana.locked">Pendiente</span>
-        <span class="badge b-tarea"   *ngIf="tieneTarea(semana)">Tarea</span>
-        <span class="badge b-quiz"    *ngIf="tieneQuiz(semana)">Evaluación</span>
-        <span class="chevron" [ngClass]="{ open: semana.abierta }">›</span>
-      </div>
-    </div>
-
-    <!-- Cuerpo expandible -->
-    <div class="semana-body" *ngIf="semana.abierta">
-      <div class="recurso-list">
-        <div class="recurso-item" *ngFor="let r of semana.recursos">
-
-          <div class="recurso-icon" [ngClass]="'ri-' + r.tipo">
-            {{ iconoRecurso(r.tipo) }}
-          </div>
-
-          <div class="recurso-info">
-            <p class="recurso-nombre">{{ r.nombre }}</p>
-            <p class="recurso-meta">
-              {{ r.meta }}
-              <span *ngIf="r.nota !== null"
-                    class="nota-pill"
-                    [ngClass]="notaClass(r.nota!)">
-                {{ r.nota }}/20
-              </span>
-            </p>
-          </div>
-
-          <button class="btn-accion"
-                  [ngClass]="r.done ? 'btn-done' : 'btn-open'">
-            {{ r.done ? 'Ver ✓' : 'Abrir' }}
-          </button>
-
-        </div>
+      <div style="background:#f9f9f9;padding:16px;border-radius:6px;border-left:4px;" [style.border-left-color]="selectedCourse.color">
+        <div style="font-size:12px;color:#666;margin-bottom:8px;font-weight:600;">Estado del Curso</div>
+        <div *ngFor="let tag of selectedCourse.tags" [ngClass]="tag.class" style="padding:6px 12px;border-radius:4px;margin-bottom:4px;font-size:12px;">{{tag.text}}</div>
       </div>
     </div>
 
+    <div *ngIf="selectedCourse.resumen?.anuncios?.length">
+      <h4>Anuncios del Docente</h4>
+      <div *ngFor="let anuncio of selectedCourse.resumen.anuncios" [ngStyle]="{'border-left':'4px','border-left-color':anuncio.color,'background':anuncio.bg,'padding':'12px 14px','margin-bottom':'12px','border-radius':'4px'}">
+        <div [ngStyle]="{'font-size':'12px','color':anuncio.color,'font-weight':'600','margin-bottom':'4px'}">{{anuncio.date}}</div>
+        <div style="font-weight:600;margin-bottom:4px;">{{anuncio.title}}</div>
+        <div style="font-size:13px;color:#555;">{{anuncio.text}}</div>
+      </div>
+    </div>
+
+    <div *ngIf="selectedCourse.resumen?.logros?.length">
+      <h4>Logros del Bimestre</h4>
+      <div *ngFor="let logro of selectedCourse.resumen.logros; let i = index" style="display:flex;gap:12px;padding:12px;background:#f9f9f9;border-radius:4px;margin-bottom:8px;align-items:flex-start;">
+        <div [ngStyle]="{'background':selectedCourse.color,'color':'white','width':'32px','height':'32px','border-radius':'50%','display':'flex','align-items':'center','justify-content':'center','font-weight':'700','flex-shrink':'0'}">{{i+1}}</div>
+        <div style="flex:1;">
+          <div style="font-weight:500;">{{logro.text}}</div>
+          <div [ngStyle]="{'font-size':'12px','color':logro.ok?'#00C27C':'#FF9500','margin-top':'4px'}">{{logro.ok ? '✓ Logrado' : '⏳ En proceso'}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- TAREAS -->
+  <div *ngIf="activeTab === 'tareas'" style="animation:slideIn 0.3s ease;">
+    <h3 style="margin-top:0;">Tareas del Curso</h3>
+    <div *ngIf="selectedCourse.tareas?.length; else noTareas">
+      <div *ngFor="let tarea of selectedCourse.tareas" style="border:1px solid #e0e0e0;border-radius:6px;margin-bottom:16px;overflow:hidden;">
+        <div (click)="toggleTask(tarea.id)" style="padding:16px;background:#f9f9f9;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+          <div style="flex:1;">
+            <div style="font-weight:600;margin-bottom:4px;">{{tarea.titulo}}</div>
+            <div style="font-size:12px;color:#666;">{{tarea.fecha}} · {{tarea.valor}}</div>
+          </div>
+          <span [ngClass]="'t-pill-' + tarea.estado" style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;">
+            {{tarea.estado === 'pend' ? 'Pendiente' : tarea.estado === 'ok' ? 'Entregada' : 'Vencida'}}
+            <span *ngIf="tarea.nota" [ngStyle]="{'margin-left':'8px','color':getNotaClass(tarea.nota)}">{{tarea.nota}}/20</span>
+          </span>
+        </div>
+        <div *ngIf="expandedTasks.has(tarea.id)" style="padding:16px;border-top:1px solid #e0e0e0;">
+          <div style="margin-bottom:12px;">{{tarea.desc}}</div>
+          <div *ngIf="tarea.estado === 'pend'" style="display:flex;gap:8px;">
+            <button class="btn-primary" (click)="abrirEntrega(tarea.titulo, selectedCourse.nombre + ' · ' + selectedCourse.teacher)" style="padding:8px 16px;font-size:13px;">
+              <svg viewBox="0 0 24 24" style="width:16px;height:16px;margin-right:4px;"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>Entregar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noTareas>
+      <div style="text-align:center;padding:32px;color:#999;"><div style="font-size:48px;margin-bottom:8px;">📋</div><div>No hay tareas aún</div></div>
+    </ng-template>
+  </div>
+  
+  <!-- EVALUACIONES -->
+  <div *ngIf="activeTab === 'evaluaciones'" style="animation:slideIn 0.3s ease;">
+    <h3 style="margin-top:0;">Próxima Evaluación</h3>
+    <div *ngIf="selectedCourse.evaluaciones?.proxima" [ngStyle]="{'background':selectedCourse.color,'color':'white','padding':'20px','border-radius':'6px','margin-bottom':'24px'}">
+      <div style="font-weight:600;margin-bottom:8px;">{{selectedCourse.evaluaciones.proxima.titulo}}</div>
+      <div style="font-size:13px;opacity:0.9;">📅 {{selectedCourse.evaluaciones.proxima.fecha}} · 🕐 {{selectedCourse.evaluaciones.proxima.hora}}</div>
+      <div style="font-size:12px;opacity:0.8;margin-top:8px;">Temas: {{selectedCourse.evaluaciones.proxima.temas}}</div>
+    </div>
+    <h4>Historial de Evaluaciones</h4>
+    <div *ngIf="selectedCourse.evaluaciones?.historial?.length; else noEval">
+      <div *ngFor="let ev of selectedCourse.evaluaciones.historial" style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;padding:12px;background:#f9f9f9;border-radius:4px;margin-bottom:8px;align-items:center;">
+        <div><div style="font-weight:600;font-size:13px;">{{ev.nombre}}</div><div style="font-size:11px;color:#666;">{{ev.tipo}}</div></div>
+        <div style="font-size:12px;color:#666;">{{ev.fecha}}</div>
+        <div style="text-align:center;"><div [ngClass]="'nota-' + getNotaClass(ev.nota)" style="font-weight:700;font-size:18px;">{{ev.nota}}</div></div>
+        <div style="font-size:12px;color:#666;text-align:right;">{{ev.obs}}</div>
+      </div>
+    </div>
+    <ng-template #noEval><div style="text-align:center;padding:24px;color:#999;">No hay evaluaciones aún</div></ng-template>
+  </div>
+  
+  <!-- MATERIAL -->
+  <div *ngIf="activeTab === 'material'" style="animation:slideIn 0.3s ease;">
+    <h3 style="margin-top:0;">Material de Estudio</h3>
+    <div *ngIf="selectedCourse.material?.docs?.length">
+      <h4>Documentos</h4>
+      <div *ngFor="let doc of selectedCourse.material.docs" (click)="showToast('Descargando ' + doc.nombre, 'info')" style="padding:12px;background:#f9f9f9;border-radius:4px;margin-bottom:8px;cursor:pointer;display:flex;gap:12px;align-items:center;">
+        <div style="font-size:24px;">📄</div>
+        <div style="flex:1;"><div style="font-weight:600;font-size:13px;">{{doc.nombre}}</div><div style="font-size:12px;color:#666;">{{doc.sub}}</div></div>
+        <div style="font-size:12px;color:#999;">{{doc.size}}</div>
+      </div>
+    </div>
+    <div *ngIf="selectedCourse.material?.videos?.length" [style.margin-top]="selectedCourse.material?.docs?.length ? '20px' : '0'">
+      <h4>Videos y Enlaces</h4>
+      <div *ngFor="let vid of selectedCourse.material.videos" (click)="showToast('Abriendo ' + vid.nombre, 'info')" style="padding:12px;background:#f9f9f9;border-radius:4px;margin-bottom:8px;cursor:pointer;display:flex;gap:12px;align-items:center;">
+        <div style="font-size:24px;">🎥</div>
+        <div style="flex:1;"><div style="font-weight:600;font-size:13px;">{{vid.nombre}}</div><div style="font-size:12px;color:#666;">{{vid.sub}}</div></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- FORO -->
+  <div *ngIf="activeTab === 'foro'" style="animation:slideIn 0.3s ease;">
+    <h3 style="margin-top:0;">Foro del Curso</h3>
+    <button class="btn-primary" (click)="showModalForo = true" style="margin-bottom:20px;">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;margin-right:4px;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Nueva Publicación
+    </button>
+    <div *ngIf="selectedCourse.foro?.length; else noForo">
+      <div *ngFor="let post of selectedCourse.foro" style="background:#f9f9f9;padding:16px;border-radius:6px;margin-bottom:16px;">
+        <div style="display:flex;gap:12px;margin-bottom:12px;">
+          <div [style.background]="post.avColor" style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:600;flex-shrink:0;">{{post.av}}</div>
+          <div style="flex:1;"><div style="display:flex;justify-content:space-between;align-items:start;"><div><div style="font-weight:600;">{{post.autor}} {{post.pin ? '📌' : ''}}</div><div style="font-size:11px;color:#666;">{{post.rol}} · {{post.time}}</div></div></div></div>
+        </div>
+        <div style="margin-left:52px;margin-bottom:12px;"><div style="font-weight:600;margin-bottom:4px;">{{post.titulo}}</div><div style="font-size:13px;color:#555;line-height:1.5;">{{post.texto}}</div></div>
+        <div style="display:flex;gap:16px;font-size:12px;color:#999;margin-left:52px;">
+          <div (click)="showToast('Me gusta registrado', 'info')" style="cursor:pointer;">❤️ {{post.likes}}</div>
+          <div>💬 {{post.replies?.length || 0}}</div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noForo><div style="text-align:center;padding:32px;color:#999;"><div style="font-size:48px;margin-bottom:8px;">💬</div><div>Sin discusiones aún. ¡Sé el primero en publicar!</div></div></ng-template>
   </div>
 </div>
 
-<ng-template #sinCurso>
-  <div class="sin-curso">
-    <p>Selecciona un curso para ver su contenido</p>
+<!-- MODAL ENTREGA TAREA -->
+<div class="modal-overlay" *ngIf="showModalEntrega" (click)="cerrarModal()" style="display:flex;align-items:center;justify-content:center;">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header"><h3><svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>Entregar Tarea</h3><button class="modal-close" (click)="cerrarModal()">✕</button></div>
+    <div class="modal-body">
+      <div style="background:rgba(42,99,230,.06);border-left:3px solid var(--blue-light);padding:12px 14px;margin-bottom:16px;"><div style="font-weight:700;font-size:13px;color:var(--blue-dark);">{{modalTareaTitle}}</div><div style="font-size:12px;color:var(--gray-400);margin-top:2px;">{{modalTareaCurso}}</div></div>
+      <div class="mf"><label>Comentario para el docente</label><textarea placeholder="Agrega una nota sobre tu entrega..."></textarea></div>
+      <div class="mf"><label>Archivo a entregar <span class="req">*</span></label><div class="upload-drop" (click)="showToast('Abriendo explorador de archivos...','info')"><svg viewBox="0 0 24 24" style="width:28px;height:28px;fill:var(--gray-400);margin-bottom:6px;"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg><p><strong>Haz clic para subir tu archivo</strong></p><p>PDF, JPG, PNG, DOCX — máx. 10MB</p></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost" (click)="cerrarModal()">Cancelar</button><button class="btn-primary" (click)="confirmarEntrega()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Confirmar entrega</button></div>
   </div>
-</ng-template>
+</div>
+
+<!-- MODAL FORO -->
+<div class="modal-overlay" *ngIf="showModalForo" (click)="cerrarModal()" style="display:flex;align-items:center;justify-content:center;">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header"><h3><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Nueva publicación</h3><button class="modal-close" (click)="cerrarModal()">✕</button></div>
+    <div class="modal-body"><div class="mf"><label>Tipo</label><select><option>❓ Pregunta o duda</option><option>💡 Aporte</option><option>💬 Comentario</option></select></div><div class="mf"><label>Título <span class="req">*</span></label><input type="text" placeholder="Escribe el título de tu publicación"></div><div class="mf"><label>Mensaje <span class="req">*</span></label><textarea placeholder="Describe tu pregunta o aporte con el mayor detalle posible..."></textarea></div></div>
+    <div class="modal-footer"><button class="btn-ghost" (click)="cerrarModal()">Cancelar</button><button class="btn-primary" (click)="publicarForo()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>Publicar</button></div>
+  </div>
+</div>
+<app-toast></app-toast>

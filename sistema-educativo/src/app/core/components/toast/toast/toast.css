@@ -1,0 +1,72 @@
+ :root {
+     --white: #FFFFFF;
+     --off-white: #F4F6FA;
+     --blue-dark: #0A1A3E;
+     --blue-mid: #1340A0;
+     --blue-light: #2A63E6;
+     --blue-sky: #5B8FF9;
+     --orange: #FF5B1F;
+     --orange-hover: #E04800;
+     --orange-light: #FF8050;
+     --gray-100: #EEF1F8;
+     --gray-200: #D8DDE8;
+     --gray-400: #8A95B0;
+     --gray-600: #4A5470;
+     --text-dark: #0A1220;
+     --text-body: #2D3555;
+     --success: #00C27C;
+     --warning: #F5A623;
+     --error: #E53030;
+     --border: #C8D0E4;
+     --shadow-card: 0 2px 24px rgba(10, 26, 62, 0.10);
+     --shadow-lift: 0 8px 40px rgba(10, 26, 62, 0.15);
+     --transition: 0.22s cubic-bezier(.4, 0, .2, 1);
+ }
+
+ /* TOAST */
+ .toast {
+     position: fixed;
+     bottom: 28px;
+     right: 28px;
+     z-index: 400;
+     color: var(--white);
+     padding: 13px 20px;
+     font-size: 13px;
+     font-weight: 600;
+     display: flex;
+     align-items: center;
+     gap: 9px;
+     box-shadow: var(--shadow-lift);
+     transform: translateX(200%);
+     transition: transform .35s cubic-bezier(.4, 0, .2, 1);
+ }
+
+ .toast.show {
+     transform: translateX(0);
+ }
+
+ .toast svg {
+     width: 15px;
+     height: 15px;
+     fill: var(--white);
+     flex-shrink: 0;
+ }
+
+ .t-ok {
+     background: var(--success);
+ }
+
+ .t-info {
+     background: var(--blue-mid);
+ }
+
+ .t-error {
+     background: var(--error);
+ }
+
+ .t-warning {
+     background: var(--warning);
+ }
+ .t-success{
+        background: var(--success);
+ }

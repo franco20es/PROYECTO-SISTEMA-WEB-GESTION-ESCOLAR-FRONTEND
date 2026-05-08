@@ -1,1 +1,653 @@
-<p>profesores works!</p>
+
+<div class="main-content">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="ph-left">
+      
+      <div class="ph-title">
+        <div class="ph-title-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 17a2 2 0 002-2V4a2 2 0 00-2-2H9.46c.35.61.54 1.3.54 2h10v11h-9v2h9zM15 7v2H9V7h6zM6 2C4.34 2 3 3.34 3 5s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zM6 10c-2.33 0-7 1.17-7 3.5V16h14v-2.5C13 11.17 8.33 10 6 10z"/></svg>
+        </div>
+        Gestión de Profesores
+      </div>
+      <div class="ph-subtitle">Administra el personal docente, asignaciones y horarios</div>
+    </div>
+    <div class="ph-right">
+      <button class="btn-secondary" onclick="exportar()">
+        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Exportar
+      </button>
+      <button class="btn-primary" onclick="abrirModal('nuevo')">
+        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        Nuevo Profesor
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI STRIP -->
+  <div class="kpi-strip">
+    <div class="kpi-card">
+      <div class="kpi-icon total"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+      <div class="kpi-data"><strong>24</strong><span>Total docentes</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon activo"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+      <div class="kpi-data"><strong>21</strong><span>Activos</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon licencia"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
+      <div class="kpi-data"><strong>3</strong><span>Con licencia</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon niveles"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg></div>
+      <div class="kpi-data"><strong>3</strong><span>Niveles cubiertos</span></div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="filter-tabs">
+      <button class="ftab active" data-f="all" onclick="filtrar(this)">Todos <span class="cnt">24</span></button>
+      <button class="ftab" data-f="activo" onclick="filtrar(this)">Activos <span class="cnt">21</span></button>
+      <button class="ftab" data-f="licencia" onclick="filtrar(this)">Licencia <span class="cnt">3</span></button>
+      <button class="ftab" data-f="inicial" onclick="filtrar(this)">Inicial <span class="cnt">5</span></button>
+      <button class="ftab" data-f="primaria" onclick="filtrar(this)">Primaria <span class="cnt">10</span></button>
+      <button class="ftab" data-f="secundaria" onclick="filtrar(this)">Secundaria <span class="cnt">9</span></button>
+    </div>
+    <div class="sep"></div>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input type="text" placeholder="Buscar por nombre, especialidad, DNI..." oninput="buscar(this.value)">
+    </div>
+    <select class="filter-select">
+      <option>Todos los contratos</option>
+      <option>Nombrado</option>
+      <option>Contratado</option>
+    </select>
+    <select class="filter-select">
+      <option>Ordenar: Nombre A-Z</option>
+      <option>Ordenar: Nombre Z-A</option>
+      <option>Ordenar: Más reciente</option>
+    </select>
+    <div class="view-toggle">
+      <button class="vbtn active" id="btnTabla" onclick="cambiarVista('tabla')" title="Vista tabla">
+        <svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+      </button>
+      <button class="vbtn" id="btnGrid" onclick="cambiarVista('grid')" title="Vista tarjetas">
+        <svg viewBox="0 0 24 24"><path d="M3 3h7v7H3zm0 11h7v7H3zm11-11h7v7h-7zm0 11h7v7h-7z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ════ VISTA TABLA ════ -->
+  <div id="vistaTabla">
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th><div class="th-inner">Docente <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div></th>
+            <th><div class="th-inner">Especialidad</div></th>
+            <th><div class="th-inner">Nivel(es)</div></th>
+            <th><div class="th-inner">Contrato</div></th>
+            <th><div class="th-inner">Horas/sem</div></th>
+            <th><div class="th-inner">Estado</div></th>
+            <th><div class="th-inner">Contacto</div></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tablaProfesores">
+
+          <tr data-status="activo" data-nivel="primaria secundaria" onclick="abrirModal('editar',this)">
+            <td><div class="td-profesor"><div class="prof-avatar" style="background:linear-gradient(135deg,#0A1A3E,#1340A0)">RM</div><div><div class="td-name">Prof. Roberto Meza</div><div class="td-dni">DNI: 42310987</div></div></div></td>
+            <td>Matemáticas</td>
+            <td><span class="nivel-chip chip-primaria">Primaria</span><span class="nivel-chip chip-secundaria">Secundaria</span></td>
+            <td><span class="contrato-tag ct-nombrado">Nombrado</span></td>
+            <td><span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--blue-dark)">30 h</span></td>
+            <td><span class="status-dot dot-activo">Activo</span></td>
+            <td><span style="font-size:12px;color:var(--gray-600)">rmeza@iesanmarcos.edu.pe</span></td>
+            <td onclick="event.stopPropagation()"><div class="td-actions">
+              <button class="act-btn" title="Editar" onclick="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+              <button class="act-btn" title="Ver horario" onclick="abrirModal('horario')"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg></button>
+              <button class="act-btn del" title="Eliminar" onclick="confirmarEliminar('Roberto Meza')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+            </div></td>
+          </tr>
+
+          <tr data-status="activo" data-nivel="inicial primaria" onclick="abrirModal('editar',this)">
+            <td><div class="td-profesor"><div class="prof-avatar" style="background:linear-gradient(135deg,#0A1A3E,#FF5B1F 130%)">LP</div><div><div class="td-name">Lic. Lucía Paredes</div><div class="td-dni">DNI: 47821036</div></div></div></td>
+            <td>Comunicación</td>
+            <td><span class="nivel-chip chip-inicial">Inicial</span><span class="nivel-chip chip-primaria">Primaria</span></td>
+            <td><span class="contrato-tag ct-nombrado">Nombrado</span></td>
+            <td><span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--blue-dark)">24 h</span></td>
+            <td><span class="status-dot dot-activo">Activo</span></td>
+            <td><span style="font-size:12px;color:var(--gray-600)">lparedes@iesanmarcos.edu.pe</span></td>
+            <td onclick="event.stopPropagation()"><div class="td-actions">
+              <button class="act-btn" onclick="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+              <button class="act-btn" onclick="abrirModal('horario')"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg></button>
+              <button class="act-btn del" onclick="confirmarEliminar('Lucía Paredes')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+            </div></td>
+          </tr>
+
+          <tr data-status="activo" data-nivel="secundaria" onclick="abrirModal('editar',this)">
+            <td><div class="td-profesor"><div class="prof-avatar" style="background:linear-gradient(135deg,#1340A0,#00C27C 130%)">JV</div><div><div class="td-name">Mg. Jorge Vargas</div><div class="td-dni">DNI: 43900712</div></div></div></td>
+            <td>Historia y Geografía</td>
+            <td><span class="nivel-chip chip-secundaria">Secundaria</span></td>
+            <td><span class="contrato-tag ct-contratado">Contratado</span></td>
+            <td><span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--blue-dark)">20 h</span></td>
+            <td><span class="status-dot dot-activo">Activo</span></td>
+            <td><span style="font-size:12px;color:var(--gray-600)">jvargas@iesanmarcos.edu.pe</span></td>
+            <td onclick="event.stopPropagation()"><div class="td-actions">
+              <button class="act-btn" onclick="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+              <button class="act-btn" onclick="abrirModal('horario')"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg></button>
+              <button class="act-btn del" onclick="confirmarEliminar('Jorge Vargas')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+            </div></td>
+          </tr>
+
+          <tr data-status="licencia" data-nivel="inicial" onclick="abrirModal('editar',this)">
+            <td><div class="td-profesor"><div class="prof-avatar" style="background:linear-gradient(135deg,#b87a0a,#f5a623)">AT</div><div><div class="td-name">Prof. Ana Torres</div><div class="td-dni">DNI: 45678321</div></div></div></td>
+            <td>Educación Inicial</td>
+            <td><span class="nivel-chip chip-inicial">Inicial</span></td>
+            <td><span class="contrato-tag ct-nombrado">Nombrado</span></td>
+            <td><span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--blue-dark)">24 h</span></td>
+            <td><span class="status-dot dot-licencia">Licencia</span></td>
+            <td><span style="font-size:12px;color:var(--gray-600)">atorres@iesanmarcos.edu.pe</span></td>
+            <td onclick="event.stopPropagation()"><div class="td-actions">
+              <button class="act-btn" onclick="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+              <button class="act-btn" onclick="abrirModal('horario')"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg></button>
+              <button class="act-btn del" onclick="confirmarEliminar('Ana Torres')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+            </div></td>
+          </tr>
+
+          <tr data-status="activo" data-nivel="primaria" onclick="abrirModal('editar',this)">
+            <td><div class="td-profesor"><div class="prof-avatar" style="background:linear-gradient(135deg,#0A1A3E,#2A63E6)">SC</div><div><div class="td-name">Prof. Sandra Chávez</div><div class="td-dni">DNI: 41235689</div></div></div></td>
+            <td>Ciencias Naturales</td>
+            <td><span class="nivel-chip chip-primaria">Primaria</span></td>
+            <td><span class="contrato-tag ct-contratado">Contratado</span></td>
+            <td><span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--blue-dark)">22 h</span></td>
+            <td><span class="status-dot dot-activo">Activo</span></td>
+            <td><span style="font-size:12px;color:var(--gray-600)">schavez@iesanmarcos.edu.pe</span></td>
+            <td onclick="event.stopPropagation()"><div class="td-actions">
+              <button class="act-btn" onclick="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+              <button class="act-btn" onclick="abrirModal('horario')"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg></button>
+              <button class="act-btn del" onclick="confirmarEliminar('Sandra Chávez')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+            </div></td>
+          </tr>
+
+          <tr data-status="activo" data-nivel="secundaria" onclick="abrirModal('editar',this)">
+            <td><div class="td-profesor"><div class="prof-avatar" style="background:linear-gradient(135deg,#003D28,#00C27C)">MR</div><div><div class="td-name">Prof. Miguel Ramos</div><div class="td-dni">DNI: 46320178</div></div></div></td>
+            <td>Educación Física</td>
+            <td><span class="nivel-chip chip-secundaria">Secundaria</span></td>
+            <td><span class="contrato-tag ct-contratado">Contratado</span></td>
+            <td><span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--blue-dark)">18 h</span></td>
+            <td><span class="status-dot dot-activo">Activo</span></td>
+            <td><span style="font-size:12px;color:var(--gray-600)">mramos@iesanmarcos.edu.pe</span></td>
+            <td onclick="event.stopPropagation()"><div class="td-actions">
+              <button class="act-btn" onclick="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+              <button class="act-btn" onclick="abrirModal('horario')"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg></button>
+              <button class="act-btn del" onclick="confirmarEliminar('Miguel Ramos')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+            </div></td>
+          </tr>
+
+          <tr data-status="licencia" data-nivel="primaria" onclick="abrirModal('editar',this)">
+            <td><div class="td-profesor"><div class="prof-avatar" style="background:linear-gradient(135deg,#3D1700,#FF5B1F)">CF</div><div><div class="td-name">Prof. Carlos Flores</div><div class="td-dni">DNI: 40019872</div></div></div></td>
+            <td>Arte y Cultura</td>
+            <td><span class="nivel-chip chip-primaria">Primaria</span></td>
+            <td><span class="contrato-tag ct-nombrado">Nombrado</span></td>
+            <td><span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--blue-dark)">16 h</span></td>
+            <td><span class="status-dot dot-licencia">Licencia</span></td>
+            <td><span style="font-size:12px;color:var(--gray-600)">cflores@iesanmarcos.edu.pe</span></td>
+            <td onclick="event.stopPropagation()"><div class="td-actions">
+              <button class="act-btn" onclick="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+              <button class="act-btn" onclick="abrirModal('horario')"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg></button>
+              <button class="act-btn del" onclick="confirmarEliminar('Carlos Flores')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+            </div></td>
+          </tr>
+
+          <tr data-status="activo" data-nivel="inicial" onclick="abrirModal('editar',this)">
+            <td><div class="td-profesor"><div class="prof-avatar" style="background:linear-gradient(135deg,#1B4080,#5B8FF9)">VQ</div><div><div class="td-name">Lic. Valeria Quispe</div><div class="td-dni">DNI: 48712306</div></div></div></td>
+            <td>Educación Inicial</td>
+            <td><span class="nivel-chip chip-inicial">Inicial</span></td>
+            <td><span class="contrato-tag ct-contratado">Contratado</span></td>
+            <td><span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--blue-dark)">24 h</span></td>
+            <td><span class="status-dot dot-activo">Activo</span></td>
+            <td><span style="font-size:12px;color:var(--gray-600)">vquispe@iesanmarcos.edu.pe</span></td>
+            <td onclick="event.stopPropagation()"><div class="td-actions">
+              <button class="act-btn" onclick="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+              <button class="act-btn" onclick="abrirModal('horario')"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg></button>
+              <button class="act-btn del" onclick="confirmarEliminar('Valeria Quispe')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+            </div></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ════ VISTA GRID ════ -->
+  <div id="vistaGrid" style="display:none">
+    <div class="grid-view">
+
+      <div class="prof-card" data-status="activo" data-nivel="primaria secundaria">
+        <div class="prof-card-top">
+          <div class="pc-avatar-wrap">
+            <div class="pc-avatar" style="background:linear-gradient(135deg,#0A1A3E,#1340A0)">RM</div>
+            <div class="pc-status-dot activo"></div>
+          </div>
+          <button class="pc-menu-btn" onclick="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
+        </div>
+        <div class="prof-card-body">
+          <div class="pc-name">Prof. Roberto Meza</div>
+          <div class="pc-cargo">Matemáticas · <span class="contrato-tag ct-nombrado" style="font-size:10px;padding:2px 6px">Nombrado</span></div>
+          <div class="pc-chips"><span class="nivel-chip chip-primaria">Primaria</span><span class="nivel-chip chip-secundaria">Secundaria</span></div>
+          <div class="pc-info-row"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>rmeza@iesanmarcos.edu.pe</div>
+          <div class="pc-info-row"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>987 321 456</div>
+          <div class="pc-info-row"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>DNI: 42310987 — 30 h/sem</div>
+        </div>
+        <div class="prof-card-footer">
+          <div class="pc-footer-stat"><strong>4</strong><span>Secciones</span></div>
+          <div class="pc-footer-sep"></div>
+          <div class="pc-footer-stat"><strong>30</strong><span>Horas/sem</span></div>
+          <div class="pc-footer-sep"></div>
+          <button class="pc-edit-btn" onclick="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>Editar</button>
+        </div>
+      </div>
+
+      <div class="prof-card" data-status="activo" data-nivel="inicial primaria">
+        <div class="prof-card-top">
+          <div class="pc-avatar-wrap">
+            <div class="pc-avatar" style="background:linear-gradient(135deg,#0A1A3E,#FF5B1F 130%)">LP</div>
+            <div class="pc-status-dot activo"></div>
+          </div>
+          <button class="pc-menu-btn" onclick="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
+        </div>
+        <div class="prof-card-body">
+          <div class="pc-name">Lic. Lucía Paredes</div>
+          <div class="pc-cargo">Comunicación · <span class="contrato-tag ct-nombrado" style="font-size:10px;padding:2px 6px">Nombrado</span></div>
+          <div class="pc-chips"><span class="nivel-chip chip-inicial">Inicial</span><span class="nivel-chip chip-primaria">Primaria</span></div>
+          <div class="pc-info-row"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>lparedes@iesanmarcos.edu.pe</div>
+          <div class="pc-info-row"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>912 456 780</div>
+          <div class="pc-info-row"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>DNI: 47821036 — 24 h/sem</div>
+        </div>
+        <div class="prof-card-footer">
+          <div class="pc-footer-stat"><strong>3</strong><span>Secciones</span></div>
+          <div class="pc-footer-sep"></div>
+          <div class="pc-footer-stat"><strong>24</strong><span>Horas/sem</span></div>
+          <div class="pc-footer-sep"></div>
+          <button class="pc-edit-btn" onclick="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>Editar</button>
+        </div>
+      </div>
+
+      <div class="prof-card" data-status="licencia" data-nivel="inicial">
+        <div class="prof-card-top">
+          <div class="pc-avatar-wrap">
+            <div class="pc-avatar" style="background:linear-gradient(135deg,#b87a0a,#f5a623)">AT</div>
+            <div class="pc-status-dot licencia"></div>
+          </div>
+          <button class="pc-menu-btn" onclick="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
+        </div>
+        <div class="prof-card-body">
+          <div class="pc-name">Prof. Ana Torres</div>
+          <div class="pc-cargo">Educación Inicial · <span class="contrato-tag ct-nombrado" style="font-size:10px;padding:2px 6px">Nombrado</span></div>
+          <div class="pc-chips"><span class="nivel-chip chip-inicial">Inicial</span></div>
+          <div class="pc-info-row"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>atorres@iesanmarcos.edu.pe</div>
+          <div class="pc-info-row"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>945 678 012</div>
+          <div class="pc-info-row" style="color:var(--warning)"><svg viewBox="0 0 24 24" style=""><path fill="#F5A623" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>Licencia hasta 30/05/2025</div>
+        </div>
+        <div class="prof-card-footer">
+          <div class="pc-footer-stat"><strong>2</strong><span>Secciones</span></div>
+          <div class="pc-footer-sep"></div>
+          <div class="pc-footer-stat"><strong>24</strong><span>Horas/sem</span></div>
+          <div class="pc-footer-sep"></div>
+          <button class="pc-edit-btn" onclick="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>Editar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="pagination">
+    <div class="pag-info">Mostrando <strong>8</strong> de <strong>24</strong> docentes</div>
+    <div class="pag-btns">
+      <button class="pag-btn"><svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button>
+      <button class="pag-btn active">1</button>
+      <button class="pag-btn">2</button>
+      <button class="pag-btn">3</button>
+      <button class="pag-btn"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button>
+    </div>
+  </div>
+
+</div><!-- /main-content -->
+
+<!-- ════ MODAL PROFESOR ════ -->
+<div class="modal-overlay" id="modalProfesor">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">
+        <svg viewBox="0 0 24 24"><path d="M20 17a2 2 0 002-2V4a2 2 0 00-2-2H9.46c.35.61.54 1.3.54 2h10v11h-9v2h9zM6 2C4.34 2 3 3.34 3 5s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zM6 10c-2.33 0-7 1.17-7 3.5V16h14v-2.5C13 11.17 8.33 10 6 10z"/></svg>
+        Nuevo Profesor
+      </h3>
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-tabs">
+      <div class="mtab active" onclick="switchTab(this,'tabDatos')">Datos personales</div>
+      <div class="mtab" onclick="switchTab(this,'tabAcademico')">Información académica</div>
+      <div class="mtab" onclick="switchTab(this,'tabHorario')">Horario</div>
+      <div class="mtab" onclick="switchTab(this,'tabHistorial')">Historial</div>
+    </div>
+    <div class="modal-body">
+
+      <!-- TAB 1: DATOS PERSONALES -->
+      <div class="tab-panel active" id="tabDatos">
+        <div class="form-section-title">Datos personales</div>
+        <div class="form-grid c3">
+          <div class="mf-field"><label>Apellido Paterno <span class="req">*</span></label><input type="text" placeholder="Ej. Meza"></div>
+          <div class="mf-field"><label>Apellido Materno <span class="req">*</span></label><input type="text" placeholder="Ej. Torres"></div>
+          <div class="mf-field"><label>Nombres <span class="req">*</span></label><input type="text" placeholder="Ej. Roberto Carlos"></div>
+          <div class="mf-field"><label>DNI <span class="req">*</span></label><input type="text" placeholder="Ej. 42310987" maxlength="8"></div>
+          <div class="mf-field"><label>Fecha de Nacimiento</label><input type="date"></div>
+          <div class="mf-field"><label>Sexo</label><select><option>Masculino</option><option>Femenino</option></select></div>
+          <div class="mf-field"><label>Teléfono / Celular <span class="req">*</span></label><input type="tel" placeholder="987 654 321"></div>
+          <div class="mf-field"><label>Correo Institucional <span class="req">*</span></label><input type="email" placeholder="nombre@iesanmarcos.edu.pe"></div>
+          <div class="mf-field"><label>Correo Personal</label><input type="email" placeholder="correo@gmail.com"></div>
+          <div class="mf-field span3"><label>Dirección de Residencia</label><input type="text" placeholder="Av. Los Maestros 123, Ica"></div>
+        </div>
+        <div class="form-section-title">Estado laboral</div>
+        <div class="form-grid c3">
+          <div class="mf-field"><label>Estado <span class="req">*</span></label>
+            <select>
+              <option>Activo</option>
+              <option>Con licencia</option>
+              <option>Inactivo</option>
+            </select>
+          </div>
+          <div class="mf-field"><label>Tipo de contrato <span class="req">*</span></label>
+            <select>
+              <option>Nombrado</option>
+              <option>Contratado</option>
+            </select>
+          </div>
+          <div class="mf-field"><label>Fecha de inicio</label><input type="date"></div>
+          <div class="mf-field span3"><label>Motivo de licencia / Observación</label><textarea placeholder="Solo si aplica..."></textarea></div>
+        </div>
+      </div>
+
+      <!-- TAB 2: ACADÉMICO -->
+      <div class="tab-panel" id="tabAcademico">
+        <div class="form-section-title">Formación y especialidad</div>
+        <div class="form-grid c2">
+          <div class="mf-field"><label>Título profesional <span class="req">*</span></label><input type="text" placeholder="Ej. Licenciado en Educación"></div>
+          <div class="mf-field"><label>Especialidad <span class="req">*</span></label><input type="text" placeholder="Ej. Matemáticas, Comunicación"></div>
+          <div class="mf-field"><label>Universidad / Instituto</label><input type="text" placeholder="Ej. Universidad Nacional de Ica"></div>
+          <div class="mf-field"><label>Año de egreso</label><input type="text" placeholder="Ej. 2010"></div>
+          <div class="mf-field"><label>N° de colegiatura</label><input type="text" placeholder="Ej. CPPe-12345"></div>
+          <div class="mf-field"><label>Horas semanales <span class="req">*</span></label><input type="number" placeholder="Ej. 30" min="1" max="40"></div>
+        </div>
+        <div class="form-section-title">Nivel(es) que dicta</div>
+        <div class="check-group" id="nivelesCheck">
+          <label class="chk-opt" onclick="toggleChk(this)"><div class="chk-box">✓</div>Inicial</label>
+          <label class="chk-opt" onclick="toggleChk(this)"><div class="chk-box">✓</div>Primaria</label>
+          <label class="chk-opt" onclick="toggleChk(this)"><div class="chk-box">✓</div>Secundaria</label>
+        </div>
+        <div style="margin-top:20px"></div>
+        <div class="form-section-title">Cursos / Áreas asignadas</div>
+        <div class="form-grid c2">
+          <div class="mf-field"><label>Área curricular 1</label><input type="text" placeholder="Ej. Matemática"></div>
+          <div class="mf-field"><label>Grado / Sección</label><select><option value="">Seleccionar...</option><option>1° A — Primaria</option><option>2° A — Primaria</option><option>3° A — Primaria</option><option>1° A — Secundaria</option><option>2° A — Secundaria</option><option>3° A — Secundaria</option><option>4° A — Secundaria</option><option>5° A — Secundaria</option></select></div>
+          <div class="mf-field"><label>Área curricular 2</label><input type="text" placeholder="Ej. Ciencias"></div>
+          <div class="mf-field"><label>Grado / Sección</label><select><option value="">Seleccionar...</option><option>1° B — Primaria</option><option>2° B — Primaria</option><option>3° B — Primaria</option><option>4° A — Secundaria</option><option>5° A — Secundaria</option></select></div>
+          <div class="mf-field"><label>Área curricular 3</label><input type="text" placeholder="Ej. Tutoría"></div>
+          <div class="mf-field"><label>Grado / Sección</label><select><option value="">Seleccionar...</option><option>5° A — Secundaria</option><option>5° B — Secundaria</option></select></div>
+        </div>
+      </div>
+
+      <!-- TAB 3: HORARIO -->
+      <div class="tab-panel" id="tabHorario">
+        <div class="form-section-title">Horario semanal</div>
+        <p style="font-size:12px;color:var(--gray-400);margin-bottom:16px;">Marca los bloques horarios en los que el docente dicta clases. Haz clic para activar/desactivar.</p>
+        <div class="horario-grid">
+          <div class="hg-cell header">Hora</div>
+          <div class="hg-cell header">Lun</div>
+          <div class="hg-cell header">Mar</div>
+          <div class="hg-cell header">Mié</div>
+          <div class="hg-cell header">Jue</div>
+          <div class="hg-cell header">Vie</div>
+          <div class="hg-cell header">Sáb</div>
+
+          <div class="hg-cell dia-label">7:15–8:00</div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Mat</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Mat</button></div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Mat</button></div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+
+          <div class="hg-cell dia-label">8:00–8:45</div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Mat</button></div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Cien</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Mat</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Cien</button></div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+
+          <div class="hg-cell dia-label">8:45–9:30</div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Com</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Cien</button></div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Mat</button></div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+
+          <div class="hg-cell dia-label">9:30–10:15</div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Tut</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Com</button></div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Tut</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Mat</button></div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+
+          <div class="hg-cell dia-label">10:30–11:15</div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Mat</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Mat</button></div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Cien</button></div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+
+          <div class="hg-cell dia-label">11:15–12:00</div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Cien</button></div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Mat</button></div>
+          <div class="hg-cell"><button class="hg-toggle on" onclick="toggleHorario(this)">Cien</button></div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+          <div class="hg-cell"><button class="hg-toggle" onclick="toggleHorario(this)">—</button></div>
+        </div>
+        <div style="margin-top:16px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+          <span style="font-size:12px;color:var(--gray-400);">Leyenda:</span>
+          <span style="font-size:11px;background:rgba(42,99,230,0.12);border:1px solid var(--blue-light);color:var(--blue-mid);padding:2px 8px;font-weight:700">Mat = Matemática</span>
+          <span style="font-size:11px;background:rgba(0,194,124,0.12);border:1px solid var(--success);color:#008f5a;padding:2px 8px;font-weight:700">Cien = Ciencias</span>
+          <span style="font-size:11px;background:rgba(255,91,31,0.10);border:1px solid var(--orange);color:var(--orange);padding:2px 8px;font-weight:700">Com = Comunicación</span>
+          <span style="font-size:11px;background:var(--gray-100);border:1px solid var(--border);color:var(--gray-600);padding:2px 8px;font-weight:700">Tut = Tutoría</span>
+        </div>
+      </div>
+
+      <!-- TAB 4: HISTORIAL -->
+      <div class="tab-panel" id="tabHistorial">
+        <div class="form-section-title">Historial del docente en la institución</div>
+        <table class="hist-table">
+          <thead>
+            <tr><th>Año</th><th>Nivel</th><th>Grados/Secciones</th><th>Tipo contrato</th><th>Estado</th><th>Observación</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span style="font-family:'DM Mono',monospace;font-weight:600">2025</span></td><td>Primaria / Secundaria</td><td>4°A, 5°A, 3°B Sec</td><td><span class="hist-badge hb-nombrado">Nombrado</span></td><td><span class="hist-badge hb-activo">Activo</span></td><td style="color:var(--gray-400);font-size:12px">—</td></tr>
+            <tr><td><span style="font-family:'DM Mono',monospace;font-weight:600">2024</span></td><td>Primaria / Secundaria</td><td>3°A, 4°A, 2°B Sec</td><td><span class="hist-badge hb-nombrado">Nombrado</span></td><td><span class="hist-badge hb-activo">Activo</span></td><td style="color:var(--gray-400);font-size:12px">Reconocimiento docente del año</td></tr>
+            <tr><td><span style="font-family:'DM Mono',monospace;font-weight:600">2023</span></td><td>Primaria</td><td>5°A, 6°A</td><td><span class="hist-badge hb-nombrado">Nombrado</span></td><td><span class="hist-badge hb-activo">Activo</span></td><td style="color:var(--gray-400);font-size:12px">—</td></tr>
+            <tr><td><span style="font-family:'DM Mono',monospace;font-weight:600">2022</span></td><td>Primaria</td><td>4°A, 5°B</td><td><span class="hist-badge hb-contratado">Contratado</span></td><td><span class="hist-badge hb-activo">Activo</span></td><td style="color:var(--gray-400);font-size:12px">Ascenso a nombrado en jul. 2022</td></tr>
+            <tr><td><span style="font-family:'DM Mono',monospace;font-weight:600">2021</span></td><td>Primaria</td><td>3°A, 4°A</td><td><span class="hist-badge hb-contratado">Contratado</span></td><td><span class="hist-badge hb-inactivo">Lic. médica</span></td><td style="color:var(--gray-400);font-size:12px">Licencia mar–abr 2021</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <div class="mf-left">
+        <button class="btn-danger" onclick="confirmarEliminar('este docente')">
+          <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+          Eliminar
+        </button>
+      </div>
+      <div class="mf-right">
+        <button class="btn-secondary" onclick="cerrarModal()">Cancelar</button>
+        <button class="btn-primary" onclick="guardarProfesor()">
+          <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+          Guardar cambios
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ CONFIRM DELETE ════ -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-icon"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div>
+    <h3>Eliminar Docente</h3>
+    <p>¿Estás seguro de que deseas eliminar a <strong id="confirmNombre">este docente</strong>? Esta acción no se puede deshacer y se perderán todos sus datos.</p>
+    <div class="confirm-actions">
+      <button class="btn-secondary" onclick="cerrarConfirm()">Cancelar</button>
+      <button class="btn-danger" onclick="ejecutarEliminar()" style="background:var(--error);color:var(--white);border-color:var(--error)">
+        <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+        Sí, eliminar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+  <span id="toastMsg">Operación exitosa</span>
+</div>
+
+<script>
+  let pendingDelete = null;
+
+  // ─── VISTA TABLA / GRID ───
+  function cambiarVista(v) {
+    document.getElementById('vistaTabla').style.display = v === 'tabla' ? '' : 'none';
+    document.getElementById('vistaGrid').style.display = v === 'grid' ? '' : 'none';
+    document.getElementById('btnTabla').classList.toggle('active', v === 'tabla');
+    document.getElementById('btnGrid').classList.toggle('active', v === 'grid');
+  }
+
+  // ─── FILTRAR ───
+  function filtrar(btn) {
+    document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.f;
+    document.querySelectorAll('#tablaProfesores tr').forEach(r => {
+      if (f === 'all') { r.style.display = ''; return; }
+      const s = r.dataset.status || '';
+      const n = r.dataset.nivel || '';
+      r.style.display = (s === f || n.includes(f)) ? '' : 'none';
+    });
+    document.querySelectorAll('.prof-card').forEach(c => {
+      if (f === 'all') { c.style.display = ''; return; }
+      const s = c.dataset.status || '';
+      const n = c.dataset.nivel || '';
+      c.style.display = (s === f || n.includes(f)) ? '' : 'none';
+    });
+  }
+
+  // ─── BUSCAR ───
+  function buscar(q) {
+    const s = q.toLowerCase();
+    document.querySelectorAll('#tablaProfesores tr').forEach(r => {
+      r.style.display = r.innerText.toLowerCase().includes(s) ? '' : 'none';
+    });
+    document.querySelectorAll('.prof-card').forEach(c => {
+      c.style.display = c.innerText.toLowerCase().includes(s) ? '' : 'none';
+    });
+  }
+
+  // ─── MODAL ───
+  function abrirModal(tipo, el) {
+    const t = document.getElementById('modalTitle');
+    if (tipo === 'nuevo') {
+      t.childNodes[t.childNodes.length - 1].textContent = ' Nuevo Profesor';
+      switchTab(document.querySelector('.mtab'), 'tabDatos');
+    } else if (tipo === 'horario') {
+      t.childNodes[t.childNodes.length - 1].textContent = ' Horario del Docente';
+      switchTab(document.querySelectorAll('.mtab')[2], 'tabHorario');
+    } else {
+      t.childNodes[t.childNodes.length - 1].textContent = ' Editar Profesor';
+      switchTab(document.querySelector('.mtab'), 'tabDatos');
+    }
+    document.getElementById('modalProfesor').classList.add('show');
+  }
+  function cerrarModal() { document.getElementById('modalProfesor').classList.remove('show'); }
+
+  // ─── TABS MODAL ───
+  function switchTab(btn, panelId) {
+    document.querySelectorAll('.mtab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(panelId).classList.add('active');
+  }
+
+  // ─── GUARDAR ───
+  function guardarProfesor() {
+    cerrarModal();
+    showToast('Docente guardado correctamente');
+  }
+
+  // ─── HORARIO TOGGLE ───
+  function toggleHorario(btn) {
+    btn.classList.toggle('on');
+    btn.textContent = btn.classList.contains('on') ? btn.textContent || 'Mat' : '—';
+    if (!btn.classList.contains('on')) btn.textContent = '—';
+  }
+
+  // ─── CHECKBOX NIVELES ───
+  function toggleChk(el) { el.classList.toggle('selected'); }
+
+  // ─── CONFIRMAR ELIMINAR ───
+  function confirmarEliminar(nombre) {
+    pendingDelete = nombre;
+    document.getElementById('confirmNombre').textContent = nombre;
+    document.getElementById('confirmOverlay').classList.add('show');
+  }
+  function cerrarConfirm() { document.getElementById('confirmOverlay').classList.remove('show'); pendingDelete = null; }
+  function ejecutarEliminar() {
+    cerrarConfirm();
+    cerrarModal();
+    showToast(`Docente "${pendingDelete}" eliminado`);
+    pendingDelete = null;
+  }
+
+  // ─── EXPORTAR ───
+  function exportar() { showToast('Exportando lista de docentes...', 'info'); }
+
+  // ─── TOAST ───
+  let toastTimer;
+  function showToast(msg, type = 'success') {
+    clearTimeout(toastTimer);
+    const t = document.getElementById('toast');
+    t.className = 'toast' + (type === 'info' ? ' info-toast' : type === 'error' ? ' error-toast' : '');
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // ─── CERRAR MODALES CON OVERLAY ───
+  document.getElementById('modalProfesor').addEventListener('click', e => { if (e.target === e.currentTarget) cerrarModal(); });
+  document.getElementById('confirmOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) cerrarConfirm(); });
+
+  // ─── PAGINACIÓN ───
+  document.querySelectorAll('.pag-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.pag-btn').forEach(b => { if (!b.querySelector('svg')) b.classList.remove('active'); });
+      if (!this.querySelector('svg')) this.classList.add('active');
+    });
+  });
+</script>

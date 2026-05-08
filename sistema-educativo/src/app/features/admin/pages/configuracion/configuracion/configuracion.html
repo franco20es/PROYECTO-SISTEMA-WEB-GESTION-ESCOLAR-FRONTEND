@@ -1,1 +1,663 @@
-<p>configuracion works!</p>
+ <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div>
+     
+      <div class="ph-title">
+        <div class="ph-title-icon"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></div>
+        Configuración del Sistema
+      </div>
+      <div class="ph-subtitle">Gestiona todos los parámetros, usuarios, periodos y preferencias de la institución</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn-ghost" (click)="showToast('Exportando configuración...','info')">
+        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar config
+      </button>
+      <button class="btn-primary" (click)="showToast('Guardando  toda la configuración...','success')">
+        <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>Guardar todo
+      </button>
+    </div>
+  </div>
+ 
+  <!-- LAYOUT -->
+  <div class="config-layout">
+ 
+    <!-- NAV LATERAL -->
+    <nav class="config-nav">
+      <div class="cn-section">
+        <div class="cn-label">Institución</div>
+        <div class="cn-item " [class.active]="panelActivo === 'pInst'" (click)="setPanel('pInst')">
+          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>
+          <span>Datos institucionales</span>
+        </div>
+        <div class="cn-item" [class.active]="panelActivo === 'pAcad'" (click)="setPanel('pAcad')">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          <span>Año escolar y periodos</span>
+        </div>
+        <div class="cn-item" [class.active]="panelActivo === 'pSecciones'" (click)="setPanel('pSecciones')">
+          <svg viewBox="0 0 24 24"><path d="M3 3h7v7H3zm0 11h7v7H3zm11-11h7v7h-7zm0 11h7v7h-7z"/></svg>
+          <span>Grados y secciones</span>
+        </div>
+      </div>
+      <div class="cn-section">
+        <div class="cn-label">Acceso</div>
+        <div class="cn-item" [class.active]="panelActivo === 'pUsuarios'" (click)="setPanel('pUsuarios')">
+          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3z"/></svg>
+          <span>Usuarios y roles</span>
+          <div class="cn-badge">8</div>
+        </div>
+        <div class="cn-item" [class.active]="panelActivo === 'pSeguridad'" (click)="setPanel('pSeguridad')">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+          <span>Seguridad y acceso</span>
+        </div>
+      </div>
+      <div class="cn-section">
+        <div class="cn-label">Sistema</div>
+        <div class="cn-item" [class.active]="panelActivo === 'pNotificaciones'" (click)="setPanel('pNotificaciones')">
+          <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+          <span>Notificaciones</span>
+        </div>
+        <div class="cn-item" [class.active]="panelActivo === 'pMatricula'" (click)="setPanel('pMatricula')">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          <span>Config. matrícula</span>
+        </div>
+        <div class="cn-item" [class.active]="panelActivo === 'pApariencia'" (click)="setPanel('pApariencia')">
+          <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z"/></svg>
+          <span>Apariencia</span>
+        </div>
+        <div class="cn-item" [class.active]="panelActivo === 'pBackup'" (click)="setPanel('pBackup')">
+          <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+          <span>Backup y datos</span>
+        </div>
+        <div class="cn-item" [class.active]="panelActivo === 'pAuditoria'" (click)="setPanel('pAuditoria')">
+          <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+          <span>Auditoría</span>
+        </div>
+      </div>
+    </nav>
+ 
+    <!-- PANELES -->
+    <div class="config-panels">
+ 
+      <!-- ══ DATOS INSTITUCIONALES ══ -->
+      <div class="config-panel" [class.active]="panelActivo === 'pInst'" id="pInst">
+        <div class="cfg-card">
+          <div class="cfg-card-header">
+            <div class="cch-left">
+              <div class="cch-icon"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg></div>
+              <div><div class="cch-title">Información General de la Institución</div><div class="cch-sub">Datos que aparecerán en constancias, boletas y documentos oficiales</div></div>
+            </div>
+          </div>
+          <div class="cfg-card-body">
+            <div class="logo-upload" (click)="showToast('Abriendo selector de imagen...','info')">
+              <div class="logo-preview">
+                <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 12.18L3.44 10.5 12 5.82l8.56 4.68L12 15.18z"/></svg>
+              </div>
+              <div class="logo-text">
+                <h4>Logo Institucional</h4>
+                <p>Formato PNG o SVG, fondo transparente.<br>Recomendado: 400×400px mínimo.</p>
+                <button class="lu-btn" onclick="event.stopPropagation();showToast('Abriendo explorador de archivos...','info')">
+                  <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>Subir logo
+                </button>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="fgrid fg2">
+              <div class="ff s2"><label>Nombre completo de la IE <span class="req">*</span></label><input type="text" value="Institución Educativa San Marcos"></div>
+              <div class="ff"><label>Código modular <span class="req">*</span></label><input type="text" value="0800247" readonly></div>
+              <div class="ff"><label>Código UGEL</label><input type="text" value="010103"></div>
+              <div class="ff"><label>Siglas / Abreviatura</label><input type="text" value="IE San Marcos"></div>
+              <div class="ff"><label>Nivel de enseñanza</label><select><option selected>Básica Regular (EBR)</option><option>Básica Alternativa</option><option>Técnico-Productiva</option></select></div>
+              <div class="ff"><label>Gestión</label><select><option selected>Privada</option><option>Pública</option><option>Privada — Convenio</option></select></div>
+              <div class="ff s2"><label>Dirección completa <span class="req">*</span></label><input type="text" value="Av. Los Maestros 456, Ica, Ica, Perú"></div>
+              <div class="ff"><label>Departamento</label><select><option selected>Ica</option><option>Lima</option><option>Arequipa</option></select></div>
+              <div class="ff"><label>Provincia</label><select><option selected>Ica</option><option>Nazca</option><option>Palpa</option></select></div>
+              <div class="ff"><label>Distrito</label><select><option selected>Ica</option><option>Parcona</option><option>Santiago</option></select></div>
+              <div class="ff"><label>Teléfono principal</label><input type="tel" value="056-223456"></div>
+              <div class="ff"><label>Teléfono secundario</label><input type="tel" value="987 123 456"></div>
+              <div class="ff"><label>Correo institucional <span class="req">*</span></label><input type="email" value="matriculas@iesanmarcos.edu.pe"></div>
+              <div class="ff"><label>Sitio web</label><input type="text" value="www.iesanmarcos.edu.pe"></div>
+              <div class="ff s2"><label>Resolución de creación</label><input type="text" value="R.D. N° 0892-1997-ED — 12 de marzo de 1997"></div>
+              <div class="ff s2"><label>Misión institucional</label><textarea>Brindar una educación integral de calidad que forme personas capaces, éticas y con pensamiento crítico, contribuyendo al desarrollo de Ica y del Perú.</textarea></div>
+            </div>
+            <div class="divider"></div>
+            <div style="display:flex;justify-content:flex-end;gap:10px;">
+              <button class="btn-ghost" (click)="showToast('Cambios descartados','warn')">Cancelar</button>
+              <button class="btn-primary" (click)="showToast('Datos institucionales guardados correctamente')">
+                <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>Guardar cambios
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- ══ AÑO ESCOLAR Y PERIODOS ══ -->
+      <div class="config-panel" [class.active]="panelActivo === 'pAcad'" id="pAcad">
+        <div class="cfg-card">
+          <div class="cfg-card-header">
+            <div class="cch-left">
+              <div class="cch-icon"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg></div>
+              <div><div class="cch-title">Año Escolar Actual</div><div class="cch-sub">Parámetros del año lectivo en curso</div></div>
+            </div>
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--orange);">2025</span>
+          </div>
+          <div class="cfg-card-body">
+            <div class="fgrid fg3" style="margin-bottom:20px;">
+              <div class="ff"><label>Año escolar activo <span class="req">*</span></label><input type="text" value="2025"></div>
+              <div class="ff"><label>Inicio de clases</label><input type="date" value="2025-03-11"></div>
+              <div class="ff"><label>Fin de clases</label><input type="date" value="2025-12-19"></div>
+              <div class="ff"><label>Horas lectivas mínimas</label><input type="number" value="1100"></div>
+              <div class="ff"><label>Nota mínima de aprobación</label><input type="number" value="11" min="1" max="20"></div>
+              <div class="ff"><label>Escala de calificación</label><select><option selected>Vigesimal (0–20)</option><option>Literal (AD, A, B, C)</option><option>Ambas</option></select></div>
+            </div>
+          </div>
+        </div>
+        <div class="cfg-card">
+          <div class="cfg-card-header">
+            <div class="cch-left">
+              <div class="cch-icon"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg></div>
+              <div><div class="cch-title">Bimestres / Trimestres</div><div class="cch-sub">Periodos de evaluación del año escolar 2025</div></div>
+            </div>
+            <button class="btn-ghost" (click)="showToast('Agregar nuevo periodo','info')">
+              <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Nuevo periodo
+            </button>
+          </div>
+          <div class="cfg-card-body">
+            <div class="periodo-grid">
+              <div class="periodo-card">
+                <div class="pc-top"><div class="pc-title">1° Bimestre</div><span class="pc-tag pt-inactivo">Cerrado</span></div>
+                <div class="pc-row"><label>Inicio</label><span>11 Mar 2025</span></div>
+                <div class="pc-row"><label>Fin</label><span>09 May 2025</span></div>
+                <div class="pc-row"><label>Duración</label><span>9 semanas</span></div>
+                <div class="pc-row"><label>Notas registradas</label><span>100%</span></div>
+              </div>
+              <div class="periodo-card">
+                <div class="pc-top"><div class="pc-title">2° Bimestre</div><span class="pc-tag pt-activo">Activo</span></div>
+                <div class="pc-row"><label>Inicio</label><span>12 May 2025</span></div>
+                <div class="pc-row"><label>Fin</label><span>11 Jul 2025</span></div>
+                <div class="pc-row"><label>Duración</label><span>9 semanas</span></div>
+                <div class="pc-row"><label>Notas registradas</label><span>72%</span></div>
+              </div>
+              <div class="periodo-card">
+                <div class="pc-top"><div class="pc-title">3° Bimestre</div><span class="pc-tag pt-proximo">Próximo</span></div>
+                <div class="pc-row"><label>Inicio</label><span>11 Ago 2025</span></div>
+                <div class="pc-row"><label>Fin</label><span>10 Oct 2025</span></div>
+                <div class="pc-row"><label>Duración</label><span>9 semanas</span></div>
+                <div class="pc-row"><label>Notas registradas</label><span>—</span></div>
+              </div>
+              <div class="periodo-card">
+                <div class="pc-top"><div class="pc-title">4° Bimestre</div><span class="pc-tag pt-proximo">Próximo</span></div>
+                <div class="pc-row"><label>Inicio</label><span>13 Oct 2025</span></div>
+                <div class="pc-row"><label>Fin</label><span>19 Dic 2025</span></div>
+                <div class="pc-row"><label>Duración</label><span>10 semanas</span></div>
+                <div class="pc-row"><label>Notas registradas</label><span>—</span></div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div style="display:flex;justify-content:flex-end;gap:10px;">
+              <button class="btn-primary" (click)="showToast('Periodos académicos guardados')">
+                <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- ══ GRADOS Y SECCIONES ══ -->
+      <div class="config-panel" [class.active]="panelActivo === 'pSecciones'" id="pSecciones">
+        <div class="cfg-card">
+          <div class="cfg-card-header">
+            <div class="cch-left">
+              <div class="cch-icon"><svg viewBox="0 0 24 24"><path d="M3 3h7v7H3zm0 11h7v7H3zm11-11h7v7h-7zm0 11h7v7h-7z"/></svg></div>
+              <div><div class="cch-title">Grados y Secciones</div><div class="cch-sub">Estructura académica por niveles para el año 2025</div></div>
+            </div>
+            <button class="btn-primary" (click)="abrirModal('modalSeccion')">
+              <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Nueva sección
+            </button>
+          </div>
+          <div class="cfg-card-body" style="padding:0;">
+            <table class="seccion-table">
+              <thead><tr><th>Nivel</th><th>Grado</th><th>Sección</th><th>Turno</th><th>Docente Tutor</th><th>Cupos</th><th>Alumnos</th><th></th></tr></thead>
+              <tbody>
+                
+                <tr><td><span style="font-size:10.5px;font-weight:700;padding:2px 8px;background:rgba(255,91,31,.11);color:#E04800;">Primaria</span></td><td>2° Grado</td><td>A</td><td>Mañana</td><td>Lic. Lucía Paredes</td><td>35</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="cupos-bar"><div class="cupos-fill cf-ok" style="width:74%"></div></div><span style="font-size:12px;color:var(--success)">26</span></div></td><td><div class="td-acts"><button class="act-btn" (click)="showToast('Editando sección','info')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="act-btn del" onclick="confirmarEliminar('la sección 2° A')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div></td></tr>
+                <tr><td><span style="font-size:10.5px;font-weight:700;padding:2px 8px;background:rgba(255,91,31,.11);color:#E04800;">Primaria</span></td><td>5° Grado</td><td>A</td><td>Mañana</td><td>Prof. Roberto Meza</td><td>35</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="cupos-bar"><div class="cupos-fill cf-full" style="width:100%"></div></div><span style="font-size:12px;color:var(--error)">35</span></div></td><td><div class="td-acts"><button class="act-btn" (click)="showToast('Editando sección','info')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="act-btn del" onclick="confirmarEliminar('la sección 5° A')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div></td></tr>
+                <tr><td><span style="font-size:10.5px;font-weight:700;padding:2px 8px;background:rgba(0,194,124,.11);color:#008f5a;">Secundaria</span></td><td>3° Año</td><td>B</td><td>Tarde</td><td>Mg. Jorge Vargas</td><td>35</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="cupos-bar"><div class="cupos-fill cf-ok" style="width:66%"></div></div><span style="font-size:12px;color:var(--success)">23</span></div></td><td><div class="td-acts"><button class="act-btn" (click)="showToast('Editando sección','info')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="act-btn del" onclick="confirmarEliminar('la sección 3° B')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div></td></tr>
+                <tr><td><span style="font-size:10.5px;font-weight:700;padding:2px 8px;background:rgba(0,194,124,.11);color:#008f5a;">Secundaria</span></td><td>5° Año</td><td>A</td><td>Mañana</td><td>Mg. Jorge Vargas</td><td>35</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="cupos-bar"><div class="cupos-fill cf-mid" style="width:86%"></div></div><span style="font-size:12px;color:var(--warning)">30</span></div></td><td><div class="td-acts"><button class="act-btn" (click)="showToast('Editando sección','info')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="act-btn del" onclick="confirmarEliminar('la sección 5° A Sec.')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- ══ USUARIOS Y ROLES ══ -->
+      <div class="config-panel" [class.active]="panelActivo === 'pUsuarios'" id="pUsuarios">
+        <div class="cfg-card">
+          <div class="cfg-card-header">
+            <div class="cch-left">
+              <div class="cch-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3z"/></svg></div>
+              <div><div class="cch-title">Usuarios del Sistema</div><div class="cch-sub">Administra cuentas y permisos de acceso al panel administrativo</div></div>
+            </div>
+            <button class="btn-primary" (click)="abrirModal('modalUsuario')">
+              <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Nuevo usuario
+            </button>
+          </div>
+          <div class="cfg-card-body" style="padding:0;">
+            <table class="users-table">
+              <thead><tr><th>Usuario</th><th>Rol</th><th>Último acceso</th><th>Estado</th><th>Acciones</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><div style="display:flex;align-items:center;gap:10px;"><div class="u-av" style="background:linear-gradient(135deg,#0A1A3E,#FF5B1F 130%)">CF</div><div><div class="u-name">Lic. Carmen Flores</div><div class="u-email">cflores@iesanmarcos.edu.pe</div></div></div></td>
+                  <td><span class="rol-badge rb-admin">Administrador</span></td>
+                  <td><span style="font-family:'DM Mono',monospace;font-size:12px">Hoy 09:14</span></td>
+                  <td><span style="font-size:12px;font-weight:600;color:var(--success)"><span class="u-status-dot u-online"></span>En línea</span></td>
+                  <td><div class="td-acts"><button class="act-btn" (click)="abrirModal('modalUsuario')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="act-btn" onclick="showToast('Restableciendo contraseña...','info')"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></button><button class="act-btn del" onclick="confirmarEliminar('el usuario Carmen Flores')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div></td>
+                </tr>
+                <tr>
+                  <td><div style="display:flex;align-items:center;gap:10px;"><div class="u-av" style="background:linear-gradient(135deg,#0A1A3E,#1340A0)">RM</div><div><div class="u-name">Prof. Roberto Meza</div><div class="u-email">rmeza@iesanmarcos.edu.pe</div></div></div></td>
+                  <td><span class="rol-badge rb-directivo">Directivo</span></td>
+                  <td><span style="font-family:'DM Mono',monospace;font-size:12px">Hoy 08:45</span></td>
+                  <td><span style="font-size:12px;font-weight:600;color:var(--success)"><span class="u-status-dot u-online"></span>En línea</span></td>
+                  <td><div class="td-acts"><button class="act-btn" (click)="abrirModal('modalUsuario')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="act-btn" onclick="showToast('Restableciendo contraseña...','info')"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></button><button class="act-btn del" onclick="confirmarEliminar('el usuario Roberto Meza')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div></td>
+                </tr>
+                <tr>
+                  <td><div style="display:flex;align-items:center;gap:10px;"><div class="u-av" style="background:linear-gradient(135deg,#1B4080,#5B8FF9)">AS</div><div><div class="u-name">Ana Soto Ríos</div><div class="u-email">asoto@iesanmarcos.edu.pe</div></div></div></td>
+                  <td><span class="rol-badge rb-secretaria">Secretaría</span></td>
+                  <td><span style="font-family:'DM Mono',monospace;font-size:12px">Ayer 16:30</span></td>
+                  <td><span style="font-size:12px;font-weight:600;color:var(--gray-400)"><span class="u-status-dot u-offline"></span>Desconectado</span></td>
+                  <td><div class="td-acts"><button class="act-btn" (click)="abrirModal('modalUsuario')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="act-btn" onclick="showToast('Restableciendo contraseña...','info')"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></button><button class="act-btn del" onclick="confirmarEliminar('el usuario Ana Soto')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div></td>
+                </tr>
+                <tr>
+                  <td><div style="display:flex;align-items:center;gap:10px;"><div class="u-av" style="background:linear-gradient(135deg,#007a4d,#00C27C)">LP</div><div><div class="u-name">Lic. Lucía Paredes</div><div class="u-email">lparedes@iesanmarcos.edu.pe</div></div></div></td>
+                  <td><span class="rol-badge rb-docente">Docente</span></td>
+                  <td><span style="font-family:'DM Mono',monospace;font-size:12px">30 Abr</span></td>
+                  <td><span style="font-size:12px;font-weight:600;color:var(--gray-400)"><span class="u-status-dot u-offline"></span>Desconectado</span></td>
+                  <td><div class="td-acts"><button class="act-btn" (click)="abrirModal('modalUsuario')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="act-btn" onclick="showToast('Restableciendo contraseña...','info')"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></button><button class="act-btn del" onclick="confirmarEliminar('el usuario Lucía Paredes')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- ══ SEGURIDAD ══ -->
+      <div class="config-panel" [class.active]="panelActivo === 'pSeguridad'" id="pSeguridad">
+        <div class="cfg-card">
+          <div class="cfg-card-header">
+            <div class="cch-left">
+              <div class="cch-icon"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg></div>
+              <div><div class="cch-title">Políticas de Seguridad</div><div class="cch-sub">Contraseñas, sesiones y acceso al sistema</div></div>
+            </div>
+          </div>
+          <div class="cfg-card-body">
+            <div class="fgrid fg2" style="margin-bottom:24px;">
+              <div class="ff"><label>Longitud mínima de contraseña</label><input type="number" value="8" min="6" max="30"></div>
+              <div class="ff"><label>Expiración de contraseña (días)</label><input type="number" value="90" min="0"></div>
+              <div class="ff"><label>Intentos fallidos antes de bloqueo</label><input type="number" value="5" min="1"></div>
+              <div class="ff"><label>Tiempo de sesión inactiva (min)</label><input type="number" value="30" min="5"></div>
+            </div>
+            <div class="divider"></div>
+            <div class="toggle-list">
+              <div class="toggle-row"><div class="toggle-info"><h4>Requerir mayúsculas en contraseña</h4><p>Las contraseñas deben incluir al menos una letra mayúscula.</p></div><label class="toggle"><input type="checkbox" checked onchange="showToast('Configuración actualizada')"><div class="toggle-slider"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><h4>Requerir caracteres especiales</h4><p>Las contraseñas deben incluir al menos un símbolo especial (!, @, #, etc).</p></div><label class="toggle"><input type="checkbox" onchange="showToast('Configuración actualizada')"><div class="toggle-slider"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><h4>Autenticación de dos factores (2FA)</h4><p>Los administradores deberán verificar su identidad con un código adicional al iniciar sesión.</p></div><label class="toggle"><input type="checkbox" onchange="showToast('Configuración actualizada')"><div class="toggle-slider"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><h4>Bloquear IP tras múltiples intentos fallidos</h4><p>Bloquea automáticamente la IP después de los intentos configurados.</p></div><label class="toggle"><input type="checkbox" checked onchange="showToast('Configuración actualizada')"><div class="toggle-slider"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><h4>Registrar todos los accesos en el log</h4><p>Guarda un historial completo de inicios y cierres de sesión por usuario.</p></div><label class="toggle"><input type="checkbox" checked onchange="showToast('Configuración actualizada')"><div class="toggle-slider"></div></label></div>
+            </div>
+            <div class="divider"></div>
+            <div style="display:flex;justify-content:flex-end;gap:10px;">
+              <button class="btn-primary" (click)="showToast('Políticas de seguridad guardadas','success')">
+                <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>Guardar políticas
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- ══ NOTIFICACIONES ══ -->
+      <div class="config-panel" [class.active]="panelActivo === 'pNotificaciones'" id="pNotificaciones">
+        <div class="cfg-card">
+          <div class="cfg-card-header">
+            <div class="cch-left">
+              <div class="cch-icon"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
+              <div><div class="cch-title">Canales de Notificación</div><div class="cch-sub">Configura cómo y cuándo se notifica a padres, docentes y administración</div></div>
+            </div>
+          </div>
+          <div class="cfg-card-body">
+            <div class="notif-channel">
+              <div class="nc-icon nc-email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+              <div class="nc-info">
+                <h4>Correo Electrónico</h4>
+                <p>Servidor SMTP: smtp.gmail.com · Puerto 587 · TLS habilitado</p>
+                <div class="nc-checks">
+                  <label class="nc-chk on" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Nueva matrícula</label>
+                  <label class="nc-chk on" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Solicitud de contacto</label>
+                  <label class="nc-chk on" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Recordatorio de documentos</label>
+                  <label class="nc-chk" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Alertas de inasistencia</label>
+                  <label class="nc-chk on" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Confirmación de pago</label>
+                </div>
+              </div>
+            </div>
+            <div class="notif-channel">
+              <div class="nc-icon nc-whatsapp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div>
+              <div class="nc-info">
+                <h4>WhatsApp Business</h4>
+                <p>API conectada · Número: +51 987 123 456 · Plantillas aprobadas: 4</p>
+                <div class="nc-checks">
+                  <label class="nc-chk on" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Confirmación matrícula</label>
+                  <label class="nc-chk on" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Alerta inasistencia</label>
+                  <label class="nc-chk" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Recordatorio de reunión</label>
+                  <label class="nc-chk" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Aviso de pago</label>
+                </div>
+              </div>
+            </div>
+            <div class="notif-channel">
+              <div class="nc-icon nc-sms"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg></div>
+              <div class="nc-info">
+                <h4>SMS</h4>
+                <p>Proveedor: Twilio · Créditos restantes: 420 mensajes</p>
+                <div class="nc-checks">
+                  <label class="nc-chk" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Alerta crítica inasistencia</label>
+                  <label class="nc-chk" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Recordatorio de pago</label>
+                </div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div style="display:flex;justify-content:flex-end;gap:10px;">
+              <button class="btn-ghost" (click)="showToast('Enviando notificación de prueba...','info')">
+                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>Enviar prueba
+              </button>
+              <button class="btn-primary" (click)="showToast('Configuración de notificaciones guardada')">
+                <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- ══ CONFIG MATRÍCULA ══ -->
+      <div class="config-panel" [class.active]="panelActivo === 'pMatricula'" id="pMatricula">
+        <div class="cfg-card">
+          <div class="cfg-card-header">
+            <div class="cch-left">
+              <div class="cch-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+              <div><div class="cch-title">Configuración de Matrícula</div><div class="cch-sub">Parámetros, costos y documentos del proceso de matrícula</div></div>
+            </div>
+          </div>
+          <div class="cfg-card-body">
+            <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:14px;display:flex;align-items:center;gap:8px;"><span style="width:18px;height:2px;background:var(--orange);display:inline-block;"></span>Fechas del proceso</div>
+            <div class="fgrid fg2" style="margin-bottom:22px;">
+              <div class="ff"><label>Inicio — Ratificación alumnos actuales</label><input type="date" value="2025-06-10"></div>
+              <div class="ff"><label>Fin — Ratificación alumnos actuales</label><input type="date" value="2025-06-30"></div>
+              <div class="ff"><label>Inicio — Matrículas nuevas</label><input type="date" value="2025-07-01"></div>
+              <div class="ff"><label>Fin — Matrículas nuevas</label><input type="date" value="2025-07-31"></div>
+            </div>
+            <div class="divider"></div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:14px;display:flex;align-items:center;gap:8px;"><span style="width:18px;height:2px;background:var(--orange);display:inline-block;"></span>Costos (S/)</div>
+            <div class="fgrid fg3" style="margin-bottom:22px;">
+              <div class="ff"><label>Matrícula nueva</label><input type="number" value="150" step="0.01"></div>
+              <div class="ff"><label>Ratificación</label><input type="number" value="80" step="0.01"></div>
+              <div class="ff"><label>Material educativo</label><input type="number" value="45" step="0.01"></div>
+              <div class="ff"><label>Pensión mensual — Inicial</label><input type="number" value="200" step="0.01"></div>
+              <div class="ff"><label>Pensión mensual — Primaria</label><input type="number" value="230" step="0.01"></div>
+              <div class="ff"><label>Pensión mensual — Secundaria</label><input type="number" value="260" step="0.01"></div>
+              <div class="ff"><label>Descuento 2° hermano (%)</label><input type="number" value="10" min="0" max="100"></div>
+              <div class="ff"><label>Descuento 3° hermano o más (%)</label><input type="number" value="15" min="0" max="100"></div>
+            </div>
+            <div class="divider"></div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:14px;display:flex;align-items:center;gap:8px;"><span style="width:18px;height:2px;background:var(--orange);display:inline-block;"></span>Documentos requeridos</div>
+            <div class="toggle-list">
+              <div class="toggle-row"><div class="toggle-info"><h4>Partida de Nacimiento</h4><p>Documento obligatorio para todos los niveles.</p></div><label class="toggle"><input type="checkbox" checked onchange="showToast('Actualizado')"><div class="toggle-slider"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><h4>DNI del Estudiante</h4><p>Obligatorio solo si el alumno lo posee.</p></div><label class="toggle"><input type="checkbox" onchange="showToast('Actualizado')"><div class="toggle-slider"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><h4>DNI del Apoderado</h4><p>Obligatorio para todos los niveles.</p></div><label class="toggle"><input type="checkbox" checked onchange="showToast('Actualizado')"><div class="toggle-slider"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><h4>Libreta de Notas / Certificado de Estudios</h4><p>Requerido para alumnos de traslado y nuevos ingresos desde 1° grado.</p></div><label class="toggle"><input type="checkbox" checked onchange="showToast('Actualizado')"><div class="toggle-slider"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><h4>Constancia de Vacunas</h4><p>Solo para Inicial y Primaria.</p></div><label class="toggle"><input type="checkbox" checked onchange="showToast('Actualizado')"><div class="toggle-slider"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><h4>Fotografía del estudiante</h4><p>2 fotos tamaño carnet, fondo blanco.</p></div><label class="toggle"><input type="checkbox" checked onchange="showToast('Actualizado')"><div class="toggle-slider"></div></label></div>
+            </div>
+            <div class="divider"></div>
+            <div style="display:flex;justify-content:flex-end;gap:10px;">
+              <button class="btn-primary" (click)="showToast('Configuración de matrícula guardada')">
+                <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>Guardar configuración
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- ══ APARIENCIA ══ -->
+      <div class="config-panel" [class.active]="panelActivo === 'pApariencia'" id="pApariencia">
+        <div class="cfg-card">
+          <div class="cfg-card-header">
+            <div class="cch-left">
+              <div class="cch-icon"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z"/></svg></div>
+              <div><div class="cch-title">Apariencia del Sistema</div><div class="cch-sub">Colores, tipografía y personalización visual del panel</div></div>
+            </div>
+          </div>
+          <div class="cfg-card-body">
+            <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:14px;display:flex;align-items:center;gap:8px;"><span style="width:18px;height:2px;background:var(--orange);display:inline-block;"></span>Colores institucionales</div>
+            <div class="fgrid fg3" style="margin-bottom:22px;">
+              <div class="ff"><label>Color primario (azul)</label><div style="display:flex;gap:8px;align-items:center;"><input type="color" value="#0A1A3E" style="width:40px;height:36px;padding:2px;border:1.5px solid var(--border);cursor:pointer;"><input type="text" value="#0A1A3E" style="flex:1;"></div></div>
+              <div class="ff"><label>Color de acento (naranja)</label><div style="display:flex;gap:8px;align-items:center;"><input type="color" value="#FF5B1F" style="width:40px;height:36px;padding:2px;border:1.5px solid var(--border);cursor:pointer;"><input type="text" value="#FF5B1F" style="flex:1;"></div></div>
+              <div class="ff"><label>Color de éxito (verde)</label><div style="display:flex;gap:8px;align-items:center;"><input type="color" value="#00C27C" style="width:40px;height:36px;padding:2px;border:1.5px solid var(--border);cursor:pointer;"><input type="text" value="#00C27C" style="flex:1;"></div></div>
+            </div>
+            <div class="divider"></div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:14px;display:flex;align-items:center;gap:8px;"><span style="width:18px;height:2px;background:var(--orange);display:inline-block;"></span>Preferencias del panel</div>
+            <div class="toggle-list">
+              <div class="toggle-row"><div class="toggle-info"><h4>Barra de anuncios en sitio público</h4><p>Muestra el banner de matrículas en la parte superior del sitio.</p></div><label class="toggle"><input type="checkbox" checked onchange="showToast('Actualizado')"><div class="toggle-slider"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><h4>Modo compacto en tablas</h4><p>Reduce el espaciado en las tablas para mostrar más información por pantalla.</p></div><label class="toggle"><input type="checkbox" onchange="showToast('Actualizado')"><div class="toggle-slider"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><h4>Animaciones de interfaz</h4><p>Activa transiciones y animaciones en el panel de administración.</p></div><label class="toggle"><input type="checkbox" checked onchange="showToast('Actualizado')"><div class="toggle-slider"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><h4>Mostrar foto del estudiante en tablas</h4><p>Muestra el avatar con iniciales del alumno en las listas.</p></div><label class="toggle"><input type="checkbox" checked onchange="showToast('Actualizado')"><div class="toggle-slider"></div></label></div>
+            </div>
+            <div class="divider"></div>
+            <div class="fgrid fg2">
+              <div class="ff"><label>Idioma del sistema</label><select><option selected>Español (Perú)</option><option>Español (España)</option><option>English</option></select></div>
+              <div class="ff"><label>Zona horaria</label><select><option selected>América/Lima (UTC-5)</option><option>América/Bogota</option><option>América/Santiago</option></select></div>
+              <div class="ff"><label>Formato de fecha</label><select><option selected>DD/MM/YYYY</option><option>MM/DD/YYYY</option><option>YYYY-MM-DD</option></select></div>
+              <div class="ff"><label>Moneda</label><select><option selected>Sol Peruano (S/)</option><option>Dólar (USD $)</option></select></div>
+            </div>
+            <div class="divider"></div>
+            <div style="display:flex;justify-content:flex-end;gap:10px;">
+              <button class="btn-ghost" (click)="showToast('Restaurando valores por defecto...','warn')">Restaurar predeterminados</button>
+              <button class="btn-primary" (click)="showToast('Apariencia guardada correctamente')">
+                <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- ══ BACKUP ══ -->
+      <div class="config-panel" [class.active]="panelActivo === 'pBackup'" id="pBackup">
+        <div class="cfg-card">
+          <div class="cfg-card-header">
+            <div class="cch-left">
+              <div class="cch-icon"><svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg></div>
+              <div><div class="cch-title">Respaldo y Restauración de Datos</div><div class="cch-sub">Gestiona las copias de seguridad del sistema</div></div>
+            </div>
+            <button class="btn-primary" (click)="showToast('Generando backup ahora...','info')">
+              <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>Crear backup ahora
+            </button>
+          </div>
+          <div class="cfg-card-body">
+            <div class="fgrid fg2" style="margin-bottom:20px;">
+              <div class="ff"><label>Frecuencia de backup automático</label><select><option>Cada hora</option><option selected>Diario</option><option>Semanal</option><option>Mensual</option></select></div>
+              <div class="ff"><label>Hora del backup automático</label><input type="time" value="02:00"></div>
+              <div class="ff"><label>Retención de backups (días)</label><input type="number" value="30"></div>
+              <div class="ff"><label>Destino de almacenamiento</label><select><option selected>Servidor local</option><option>Google Drive</option><option>Amazon S3</option></select></div>
+            </div>
+            <div class="divider"></div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:14px;display:flex;align-items:center;gap:8px;"><span style="width:18px;height:2px;background:var(--orange);display:inline-block;"></span>Backups recientes</div>
+            <div class="backup-list">
+              <div class="bk-row"><div class="bk-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="bk-info"><div class="bk-name">backup_iesanmarcos_20250504_0200.zip</div><div class="bk-date">Hoy 02:00 — Automático</div></div><div class="bk-size">48.2 MB</div><div class="bk-btns"><button class="bk-btn" onclick="showToast('Descargando backup...','info')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></button><button class="bk-btn" onclick="showToast('Restaurando backup...','warn')"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg></button><button class="bk-btn" onclick="confirmarEliminar('el backup del 04/05/2025')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div></div>
+              <div class="bk-row"><div class="bk-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="bk-info"><div class="bk-name">backup_iesanmarcos_20250503_0200.zip</div><div class="bk-date">Ayer 02:00 — Automático</div></div><div class="bk-size">47.9 MB</div><div class="bk-btns"><button class="bk-btn" onclick="showToast('Descargando backup...','info')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></button><button class="bk-btn" onclick="showToast('Restaurando...','warn')"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg></button><button class="bk-btn" onclick="confirmarEliminar('el backup del 03/05/2025')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div></div>
+              <div class="bk-row"><div class="bk-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="bk-info"><div class="bk-name">backup_iesanmarcos_20250430_manual.zip</div><div class="bk-date">30 Abr 2025 — Manual</div></div><div class="bk-size">46.1 MB</div><div class="bk-btns"><button class="bk-btn" onclick="showToast('Descargando backup...','info')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></button><button class="bk-btn" onclick="showToast('Restaurando...','warn')"><svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg></button><button class="bk-btn" onclick="confirmarEliminar('el backup del 30/04/2025')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- ══ AUDITORÍA ══ -->
+      <div class="config-panel" [class.active]="panelActivo === 'pAuditoria'" id="pAuditoria">
+        <div class="cfg-card">
+          <div class="cfg-card-header">
+            <div class="cch-left">
+              <div class="cch-icon"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg></div>
+              <div><div class="cch-title">Log de Auditoría</div><div class="cch-sub">Registro de todas las acciones realizadas en el sistema</div></div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <select style="padding:7px 24px 7px 10px;border:1.5px solid var(--border);background:var(--off-white);font-size:12px;color:var(--gray-600);outline:none;appearance:none;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%227%22%3E%3Cpath d=%22M0 0l5 7 5-7z%22 fill=%22%234A5470%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;cursor:pointer;">
+                <option>Todos</option><option>Crear</option><option>Editar</option><option>Eliminar</option><option>Login</option>
+              </select>
+              <button class="btn-ghost" (click)="showToast('Exportando log de auditoría...','info')">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar
+              </button>
+            </div>
+          </div>
+          <div class="cfg-card-body">
+            <div class="log-list">
+              <div class="log-row"><div class="log-type lt-create"></div><div class="log-text"><strong>Carmen Flores</strong> matriculó a <strong>Morales Díaz, Diego</strong> en Inicial 3 años.</div><div class="log-time">Hoy 09:30</div></div>
+              <div class="log-row"><div class="log-type lt-login"></div><div class="log-text"><strong>Carmen Flores</strong> inició sesión desde 192.168.1.102.</div><div class="log-time">Hoy 09:14</div></div>
+              <div class="log-row"><div class="log-type lt-edit"></div><div class="log-text"><strong>Roberto Meza</strong> actualizó el estado de <strong>Prof. Ana Torres</strong> a "Con licencia".</div><div class="log-time">Ayer 16:45</div></div>
+              <div class="log-row"><div class="log-type lt-login"></div><div class="log-text"><strong>Ana Soto</strong> inició sesión desde 192.168.1.55.</div><div class="log-time">Ayer 16:30</div></div>
+              <div class="log-row"><div class="log-type lt-edit"></div><div class="log-text"><strong>Ana Soto</strong> validó documentos de <strong>Quispe Tello, Sofía</strong>.</div><div class="log-time">Ayer 16:28</div></div>
+              <div class="log-row"><div class="log-type lt-create"></div><div class="log-text"><strong>Carmen Flores</strong> creó usuario <strong>asoto@iesanmarcos.edu.pe</strong> con rol Secretaría.</div><div class="log-time">30 Abr</div></div>
+              <div class="log-row"><div class="log-type lt-delete"></div><div class="log-text"><strong>Carmen Flores</strong> archivó solicitud <strong>SOL-0015</strong> de contacto.</div><div class="log-time">29 Abr</div></div>
+              <div class="log-row"><div class="log-type lt-edit"></div><div class="log-text"><strong>Roberto Meza</strong> registró notas del 2° bimestre para <strong>2° A Primaria</strong>.</div><div class="log-time">28 Abr</div></div>
+              <div class="log-row"><div class="log-type lt-create"></div><div class="log-text">Backup automático <strong>backup_20250428_0200.zip</strong> generado correctamente.</div><div class="log-time">28 Abr 02:00</div></div>
+              <div class="log-row"><div class="log-type lt-login"></div><div class="log-text">Intento fallido de inicio de sesión desde IP <strong>201.45.78.12</strong>. Bloqueado.</div><div class="log-time">27 Abr</div></div>
+            </div>
+            <div style="padding:14px 0 0;text-align:center;">
+              <button class="btn-ghost" (click)="showToast('Cargando más registros...','info')">Cargar más registros →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+    </div><!-- /config-panels -->
+  </div><!-- /config-layout -->
+
+ 
+<!-- MODAL USUARIO -->
+<div class="modal-overlay" [class.show]="abrirModalUsuario" id="modalUsuario">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>Nuevo Usuario</h3>
+      <button class="modal-close" (click)="cerrarModal('modalUsuario')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fgrid fg2">
+        <div class="ff"><label>Nombre completo <span class="req">*</span></label><input type="text" placeholder="Ej. Ana Soto Ríos"></div>
+        <div class="ff"><label>DNI</label><input type="text" placeholder="Ej. 45678321" maxlength="8"></div>
+        <div class="ff"><label>Correo institucional <span class="req">*</span></label><input type="email" placeholder="nombre@iesanmarcos.edu.pe"></div>
+        <div class="ff"><label>Teléfono</label><input type="tel" placeholder="987 654 321"></div>
+        <div class="ff"><label>Rol <span class="req">*</span></label>
+          <select>
+            <option value="">Seleccionar rol...</option>
+            <option>Administrador</option>
+            <option>Directivo</option>
+            <option>Secretaría</option>
+            <option>Docente</option>
+          </select>
+        </div>
+        <div class="ff"><label>Estado inicial</label>
+          <select><option selected>Activo</option><option>Inactivo</option></select>
+        </div>
+        <div class="ff"><label>Contraseña temporal <span class="req">*</span></label><input type="password" placeholder="Mínimo 8 caracteres"></div>
+        <div class="ff"><label>Confirmar contraseña <span class="req">*</span></label><input type="password" placeholder="Repetir contraseña"></div>
+        <div class="ff s2"><label>Módulos con acceso</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;">
+            <label class="nc-chk on" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Dashboard</label>
+            <label class="nc-chk on" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Estudiantes</label>
+            <label class="nc-chk" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Profesores</label>
+            <label class="nc-chk on" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Solicitudes</label>
+            <label class="nc-chk" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Configuración</label>
+            <label class="nc-chk on" (click)="toggleNcChk($event)"><div class="chk-box">✓</div>Reportes</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="cerrarModal('modalUsuario')">Cancelar</button>
+      <button class="btn-primary" (click)="guardarUsuario()">
+        <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>Crear usuario
+      </button>
+    </div>
+  </div>
+</div>
+ 
+<!-- MODAL SECCION -->
+<div class="modal-overlay" [class.show]="abrirModalSeccion" id="modalSeccion">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><svg viewBox="0 0 24 24"><path d="M3 3h7v7H3zm0 11h7v7H3zm11-11h7v7h-7zm0 11h7v7h-7z"/></svg>Nueva Sección</h3>
+      <button class="modal-close" (click)="cerrarModal('modalSeccion')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fgrid fg2">
+        <div class="ff"><label>Nivel educativo <span class="req">*</span></label><select><option>Inicial</option><option>Primaria</option><option>Secundaria</option></select></div>
+        <div class="ff"><label>Grado <span class="req">*</span></label><select><option>3 años</option><option>4 años</option><option>5 años</option><option>1° Grado</option><option>2° Grado</option><option>3° Grado</option><option>4° Grado</option><option>5° Grado</option><option>6° Grado</option><option>1° Año</option><option>2° Año</option><option>3° Año</option><option>4° Año</option><option>5° Año</option></select></div>
+        <div class="ff"><label>Sección <span class="req">*</span></label><select><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+        <div class="ff"><label>Turno <span class="req">*</span></label><select><option>Mañana</option><option>Tarde</option></select></div>
+        <div class="ff"><label>Cupo máximo <span class="req">*</span></label><input type="number" value="35" min="1" max="60"></div>
+        <div class="ff"><label>Docente tutor</label><select><option value="">Sin asignar</option><option>Lic. Lucía Paredes</option><option>Prof. Roberto Meza</option><option>Mg. Jorge Vargas</option><option>Prof. Sandra Chávez</option></select></div>
+        <div class="ff s2"><label>Aula asignada</label><input type="text" placeholder="Ej. Aula 104 — Bloque B"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="cerrarModal('modalSeccion')">Cancelar</button>
+      <button class="btn-primary" (click)="guardarSeccion()">
+        <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>Crear sección
+      </button>
+    </div>
+  </div>
+</div>
+ 
+<!-- CONFIRM -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-icon"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div>
+    <h3>Confirmar acción</h3>
+    <p>¿Estás seguro de que deseas eliminar <strong id="confirmNombre">este elemento</strong>? Esta acción no se puede deshacer.</p>
+    <div class="confirm-actions">
+      <button class="btn-secondary" onclick="cerrarConfirm()">Cancelar</button>
+      <button class="btn-danger" onclick="ejecutarEliminar()" style="background:var(--error);color:var(--white);">
+        <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg>Eliminar
+      </button>
+    </div>
+  </div>
+</div>
+ 
+
+ <app-toast></app-toast>
+
+
+<script>
+ 
+  /* ── MODALES ── */
+  function abrirModal(id) { document.getElementById(id).classList.add('show'); }
+  function cerrarModal(id) { document.getElementById(id).classList.remove('show'); }
+  function abrirModalSeccion() { abrirModal('modalSeccion'); }
+ 
+  document.querySelectorAll('.modal-overlay').forEach(o => {
+    o.addEventListener('click', e => { if (e.target === o) cerrarModal(o.id); });
+  });
+ 
+  /* ── CONFIRMAR ELIMINAR ── */
+  let pendingDelete = null;
+  function confirmarEliminar(nombre) {
+    pendingDelete = nombre;
+    document.getElementById('confirmNombre').textContent = nombre;
+    document.getElementById('confirmOverlay').classList.add('show');
+  }
+  function cerrarConfirm() { document.getElementById('confirmOverlay').classList.remove('show'); pendingDelete = null; }
+  function ejecutarEliminar() { cerrarConfirm(); showToast(`"${pendingDelete}" eliminado`); pendingDelete = null; }
+  document.getElementById('confirmOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) cerrarConfirm(); });
+ 
+  /* ── GUARDAR USUARIO ── */
+  function guardarUsuario() { cerrarModal('modalUsuario'); showToast('Usuario creado correctamente'); }
+  function guardarSeccion() { cerrarModal('modalSeccion'); showToast('Sección creada correctamente'); }
+  function guardarTodo() { showToast('Toda la configuración guardada exitosamente'); }
+ 
+  /* ── TOGGLES NOTIFICACIONES ── */
+  function toggleNcChk(el) { el.classList.toggle('on'); }
+ 
+</script>

@@ -8,7 +8,7 @@ export const ADMIN_ROUTES: Routes = [
    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { 
     path: 'dashboard', 
-    loadComponent: () => import('./pages/dashboard/dashboard/dashboard').then(m => m.Dashboard) 
+    loadComponent: () => import('./pages/dashboard/dashboard/dashboard').then(m => m.DashboardComponent) 
   }
   ,{
     path:'cursos',
