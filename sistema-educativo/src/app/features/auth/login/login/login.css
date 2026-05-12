@@ -6,14 +6,20 @@
 
   /* --- LADO IZQUIERDO: BRANDING --- */
   .brand-side {
-      background: var(--light-bg);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 80px;
-      position: relative;
-      border-right: 1px solid var(--border);
-  }
+    position: relative;
+    overflow: hidden;
+    border-right: 1px solid var(--border);
+}
+
+ .brand-side img {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
 
   .brand-side::after {
       content: '';
@@ -695,6 +701,9 @@ body {
  
     .brand-side {
         display: none;
+    }
+    .brand-side img{
+     display: none;
     }
  
     .form-side {

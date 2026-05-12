@@ -541,13 +541,95 @@ hr {
   color: #666;
 }
 
-/* Responsive */
+/* ==================== RESPONSIVIDAD MEJORADA ==================== */
+
+@media (max-width: 1200px) {
+  .notas-container {
+    max-width: 100%;
+    padding: 20px;
+  }
+  
+  .resumen-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+}
+
 @media (max-width: 1024px) {
   .resumen-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
   }
+  
   .stats-row {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .info-row {
+    gap: 16px;
+  }
+  
+  .dias-row {
+    gap: 10px;
+  }
+  
+  .dia {
+    flex: 0 0 calc(33.33% - 8px);
+    padding: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .notas-container {
+    padding: 16px 12px;
+  }
+  
+  .notas-header h1 {
+    font-size: 24px;
+  }
+  
+  .resumen-general {
+    padding: 20px;
+  }
+  
+  .resumen-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .accordion-header {
+    padding: 14px 16px;
+  }
+  
+  .accordion-title {
+    font-size: 14px;
+  }
+  
+  .accordion-body {
+    padding: 18px 16px;
+  }
+  
+  .info-row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  
+  .stats-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .modal-content-asistencia {
+    width: 94%;
+    max-height: 92vh;
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+  
+  .leyenda-items {
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
   
   .dias-row {
@@ -555,51 +637,113 @@ hr {
   }
   
   .dia {
-    flex: 0 0 calc(33.33% - 6px);
+    flex: 0 0 calc(50% - 4px);
+    padding: 10px 8px;
+  }
+  
+  .dia-label {
+    font-size: 11px;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .notas-container {
+    padding: 12px 10px;
+  }
+  
+  .resumen-general {
     padding: 16px;
-  }
- 
-  
-  .resumen-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .info-row {
-    grid-template-columns: 1fr;
-  }
-  
-  .stats-row {
-    grid-template-columns: 1fr;
+    border-radius: 10px;
   }
   
   .accordion-header {
-    padding: 12px 16px;
+    padding: 12px 14px;
   }
   
   .accordion-body {
-    padding: 16px;
+    padding: 16px 14px;
   }
   
-  .modal-content-asistencia {
-    width: 95%;
-    max-height: 90vh;
-    padding: 24px;
+  .promedio-section {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+    padding: 14px;
   }
   
-  .leyenda-items {
-    grid-template-columns: 1fr;
+  .stats-row {
+    gap: 10px;
   }
   
-  .dias-row {
-    gap: 6px;
+  .formula-section {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+    padding: 14px;
   }
   
   .dia {
-    flex: 0 0 calc(50% - 3px);
+    flex: 0 0 calc(50% - 4px);
+    padding: 9px 6px;
+  }
+  
+  .dia-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .notas-container {
+    padding: 10px 8px;
+  }
+  
+  .accordion-header {
+    padding: 12px;
+  }
+  
+  .accordion-title {
+    font-size: 13.5px;
+  }
+  
+  .dia {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  
+  .resumen-general h3,
+  .evaluaciones-section h4,
+  .asistencia-section h4 {
+    font-size: 15px;
+  }
+}
+
+/* Mejoras generales de tipografía y espaciado en móviles */
+@media (max-width: 768px) {
+  .resumen-value {
+    font-size: 14px;
+  }
+
+  .stat-value {
+    font-size: 13.5px;
+  }
+  
+  .eval-name,
+  .info-value,
+  .asistencia-text {
+    font-size: 12.5px;
+  }
+}
+
+/* Soporte para pantallas muy pequeñas y orientación landscape */
+@media (max-width: 480px) and (orientation: landscape) {
+  .modal-content-asistencia {
+    max-height: 85vh;
+    padding: 20px;
+  }
+  
+  .calendario-container {
+    gap: 16px;
   }
 }

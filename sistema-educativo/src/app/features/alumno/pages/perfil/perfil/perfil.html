@@ -1,78 +1,231 @@
-<div class="perfil-container">
-  <!-- Header -->
-  <div class="perfil-header">
-    <h1>Mi Perfil</h1>
-    <p>Información personal del estudiante</p>
+<div class="ph">
+  <h1>Mi <em>Perfil</em></h1>
+  <p>Administra tu información personal y académica</p>
+</div>
+
+<!-- DATOS DEL ALUMNO -->
+<div class="card">
+
+  <div class="ch">
+    <div class="ch-ico">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12z"/>
+      </svg>
+    </div>
+
+    <h3>Datos <em>personales</em></h3>
   </div>
 
-  <!-- Card Principal -->
-  <div class="perfil-card">
-    <!-- Avatar y Nombre -->
-    <div class="perfil-avatar-section">
-      <div class="perfil-avatar">{{alumno.iniciales}}</div>
-      <div class="perfil-nombre-info">
-        <h2 class="perfil-nombre">{{alumno.nombre}}</h2>
-        <p class="perfil-grado">{{alumno.grado}}</p>
-      </div>
-    </div>
+  <div class="cb">
 
-    <!-- Botón Editar -->
-    <div style="margin-bottom: 24px;">
-      <button *ngIf="!editando" (click)="editando = true" class="btn-editar">Editar Información</button>
-      <div *ngIf="editando" class="btn-group-acciones">
-        <button (click)="cancelar()" class="btn-cancelar">Cancelar</button>
-        <button (click)="guardar()" class="btn-guardar">Guardar Cambios</button>
-      </div>
-    </div>
+    <!-- AVATAR -->
+    <div class="avatar-section">
 
-    <!-- Datos No Editables -->
-    <div class="perfil-seccion">
-      <h3 class="perfil-seccion-titulo">Información de Matrícula</h3>
-      <div class="perfil-fila">
-        <div class="perfil-campo-readonly">
-          <label>Código de Estudiante</label>
-          <p>{{form.codigo}}</p>
-        </div>
-        <div class="perfil-campo-readonly">
-          <label>Documento de Identidad</label>
-          <p>{{form.dni}}</p>
+      <div class="avatar">
+       <img src="https://res.cloudinary.com/dgrdonnsk/image/upload/v1778545065/ChatGPT_Image_11_may_2026_19_17_41_h5tlxr.png" alt="Usuario">
+        
+      </div>
+
+      <div class="av-info">
+        <h2>Juan Diego Ramos Pérez</h2>
+        <p>juan.ramos@colegio.edu.pe</p>
+
+        <div class="av-tag">
+          Alumno — 5to de Secundaria
         </div>
       </div>
+
     </div>
 
-    <!-- Datos Editables -->
-    <div class="perfil-seccion">
-      <h3 class="perfil-seccion-titulo">Datos de Contacto</h3>
-      <div class="perfil-campo">
-        <label>Correo Electrónico</label>
-        <input *ngIf="editando" type="email" [(ngModel)]="form.correo" class="perfil-input" />
-        <p *ngIf="!editando">{{form.correo}}</p>
+    <!-- FORMULARIO -->
+    <div class="f2">
+
+      <div class="ff">
+        <label>Nombres <span class="req">*</span></label>
+        <input type="text" value="Juan Diego" readonly>
       </div>
 
-      <div class="perfil-campo">
+      <div class="ff">
+        <label>Apellidos <span class="req">*</span></label>
+        <input type="text" value="Ramos Pérez" readonly>
+      </div>
+
+    </div>
+
+    <div class="f2">
+
+      <div class="ff">
+        <label>Código del alumno</label>
+        <input type="text" value="202610245" class="mono" readonly>
+      </div>
+
+      <div class="ff">
+        <label>DNI</label>
+        <input type="text" value="76543210" readonly>
+      </div>
+
+    </div>
+
+    <div class="f2">
+
+      <div class="ff">
+        <label>Correo institucional</label>
+        <input type="email" value="juan.ramos@colegio.edu.pe" readonly>
+      </div>
+
+      <div class="ff">
+        <label>Correo personal</label>
+        <input type="email" value="juanramos@gmail.com">
+      </div>
+
+    </div>
+
+    <div class="f2">
+
+      <div class="ff">
         <label>Teléfono</label>
-        <input *ngIf="editando" type="tel" [(ngModel)]="form.telefono" class="perfil-input" />
-        <p *ngIf="!editando">{{form.telefono}}</p>
+        <input type="tel" value="987654321">
       </div>
+
+      <div class="ff">
+        <label>Fecha de nacimiento</label>
+        <input type="date" value="2009-08-12" readonly>
+      </div>
+
     </div>
 
-    <!-- Datos del Apoderado -->
-    <div class="perfil-seccion">
-      <h3 class="perfil-seccion-titulo">Apoderado</h3>
-      <div class="perfil-campo">
-        <label>Nombre del Apoderado</label>
-        <input *ngIf="editando" type="text" [(ngModel)]="form.apoderado" class="perfil-input" />
-        <p *ngIf="!editando">{{form.apoderado}}</p>
-      </div>
-
-      <div class="perfil-campo">
-        <label>Teléfono del Apoderado</label>
-        <input *ngIf="editando" type="tel" [(ngModel)]="form.telefonoApoderado" class="perfil-input" />
-        <p *ngIf="!editando">{{form.telefonoApoderado}}</p>
-      </div>
+    <div class="ff">
+      <label>Dirección</label>
+      <input type="text" value="Av. Los Jardines 450 - Ica">
     </div>
 
-    <!-- Mensaje de Guardado -->
-    <div *ngIf="guardado" class="perfil-success">✓ Cambios guardados exitosamente</div>
+    <!-- DATOS ACADÉMICOS -->
+    <div class="section-sep">
+      Información académica
+    </div>
+
+    <div class="f3">
+
+      <div class="ff">
+        <label>Grado</label>
+        <input type="text" readonly value="5to Secundaria">
+      </div>
+
+      <div class="ff">
+        <label>Sección</label>
+        <input type="text" readonly value="B">
+    
+        
+      </div>
+
+      <div class="ff">
+        <label>Turno</label>
+        <input type="text" readonly value="Tarde">
+      </div>
+
+    </div>
+
+    <div class="f2">
+
+      <div class="ff">
+        <label>Tutor</label>
+        <input type="text" value="María Elena Torres" readonly>
+      </div>
+
+      <div class="ff">
+        <label>Año escolar</label>
+        <input type="text" value="2026" readonly>
+      </div>
+
+    </div>
+
+    <!-- BOTONES -->
+    <div style="display:flex;gap:8px;margin-top:6px">
+
+      <button class="btn btn-or" onclick="showToast()">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+        </svg>
+
+        Guardar cambios
+      </button>
+
+      <button class="btn btn-gh">
+        Cancelar
+      </button>
+
+    </div>
+
   </div>
+</div>
+
+<!-- CAMBIAR CONTRASEÑA -->
+<div class="card">
+
+  <div class="ch">
+
+    <div class="ch-ico">
+      <svg viewBox="0 0 24 24">
+        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/>
+      </svg>
+    </div>
+
+    <h3>Cambiar <em>contraseña</em></h3>
+
+  </div>
+
+  <div class="cb">
+
+    <div class="alert alert-i">
+
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+      </svg>
+
+      La contraseña debe tener mínimo 8 caracteres,
+      una mayúscula y un número.
+
+    </div>
+
+    <div class="ff">
+      <label>Contraseña actual</label>
+      <input type="password" placeholder="••••••••">
+    </div>
+
+    <div class="f2">
+
+      <div class="ff">
+        <label>Nueva contraseña</label>
+        <input type="password" placeholder="Nueva contraseña">
+      </div>
+
+      <div class="ff">
+        <label>Confirmar contraseña</label>
+        <input type="password" placeholder="Confirmar contraseña">
+      </div>
+
+    </div>
+
+    <button class="btn btn-gh" style="margin-top:4px">
+
+      <svg viewBox="0 0 24 24">
+        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/>
+      </svg>
+
+      Actualizar contraseña
+
+    </button>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+
+  <svg viewBox="0 0 24 24">
+    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+  </svg>
+
+  Perfil actualizado correctamente
+
 </div>

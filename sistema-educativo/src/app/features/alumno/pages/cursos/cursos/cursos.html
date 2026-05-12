@@ -1,7 +1,7 @@
 <!-- PAGE HEADER -->
 <div class="page-header" style="margin-top:24px;">
   <div>
-    <div class="ph-label">Año Escolar 2025</div>
+   
     <div class="ph-title">Mis <em>Cursos</em></div>
     <div class="ph-sub">Selecciona un curso para ver tareas, evaluaciones, notas y más</div>
   </div>
@@ -12,7 +12,9 @@
       <option>Todo el año</option>
     </select>
     <button class="btn-ghost" (click)="showToast('Descargando reporte académico...','info')">
-      <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Mi reporte
+      <svg viewBox="0 0 24 24">
+        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+      </svg>Mi reporte
     </button>
   </div>
 </div>
@@ -20,23 +22,20 @@
 <!-- ════ GRID DE CURSOS ════ -->
 <div class="courses-grid">
   <div class="course-card" *ngFor="let c of courses" (click)="onOpenCourse(c)" [attr.data-id]="c.id">
-    <div class="cc-accent" [style.background]="c.color"></div>
+
     <div class="cc-body">
       <div class="cc-top">
-        <div class="cc-icon" [style.background]="'rgba(0,0,0,0.05)'">
-          <svg viewBox="0 0 24 24" [style.fill]="c.color">
-            <path [attr.d]="c.svgPath"></path>
-          </svg>
-        </div>
+
         <div class="cc-nota-wrap">
-          <div class="cc-nota" [ngClass]="c.notaClass">{{c.nota}}</div>
-          <div class="cc-nota-lbl">Promedio B2</div>
+          <img *ngIf="c.img" [src]="c.img" [alt]="c.nombre" class="cc-image">
+
+
         </div>
       </div>
       <div class="cc-name">{{c.nombre}}</div>
       <div class="cc-teacher">{{c.profesor}} · {{c.horario}}</div>
       <div class="cc-progress">
-        <div class="cc-progress-fill" [style.width.%]="c.progreso" [style.background]="c.color"></div>
+        <div class="cc-progress-fill" [style.width.%]="c.progreso" [style.background]=""></div>
       </div>
       <div class="cc-prog-label">
         <span>Progreso del bimestre</span>
