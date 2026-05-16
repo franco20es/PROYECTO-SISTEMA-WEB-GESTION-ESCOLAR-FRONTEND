@@ -1,12 +1,7 @@
 <!-- ── TOPBAR ── -->
 <header class="topbar" id="topbar">
-
   <!-- Hamburger -->
-  <button 
-    class="hamburger" 
-    id="hamburger" 
-    (click)="requestToggleSidebar()" 
-    aria-label="Menú">
+  <button class="hamburger" id="hamburger" (click)="requestToggleSidebar()" aria-label="Menú">
     <div class="hb-bar">
       <span></span>
       <span></span>
@@ -31,41 +26,41 @@
 
   <!-- Right side -->
   <div class="topbar-right">
-
     <!-- Search -->
     <div class="topbar-search">
       <i class="bi bi-search"></i>
-      <input type="text" placeholder="Buscar...">
+      <input type="text" placeholder="Buscar..." />
     </div>
 
     <!-- Notifications -->
-    <div 
-      class="topbar-icon-btn" 
-      (click)="navigateTo('/' + currentModule.toLowerCase() + '/notificaciones')" 
-      title="Notificaciones">
+    <div
+      class="topbar-icon-btn"
+      (click)="navigateTo('/' + currentModule.toLowerCase() + '/notificaciones')"
+      title="Notificaciones"
+    >
       <i class="bi bi-bell"></i>
       <span class="notif-pip"></span>
     </div>
 
     <!-- Settings -->
-    <div 
-      class="topbar-icon-btn" 
-      (click)="navigateTo('/' + currentModule.toLowerCase() + '/seguridad')" 
-      title="Seguridad">
+    <div
+      class="topbar-icon-btn"
+      (click)="navigateTo('/' + currentModule.toLowerCase() + '/seguridad')"
+      title="Seguridad"
+    >
       <i class="bi bi-shield-lock"></i>
     </div>
 
     <!-- User chip -->
-    <div 
-      class="topbar-user" 
-      (click)="navigateTo('/' + currentModule.toLowerCase() + '/alumno/perfil')">
-
-      <div class="topbar-user-avatar" >Jf</div>
+    <div
+      class="topbar-user"
+      (click)="navigateTo('/' + currentModule.toLowerCase() + '/alumno/perfil')"
+    >
+      <div class="topbar-user-avatar">Jf</div>
 
       <span class="topbar-user-name">js </span>
 
-      <i class="bi bi-chevron-down" style="font-size:.6rem;color:rgba(255,255,255,.4)"></i>
+      <i class="bi bi-chevron-down" style="font-size: 0.6rem; color: rgba(255, 255, 255, 0.4)"></i>
     </div>
-
   </div>
 </header>
