@@ -40,7 +40,6 @@
 
   /* HERO NOSOTROS */
   .page-hero {
-    margin-top: 68px;
     background: var(--blue-dark);
     padding: 80px 48px 64px;
     position: relative; overflow: hidden;

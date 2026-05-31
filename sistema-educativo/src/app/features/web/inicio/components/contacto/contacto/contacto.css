@@ -40,7 +40,7 @@
   .nav-cta:hover { background: var(--orange-hover) !important; }
 
   /* PAGE HERO */
-  .page-hero { margin-top: 68px; background: var(--blue-dark); padding: 80px 48px 64px; position: relative; overflow: hidden; }
+  .page-hero { background: var(--blue-dark); padding: 80px 48px 64px; position: relative; overflow: hidden; }
   .page-hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(32,80,180,0.25) 0%, transparent 60%), repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(255,255,255,0.015) 80px, rgba(255,255,255,0.015) 81px), repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(255,255,255,0.015) 80px, rgba(255,255,255,0.015) 81px); pointer-events: none; }
   .page-hero-bg { position: absolute; right: -10px; bottom: -30px; font-family: 'Bebas Neue', sans-serif; font-size: 180px; color: rgba(255,255,255,0.03); line-height: 1; user-select: none; pointer-events: none; }
   .page-hero-inner { max-width: 1300px; margin: 0 auto; position: relative; z-index: 2; }

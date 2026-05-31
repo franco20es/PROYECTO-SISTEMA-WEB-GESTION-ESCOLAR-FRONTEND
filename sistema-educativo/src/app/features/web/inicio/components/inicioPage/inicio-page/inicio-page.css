@@ -57,13 +57,21 @@
 
   /* ─── HERO ─── */
   .hero {
-    margin-top: 68px;
-    background: var(--blue-dark);
-    position: relative; overflow: hidden;
+    position: relative;
+    overflow: hidden;
     padding: 100px 48px 80px;
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 60px; min-height: 560px;
-  }
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+    min-height: 560px;
+
+    background-image:
+        url('https://res.cloudinary.com/dfspsnrmp/image/upload/v1780211373/dreamina-2026-05-29-8575-image_esta_imagen_damelo_de_major_calida_nldnag_mf12v6.png');
+    background-size: cover;
+    background-position: left center;
+    background-repeat: no-repeat;
+}
   .hero::before {
     content: '';
     position: absolute; inset: 0;
@@ -92,14 +100,14 @@
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.3;} }
   .hero h1 {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(56px, 7vw, 96px);
+    font-size: clamp(56px, 7vw, 60px);
     color: var(--white); line-height: .94; letter-spacing: 1px;
   }
   .hero h1 em { color: var(--orange); font-style: normal; }
-  .hero-sub { margin-top: 24px; color: var(--gray-200); font-size: 16px; font-weight: 300; line-height: 1.8; max-width: 480px; }
+  .hero-sub { margin-top: 24px; color: var(--text-dark); font-size: 16px; font-weight: 400; line-height: 1.8; max-width: 480px; }
   .hero-actions { display: flex; gap: 14px; margin-top: 36px; flex-wrap: wrap; }
   .btn-primary {
-    background: var(--orange); color: var(--white);
+    background: var(--blue-dark); color: var(--white);
     border: none; cursor: pointer;
     font-family: 'DM Sans', sans-serif;
     font-size: 14px; font-weight: 700; letter-spacing: 1px;
@@ -107,9 +115,10 @@
     text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
     transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
     position: relative; overflow: hidden;
+    border-radius: 30px;
   }
   .btn-primary::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%); pointer-events: none; }
-  .btn-primary:hover { background: var(--orange-hover); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,91,31,0.4); }
+  .btn-primary:hover { background: var(--orange-hover); color: #fff !important; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,91,31,0.4); }
   .btn-outline {
     background: transparent; color: var(--white);
     border: 1.5px solid rgba(255,255,255,0.3); cursor: pointer;
@@ -117,9 +126,10 @@
     font-size: 14px; font-weight: 500; letter-spacing: .5px;
     padding: 14px 32px;
     text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-    transition: all var(--transition);
+    transition: background var(--transition), transform var(--transition), box-shadow var(--transition);  
+    border-radius: 30px;
   }
-  .btn-outline:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.6); }
+  .btn-outline:hover { transform: translateY(-2px); background: rgba(255,255,255,0.08); color: #fff !important; border-color: rgba(255,255,255,0.6); }
   .hero-right { position: relative; z-index: 2; flex-shrink: 0; }
   .hero-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .stat-card {
@@ -223,6 +233,7 @@
     .noticia-card:first-child { grid-column: span 2; }
     .hero { flex-direction: column; min-height: auto; }
     .hero-stats-grid { grid-template-columns: repeat(4,1fr); }
+    .hero-sub { padding-right: 20%;}
   }
   @media (max-width: 768px) {
     nav { padding: 0 20px; }
@@ -235,4 +246,7 @@
     .noticias-header { flex-direction: column; align-items: flex-start; }
     .hero-stats-grid { grid-template-columns: 1fr 1fr; }
     .anuncio { padding: 10px 20px; }
+    .hero h1 { font-size: clamp(40px, 7vw, 20px);}
+    .hero-sub { font-size: 14px; padding-right: 15%;}
+    .btn-primary { font-size: 12px; padding: 10px 24px; }
   }
