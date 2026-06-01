@@ -4,15 +4,31 @@ import { Matricula } from './matricula/matricula';
 import { Nosotros } from '../inicio/components/nosotros/nosotros/nosotros';
 import { Contacto } from '../inicio/components/contacto/contacto/contacto';
 import { TopbarWebComponent } from '../matricula/components/topbar-web/topbar-web';
+import { FooterWebComponent } from '../matricula/components/footer-web/footer-web';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-inicio-layout',
   standalone: true,
-  imports: [TopbarWebComponent, RouterOutlet],
-  template: `<app-topbar-web></app-topbar-web><router-outlet></router-outlet>`,
-  styles: [`:host { display: block; }`]
+  imports: [TopbarWebComponent, FooterWebComponent, RouterOutlet],
+  template: `
+    <app-topbar-web></app-topbar-web>
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+    <app-footer-web></app-footer-web>
+  `,
+  styles: [`
+    :host { 
+      display: flex; 
+      flex-direction: column; 
+      min-height: 100vh; /* Ocupa al menos el alto total de la ventana */
+    }
+    .main-content {
+      flex: 1; /* Esto hace que el contenido se expanda y empuje el footer hacia el final */
+    }
+  `]
 })
 class InicioLayout {}
 

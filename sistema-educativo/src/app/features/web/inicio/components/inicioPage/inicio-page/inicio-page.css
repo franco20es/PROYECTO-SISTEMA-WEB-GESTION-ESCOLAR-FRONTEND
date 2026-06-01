@@ -41,108 +41,153 @@
     overflow-x: hidden;
   }
 
- /* ── LOADER ACELERADO (HIGH-PERFORMANCE) ──────────────────────────────────── */
-#loader {
-  position: fixed;
-  inset: 0;
-  z-index: 9000;
-  background: var(--blue-dark);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 32px;
-}
-
-.loader-logo {
-  font-family: 'Bebas Neue', cursive;
-  font-size: clamp(48px, 10vw, 96px);
-  letter-spacing: 8px;
-  color: var(--white);
-  overflow: hidden;
-  position: relative;
-}
-
-/* Base de las letras animadas sin gradientes repetitivos individuales */
-.loader-logo span {
-  display: inline-block;
-  transform: translateY(120%);
-  animation: letterUp .4s cubic-bezier(.25, 1, .5, 1) forwards; /* Velocidad duplicada */
-  -webkit-text-fill-color: initial;
-  background: none;
-  background-clip: initial;
-  -webkit-background-clip: initial;
-}
-
-/* ─── PASO DE COLOR POR BLOQUES SÓLIDOS ─── */
-
-/* Letras 1 a 5: "EDUCA" -> Color Naranja */
-.loader-logo span:nth-child(-n+5) {
-  color: var(--orange);
-}
-
-/* Letras 6 a 9: "MPUS" -> Color Claro */
-.loader-logo span:nth-child(n+6) {
-  color: var(--gray-100); /* Usa var(--white) si prefieres blanco puro */
-}
-
-/* ─── DELAYS DE ANIMACIÓN OPTIMIZADOS PARA RITMO VELOZ ─── */
-.loader-logo span:nth-child(1) { animation-delay: .02s }
-.loader-logo span:nth-child(2) { animation-delay: .04s }
-.loader-logo span:nth-child(3) { animation-delay: .06s }
-.loader-logo span:nth-child(4) { animation-delay: .08s }
-.loader-logo span:nth-child(5) { animation-delay: .1s }
-.loader-logo span:nth-child(6) { animation-delay: .12s }
-.loader-logo span:nth-child(7) { animation-delay: .14s }
-.loader-logo span:nth-child(8) { animation-delay: .16s }
-.loader-logo span:nth-child(9) { animation-delay: .18s }
-
-/* Subtítulo informativo */
-.loader-sub {
-  font-size: 13px;
-  letter-spacing: 6px;
-  text-transform: uppercase;
-  color: var(--gray);
-  opacity: 0;
-  animation: fadeInAnim .3s .4s forwards;
-}
-
-/* ─── BARRA DE CARGA RECTILÍNEA INDUSTRIAL ─── */
-.loader-bar-wrap {
-  width: 200px;
-  height: 2px;
-  background: rgba(255, 255, 255, .1);
-  border-radius: 0 !important; /* Esquinas rectas premium */
-  overflow: hidden;
-  opacity: 0;
-  animation: fadeInAnim .2s .2s forwards;
-}
-
-.loader-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--orange), var(--blue2));
-  border-radius: 0 !important; /* Esquinas rectas premium */
-  width: 0;
-  animation: barFill 0.6s .2s cubic-bezier(.4, 0, .2, 1) forwards; /* Llenado veloz en 0.6s */
-}
-
-/* ─── KEYFRAMES Y TRANSICIONES CORE ─── */
-@keyframes letterUp { to { transform: translateY(0) } }
-@keyframes fadeInAnim { to { opacity: 1 } }
-@keyframes barFill { to { width: 100% } }
-
-/* Salida inmediata hacia arriba en 0.3s sin esperas muertas */
-#loader.hide {
-  animation: loaderOut .3s 0s cubic-bezier(.4, 0, .2, 1) forwards;
-}
-
-@keyframes loaderOut {
-  to {
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(-100%);
+  /* ── LOADER ACELERADO (HIGH-PERFORMANCE) ──────────────────────────────────── */
+  #loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: var(--blue-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
   }
-}
+
+  .loader-logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(48px, 10vw, 96px);
+    letter-spacing: 8px;
+    color: var(--white);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Base de las letras animadas sin gradientes repetitivos individuales */
+  .loader-logo span {
+    display: inline-block;
+    transform: translateY(120%);
+    animation: letterUp .4s cubic-bezier(.25, 1, .5, 1) forwards;
+    /* Velocidad duplicada */
+    -webkit-text-fill-color: initial;
+    background: none;
+    background-clip: initial;
+    -webkit-background-clip: initial;
+  }
+
+  /* ─── PASO DE COLOR POR BLOQUES SÓLIDOS ─── */
+
+  /* Letras 1 a 5: "EDUCA" -> Color Naranja */
+  .loader-logo span:nth-child(-n+5) {
+    color: var(--orange);
+  }
+
+  /* Letras 6 a 9: "MPUS" -> Color Claro */
+  .loader-logo span:nth-child(n+6) {
+    color: var(--gray-100);
+    /* Usa var(--white) si prefieres blanco puro */
+  }
+
+  /* ─── DELAYS DE ANIMACIÓN OPTIMIZADOS PARA RITMO VELOZ ─── */
+  .loader-logo span:nth-child(1) {
+    animation-delay: .02s
+  }
+
+  .loader-logo span:nth-child(2) {
+    animation-delay: .04s
+  }
+
+  .loader-logo span:nth-child(3) {
+    animation-delay: .06s
+  }
+
+  .loader-logo span:nth-child(4) {
+    animation-delay: .08s
+  }
+
+  .loader-logo span:nth-child(5) {
+    animation-delay: .1s
+  }
+
+  .loader-logo span:nth-child(6) {
+    animation-delay: .12s
+  }
+
+  .loader-logo span:nth-child(7) {
+    animation-delay: .14s
+  }
+
+  .loader-logo span:nth-child(8) {
+    animation-delay: .16s
+  }
+
+  .loader-logo span:nth-child(9) {
+    animation-delay: .18s
+  }
+
+  /* Subtítulo informativo */
+  .loader-sub {
+    font-size: 13px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--gray);
+    opacity: 0;
+    animation: fadeInAnim .3s .4s forwards;
+  }
+
+  /* ─── BARRA DE CARGA RECTILÍNEA INDUSTRIAL ─── */
+  .loader-bar-wrap {
+    width: 200px;
+    height: 2px;
+    background: rgba(255, 255, 255, .1);
+    border-radius: 0 !important;
+    /* Esquinas rectas premium */
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeInAnim .2s .2s forwards;
+  }
+
+  .loader-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange), var(--blue2));
+    border-radius: 0 !important;
+    /* Esquinas rectas premium */
+    width: 0;
+    animation: barFill 0.6s .2s cubic-bezier(.4, 0, .2, 1) forwards;
+    /* Llenado veloz en 0.6s */
+  }
+
+  /* ─── KEYFRAMES Y TRANSICIONES CORE ─── */
+  @keyframes letterUp {
+    to {
+      transform: translateY(0)
+    }
+  }
+
+  @keyframes fadeInAnim {
+    to {
+      opacity: 1
+    }
+  }
+
+  @keyframes barFill {
+    to {
+      width: 100%
+    }
+  }
+
+  /* Salida inmediata hacia arriba en 0.3s sin esperas muertas */
+  #loader.hide {
+    animation: loaderOut .3s 0s cubic-bezier(.4, 0, .2, 1) forwards;
+  }
+
+  @keyframes loaderOut {
+    to {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-100%);
+    }
+  }
 
   #loader.hide {
     animation: loaderOut .7s .2s cubic-bezier(.4, 0, .2, 1) forwards
@@ -296,8 +341,6 @@
 
   /* ─── HERO ─── */
   .hero {
-    margin-top: 68px;
-    background: var(--blue-dark);
     position: relative;
     overflow: hidden;
     padding: 100px 48px 80px;
@@ -306,6 +349,11 @@
     justify-content: space-between;
     gap: 60px;
     min-height: 560px;
+    background-image:
+      url('https://res.cloudinary.com/dfspsnrmp/image/upload/v1780211373/dreamina-2026-05-29-8575-image_esta_imagen_damelo_de_major_calida_nldnag_mf12v6.png');
+    background-size: cover;
+    background-position: left center;
+    background-repeat: no-repeat;
   }
 
   .hero::before {
@@ -375,7 +423,8 @@
 
   .hero h1 {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(56px, 7vw, 96px);
+
+    font-size: clamp(56px, 7vw, 60px);
     color: var(--white);
     line-height: .94;
     letter-spacing: 1px;
@@ -388,9 +437,9 @@
 
   .hero-sub {
     margin-top: 24px;
-    color: var(--gray-200);
+    color: var(--text-dark);
     font-size: 16px;
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.8;
     max-width: 480px;
   }
@@ -403,10 +452,11 @@
   }
 
   .btn-primary {
-    background: var(--orange);
+    background: var(--blue-dark);
     color: var(--white);
     border: none;
     cursor: pointer;
+
     font-family: 'DM Sans', sans-serif;
     font-size: 14px;
     font-weight: 700;
@@ -418,8 +468,10 @@
     align-items: center;
     gap: 8px;
     transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+
     position: relative;
     overflow: hidden;
+    border-radius: 30px;
   }
 
   .btn-primary::after {
@@ -432,6 +484,7 @@
 
   .btn-primary:hover {
     background: var(--orange-hover);
+    color: #fff !important;
     transform: translateY(-2px);
     box-shadow: 0 8px 28px rgba(255, 91, 31, 0.4);
   }
@@ -446,15 +499,19 @@
     font-weight: 500;
     letter-spacing: .5px;
     padding: 14px 32px;
+
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    transition: all var(--transition);
+    transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    border-radius: 30px;
   }
 
   .btn-outline:hover {
+    transform: translateY(-2px);
     background: rgba(255, 255, 255, 0.08);
+    color: #fff !important;
     border-color: rgba(255, 255, 255, 0.6);
   }
 
@@ -824,6 +881,33 @@
     .hero-stats-grid {
       grid-template-columns: repeat(4, 1fr);
     }
+
+    .propuesta-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .noticias-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .noticia-card:first-child {
+      grid-column: span 2;
+    }
+
+    .hero {
+      flex-direction: column;
+      min-height: auto;
+    }
+
+    .hero-stats-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .hero-sub {
+      padding-right: 20%;
+    }
+
+
   }
 
   @media (max-width: 768px) {
@@ -868,4 +952,62 @@
     .anuncio {
       padding: 10px 20px;
     }
+
+    nav {
+      padding: 0 20px;
+    }
+
+    .nav-links {
+      display: none;
+    }
+
+    .hero {
+      padding: 40px 20px;
+    }
+
+    .section-propuesta,
+    .section-noticias {
+      padding: 48px 20px;
+    }
+
+    .propuesta-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .noticias-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .noticia-card:first-child {
+      grid-column: span 1;
+    }
+
+    .noticias-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .hero-stats-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .anuncio {
+      padding: 10px 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(40px, 7vw, 20px);
+    }
+
+    .hero-sub {
+      font-size: 14px;
+      padding-right: 15%;
+    }
+
+    .btn-primary {
+      font-size: 12px;
+      padding: 10px 24px;
+    }
+
+
   }
