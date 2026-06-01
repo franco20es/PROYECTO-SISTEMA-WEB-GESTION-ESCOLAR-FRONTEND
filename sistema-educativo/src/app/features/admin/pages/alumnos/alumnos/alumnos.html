@@ -1,259 +1,399 @@
 <!-- PAGE HEADER -->
-  <div class="page-header">
-    <div>
+<div class="page-header">
+  <div>
+
+    <div class="ph-title">
+      <div class="ph-title-icon"><svg viewBox="0 0 24 24">
+          <path
+            d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 12.18L3.44 10.5 12 5.82l8.56 4.68L12 15.18zM12 21l-7-3.82v-4L12 17l7-3.82v4L12 21z" />
+        </svg></div>
+      Gestión de Estudiantes
+    </div>
+    <div class="ph-subtitle">Administra matrículas, notas, asistencia y documentación de todos los alumnos</div>
+  </div>
+  <div class="ph-right">
+    <button class="btn-ghost" (click)="exportar()" (click)="showToast('Exportando datos...','info')">
+      <svg viewBox="0 0 24 24">
+        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+      </svg>Exportar
+    </button>
+    <button class="btn-secondary" (click)="showToast('Generando reporte PDF...','info')">
+      <svg viewBox="0 0 24 24">
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" />
+      </svg>Reporte
+    </button>
+    <button class="btn-primary" (click)="abrirModal('nuevo')">
+      <svg viewBox="0 0 24 24">
+        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+      </svg>Nuevo Estudiante
+    </button>
+  </div>
+</div>
+
+<div class="kpi-strip">
+  <div class="kpi-card">
+    <div class="kpi-icon ki-total">...</div>
+    <div class="kpi-data">
+      <strong>{{ kpis.total | number }}</strong>
+      <span>Total alumnos</span>
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon ki-primaria">...</div>
+    <div class="kpi-data">
+      <strong>{{ kpis.primaria }}</strong>
+      <span>Primaria</span>
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon ki-secundaria">...</div>
+    <div class="kpi-data">
+      <strong>{{ kpis.secundaria }}</strong>
+      <span>Secundaria</span>
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon ki-nuevos">...</div>
+    <div class="kpi-data">
+      <strong>{{ kpis.nuevos }}</strong>
+      <span>Nuevos 2026</span>
+    </div>
+  </div>
+</div>
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="filter-tabs">
+    <button class="ftab active" data-f="all" (click)="cambiarVista('tabla')">Todos <span
+        class="cnt">1248</span></button>
+    <button class="ftab" data-f="activo" (click)="cambiarVista('tabla')">Activos <span class="cnt">1220</span></button>
+    <button class="ftab" data-f="retirado" (click)="cambiarVista('tabla')">Retirados <span
+        class="cnt">18</span></button>
+    <button class="ftab" data-f="trasladado" (click)="cambiarVista('tabla')">Trasladados <span
+        class="cnt">10</span></button>
+    <button class="ftab" data-f="primaria" (click)="cambiarVista('tabla')">Primaria <span
+        class="cnt">612</span></button>
+    <button class="ftab" data-f="secundaria" (click)="cambiarVista('tabla')">Secundaria <span
+        class="cnt">450</span></button>
+  </div>
+  <div class="sep"></div>
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24">
+      <path
+        d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+    </svg>
+    <input type="text" placeholder="Buscar por nombre, código, DNI, apoderado..." [(ngModel)]="busqueda"
+      (input)="filtrarAlumnos()">
+  </div>
+  <select class="fsel">
+    <option>Todos los grados</option>
+    <option>1° — Primaria</option>
+    <option>2° — Primaria</option>
+    <option>3° — Primaria</option>
+    <option>4° — Primaria</option>
+    <option>5° — Primaria</option>
+    <option>6° — Primaria</option>
+    <option>1° — Secundaria</option>
+    <option>2° — Secundaria</option>
+    <option>3° — Secundaria</option>
+    <option>4° — Secundaria</option>
+    <option>5° — Secundaria</option>
+  </select>
+  <select class="fsel">
+    <option>Todos los turnos</option>
+    <option>Mañana</option>
+    <option>Tarde</option>
+  </select>
+  <select class="fsel">
+    <option>Ordenar: Apellido A-Z</option>
+    <option>Ordenar: Apellido Z-A</ option>
+    <Option>Más reciente</Option>
+  </select>
+  <div class="view-toggle">
+    <button class="vbtn active" id="btnTabla" (click)="cambiarVista('tabla')" title="Tabla"><svg viewBox="0 0 24 24">
+        <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z" />
+      </svg></button>
+    <button class="vbtn" id="btnGrid" (click)="cambiarVista('grid')" title="Tarjetas"><svg viewBox="0 0 24 24">
+        <path d="M3 3h7v7H3zm0 11h7v7H3zm11-11h7v7h-7zm0 11h7v7h-7z" />
+      </svg></button>
+  </div>
+</div>
+
+<!-- VISTA TABLA -->
+<div id="vistaTabla">
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th class="sortable">Estudiante</th>
+          <th>Nivel</th>
+          <th class="sortable">Grado / Sección</th>
+          <th>Turno</th>
+          <th>Apoderado</th>
+          <th>Documentos</th>
+          <th>Asistencia</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
       
-      <div class="ph-title">
-        <div class="ph-title-icon"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 12.18L3.44 10.5 12 5.82l8.56 4.68L12 15.18zM12 21l-7-3.82v-4L12 17l7-3.82v4L12 21z"/></svg></div>
-        Gestión de Estudiantes
+  <tbody>
+  <tr *ngFor="let alumno of alumnos"
+      (click)="abrirModal('editar', alumno)"
+      style="cursor:pointer">
+
+    <!-- Alumno -->
+    <td>
+      <div class="td-est">
+        <div class="est-av" style="background:linear-gradient(135deg,#0A1A3E,#1340A0)">
+          {{ obtenerIniciales(alumno.nombres, alumno.apellidos) }}
+        </div>
+        <div>
+          <div class="td-name">{{ alumno.nombres }} {{ alumno.apellidos }}</div>
+          <div class="td-code">{{ alumno.codigoAlumno }}</div>
+        </div>
       </div>
-      <div class="ph-subtitle">Administra matrículas, notas, asistencia y documentación de todos los alumnos</div>
-    </div>
-    <div class="ph-right">
-      <button class="btn-ghost" (click)="exportar()" (click)="showToast('Exportando datos...','info')">
-        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar
-      </button>
-      <button class="btn-secondary" (click)="showToast('Generando reporte PDF...','info')">
-        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>Reporte
-      </button>
-      <button class="btn-primary" (click)="abrirModal('nuevo')">
-        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Nuevo Estudiante
-      </button>
-    </div>
-  </div>
- 
-  <!-- KPI STRIP -->
-  <div class="kpi-strip">
-    <div class="kpi-card"><div class="kpi-icon ki-total"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><div class="kpi-data"><strong>1,248</strong><span>Total alumnos</span></div></div>
-    <div class="kpi-card"><div class="kpi-icon ki-inicial"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm1 14h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div><div class="kpi-data"><strong>186</strong><span>Inicial</span></div></div>
-    <div class="kpi-card"><div class="kpi-icon ki-primaria"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div><div class="kpi-data"><strong>612</strong><span>Primaria</span></div></div>
-    <div class="kpi-card"><div class="kpi-icon ki-secundaria"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg></div><div class="kpi-data"><strong>450</strong><span>Secundaria</span></div></div>
-    <div class="kpi-card"><div class="kpi-icon ki-nuevos"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div><div class="kpi-data"><strong>87</strong><span>Nuevos 2025</span></div></div>
-  </div>
- 
-  <!-- TOOLBAR -->
-  <div class="toolbar">
-    <div class="filter-tabs">
-      <button class="ftab active" data-f="all" (click)="cambiarVista('tabla')">Todos <span class="cnt">1248</span></button>
-      <button class="ftab" data-f="activo" (click)="cambiarVista('tabla')">Activos <span class="cnt">1220</span></button>
-      <button class="ftab" data-f="retirado" (click)="cambiarVista('tabla')">Retirados <span class="cnt">18</span></button>
-      <button class="ftab" data-f="trasladado" (click)="cambiarVista('tabla')">Trasladados <span class="cnt">10</span></button>
-      <button class="ftab" data-f="inicial" (click)="cambiarVista('tabla')">Inicial <span class="cnt">186</span></button>
-      <button class="ftab" data-f="primaria" (click)="cambiarVista('tabla')">Primaria <span class="cnt">612</span></button>
-      <button class="ftab" data-f="secundaria" (click)="cambiarVista('tabla')">Secundaria <span class="cnt">450</span></button>
-    </div>
-    <div class="sep"></div>
-    <div class="search-wrap">
-      <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-      <input type="text" placeholder="Buscar por nombre, código, DNI, apoderado..." [(ngModel)]="busqueda" (input)="filtrarAlumnos()">
-    </div>
-    <select class="fsel"><option>Todos los grados</option><option>3 años — Inicial</option><option>4 años — Inicial</option><option>5 años — Inicial</option><option>1° — Primaria</option><option>2° — Primaria</option><option>3° — Primaria</option><option>4° — Primaria</option><option>5° — Primaria</option><option>6° — Primaria</option><option>1° — Secundaria</option><option>2° — Secundaria</option><option>3° — Secundaria</option><option>4° — Secundaria</option><option>5° — Secundaria</option></select>
-    <select class="fsel"><option>Todos los turnos</option><option>Mañana</option><option>Tarde</option></select>
-    <select class="fsel"><option>Ordenar: Apellido A-Z</option><option>Ordenar: Apellido Z-A</	option><Option>Más reciente</Option></select>
-    <div class="view-toggle">
-      <button class="vbtn active" id="btnTabla" (click)="cambiarVista('tabla')" title="Tabla"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg></button>
-      <button class="vbtn" id="btnGrid" (click)="cambiarVista('grid')" title="Tarjetas"><svg viewBox="0 0 24 24"><path d="M3 3h7v7H3zm0 11h7v7H3zm11-11h7v7h-7zm0 11h7v7h-7z"/></svg></button>
-    </div>
-  </div>
- 
-  <!-- VISTA TABLA -->
-  <div id="vistaTabla">
-    <div class="table-wrap">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th class="sortable">Estudiante</th>
-            <th>Nivel</th>
-            <th class="sortable">Grado / Sección</th>
-            <th>Turno</th>
-            <th>Apoderado</th>
-            <th>Documentos</th>
-            <th>Asistencia</th>
-            <th>Estado</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="tablaEstudiantes">
- 
-          <tr data-status="activo" data-nivel="primaria" (click)="abrirModal('editar',this)">
-            <td><div class="td-est"><div class="est-av" style="background:linear-gradient(135deg,#0A1A3E,#1340A0)">CG</div><div><div class="td-name">García Quispe, Carlos</div><div class="td-code">COD-2025-0142</div></div></div></td>
-            <td><span class="nivel-chip cn-primaria">Primaria</span></td>
-            <td><span class="grado-badge">2° A</span></td>
-            <td><span style="font-size:12px;color:var(--gray-600)">Mañana</span></td>
-            <td><span style="font-size:12px;color:var(--text-body)">María García</span></td>
-            <td><div class="docs-status" title="Partida✓ DNI✓ Foto✓ Libreta✗"><div class="doc-dot ok" title="Partida de nacimiento ✓"></div><div class="doc-dot ok" title="DNI ✓"></div><div class="doc-dot ok" title="Fotografía ✓"></div><div class="doc-dot miss" title="Libreta de notas ✗"></div></div></td>
-            <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--success)">94%</span></td>
-            <td><span class="status-pill sp-activo">Activo</span></td>
-            <td (click)="stopPropagation($event)"><div class="td-actions">
-              <button class="act-btn" title="Editar" (click)="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
-              <button class="act-btn" title="Ver documentos" (click)="abrirModal('docs')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg></button>
-              <button class="act-btn del" title="Eliminar" (click)="confirmarEliminar('García Quispe, Carlos')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
-            </div></td>
-          </tr>
- 
-          <tr data-status="activo" data-nivel="secundaria" (click)="abrirModal('editar',this)">
-            <td><div class="td-est"><div class="est-av" style="background:linear-gradient(135deg,#1340A0,#00C27C 130%)">AR</div><div><div class="td-name">Ramírez Torres, Alejandra</div><div class="td-code">COD-2025-0138</div></div></div></td>
-            <td><span class="nivel-chip cn-secundaria">Secundaria</span></td>
-            <td><span class="grado-badge">3° B</span></td>
-            <td><span style="font-size:12px;color:var(--gray-600)">Tarde</span></td>
-            <td><span style="font-size:12px;color:var(--text-body)">José Ramírez</span></td>
-            <td><div class="docs-status"><div class="doc-dot ok"></div><div class="doc-dot ok"></div><div class="doc-dot ok"></div><div class="doc-dot ok"></div></div></td>
-            <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--success)">97%</span></td>
-            <td><span class="status-pill sp-activo">Activo</span></td>
-            <td (click)="stopPropagation($event)"><div class="td-actions">
-              <button class="act-btn" (click)="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
-              <button class="act-btn" (click)="abrirModal('docs')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg></button>
-              <button class="act-btn del" (click)="confirmarEliminar('Ramírez Torres, Alejandra')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
-            </div></td>
-          </tr>
- 
-          <tr data-status="activo" data-nivel="inicial" (click)="abrirModal('editar',this)">
-            <td><div class="td-est"><div class="est-av" style="background:linear-gradient(135deg,#1B4080,#5B8FF9)">VP</div><div><div class="td-name">Paredes Vega, Valentina</div><div class="td-code">COD-2025-0131</div></div></div></td>
-            <td><span class="nivel-chip cn-inicial">Inicial</span></td>
-            <td><span class="grado-badge">4 años B</span></td>
-            <td><span style="font-size:12px;color:var(--gray-600)">Tarde</span></td>
-            <td><span style="font-size:12px;color:var(--text-body)">Lucía Paredes</span></td>
-            <td><div class="docs-status"><div class="doc-dot ok"></div><div class="doc-dot miss"></div><div class="doc-dot ok"></div><div class="doc-dot pend"></div></div></td>
-            <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--warning)">82%</span></td>
-            <td><span class="status-pill sp-activo">Activo</span></td>
-            <td (click)="stopPropagation($event)"><div class="td-actions">
-              <button class="act-btn" (click)="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
-              <button class="act-btn" (click)="abrirModal('docs')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg></button>
-              <button class="act-btn del" (click)="confirmarEliminar('Paredes Vega, Valentina')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
-            </div></td>
-          </tr>
- 
-          <tr data-status="activo" data-nivel="primaria" (click)="abrirModal('editar',this)">
-            <td><div class="td-est"><div class="est-av" style="background:linear-gradient(135deg,#007a4d,#00C27C)">SQ</div><div><div class="td-name">Quispe Tello, Sofía</div><div class="td-code">COD-2024-0089</div></div></div></td>
-            <td><span class="nivel-chip cn-primaria">Primaria</span></td>
-            <td><span class="grado-badge">5° A</span></td>
-            <td><span style="font-size:12px;color:var(--gray-600)">Mañana</span></td>
-            <td><span style="font-size:12px;color:var(--text-body)">Andrés Quispe</span></td>
-            <td><div class="docs-status"><div class="doc-dot ok"></div><div class="doc-dot ok"></div><div class="doc-dot ok"></div><div class="doc-dot ok"></div></div></td>
-            <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--success)">99%</span></td>
-            <td><span class="status-pill sp-activo">Activo</span></td>
-            <td (click)="stopPropagation($event)"><div class="td-actions">
-              <button class="act-btn" (click)="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
-              <button class="act-btn" (click)="abrirModal('docs')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg></button>
-              <button class="act-btn del" (click)="confirmarEliminar('Quispe Tello, Sofía')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
-            </div></td>
-          </tr>
- 
-          <tr data-status="retirado" data-nivel="secundaria" (click)="abrirModal('editar',this)">
-            <td><div class="td-est"><div class="est-av" style="background:linear-gradient(135deg,#4A5470,#8A95B0)">DM</div><div><div class="td-name">Morales Díaz, Diego</div><div class="td-code">COD-2024-0074</div></div></div></td>
-            <td><span class="nivel-chip cn-secundaria">Secundaria</span></td>
-            <td><span class="grado-badge">2° A</span></td>
-            <td><span style="font-size:12px;color:var(--gray-400)">Mañana</span></td>
-            <td><span style="font-size:12px;color:var(--gray-400)">Carmen Morales</span></td>
-            <td><div class="docs-status"><div class="doc-dot ok"></div><div class="doc-dot ok"></div><div class="doc-dot miss"></div><div class="doc-dot ok"></div></div></td>
-            <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gray-400)">—</span></td>
-            <td><span class="status-pill sp-retirado">Retirado</span></td>
-            <td (click)="stopPropagation($event)"><div class="td-actions">
-              <button class="act-btn" (click)="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
-              <button class="act-btn" (click)="abrirModal('docs')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg></button>
-              <button class="act-btn del" (click)="confirmarEliminar('Morales Díaz, Diego')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
-            </div></td>
-          </tr>
- 
-          <tr data-status="activo" data-nivel="primaria" (click)="abrirModal('editar',this)">
-            <td><div class="td-est"><div class="est-av" style="background:linear-gradient(135deg,#3D1700,#FF5B1F)">LF</div><div><div class="td-name">Flores Vega, Luis</div><div class="td-code">COD-2025-0155</div></div></div></td>
-            <td><span class="nivel-chip cn-primaria">Primaria</span></td>
-            <td><span class="grado-badge">1° B</span></td>
-            <td><span style="font-size:12px;color:var(--gray-600)">Tarde</span></td>
-            <td><span style="font-size:12px;color:var(--text-body)">Rosa Vega</span></td>
-            <td><div class="docs-status"><div class="doc-dot ok"></div><div class="doc-dot pend"></div><div class="doc-dot ok"></div><div class="doc-dot miss"></div></div></td>
-            <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--warning)">78%</span></td>
-            <td><span class="status-pill sp-activo">Activo</span></td>
-            <td (click)="stopPropagation($event)"><div class="td-actions">
-              <button class="act-btn" (click)="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
-              <button class="act-btn" (click)="abrirModal('docs')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg></button>
-              <button class="act-btn del" (click)="confirmarEliminar('Flores Vega, Luis')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
-            </div></td>
-          </tr>
- 
-          <tr data-status="trasladado" data-nivel="secundaria" (click)="abrirModal('editar',this)">
-            <td><div class="td-est"><div class="est-av" style="background:linear-gradient(135deg,#b87a0a,#F5A623)">PC</div><div><div class="td-name">Castillo Ruiz, Pedro</div><div class="td-code">COD-2024-0061</div></div></div></td>
-            <td><span class="nivel-chip cn-secundaria">Secundaria</span></td>
-            <td><span class="grado-badge">4° A</span></td>
-            <td><span style="font-size:12px;color:var(--gray-400)">Mañana</span></td>
-            <td><span style="font-size:12px;color:var(--gray-400)">Hugo Castillo</span></td>
-            <td><div class="docs-status"><div class="doc-dot ok"></div><div class="doc-dot ok"></div><div class="doc-dot ok"></div><div class="doc-dot ok"></div></div></td>
-            <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gray-400)">—</span></td>
-            <td><span class="status-pill sp-trasladado">Trasladado</span></td>
-            <td (click)="stopPropagation($event)"><div class="td-actions">
-              <button class="act-btn" (click)="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
-              <button class="act-btn" (click)="abrirModal('docs')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg></button>
-              <button class="act-btn del" (click)="confirmarEliminar('Castillo Ruiz, Pedro')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
-            </div></td>
-          </tr>
- 
-          <tr data-status="activo" data-nivel="inicial" (click)="abrirModal('editar',this)">
-            <td><div class="td-est"><div class="est-av" style="background:linear-gradient(135deg,#0A1A3E,#2A63E6)">KT</div><div><div class="td-name">Torres Huanca, Kiara</div><div class="td-code">COD-2025-0162</div></div></div></td>
-            <td><span class="nivel-chip cn-inicial">Inicial</span></td>
-            <td><span class="grado-badge">3 años A</span></td>
-            <td><span style="font-size:12px;color:var(--gray-600)">Mañana</span></td>
-            <td><span style="font-size:12px;color:var(--text-body)">Sandra Torres</span></td>
-            <td><div class="docs-status"><div class="doc-dot ok"></div><div class="doc-dot ok"></div><div class="doc-dot ok"></div><div class="doc-dot ok"></div></div></td>
-            <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--success)">100%</span></td>
-            <td><span class="status-pill sp-activo">Activo</span></td>
-            <td (click)="stopPropagation($event)"><div class="td-actions">
-              <button class="act-btn" (click)="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
-              <button class="act-btn" (click)="abrirModal('docs')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg></button>
-              <button class="act-btn del" (click)="confirmarEliminar('Torres Huanca, Kiara')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
-            </div></td>
-          </tr>
- 
-        </tbody>
-      </table>
-    </div>
-  </div>
- 
-  <!-- VISTA GRID -->
-  <div id="vistaGrid" style="display:none">
-    <div class="grid-view">
-      <div class="est-card" data-status="activo" data-nivel="primaria" (click)="abrirModal('editar')">
-        <div class="ec-top"><div class="ec-av-wrap"><div class="ec-av" style="background:linear-gradient(135deg,#0A1A3E,#1340A0)">CG</div><div class="ec-sdot activo"></div></div><span class="ec-nivel cn-primaria">Primaria</span></div>
-        <div class="ec-body"><div class="ec-name">García Quispe, Carlos</div><div class="ec-grado">2° A · Turno Mañana</div><div class="ec-row"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>María García (madre)</div><div class="ec-row"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.11-.35.03-.74-.25-1.02l-2.2 2.2z"/></svg>987 321 456</div><div class="ec-docs"><span class="ec-doc-tag ec-doc-ok">Partida ✓</span><span class="ec-doc-tag ec-doc-ok">DNI ✓</span><span class="ec-doc-tag ec-doc-ok">Foto ✓</span><span class="ec-doc-tag ec-doc-miss">Libreta ✗</span></div></div>
-        <div class="ec-foot"><div class="ec-foot-code">COD-2025-0142</div><button class="ec-foot-btn" (click)="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>Editar</button></div>
+    </td>
+
+    <!-- Nivel -->
+    <td>
+      <span class="nivel-chip" [ngClass]="{
+        'cn-primaria':   alumno.nivel === 'PRIMARIA',
+        'cn-secundaria': alumno.nivel === 'SECUNDARIA',
+        'cn-inicial':    alumno.nivel === 'INICIAL'
+      }">
+        {{ alumno.nivel || '—' }}
+      </span>
+    </td>
+
+    <!-- Grado/Sección ← CORREGIDO -->
+    <td>
+      <span class="grado-badge">
+        {{ alumno.grado ? alumno.grado + '° ' + alumno.seccion : '—' }}
+      </span>
+    </td>
+
+    <!-- Turno -->
+    <td>
+      <span style="font-size:12px;color:var(--gray-600)">
+        {{ alumno.turno ? (alumno.turno | titlecase) : '—' }}
+      </span>
+    </td>
+
+    <!-- Apoderado -->
+    <td>
+      <span style="font-size:12px;color:var(--text-body)">
+        {{ alumno.nombreApoderado || '—' }}
+      </span>
+    </td>
+
+    <!-- Documentos -->
+    <td>
+      <div class="docs-status">
+        <div class="doc-dot ok" title="Partida ✓"></div>
+        <div class="doc-dot ok" title="DNI ✓"></div>
+        <div class="doc-dot ok" title="Foto ✓"></div>
+        <div class="doc-dot miss" title="Libreta ✗"></div>
       </div>
-      <div class="est-card" data-status="activo" data-nivel="secundaria" (click)="abrirModal('editar')">
-        <div class="ec-top"><div class="ec-av-wrap"><div class="ec-av" style="background:linear-gradient(135deg,#1340A0,#00C27C 130%)">AR</div><div class="ec-sdot activo"></div></div><span class="ec-nivel cn-secundaria">Secundaria</span></div>
-        <div class="ec-body"><div class="ec-name">Ramírez Torres, Alejandra</div><div class="ec-grado">3° B · Turno Tarde</div><div class="ec-row"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>José Ramírez (padre)</div><div class="ec-row"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.11-.35.03-.74-.25-1.02l-2.2 2.2z"/></svg>956 788 234</div><div class="ec-docs"><span class="ec-doc-tag ec-doc-ok">Todos ✓</span></div></div>
-        <div class="ec-foot"><div class="ec-foot-code">COD-2025-0138</div><button class="ec-foot-btn" (click)="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>Editar</button></div>
+    </td>
+
+    <!-- Asistencia -->
+<td>
+  <span style="font-family:'DM Mono',monospace;font-size:12px;"
+        [style.color]="alumno.porcentajeAsistencia >= 90 ? 'var(--success)' :
+                       alumno.porcentajeAsistencia >= 75 ? 'var(--warning)' : 'var(--error)'">
+    {{ alumno.porcentajeAsistencia != null ? alumno.porcentajeAsistencia + '%' : '—' }}
+  </span>
+</td>
+
+    <!-- Estado -->
+    <td>
+      <span class="status-pill" [ngClass]="'sp-' + alumno.estado?.toLowerCase()">
+        {{ alumno.estado | titlecase }}
+      </span>
+    </td>
+
+    <!-- Acciones -->
+    <td>
+      <div class="td-actions" (click)="$event.stopPropagation()">
+        <button class="act-btn" title="Editar"
+          (click)="abrirModal('editar', alumno)">
+          <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        </button>
+        <button class="act-btn" title="Documentos"
+          (click)="abrirModal('docs', alumno)">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/></svg>
+        </button>
+        <button class="act-btn del" title="Desactivar"
+          (click)="confirmarEliminar(alumno)">
+          <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+        </button>
       </div>
-      <div class="est-card" data-status="activo" data-nivel="inicial" (click)="abrirModal('editar')">
-        <div class="ec-top"><div class="ec-av-wrap"><div class="ec-av" style="background:linear-gradient(135deg,#1B4080,#5B8FF9)">VP</div><div class="ec-sdot activo"></div></div><span class="ec-nivel cn-inicial">Inicial</span></div>
-        <div class="ec-body"><div class="ec-name">Paredes Vega, Valentina</div><div class="ec-grado">4 años B · Turno Tarde</div><div class="ec-row"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>Lucía Paredes (madre)</div><div class="ec-row"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.11-.35.03-.74-.25-1.02l-2.2 2.2z"/></svg>912 456 789</div><div class="ec-docs"><span class="ec-doc-tag ec-doc-ok">Partida ✓</span><span class="ec-doc-tag ec-doc-miss">DNI ✗</span><span class="ec-doc-tag ec-doc-miss">Libreta ✗</span></div></div>
-        <div class="ec-foot"><div class="ec-foot-code">COD-2025-0131</div><button class="ec-foot-btn" (click)="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>Editar</button></div>
+    </td>
+  </tr>
+
+  <tr *ngIf="alumnos.length === 0">
+    <td colspan="9" style="text-align:center;padding:40px;color:var(--gray-400);font-size:13px">
+      No se encontraron alumnos.
+    </td>
+  </tr>
+</tbody>
+      
+    </table>
+  </div>
+</div>
+
+<!-- VISTA GRID -->
+<div id="vistaGrid" style="display:none">
+  <div class="grid-view">
+    <div class="est-card" data-status="activo" data-nivel="primaria" (click)="abrirModal('editar')">
+      <div class="ec-top">
+        <div class="ec-av-wrap">
+          <div class="ec-av" style="background:linear-gradient(135deg,#0A1A3E,#1340A0)">CG</div>
+          <div class="ec-sdot activo"></div>
+        </div><span class="ec-nivel cn-primaria">Primaria</span>
       </div>
-      <div class="est-card" data-status="retirado" data-nivel="secundaria" (click)="abrirModal('editar')">
-        <div class="ec-top"><div class="ec-av-wrap"><div class="ec-av" style="background:linear-gradient(135deg,#4A5470,#8A95B0)">DM</div><div class="ec-sdot retirado"></div></div><span class="ec-nivel cn-secundaria">Secundaria</span></div>
-        <div class="ec-body"><div class="ec-name">Morales Díaz, Diego</div><div class="ec-grado">2° A · Retirado</div><div class="ec-row"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>Carmen Morales (madre)</div><div class="ec-docs"><span class="ec-doc-tag ec-doc-ok">Partida ✓</span><span class="ec-doc-tag ec-doc-ok">DNI ✓</span></div></div>
-        <div class="ec-foot"><div class="ec-foot-code">COD-2024-0074</div><button class="ec-foot-btn" (click)="abrirModal('editar')"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>Editar</button></div>
+      <div class="ec-body">
+        <div class="ec-name">García Quispe, Carlos</div>
+        <div class="ec-grado">2° A · Turno Mañana</div>
+        <div class="ec-row"><svg viewBox="0 0 24 24">
+            <path
+              d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+          </svg>María García (madre)</div>
+        <div class="ec-row"><svg viewBox="0 0 24 24">
+            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.11-.35.03-.74-.25-1.02l-2.2 2.2z" />
+          </svg>987 321 456</div>
+        <div class="ec-docs"><span class="ec-doc-tag ec-doc-ok">Partida ✓</span><span class="ec-doc-tag ec-doc-ok">DNI
+            ✓</span><span class="ec-doc-tag ec-doc-ok">Foto ✓</span><span class="ec-doc-tag ec-doc-miss">Libreta
+            ✗</span></div>
+      </div>
+      <div class="ec-foot">
+        <div class="ec-foot-code">COD-2025-0142</div><button class="ec-foot-btn" (click)="abrirModal('editar')"><svg
+            viewBox="0 0 24 24">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" />
+          </svg>Editar</button>
+      </div>
+    </div>
+    <div class="est-card" data-status="activo" data-nivel="secundaria" (click)="abrirModal('editar')">
+      <div class="ec-top">
+        <div class="ec-av-wrap">
+          <div class="ec-av" style="background:linear-gradient(135deg,#1340A0,#00C27C 130%)">AR</div>
+          <div class="ec-sdot activo"></div>
+        </div><span class="ec-nivel cn-secundaria">Secundaria</span>
+      </div>
+      <div class="ec-body">
+        <div class="ec-name">Ramírez Torres, Alejandra</div>
+        <div class="ec-grado">3° B · Turno Tarde</div>
+        <div class="ec-row"><svg viewBox="0 0 24 24">
+            <path
+              d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+          </svg>José Ramírez (padre)</div>
+        <div class="ec-row"><svg viewBox="0 0 24 24">
+            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.11-.35.03-.74-.25-1.02l-2.2 2.2z" />
+          </svg>956 788 234</div>
+        <div class="ec-docs"><span class="ec-doc-tag ec-doc-ok">Todos ✓</span></div>
+      </div>
+      <div class="ec-foot">
+        <div class="ec-foot-code">COD-2025-0138</div><button class="ec-foot-btn" (click)="abrirModal('editar')"><svg
+            viewBox="0 0 24 24">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" />
+          </svg>Editar</button>
+      </div>
+    </div>
+    <div class="est-card" data-status="activo" data-nivel="inicial" (click)="abrirModal('editar')">
+      <div class="ec-top">
+        <div class="ec-av-wrap">
+          <div class="ec-av" style="background:linear-gradient(135deg,#1B4080,#5B8FF9)">VP</div>
+          <div class="ec-sdot activo"></div>
+        </div><span class="ec-nivel cn-inicial">Inicial</span>
+      </div>
+      <div class="ec-body">
+        <div class="ec-name">Paredes Vega, Valentina</div>
+        <div class="ec-grado">4 años B · Turno Tarde</div>
+        <div class="ec-row"><svg viewBox="0 0 24 24">
+            <path
+              d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+          </svg>Lucía Paredes (madre)</div>
+        <div class="ec-row"><svg viewBox="0 0 24 24">
+            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.11-.35.03-.74-.25-1.02l-2.2 2.2z" />
+          </svg>912 456 789</div>
+        <div class="ec-docs"><span class="ec-doc-tag ec-doc-ok">Partida ✓</span><span class="ec-doc-tag ec-doc-miss">DNI
+            ✗</span><span class="ec-doc-tag ec-doc-miss">Libreta ✗</span></div>
+      </div>
+      <div class="ec-foot">
+        <div class="ec-foot-code">COD-2025-0131</div><button class="ec-foot-btn" (click)="abrirModal('editar')"><svg
+            viewBox="0 0 24 24">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" />
+          </svg>Editar</button>
+      </div>
+    </div>
+    <div class="est-card" data-status="retirado" data-nivel="secundaria" (click)="abrirModal('editar')">
+      <div class="ec-top">
+        <div class="ec-av-wrap">
+          <div class="ec-av" style="background:linear-gradient(135deg,#4A5470,#8A95B0)">DM</div>
+          <div class="ec-sdot retirado"></div>
+        </div><span class="ec-nivel cn-secundaria">Secundaria</span>
+      </div>
+      <div class="ec-body">
+        <div class="ec-name">Morales Díaz, Diego</div>
+        <div class="ec-grado">2° A · Retirado</div>
+        <div class="ec-row"><svg viewBox="0 0 24 24">
+            <path
+              d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+          </svg>Carmen Morales (madre)</div>
+        <div class="ec-docs"><span class="ec-doc-tag ec-doc-ok">Partida ✓</span><span class="ec-doc-tag ec-doc-ok">DNI
+            ✓</span></div>
+      </div>
+      <div class="ec-foot">
+        <div class="ec-foot-code">COD-2024-0074</div><button class="ec-foot-btn" (click)="abrirModal('editar')"><svg
+            viewBox="0 0 24 24">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" />
+          </svg>Editar</button>
       </div>
     </div>
   </div>
- 
-  <!-- PAGINATION -->
-  <div class="pagination">
-    <div class="pag-info">Mostrando <strong>8</strong> de <strong>1,248</strong> estudiantes</div>
-    <div class="pag-btns">
-      <button class="pag-btn"><svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button>
-      <button class="pag-btn active">1</button>
-      <button class="pag-btn">2</button>
-      <button class="pag-btn">3</button>
-      <button class="pag-btn">…</button>
-      <button class="pag-btn">156</button>
-      <button class="pag-btn"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button>
-    </div>
+</div>
+
+<!-- PAGINATION -->
+<div class="pagination" *ngIf="totalPaginas > 1">
+  
+  <div class="pag-info">
+    Mostrando <strong>{{ alumnos.length }}</strong> de <strong>{{ totalElementos }}</strong> estudiantes
   </div>
- 
- 
+
+  <div class="pag-btns">
+    <button class="pag-btn" [disabled]="paginaActual === 0" (click)="cambiarPagina(paginaActual - 1)">
+      <svg viewBox="0 0 24 24">
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+      </svg>
+    </button>
+
+    <button 
+      *ngFor="let p of obtenerArregloPaginas()" 
+      class="pag-btn" 
+      [class.active]="p === paginaActual"
+      (click)="cambiarPagina(p)">
+      {{ p + 1 }}
+    </button>
+
+    <button class="pag-btn" [disabled]="paginaActual === totalPaginas - 1" (click)="cambiarPagina(paginaActual + 1)">
+      <svg viewBox="0 0 24 24">
+        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+      </svg>
+    </button>
+  </div>
+
+</div>
+
+
 <!-- ════ MODAL ESTUDIANTE ════ -->
 <div class="modal-overlay" *ngIf="modalVisible" [class.show]="modalVisible">
   <div class="modal">
     <div class="modal-header">
       <h3 id="modalTitle">
-        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+        </svg>
         Ficha del Estudiante
         <span class="mh-badge" id="modalBadge">ACTIVO</span>
       </h3>
@@ -269,7 +409,7 @@
       <div class="mtab" (click)="switchTab('tHistorial')">Historial</div>
     </div>
     <div class="modal-body">
- 
+
       <!-- ── TAB 1: PERFIL ── -->
       <div class="tab-panel active" id="tPerfil">
         <div class="prof-header">
@@ -290,70 +430,153 @@
         </div>
         <div class="fsect">Datos personales del estudiante</div>
         <div class="fgrid fg3">
-          <div class="ff"><label>Apellido Paterno <span class="req">*</span></label><input type="text" value="García"></div>
-          <div class="ff"><label>Apellido Materno <span class="req">*</span></label><input type="text" value="Quispe"></div>
-          <div class="ff"><label>Nombres <span class="req">*</span></label><input type="text" value="Carlos Andrés"></div>
+          <div class="ff"><label>Apellido Paterno <span class="req">*</span></label><input type="text" value="García">
+          </div>
+          <div class="ff"><label>Apellido Materno <span class="req">*</span></label><input type="text" value="Quispe">
+          </div>
+          <div class="ff"><label>Nombres <span class="req">*</span></label><input type="text" value="Carlos Andrés">
+          </div>
           <div class="ff"><label>Fecha de Nacimiento</label><input type="date" value="2017-03-14"></div>
-          <div class="ff"><label>Sexo</label><select><option selected>Masculino</option><option>Femenino</option></select></div>
+          <div class="ff"><label>Sexo</label><select>
+              <option selected>Masculino</option>
+              <option>Femenino</option>
+            </select></div>
           <div class="ff"><label>Lugar de Nacimiento</label><input type="text" value="Ica, Ica"></div>
-          <div class="ff"><label>Tipo de Documento</label><select><option selected>DNI</option><option>Carnet Extranjería</option><option>Pasaporte</option><option>Sin documento</option></select></div>
+          <div class="ff"><label>Tipo de Documento</label><select>
+              <option selected>DNI</option>
+              <option>Carnet Extranjería</option>
+              <option>Pasaporte</option>
+              <option>Sin documento</option>
+            </select></div>
           <div class="ff"><label>N° de Documento</label><input type="text" value="75432198"></div>
-          <div class="ff"><label>Tipo de Sangre</label><select><option selected>O+</option><option>O-</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option></select></div>
-          <div class="ff s3"><label>Dirección de Residencia</label><input type="text" value="Av. Los Pinos 342, Urb. San Judas, Ica"></div>
-          <div class="ff"><label>Distrito</label><select><option selected>Ica</option><option>Parcona</option><option>Santiago</option><option>Subtanjalla</option></select></div>
-          <div class="ff"><label>Teléfono del estudiante</label><input type="tel" placeholder="Si tiene celular propio"></div>
+          <div class="ff"><label>Tipo de Sangre</label><select>
+              <option selected>O+</option>
+              <option>O-</option>
+              <option>A+</option>
+              <option>A-</option>
+              <option>B+</option>
+              <option>B-</option>
+              <option>AB+</option>
+              <option>AB-</option>
+            </select></div>
+          <div class="ff s3"><label>Dirección de Residencia</label><input type="text"
+              value="Av. Los Pinos 342, Urb. San Judas, Ica"></div>
+          <div class="ff"><label>Distrito</label><select>
+              <option selected>Ica</option>
+              <option>Parcona</option>
+              <option>Santiago</option>
+              <option>Subtanjalla</option>
+            </select></div>
+          <div class="ff"><label>Teléfono del estudiante</label><input type="tel" placeholder="Si tiene celular propio">
+          </div>
         </div>
         <div class="fsect">Condición de salud</div>
         <div class="fgrid fg2">
-          <div class="ff"><label>¿Condición médica?</label><select><option>No</option><option>Sí</option></select></div>
+          <div class="ff"><label>¿Condición médica?</label><select>
+              <option>No</option>
+              <option>Sí</option>
+            </select></div>
           <div class="ff"><label>Alergias conocidas</label><input type="text" placeholder="Ninguna"></div>
-          <div class="ff s2"><label>Detalle de condición (si aplica)</label><textarea placeholder="Dejar en blanco si no aplica"></textarea></div>
+          <div class="ff s2"><label>Detalle de condición (si aplica)</label><textarea
+              placeholder="Dejar en blanco si no aplica"></textarea></div>
         </div>
         <div class="fsect">Estado de matrícula</div>
         <div class="fgrid fg3">
-          <div class="ff"><label>Estado <span class="req">*</span></label><select><option selected>Activo</option><option>Retirado</option><option>Trasladado</option></select></div>
+          <div class="ff"><label>Estado <span class="req">*</span></label><select>
+              <option selected>Activo</option>
+              <option>Retirado</option>
+              <option>Trasladado</option>
+            </select></div>
           <div class="ff"><label>Año de matrícula</label><input type="text" value="2025" readonly></div>
           <div class="ff"><label>Código de matrícula</label><input type="text" value="SM-2025-00142" readonly></div>
-          <div class="ff s3"><label>Motivo de retiro / traslado (si aplica)</label><textarea placeholder="Solo completar si el alumno se retira o traslada"></textarea></div>
+          <div class="ff s3"><label>Motivo de retiro / traslado (si aplica)</label><textarea
+              placeholder="Solo completar si el alumno se retira o traslada"></textarea></div>
         </div>
       </div>
- 
+
       <!-- ── TAB 2: APODERADO ── -->
       <div class="tab-panel" id="tApoderado">
         <div class="fsect">Apoderado principal</div>
         <div class="fgrid fg2">
-          <div class="ff"><label>Apellidos y Nombres <span class="req">*</span></label><input type="text" value="García Quispe, María Elena"></div>
-          <div class="ff"><label>Relación con el estudiante <span class="req">*</span></label><select><option selected>Madre</option><option>Padre</option><option>Abuelo/a</option><option>Tío/a</option><option>Hermano/a mayor</option><option>Tutor legal</option><option>Otro</option></select></div>
-          <div class="ff"><label>DNI <span class="req">*</span></label><input type="text" value="42310987" maxlength="8"></div>
+          <div class="ff"><label>Apellidos y Nombres <span class="req">*</span></label><input type="text"
+              value="García Quispe, María Elena"></div>
+          <div class="ff"><label>Relación con el estudiante <span class="req">*</span></label><select>
+              <option selected>Madre</option>
+              <option>Padre</option>
+              <option>Abuelo/a</option>
+              <option>Tío/a</option>
+              <option>Hermano/a mayor</option>
+              <option>Tutor legal</option>
+              <option>Otro</option>
+            </select></div>
+          <div class="ff"><label>DNI <span class="req">*</span></label><input type="text" value="42310987"
+              maxlength="8"></div>
           <div class="ff"><label>Celular <span class="req">*</span></label><input type="tel" value="987 321 456"></div>
           <div class="ff"><label>Teléfono fijo</label><input type="tel" placeholder="056-234567"></div>
-          <div class="ff"><label>Correo electrónico <span class="req">*</span></label><input type="email" value="garcia.maria@gmail.com"></div>
+          <div class="ff"><label>Correo electrónico <span class="req">*</span></label><input type="email"
+              value="garcia.maria@gmail.com"></div>
           <div class="ff"><label>Ocupación</label><input type="text" value="Comerciante"></div>
           <div class="ff"><label>Centro de trabajo</label><input type="text" value="Mercado Central de Ica"></div>
-          <div class="ff s2"><label>Dirección del apoderado (si es diferente)</label><input type="text" placeholder="Dejar en blanco si es la misma del alumno"></div>
+          <div class="ff s2"><label>Dirección del apoderado (si es diferente)</label><input type="text"
+              placeholder="Dejar en blanco si es la misma del alumno"></div>
         </div>
         <div class="fsect">Apoderado secundario / Contacto de emergencia</div>
         <div class="fgrid fg2">
           <div class="ff"><label>Apellidos y Nombres</label><input type="text" value="Quispe Torres, Juan Carlos"></div>
-          <div class="ff"><label>Relación</label><select><option>Padre</option><option selected>Abuelo/a</option><option>Tío/a</option></select></div>
+          <div class="ff"><label>Relación</label><select>
+              <option>Padre</option>
+              <option selected>Abuelo/a</option>
+              <option>Tío/a</option>
+            </select></div>
           <div class="ff"><label>Celular de emergencia</label><input type="tel" value="956 120 340"></div>
           <div class="ff"><label>Correo electrónico</label><input type="email" placeholder="Opcional"></div>
         </div>
       </div>
- 
+
       <!-- ── TAB 3: ACADÉMICO ── -->
       <div class="tab-panel" id="tAcademico">
         <div class="fsect">Información académica actual</div>
         <div class="fgrid fg3">
-          <div class="ff"><label>Nivel educativo <span class="req">*</span></label><select><option>Inicial</option><option selected>Primaria</option><option>Secundaria</option></select></div>
-          <div class="ff"><label>Grado <span class="req">*</span></label><select><option selected>2° Grado</option><option>1° Grado</option><option>3° Grado</option><option>4° Grado</option><option>5° Grado</option><option>6° Grado</option></select></div>
-          <div class="ff"><label>Sección</label><select><option selected>A</option><option>B</option><option>C</option></select></div>
-          <div class="ff"><label>Turno</label><select><option selected>Mañana</option><option>Tarde</option></select></div>
-          <div class="ff"><label>Tipo de matrícula</label><select><option selected>Ratificación</option><option>Alumno nuevo</option><option>Traslado</option></select></div>
-          <div class="ff"><label>Requiere apoyo</label><select><option selected>No</option><option>SAANEE</option><option>Psicológico</option><option>Tutoría</option></select></div>
-          <div class="ff"><label>IE de procedencia</label><input type="text" value="IE San Marcos (alumno actual)"></div>
+          <div class="ff"><label>Nivel educativo <span class="req">*</span></label><select>
+              <option>Inicial</option>
+              <option selected>Primaria</option>
+              <option>Secundaria</option>
+            </select></div>
+          <div class="ff"><label>Grado <span class="req">*</span></label><select>
+              <option selected>2° Grado</option>
+              <option>1° Grado</option>
+              <option>3° Grado</option>
+              <option>4° Grado</option>
+              <option>5° Grado</option>
+              <option>6° Grado</option>
+            </select></div>
+          <div class="ff"><label>Sección</label><select>
+              <option selected>A</option>
+              <option>B</option>
+              <option>C</option>
+            </select></div>
+          <div class="ff"><label>Turno</label><select>
+              <option selected>Mañana</option>
+              <option>Tarde</option>
+            </select></div>
+          <div class="ff"><label>Tipo de matrícula</label><select>
+              <option selected>Ratificación</option>
+              <option>Alumno nuevo</option>
+              <option>Traslado</option>
+            </select></div>
+          <div class="ff"><label>Requiere apoyo</label><select>
+              <option selected>No</option>
+              <option>SAANEE</option>
+              <option>Psicológico</option>
+              <option>Tutoría</option>
+            </select></div>
+          <div class="ff"><label>IE de procedencia</label><input type="text" value="IE San Marcos (alumno actual)">
+          </div>
           <div class="ff"><label>Año cursado anteriormente</label><input type="text" value="1° Primaria — 2024"></div>
-          <div class="ff"><label>¿Tiene notas desaprobatorias?</label><select><option selected>No</option><option>Sí</option></select></div>
+          <div class="ff"><label>¿Tiene notas desaprobatorias?</label><select>
+              <option selected>No</option>
+              <option>Sí</option>
+            </select></div>
         </div>
         <div class="fsect">Docente tutor y docentes asignados</div>
         <div class="fgrid fg2">
@@ -363,63 +586,233 @@
           <div class="ff"><label>Docente de Ciencias</label><input type="text" value="Prof. Sandra Chávez"></div>
         </div>
       </div>
- 
+
       <!-- ── TAB 4: NOTAS ── -->
       <div class="tab-panel" id="tNotas">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
-          <div><div class="fsect" style="margin-bottom:0">Registro de notas — 2025</div></div>
+        <div
+          style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+          <div>
+            <div class="fsect" style="margin-bottom:0">Registro de notas — 2025</div>
+          </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <select class="fsel">
               <option>Todos los bimestres</option>
-              <option>1° Bimestre</option><option>2° Bimestre</option><option>3° Bimestre</option><option>4° Bimestre</option>
+              <option>1° Bimestre</option>
+              <option>2° Bimestre</option>
+              <option>3° Bimestre</option>
+              <option>4° Bimestre</option>
             </select>
             <button class="btn-ghost" (click)="showToast('Exportando boleta...','info')">
-              <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Boleta
+              <svg viewBox="0 0 24 24">
+                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+              </svg>Boleta
             </button>
           </div>
         </div>
         <table class="notas-table">
-          <thead><tr><th>Área curricular</th><th>B1</th><th>B2</th><th>B3</th><th>B4</th><th>Promedio</th><th>Resultado</th><th>Progreso</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Área curricular</th>
+              <th>B1</th>
+              <th>B2</th>
+              <th>B3</th>
+              <th>B4</th>
+              <th>Promedio</th>
+              <th>Resultado</th>
+              <th>Progreso</th>
+            </tr>
+          </thead>
           <tbody>
-            <tr><td style="font-weight:600;color:var(--blue-dark)">Matemática</td><td><span class="nota-val nota-b">15</span></td><td><span class="nota-val nota-a">17</span></td><td><span class="nota-val nota-b">14</span></td><td><span class="nota-val nota-a">16</span></td><td><span class="nota-val nota-b" style="font-size:15px">15.5</span></td><td><span class="result-badge rb-aprobado">Aprobado</span></td><td><div class="prog-bar"><div class="prog-fill pf-b" style="width:77%"></div></div></td></tr>
-            <tr><td style="font-weight:600;color:var(--blue-dark)">Comunicación</td><td><span class="nota-val nota-a">18</span></td><td><span class="nota-val nota-a">17</span></td><td><span class="nota-val nota-a">19</span></td><td><span class="nota-val nota-a">18</span></td><td><span class="nota-val nota-a" style="font-size:15px">18.0</span></td><td><span class="result-badge rb-aprobado">Aprobado</span></td><td><div class="prog-bar"><div class="prog-fill pf-a" style="width:90%"></div></div></td></tr>
-            <tr><td style="font-weight:600;color:var(--blue-dark)">Ciencias Naturales</td><td><span class="nota-val nota-b">14</span></td><td><span class="nota-val nota-b">15</span></td><td><span class="nota-val nota-c">11</span></td><td><span class="nota-val nota-b">13</span></td><td><span class="nota-val nota-c" style="font-size:15px">13.3</span></td><td><span class="result-badge rb-aprobado">Aprobado</span></td><td><div class="prog-bar"><div class="prog-fill pf-c" style="width:66%"></div></div></td></tr>
-            <tr><td style="font-weight:600;color:var(--blue-dark)">Historia y Geografía</td><td><span class="nota-val nota-a">16</span></td><td><span class="nota-val nota-b">15</span></td><td><span class="nota-val nota-b">14</span></td><td><span class="nota-val nota-a">17</span></td><td><span class="nota-val nota-b" style="font-size:15px">15.5</span></td><td><span class="result-badge rb-aprobado">Aprobado</span></td><td><div class="prog-bar"><div class="prog-fill pf-b" style="width:77%"></div></div></td></tr>
-            <tr><td style="font-weight:600;color:var(--blue-dark)">Personal Social</td><td><span class="nota-val nota-a">17</span></td><td><span class="nota-val nota-a">18</span></td><td><span class="nota-val nota-a">16</span></td><td><span class="nota-val nota-a">19</span></td><td><span class="nota-val nota-a" style="font-size:15px">17.5</span></td><td><span class="result-badge rb-aprobado">Aprobado</span></td><td><div class="prog-bar"><div class="prog-fill pf-a" style="width:87%"></div></div></td></tr>
-            <tr><td style="font-weight:600;color:var(--blue-dark)">Arte y Cultura</td><td><span class="nota-val nota-a">18</span></td><td><span class="nota-val nota-a">20</span></td><td><span class="nota-val nota-a">19</span></td><td><span class="nota-val nota-a">18</span></td><td><span class="nota-val nota-a" style="font-size:15px">18.8</span></td><td><span class="result-badge rb-aprobado">Aprobado</span></td><td><div class="prog-bar"><div class="prog-fill pf-a" style="width:94%"></div></div></td></tr>
-            <tr><td style="font-weight:600;color:var(--blue-dark)">Educación Física</td><td><span class="nota-val nota-a">16</span></td><td><span class="nota-val nota-a">17</span></td><td><span class="nota-val nota-a">18</span></td><td><span class="nota-val nota-a">16</span></td><td><span class="nota-val nota-a" style="font-size:15px">16.8</span></td><td><span class="result-badge rb-aprobado">Aprobado</span></td><td><div class="prog-bar"><div class="prog-fill pf-a" style="width:84%"></div></div></td></tr>
-            <tr style="background:var(--gray-100)"><td style="font-weight:700;color:var(--blue-dark)">PROMEDIO GENERAL</td><td colspan="4"></td><td><span class="nota-val nota-b" style="font-size:16px;font-weight:700">16.5</span></td><td><span class="result-badge rb-aprobado">Promovido</span></td><td><div class="prog-bar"><div class="prog-fill pf-b" style="width:82%"></div></div></td></tr>
+            <tr>
+              <td style="font-weight:600;color:var(--blue-dark)">Matemática</td>
+              <td><span class="nota-val nota-b">15</span></td>
+              <td><span class="nota-val nota-a">17</span></td>
+              <td><span class="nota-val nota-b">14</span></td>
+              <td><span class="nota-val nota-a">16</span></td>
+              <td><span class="nota-val nota-b" style="font-size:15px">15.5</span></td>
+              <td><span class="result-badge rb-aprobado">Aprobado</span></td>
+              <td>
+                <div class="prog-bar">
+                  <div class="prog-fill pf-b" style="width:77%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:var(--blue-dark)">Comunicación</td>
+              <td><span class="nota-val nota-a">18</span></td>
+              <td><span class="nota-val nota-a">17</span></td>
+              <td><span class="nota-val nota-a">19</span></td>
+              <td><span class="nota-val nota-a">18</span></td>
+              <td><span class="nota-val nota-a" style="font-size:15px">18.0</span></td>
+              <td><span class="result-badge rb-aprobado">Aprobado</span></td>
+              <td>
+                <div class="prog-bar">
+                  <div class="prog-fill pf-a" style="width:90%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:var(--blue-dark)">Ciencias Naturales</td>
+              <td><span class="nota-val nota-b">14</span></td>
+              <td><span class="nota-val nota-b">15</span></td>
+              <td><span class="nota-val nota-c">11</span></td>
+              <td><span class="nota-val nota-b">13</span></td>
+              <td><span class="nota-val nota-c" style="font-size:15px">13.3</span></td>
+              <td><span class="result-badge rb-aprobado">Aprobado</span></td>
+              <td>
+                <div class="prog-bar">
+                  <div class="prog-fill pf-c" style="width:66%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:var(--blue-dark)">Historia y Geografía</td>
+              <td><span class="nota-val nota-a">16</span></td>
+              <td><span class="nota-val nota-b">15</span></td>
+              <td><span class="nota-val nota-b">14</span></td>
+              <td><span class="nota-val nota-a">17</span></td>
+              <td><span class="nota-val nota-b" style="font-size:15px">15.5</span></td>
+              <td><span class="result-badge rb-aprobado">Aprobado</span></td>
+              <td>
+                <div class="prog-bar">
+                  <div class="prog-fill pf-b" style="width:77%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:var(--blue-dark)">Personal Social</td>
+              <td><span class="nota-val nota-a">17</span></td>
+              <td><span class="nota-val nota-a">18</span></td>
+              <td><span class="nota-val nota-a">16</span></td>
+              <td><span class="nota-val nota-a">19</span></td>
+              <td><span class="nota-val nota-a" style="font-size:15px">17.5</span></td>
+              <td><span class="result-badge rb-aprobado">Aprobado</span></td>
+              <td>
+                <div class="prog-bar">
+                  <div class="prog-fill pf-a" style="width:87%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:var(--blue-dark)">Arte y Cultura</td>
+              <td><span class="nota-val nota-a">18</span></td>
+              <td><span class="nota-val nota-a">20</span></td>
+              <td><span class="nota-val nota-a">19</span></td>
+              <td><span class="nota-val nota-a">18</span></td>
+              <td><span class="nota-val nota-a" style="font-size:15px">18.8</span></td>
+              <td><span class="result-badge rb-aprobado">Aprobado</span></td>
+              <td>
+                <div class="prog-bar">
+                  <div class="prog-fill pf-a" style="width:94%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:var(--blue-dark)">Educación Física</td>
+              <td><span class="nota-val nota-a">16</span></td>
+              <td><span class="nota-val nota-a">17</span></td>
+              <td><span class="nota-val nota-a">18</span></td>
+              <td><span class="nota-val nota-a">16</span></td>
+              <td><span class="nota-val nota-a" style="font-size:15px">16.8</span></td>
+              <td><span class="result-badge rb-aprobado">Aprobado</span></td>
+              <td>
+                <div class="prog-bar">
+                  <div class="prog-fill pf-a" style="width:84%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr style="background:var(--gray-100)">
+              <td style="font-weight:700;color:var(--blue-dark)">PROMEDIO GENERAL</td>
+              <td colspan="4"></td>
+              <td><span class="nota-val nota-b" style="font-size:16px;font-weight:700">16.5</span></td>
+              <td><span class="result-badge rb-aprobado">Promovido</span></td>
+              <td>
+                <div class="prog-bar">
+                  <div class="prog-fill pf-b" style="width:82%"></div>
+                </div>
+              </td>
+            </tr>
           </tbody>
         </table>
-        <div style="margin-top:14px;padding:12px 14px;background:rgba(42,99,230,0.06);border-left:3px solid var(--blue-light);font-size:12.5px;color:var(--text-body);line-height:1.6;">
-          <strong style="color:var(--blue-dark)">Nota:</strong> Los bimestres 3 y 4 aún están en curso. Las notas mostradas son parciales hasta la última evaluación registrada.
+        <div
+          style="margin-top:14px;padding:12px 14px;background:rgba(42,99,230,0.06);border-left:3px solid var(--blue-light);font-size:12.5px;color:var(--text-body);line-height:1.6;">
+          <strong style="color:var(--blue-dark)">Nota:</strong> Los bimestres 3 y 4 aún están en curso. Las notas
+          mostradas son parciales hasta la última evaluación registrada.
         </div>
       </div>
- 
+
       <!-- ── TAB 5: ASISTENCIA ── -->
       <div class="tab-panel" id="tAsistencia">
         <div class="asist-header">
           <h4>Asistencia Mensual</h4>
           <div class="asist-nav">
-            <button class="anav-btn" (click)="navMes(-1)"><svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button>
+            <button class="anav-btn" (click)="navMes(-1)"><svg viewBox="0 0 24 24">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+              </svg></button>
             <div class="anav-mes" id="anav-label">Mayo 2025</div>
-            <button class="anav-btn" (click)="navMes(1)"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button>
+            <button class="anav-btn" (click)="navMes(1)"><svg viewBox="0 0 24 24">
+                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+              </svg></button>
           </div>
         </div>
         <div class="asist-legend">
-          <div class="al-item"><div class="al-dot" style="background:rgba(0,194,124,0.4)"></div>Presente</div>
-          <div class="al-item"><div class="al-dot" style="background:rgba(229,48,48,0.4)"></div>Falta</div>
-          <div class="al-item"><div class="al-dot" style="background:rgba(245,166,35,0.4)"></div>Tardanza</div>
-          <div class="al-item"><div class="al-dot" style="background:rgba(42,99,230,0.3)"></div>Justificada</div>
+          <div class="al-item">
+            <div class="al-dot" style="background:rgba(0,194,124,0.4)"></div>Presente
+          </div>
+          <div class="al-item">
+            <div class="al-dot" style="background:rgba(229,48,48,0.4)"></div>Falta
+          </div>
+          <div class="al-item">
+            <div class="al-dot" style="background:rgba(245,166,35,0.4)"></div>Tardanza
+          </div>
+          <div class="al-item">
+            <div class="al-dot" style="background:rgba(42,99,230,0.3)"></div>Justificada
+          </div>
         </div>
         <div class="asist-cal">
-          <div class="cal-day-header">Dom</div><div class="cal-day-header">Lun</div><div class="cal-day-header">Mar</div><div class="cal-day-header">Mié</div><div class="cal-day-header">Jue</div><div class="cal-day-header">Vie</div><div class="cal-day-header">Sáb</div>
+          <div class="cal-day-header">Dom</div>
+          <div class="cal-day-header">Lun</div>
+          <div class="cal-day-header">Mar</div>
+          <div class="cal-day-header">Mié</div>
+          <div class="cal-day-header">Jue</div>
+          <div class="cal-day-header">Vie</div>
+          <div class="cal-day-header">Sáb</div>
           <!-- Mayo 2025 empieza jueves -->
-          <div class="cal-day cd-vacio"></div><div class="cal-day cd-vacio"></div><div class="cal-day cd-vacio"></div><div class="cal-day cd-vacio"></div><div class="cal-day cd-presente">1</div><div class="cal-day cd-presente">2</div><div class="cal-day cd-finde">3</div>
-          <div class="cal-day cd-finde">4</div><div class="cal-day cd-presente">5</div><div class="cal-day cd-presente">6</div><div class="cal-day cd-presente">7</div><div class="cal-day cd-presente">8</div><div class="cal-day cd-tardanza">9</div><div class="cal-day cd-finde">10</div>
-          <div class="cal-day cd-finde">11</div><div class="cal-day cd-presente">12</div><div class="cal-day cd-falta">13</div><div class="cal-day cd-presente">14</div><div class="cal-day cd-presente">15</div><div class="cal-day cd-presente">16</div><div class="cal-day cd-finde">17</div>
-          <div class="cal-day cd-finde">18</div><div class="cal-day cd-presente">19</div><div class="cal-day cd-presente">20</div><div class="cal-day cd-justificada">21</div><div class="cal-day cd-presente">22</div><div class="cal-day cd-presente">23</div><div class="cal-day cd-finde">24</div>
-          <div class="cal-day cd-finde">25</div><div class="cal-day cd-presente">26</div><div class="cal-day cd-presente">27</div><div class="cal-day cd-presente">28</div><div class="cal-day cd-tardanza">29</div><div class="cal-day cd-presente">30</div><div class="cal-day cd-finde">31</div>
+          <div class="cal-day cd-vacio"></div>
+          <div class="cal-day cd-vacio"></div>
+          <div class="cal-day cd-vacio"></div>
+          <div class="cal-day cd-vacio"></div>
+          <div class="cal-day cd-presente">1</div>
+          <div class="cal-day cd-presente">2</div>
+          <div class="cal-day cd-finde">3</div>
+          <div class="cal-day cd-finde">4</div>
+          <div class="cal-day cd-presente">5</div>
+          <div class="cal-day cd-presente">6</div>
+          <div class="cal-day cd-presente">7</div>
+          <div class="cal-day cd-presente">8</div>
+          <div class="cal-day cd-tardanza">9</div>
+          <div class="cal-day cd-finde">10</div>
+          <div class="cal-day cd-finde">11</div>
+          <div class="cal-day cd-presente">12</div>
+          <div class="cal-day cd-falta">13</div>
+          <div class="cal-day cd-presente">14</div>
+          <div class="cal-day cd-presente">15</div>
+          <div class="cal-day cd-presente">16</div>
+          <div class="cal-day cd-finde">17</div>
+          <div class="cal-day cd-finde">18</div>
+          <div class="cal-day cd-presente">19</div>
+          <div class="cal-day cd-presente">20</div>
+          <div class="cal-day cd-justificada">21</div>
+          <div class="cal-day cd-presente">22</div>
+          <div class="cal-day cd-presente">23</div>
+          <div class="cal-day cd-finde">24</div>
+          <div class="cal-day cd-finde">25</div>
+          <div class="cal-day cd-presente">26</div>
+          <div class="cal-day cd-presente">27</div>
+          <div class="cal-day cd-presente">28</div>
+          <div class="cal-day cd-tardanza">29</div>
+          <div class="cal-day cd-presente">30</div>
+          <div class="cal-day cd-finde">31</div>
         </div>
         <div class="asist-resumen">
           <div class="ar-item ar-p"><strong>18</strong><span>Presencias</span></div>
@@ -428,217 +821,261 @@
           <div class="ar-item ar-j"><strong>1</strong><span>Justificadas</span></div>
         </div>
         <div style="margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <button class="btn-ghost" (click)="showToast('Exportando reporte de asistencia...','info')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar asistencia</button>
-          <button class="btn-ghost" (click)="showToast('Notificación enviada al apoderado','info')"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>Notificar apoderado</button>
+          <button class="btn-ghost" (click)="showToast('Exportando reporte de asistencia...','info')"><svg
+              viewBox="0 0 24 24">
+              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+            </svg>Exportar asistencia</button>
+          <button class="btn-ghost" (click)="showToast('Notificación enviada al apoderado','info')"><svg
+              viewBox="0 0 24 24">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+            </svg>Notificar apoderado</button>
         </div>
       </div>
- 
+
       <!-- ── TAB 6: DOCUMENTOS ── -->
       <div class="tab-panel" id="tDocumentos">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+        <div
+          style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
           <div class="fsect" style="margin-bottom:0">Documentación del estudiante</div>
-          <button class="btn-primary" style="padding:8px 16px;font-size:12px" (click)="showToast('Abriendo cargador de archivos...','info')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Cargar documento</button>
+          <button class="btn-primary" style="padding:8px 16px;font-size:12px"
+            (click)="showToast('Abriendo cargador de archivos...','info')"><svg viewBox="0 0 24 24">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>Cargar documento</button>
         </div>
         <div class="docs-grid">
           <div class="doc-item doc-ok">
-            <div class="doc-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg></div>
-            <div class="doc-info"><div class="doc-name">Partida de Nacimiento</div><div class="doc-sub">✓ Cargado el 15/03/2025 · PDF</div></div>
-            <div class="doc-action"><button (click)="showToast('Descargando partida...','info')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Ver</button></div>
+            <div class="doc-icon"><svg viewBox="0 0 24 24">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+              </svg></div>
+            <div class="doc-info">
+              <div class="doc-name">Partida de Nacimiento</div>
+              <div class="doc-sub">✓ Cargado el 15/03/2025 · PDF</div>
+            </div>
+            <div class="doc-action"><button (click)="showToast('Descargando partida...','info')"><svg
+                  viewBox="0 0 24 24">
+                  <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                </svg>Ver</button></div>
           </div>
           <div class="doc-item doc-ok">
-            <div class="doc-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-9 3h2v2h-2V7zm0 4h2v6h-2v-6zM7 7h4v2H7V7zm0 4h4v2H7v-2zm0 4h4v2H7v-2zm10 2h-4v-2h4v2zm0-4h-4v-2h4v2z"/></svg></div>
-            <div class="doc-info"><div class="doc-name">DNI del Estudiante</div><div class="doc-sub">✓ Cargado el 15/03/2025 · JPG</div></div>
-            <div class="doc-action"><button (click)="showToast('Descargando DNI...','info')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Ver</button></div>
+            <div class="doc-icon"><svg viewBox="0 0 24 24">
+                <path
+                  d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-9 3h2v2h-2V7zm0 4h2v6h-2v-6zM7 7h4v2H7V7zm0 4h4v2H7v-2zm0 4h4v2H7v-2zm10 2h-4v-2h4v2zm0-4h-4v-2h4v2z" />
+              </svg></div>
+            <div class="doc-info">
+              <div class="doc-name">DNI del Estudiante</div>
+              <div class="doc-sub">✓ Cargado el 15/03/2025 · JPG</div>
+            </div>
+            <div class="doc-action"><button (click)="showToast('Descargando DNI...','info')"><svg viewBox="0 0 24 24">
+                  <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                </svg>Ver</button></div>
           </div>
           <div class="doc-item doc-ok">
-            <div class="doc-icon"><svg viewBox="0 0 24 24"><path d="M12 15.2a3.2 3.2 0 100-6.4 3.2 3.2 0 000 6.4z"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15a5 5 0 110-10 5 5 0 010 10z"/></svg></div>
-            <div class="doc-info"><div class="doc-name">Fotografía del Estudiante</div><div class="doc-sub">✓ Cargado el 15/03/2025 · PNG</div></div>
-            <div class="doc-action"><button (click)="showToast('Descargando foto...','info')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Ver</button></div>
+            <div class="doc-icon"><svg viewBox="0 0 24 24">
+                <path d="M12 15.2a3.2 3.2 0 100-6.4 3.2 3.2 0 000 6.4z" />
+                <path
+                  d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15a5 5 0 110-10 5 5 0 010 10z" />
+              </svg></div>
+            <div class="doc-info">
+              <div class="doc-name">Fotografía del Estudiante</div>
+              <div class="doc-sub">✓ Cargado el 15/03/2025 · PNG</div>
+            </div>
+            <div class="doc-action"><button (click)="showToast('Descargando foto...','info')"><svg viewBox="0 0 24 24">
+                  <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                </svg>Ver</button></div>
           </div>
           <div class="doc-item doc-miss">
-            <div class="doc-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
-            <div class="doc-info"><div class="doc-name">Libreta de Notas / Cert. Estudios</div><div class="doc-sub">✗ Pendiente de carga</div></div>
-            <div class="doc-action"><button class="subir" (click)="showToast('Abriendo cargador...','info')"><svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>Subir</button></div>
+            <div class="doc-icon"><svg viewBox="0 0 24 24">
+                <path
+                  d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+              </svg></div>
+            <div class="doc-info">
+              <div class="doc-name">Libreta de Notas / Cert. Estudios</div>
+              <div class="doc-sub">✗ Pendiente de carga</div>
+            </div>
+            <div class="doc-action"><button class="subir" (click)="showToast('Abriendo cargador...','info')"><svg
+                  viewBox="0 0 24 24">
+                  <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z" />
+                </svg>Subir</button></div>
           </div>
           <div class="doc-item doc-ok">
-            <div class="doc-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
-            <div class="doc-info"><div class="doc-name">DNI del Apoderado</div><div class="doc-sub">✓ Cargado el 15/03/2025 · PDF</div></div>
-            <div class="doc-action"><button (click)="showToast('Descargando...','info')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Ver</button></div>
+            <div class="doc-icon"><svg viewBox="0 0 24 24">
+                <path
+                  d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+              </svg></div>
+            <div class="doc-info">
+              <div class="doc-name">DNI del Apoderado</div>
+              <div class="doc-sub">✓ Cargado el 15/03/2025 · PDF</div>
+            </div>
+            <div class="doc-action"><button (click)="showToast('Descargando...','info')"><svg viewBox="0 0 24 24">
+                  <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                </svg>Ver</button></div>
           </div>
           <div class="doc-item doc-pend">
-            <div class="doc-icon"><svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg></div>
-            <div class="doc-info"><div class="doc-name">Constancia de Vacunas</div><div class="doc-sub"> En revisión desde 20/03/2025</div></div>
-            <div class="doc-action"><button (click)="showToast('Abriendo documento...','info')"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5z"/></svg>Ver</button></div>
+            <div class="doc-icon"><svg viewBox="0 0 24 24">
+                <path
+                  d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" />
+              </svg></div>
+            <div class="doc-info">
+              <div class="doc-name">Constancia de Vacunas</div>
+              <div class="doc-sub"> En revisión desde 20/03/2025</div>
+            </div>
+            <div class="doc-action"><button (click)="showToast('Abriendo documento...','info')"><svg
+                  viewBox="0 0 24 24">
+                  <path
+                    d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5z" />
+                </svg>Ver</button></div>
           </div>
         </div>
         <div class="docs-note">
-          <strong>Leyenda:</strong> <span style="color:var(--success);font-weight:700">Verde</span> = documento recibido y validado · <span style="color:var(--error);font-weight:700">Rojo</span> = pendiente de entrega · <span style="color:var(--warning);font-weight:700">Amarillo</span> = en revisión por secretaría.
+          <strong>Leyenda:</strong> <span style="color:var(--success);font-weight:700">Verde</span> = documento recibido
+          y validado · <span style="color:var(--error);font-weight:700">Rojo</span> = pendiente de entrega · <span
+            style="color:var(--warning);font-weight:700">Amarillo</span> = en revisión por secretaría.
         </div>
       </div>
- 
+
       <!-- ── TAB 7: HISTORIAL ── -->
       <div class="tab-panel" id="tHistorial">
         <div class="hist-anio">
           <div class="hist-anio-title">Año Escolar 2025 — Actual <span>2° Grado A — Primaria</span></div>
           <table class="hist-table">
-            <thead><tr><th>Área</th><th>B1</th><th>B2</th><th>B3</th><th>B4</th><th>Promedio</th><th>Resultado</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Área</th>
+                <th>B1</th>
+                <th>B2</th>
+                <th>B3</th>
+                <th>B4</th>
+                <th>Promedio</th>
+                <th>Resultado</th>
+              </tr>
+            </thead>
             <tbody>
-              <tr><td>Matemática</td><td>15</td><td>17</td><td>14</td><td>—</td><td class="hist-nota hb-ap">15.3</td><td><span class="result-badge rb-aprobado">Aprobado</span></td></tr>
-              <tr><td>Comunicación</td><td>18</td><td>17</td><td>19</td><td>—</td><td class="hist-nota hb-ap">18.0</td><td><span class="result-badge rb-aprobado">Aprobado</span></td></tr>
-              <tr><td>Promedio general</td><td colspan="4"></td><td class="hist-nota hb-ap">16.5</td><td><span class="result-badge rb-aprobado">En curso</span></td></tr>
+              <tr>
+                <td>Matemática</td>
+                <td>15</td>
+                <td>17</td>
+                <td>14</td>
+                <td>—</td>
+                <td class="hist-nota hb-ap">15.3</td>
+                <td><span class="result-badge rb-aprobado">Aprobado</span></td>
+              </tr>
+              <tr>
+                <td>Comunicación</td>
+                <td>18</td>
+                <td>17</td>
+                <td>19</td>
+                <td>—</td>
+                <td class="hist-nota hb-ap">18.0</td>
+                <td><span class="result-badge rb-aprobado">Aprobado</span></td>
+              </tr>
+              <tr>
+                <td>Promedio general</td>
+                <td colspan="4"></td>
+                <td class="hist-nota hb-ap">16.5</td>
+                <td><span class="result-badge rb-aprobado">En curso</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
         <div class="hist-anio">
           <div class="hist-anio-title">Año Escolar 2024 <span>1° Grado A — Primaria</span></div>
           <table class="hist-table">
-            <thead><tr><th>Área</th><th>B1</th><th>B2</th><th>B3</th><th>B4</th><th>Promedio</th><th>Resultado</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Área</th>
+                <th>B1</th>
+                <th>B2</th>
+                <th>B3</th>
+                <th>B4</th>
+                <th>Promedio</th>
+                <th>Resultado</th>
+              </tr>
+            </thead>
             <tbody>
-              <tr><td>Matemática</td><td>14</td><td>15</td><td>13</td><td>16</td><td class="hist-nota hb-ap">14.5</td><td><span class="result-badge rb-aprobado">Aprobado</span></td></tr>
-              <tr><td>Comunicación</td><td>16</td><td>17</td><td>15</td><td>18</td><td class="hist-nota hb-ap">16.5</td><td><span class="result-badge rb-aprobado">Aprobado</span></td></tr>
-              <tr><td>Ciencias Naturales</td><td>12</td><td>10</td><td>11</td><td>13</td><td class="hist-nota hb-ap">11.5</td><td><span class="result-badge rb-recuperacion">Recuperación</span></td></tr>
-              <tr><td>Promedio general</td><td colspan="4"></td><td class="hist-nota hb-ap">14.2</td><td><span class="result-badge rb-aprobado">Promovido</span></td></tr>
+              <tr>
+                <td>Matemática</td>
+                <td>14</td>
+                <td>15</td>
+                <td>13</td>
+                <td>16</td>
+                <td class="hist-nota hb-ap">14.5</td>
+                <td><span class="result-badge rb-aprobado">Aprobado</span></td>
+              </tr>
+              <tr>
+                <td>Comunicación</td>
+                <td>16</td>
+                <td>17</td>
+                <td>15</td>
+                <td>18</td>
+                <td class="hist-nota hb-ap">16.5</td>
+                <td><span class="result-badge rb-aprobado">Aprobado</span></td>
+              </tr>
+              <tr>
+                <td>Ciencias Naturales</td>
+                <td>12</td>
+                <td>10</td>
+                <td>11</td>
+                <td>13</td>
+                <td class="hist-nota hb-ap">11.5</td>
+                <td><span class="result-badge rb-recuperacion">Recuperación</span></td>
+              </tr>
+              <tr>
+                <td>Promedio general</td>
+                <td colspan="4"></td>
+                <td class="hist-nota hb-ap">14.2</td>
+                <td><span class="result-badge rb-aprobado">Promovido</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
         <div style="margin-top:14px;">
-          <button class="btn-ghost" (click)="showToast('Generando historial académico completo...','info')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar historial completo</button>
+          <button class="btn-ghost" (click)="showToast('Generando historial académico completo...','info')"><svg
+              viewBox="0 0 24 24">
+              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+            </svg>Exportar historial completo</button>
         </div>
       </div>
- 
+
     </div><!-- /modal-body -->
     <div class="modal-footer">
-      <div><button class="btn-danger"  (click)="confirmarEliminar(alumnoSeleccionado?.nombre)"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>Eliminar</button></div>
+      <div><button class="btn-danger" (click)="confirmarEliminar(alumnoSeleccionado?.nombre)"><svg viewBox="0 0 24 24">
+            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+          </svg>Eliminar</button></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button class="btn-ghost" (click)="cerrarModal()">Cancelar</button>
-        <button class="btn-primary" (click)="showToast('Guardando datos del estudiante correctamente...','success')" (click)="guardarAlumno()">
-          <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>Guardar cambios</button>
+        <button class="btn-primary" (click)="showToast('Guardando datos del estudiante correctamente...','success')"
+          (click)="guardarAlumno()">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z" />
+          </svg>Guardar cambios</button>
       </div>
     </div>
   </div>
 </div>
- 
+
 <!-- CONFIRM DELETE -->
 <div class="confirm-overlay" *ngIf="confirmVisible" [class.show]="confirmVisible">
   <div class="confirm-box">
-    <div class="confirm-icon"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div>
+    <div class="confirm-icon"><svg viewBox="0 0 24 24">
+        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+      </svg></div>
     <h3>Eliminar Estudiante</h3>
-    <p>¿Eliminar a <strong>{{ alumnoAEliminar }}</strong>? Se perderán todos sus datos, documentos y historial académico. Esta acción no se puede deshacer.</p>
+    <p>¿Eliminar a <strong>{{ alumnoAEliminar }}</strong>? Se perderán todos sus datos, documentos y historial
+      académico. Esta acción no se puede deshacer.</p>
     <div class="confirm-actions">
       <button class="btn-secondary" (click)="cerrarConfirm()">Cancelar</button>
-      <button style="background:var(--error);color:var(--white);border:none;padding:10px 20px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;transition:background var(--transition)" (click)="ejecutarEliminar()" 
-      (click)="showToast('Estudiante eliminado correctamente', 'info')"
-      (mouseenter)="onDeleteButtonHover($event)" (mouseleave)="onDeleteButtonLeave($event)">
-        <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:white"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>Sí, eliminar
+      <button class="btn-confirm-delete" (click)="ejecutarEliminar()">
+        <svg viewBox="0 0 24 24">
+          <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+        </svg>
+        Sí, eliminar
       </button>
     </div>
   </div>
 </div>
- 
 
- 
-<!-- TOAST COMPONENT -->
+
+
+
 <app-toast></app-toast>
-<!-- <script>
-  let pendingDelete = null;
- 
-  // ─── VISTA ───
-  function cambiarVista(v) {
-    document.getElementById('vistaTabla').style.display = v === 'tabla' ? '' : 'none';
-    document.getElementById('vistaGrid').style.display = v === 'grid' ? '' : 'none';
-    document.getElementById('btnTabla').classList.toggle('active', v === 'tabla');
-    document.getElementById('btnGrid').classList.toggle('active', v === 'grid');
-  }
- 
-  // ─── FILTRAR ───
-  function filtrar(btn) {
-    document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    const f = btn.dataset.f;
-    document.querySelectorAll('#tablaEstudiantes tr').forEach(r => {
-      if (f === 'all') { r.style.display = ''; return; }
-      r.style.display = (r.dataset.status === f || r.dataset.nivel === f) ? '' : 'none';
-    });
-    document.querySelectorAll('.est-card').forEach(c => {
-      if (f === 'all') { c.style.display = ''; return; }
-      c.style.display = (c.dataset.status === f || c.dataset.nivel === f) ? '' : 'none';
-    });
-  }
- 
-  // ─── BUSCAR ───
-  function buscar(q) {
-    const s = q.toLowerCase();
-    document.querySelectorAll('#tablaEstudiantes tr').forEach(r => {
-      r.style.display = r.innerText.toLowerCase().includes(s) ? '' : 'none';
-    });
-    document.querySelectorAll('.est-card').forEach(c => {
-      c.style.display = c.innerText.toLowerCase().includes(s) ? '' : 'none';
-    });
-  }
- 
-  // ─── MODAL ───
-  function abrirModal(tipo) {
-    const t = document.getElementById('modalTitle');
-    if (tipo === 'nuevo') {
-      t.childNodes[t.childNodes.length - 1].textContent = ' Nuevo Estudiante';
-      document.getElementById('modalBadge').textContent = 'NUEVO';
-      switchTab(document.querySelector('.mtab'), 'tPerfil');
-    } else if (tipo === 'docs') {
-      t.childNodes[t.childNodes.length - 1].textContent = ' Documentos del Estudiante';
-      switchTab(document.querySelectorAll('.mtab')[5], 'tDocumentos');
-    } else {
-      t.childNodes[t.childNodes.length - 1].textContent = ' Ficha del Estudiante';
-      document.getElementById('modalBadge').textContent = 'ACTIVO';
-      switchTab(document.querySelector('.mtab'), 'tPerfil');
-    }
-    document.getElementById('modalEstudiante').classList.add('show');
-  }
-  function cerrarModal() { document.getElementById('modalEstudiante').classList.remove('show'); }
- 
-  // ─── GUARDAR ───
-  function guardarEstudiante() {
-    cerrarModal();
-    showToast('Datos del estudiante guardados correctamente');
-  }
- 
-  // ─── MES ASISTENCIA ───
-  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  let mesActual = 4;
-  function navMes(d) {
-    mesActual = (mesActual + d + 12) % 12;
-    document.getElementById('anav-label').textContent = meses[mesActual] + ' 2025';
-  }
- 
-  // ─── EXPORTAR ───
-  function exportar() { showToast('Exportando lista de estudiantes en CSV...', 'info'); }
- 
-  // ─── TOAST ───
-  let toastTimer;
-  function showToast(msg, type = 'ok') {
-    clearTimeout(toastTimer);
-    const t = document.getElementById('toast');
-    const icons = {
-      ok: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
-      info: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>',
-      err: '<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>',
-      warn: '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>'
-    };
-    t.className = `toast t-${type}`;
-    t.querySelector('svg').innerHTML = icons[type] || icons.ok;
-    document.getElementById('toastMsg').textContent = msg;
-    t.classList.add('show');
-    toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
-  }
- 
-  // ─── CERRAR CON OVERLAY ───
-  document.getElementById('modalEstudiante').addEventListener('click', e => { if (e.target === e.currentTarget) cerrarModal(); });
-  document.getElementById('confirmOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) cerrarConfirm(); });
- 
-  // ─── PAGINACIÓN ───
-  document.querySelectorAll('.pag-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      document.querySelectorAll('.pag-btn').forEach(b => { if (!b.querySelector('svg')) b.classList.remove('active'); });
-      if (!this.querySelector('svg')) this.classList.add('active');
-    });
-  });
-</script> -->

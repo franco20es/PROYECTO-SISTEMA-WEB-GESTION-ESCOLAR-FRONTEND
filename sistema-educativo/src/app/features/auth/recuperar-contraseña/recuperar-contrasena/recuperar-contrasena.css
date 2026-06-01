@@ -1,0 +1,286 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ==========================================================================
+   VARIABLES DE DISEÑO: SOLID LIGHT PREMIUM (REDUX)
+   ========================================================================== */
+:root {
+  --bg-main: #f8fafc;                /* Fondo gris frío limpio y descansado */
+  --card-bg: #ffffff;                /* Tarjeta sólida sin transparencias */
+  --border-color: #e2e8f0;           /* Líneas divisorias delgadas */
+  --border-focus: #6366f1;           /* Indigo focus */
+  
+  /* Textos de alta definición */
+  --text-main: #0f172a;              /* Slate oscuro */
+  --text-muted: #475569;
+  --text-dim: #94a3b8;
+  
+  /* Estados semánticos */
+  --success-bg: #f0fff4;
+  --success-border: #c6f6d5;
+  --success-text: #22543d;
+  
+  --error-bg: #fff5f5;
+  --error-border: #fed7d7;
+  --error-text: #c53030;
+  
+  /* Botón e interacciones */
+  --btn-bg: #0f172a;                 /* Botón oscuro industrial */
+  --btn-hover: #1e293b;
+  --transition: all 0.2s ease-in-out;
+}
+
+/* ==========================================================================
+   ESTRUCTURA PRINCIPAL (SPLIT 50/50 PERFECTO)
+   ========================================================================== */
+.master-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--bg-main);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  position: relative;
+}
+
+/* Mitad Izquierda: Ilustración */
+.brand-side {
+  flex: 1.1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border-right: 1px solid var(--border-color);
+}
+
+.brand-side img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Mitad Derecha: Formulario */
+.form-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.form-box {
+  width: 100%;
+  max-width: 440px;
+  background: var(--card-bg);
+  padding: 40px;
+  border: 1px solid var(--border-color);
+  border-radius: 0 !important; /* Estrictamente rectilíneo e industrial */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 
+              0 10px 15px -3px rgba(0, 0, 0, 0.03), 
+              0 4px 6px -4px rgba(0, 0, 0, 0.03);
+  animation: cardEntrance 0.4s ease-out;
+}
+
+/* ==========================================================================
+   CABECERA Y TEXTOS
+   ========================================================================== */
+.form-header {
+  margin-bottom: 28px;
+}
+
+.form-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 8px;
+  letter-spacing: -0.03em;
+}
+
+.form-header p {
+  color: var(--text-muted);
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   CAMPOS DE ENTRADA (INPUTS)
+   ========================================================================== */
+.input-group {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Icono del correo (sobre) */
+.input-wrapper > i {
+  position: absolute;
+  left: 14px;
+  color: var(--text-dim);
+  font-size: 16px;
+  transition: color 0.2s ease;
+  pointer-events: none;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 16px 12px 42px; /* Espacio extra a la izquierda para el icono */
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 0 !important; /* Esquinas rectas uniformes */
+  font-size: 14.5px;
+  color: var(--text-main);
+  transition: var(--transition);
+}
+
+.input-field::placeholder {
+  color: var(--text-dim);
+}
+
+/* Foco nítido y limpio */
+.input-field:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+}
+
+.input-wrapper:focus-within > i {
+  color: var(--border-focus);
+}
+
+/* ==========================================================================
+   BOTÓN PRINCIPAL SOLIDO
+   ========================================================================== */
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  background-color: black;
+  border: 1px solid transparent;
+  border-radius: 10px; 
+  color: #ffffff;
+  font-size: 14.5px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--transition);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--btn-hover);
+  transform: translateY(-0.5px);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  background-color: #f1f5f9;
+  border-color: var(--border-color);
+  color: var(--text-dim);
+  cursor: not-allowed;
+}
+
+/* Animación del reloj de arena al enviar */
+.bi-hourglass-split {
+  animation: spin 1.5s linear infinite;
+}
+
+/* Enlace inferior de regreso */
+.forgot-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.forgot-link:hover {
+  color: var(--text-main);
+}
+
+/* ==========================================================================
+   ALERTAS SEMÁNTICAS (SÓLIDAS Y LIMPIAS)
+   ========================================================================== */
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 0 !important; /* Esquinas rectas uniformes */
+  font-size: 13.5px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.alert-error {
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  color: var(--error-text);
+  cursor: pointer;
+  animation: alertShake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.alert-success {
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+  color: var(--success-text);
+}
+
+/* Transición limpia para las directivas estructurales de Angular (*ngIf) */
+ng-container {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ==========================================================================
+   ANIMACIONES CORE
+   ========================================================================== */
+@keyframes cardEntrance {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes alertShake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+  40%, 60% { transform: translate3d(3px, 0, 0); }
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .brand-side {
+    display: none; /* Esconde la imagen en móviles para centrar el flujo de recuperación */
+  }
+  .form-side {
+    padding: 24px;
+  }
+  .form-box {
+    padding: 32px 24px;
+  }
+}

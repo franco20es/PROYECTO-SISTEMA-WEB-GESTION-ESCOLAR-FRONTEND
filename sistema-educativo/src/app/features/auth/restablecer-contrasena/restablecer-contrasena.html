@@ -1,0 +1,166 @@
+<!-- restablecer-contrasena.html -->
+<div class="master-container">
+
+  <div class="brand-side">
+    <img src="https://res.cloudinary.com/dgrdonnsk/image/upload/v1778548033/Gemini_Generated_Image_474wb3474wb3474w_tk0x0d.png" alt="Logo">
+  </div>
+
+  <div class="form-side">
+    <div class="form-box">
+
+      <!-- ─── TOKEN INVÁLIDO ─── -->
+      <ng-container *ngIf="tokenInvalido">
+        <div class="error-icon">❌</div>
+        <div class="form-header" style="text-align:center">
+          <h2>Enlace inválido</h2>
+          <p>El enlace de recuperación no es válido o ha expirado.</p>
+        </div>
+        <a routerLink="/recuperar-contrasena-form" class="btn-primary" style="text-decoration:none;margin-top:16px;">
+          Solicitar nuevo enlace
+        </a>
+      </ng-container>
+
+      <!-- ─── ÉXITO ─── -->
+      <ng-container *ngIf="exitoso">
+        <div class="success-icon">✅</div>
+        <div class="form-header" style="text-align:center">
+          <h2>¡Contraseña actualizada!</h2>
+          <p>Tu contraseña fue restablecida correctamente. Serás redirigido al login en unos segundos...</p>
+        </div>
+        <div class="alert alert-success">
+          <i class="bi bi-check-circle"></i>
+          <span>Redirigiendo al inicio de sesión...</span>
+        </div>
+      </ng-container>
+
+      <!-- ─── FORMULARIO ─── -->
+      <ng-container *ngIf="!tokenInvalido && !exitoso">
+
+        <div class="form-header">
+          <h2>Nueva contraseña</h2>
+          <p>Crea una contraseña segura para tu cuenta.</p>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-error" (click)="errorMessage = ''">
+          <i class="bi bi-exclamation-circle"></i>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <form (ngSubmit)="restablecer()" #f="ngForm" novalidate>
+
+          <!-- Nueva contraseña -->
+          <div class="input-group">
+            <label for="pass">Nueva contraseña <span style="color:var(--error)">*</span></label>
+            <div class="input-wrapper">
+              <i class="bi bi-shield-lock"></i>
+              <input
+                id="pass"
+                [type]="mostrarPassword ? 'text' : 'password'"
+                class="input-field"
+                placeholder="Mínimo 8 caracteres"
+                [(ngModel)]="passwordNuevo"
+                name="passwordNuevo"
+                #passCtrl="ngModel"
+                required
+                minlength="8"
+                [pattern]="'^(?=.*[A-Z])(?=.*\\d).{8,}$'">
+              <button type="button" class="toggle-password" (click)="mostrarPassword = !mostrarPassword">
+                <i [class]="mostrarPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+              </button>
+            </div>
+
+            <!-- Validadores -->
+            <div *ngIf="passCtrl.invalid && passCtrl.touched">
+              <div *ngIf="passCtrl.errors?.['required']" class="field-hint error">
+                <i class="bi bi-x-circle-fill"></i> La contraseña es obligatoria
+              </div>
+              <div *ngIf="passCtrl.errors?.['minlength']" class="field-hint error">
+                <i class="bi bi-x-circle-fill"></i> Mínimo 8 caracteres
+              </div>
+              <div *ngIf="passCtrl.errors?.['pattern']" class="field-hint error">
+                <i class="bi bi-x-circle-fill"></i> Debe incluir al menos una mayúscula y un número
+              </div>
+            </div>
+
+            <!-- Reglas visuales -->
+            <div class="password-rules" *ngIf="passwordNuevo">
+              <div class="rule" [class.ok]="passwordNuevo.length >= 8">
+                <i [class]="passwordNuevo.length >= 8 ? 'bi bi-check-circle-fill' : 'bi bi-circle'"></i>
+                Mínimo 8 caracteres
+              </div>
+              <div class="rule" [class.ok]="/[A-Z]/.test(passwordNuevo)">
+                <i [class]="/[A-Z]/.test(passwordNuevo) ? 'bi bi-check-circle-fill' : 'bi bi-circle'"></i>
+                Una letra mayúscula
+              </div>
+              <div class="rule" [class.ok]="/\d/.test(passwordNuevo)">
+                <i [class]="/\d/.test(passwordNuevo) ? 'bi bi-check-circle-fill' : 'bi bi-circle'"></i>
+                Un número
+              </div>
+            </div>
+
+            <!-- Barra de fortaleza -->
+            <div class="strength-bar" *ngIf="passwordNuevo">
+              <div class="strength-track">
+                <div class="strength-fill"
+                     [style.width]="strengthPercent + '%'"
+                     [style.background]="strengthColor"></div>
+              </div>
+              <span class="strength-label" [style.color]="strengthColor">{{ strengthLabel }}</span>
+            </div>
+          </div>
+
+          <!-- Confirmar contraseña -->
+          <div class="input-group">
+            <label for="confirm">Confirmar contraseña <span style="color:var(--error)">*</span></label>
+            <div class="input-wrapper">
+              <i class="bi bi-shield-check"></i>
+              <input
+                id="confirm"
+                [type]="mostrarConfirmar ? 'text' : 'password'"
+                class="input-field"
+                placeholder="Repite tu contraseña"
+                [(ngModel)]="confirmarPassword"
+                name="confirmarPassword"
+                #confirmCtrl="ngModel"
+                required>
+              <button type="button" class="toggle-password" (click)="mostrarConfirmar = !mostrarConfirmar">
+                <i [class]="mostrarConfirmar ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+              </button>
+            </div>
+
+            <div *ngIf="confirmCtrl.invalid && confirmCtrl.touched">
+              <div *ngIf="confirmCtrl.errors?.['required']" class="field-hint error">
+                <i class="bi bi-x-circle-fill"></i> Confirma tu contraseña
+              </div>
+            </div>
+            <div *ngIf="confirmarPassword && confirmCtrl.touched">
+              <div *ngIf="!passwordsCoinciden" class="field-hint error">
+                <i class="bi bi-x-circle-fill"></i> Las contraseñas no coinciden
+              </div>
+              <div *ngIf="passwordsCoinciden" class="field-hint success">
+                <i class="bi bi-check-circle-fill"></i> Las contraseñas coinciden
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary"
+                  [disabled]="isLoading || f.invalid || !passwordsCoinciden">
+            <span *ngIf="!isLoading">
+              <i class="bi bi-lock-fill"></i> Restablecer contraseña
+            </span>
+            <span *ngIf="isLoading">
+              <i class="bi bi-hourglass-split"></i> Actualizando...
+            </span>
+          </button>
+
+        </form>
+      </ng-container>
+
+      <div style="text-align:center;margin-top:24px;">
+        <a routerLink="/login" class="forgot-link">← Volver al inicio de sesión</a>
+      </div>
+
+    </div>
+  </div>
+
+</div>

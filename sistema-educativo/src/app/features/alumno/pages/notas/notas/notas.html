@@ -4,44 +4,37 @@
     <h1>Mis Notas</h1>
   </div>
 
-  <!-- Resumen General -->
-  <div class="resumen-general">
-    <h3>Resumen general</h3>
-    <div class="resumen-grid">
-      <div class="resumen-item">
-        <span class="resumen-label">Campus</span>
-        <span class="resumen-value">Ica</span>
-      </div>
-      <div class="resumen-item">
-        <span class="resumen-label">Cantidad de créditos</span>
-        <span class="resumen-value">22</span>
-      </div>
-      <div class="resumen-item">
-        <span class="resumen-label">Cursos matriculados</span>
-        <span class="resumen-value">{{notas.length}}</span>
-      </div>
-      <div class="resumen-item">
-        <span class="resumen-label">Mérito - Orden</span>
-        <span class="resumen-value">-</span>
-      </div>
-      <div class="resumen-item">
-        <span class="resumen-label">Promedio</span>
-        <span class="resumen-value">{{promedio | number:'1.1-1'}}</span>
-      </div>
-      <div class="resumen-item">
-        <span class="resumen-label">Horas semanales</span>
-        <span class="resumen-value">26</span>
-      </div>
-      <div class="resumen-item">
-        <span class="resumen-label">Ciclo relativo</span>
-        <span class="resumen-value">07</span>
-      </div>
-      <div class="resumen-item">
-        <span class="resumen-label">Mérito - Pertenece</span>
-        <span class="resumen-value">-</span>
-      </div>
+ <div class="resumen-general">
+  <h3>Resumen general</h3>
+  <div class="resumen-grid">
+    <div class="resumen-item">
+      <span class="resumen-label">Campus</span>
+      <span class="resumen-value">Ica</span>
+    </div>
+    <div class="resumen-item">
+      <span class="resumen-label">Cursos matriculados</span>
+      <span class="resumen-value">{{ notas.length }}</span>
+    </div>
+    <div class="resumen-item">
+      <span class="resumen-label">Promedio general</span>
+      <span class="resumen-value">
+        {{ promedio > 0 ? (promedio | number:'1.1-1') : '—' }}
+      </span>
+    </div>
+    <div class="resumen-item">
+      <span class="resumen-label">Año académico</span>
+      <span class="resumen-value">{{ anio }}</span>
+    </div>
+    <div class="resumen-item">
+      <span class="resumen-label">Mérito - Orden</span>
+      <span class="resumen-value">—</span>
+    </div>
+    <div class="resumen-item">
+      <span class="resumen-label">Mérito - Pertenece</span>
+      <span class="resumen-value">—</span>
     </div>
   </div>
+</div>
 
   <!-- Cursos Accordion -->
   <div class="cursos-accordion">

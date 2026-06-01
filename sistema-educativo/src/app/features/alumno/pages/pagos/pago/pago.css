@@ -1,151 +1,333 @@
 :host {
+    /* Paleta de colores más moderna y sofisticada */
     --primary: #007AFF;
-    --fondo: #F2F2F7;
-    --texto: #000000;
-    --PagoCompletado: #28a745;
-    --PagoVencido: #dc3545;
-    --PagoPendiente: transparent;
+    --primary-hover: #0056b3;
+    --fondo: #F4F6F9; /* Un gris/azul muy suave que descansa la vista */
+    --card-bg: #FFFFFF;
+    --texto-principal: #1C1C1E; /* Evita el negro puro (#000) para mejor legibilidad */
+    --texto-secundario: #636366;
+    
+    /* Estados con colores sutiles y pasteles (más profesionales) */
+    --PagoCompletado: #34C759;
+    --PagoCompletado-bg: #EAFAF1;
+    --PagoVencido: #FF3B30;
+    --PagoVencido-bg: #FFEBEA;
+    --PagoPendiente: #FF9500;
+    --PagoPendiente-bg: #FFF5E6;
 }
 
+/* Contenedor general */
 .pago-container {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 20px;
+    max-width: 680px;
+    margin: 2rem auto;
+    padding: 24px;
+    background-color: var(--fondo);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--texto-principal);
 }
 
-.pagos-estado {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-
-    border-radius: 7px;
-}
-
-.separador {
-    margin: 1.5rem 0;
-    border: none;
-    border-top: 1px solid var(--primary);
+/* Header principal */
+.pago-header {
+    margin-bottom: 1.5rem;
 }
 
 .pago-header h2 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--texto-principal);
+    margin: 0 0 6px 0;
+    letter-spacing: -0.5px; /* Aspecto más premium */
+}
+
+.pago-header p {
+    color: var(--texto-secundario);
+    font-size: 0.95rem;
     margin: 0;
-    letter-spacing: 2px;
+}
+
+/* KPIs Modernizados como tarjetas flotantes */
+.pagos-kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    background: transparent;
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+.kpi-pago {
+    background: var(--card-bg);
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.kpi-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--texto-secundario);
+    font-weight: 600;
+}
+
+.kpi-valor {
+    font-size: 1.15rem;
     font-weight: 700;
-
-
-    display: inline-block;
-    padding-bottom: 5px;
+    color: var(--texto-principal);
 }
 
-.pagos-list {
-    margin-top: 1.5rem;
+.kpi-pago.deuda .kpi-valor {
+    color: var(--PagoVencido); /* Resalta la deuda con elegancia */
 }
 
-.pagos-pendientes {
+/* Adiós a las líneas azules toscas */
+.separador {
+    display: none; /* Las eliminamos; manejamos la separación con espacios y sombras */
+}
+
+/* Secciones de Estados (Pendientes / Pagados) */
+.pagos-estado {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 12px 4px;
+    margin-top: 1rem;
     cursor: pointer;
+}
+
+.pagos-estado h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--texto-principal);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+/* Badges numéricos */
+.badge-count {
+    font-size: 0.8rem;
+    background: #E8E8ED;
+    color: var(--texto-principal);
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.badge-count.pagado {
+    background: var(--PagoCompletado-bg);
+    color: var(--PagoCompletado);
 }
 
 .flecha {
+    font-size: 10px;
+    color: var(--texto-secundario);
+    transition: transform 0.2s ease;
+}
+
+.flecha.abierto {
+    transform: rotate(180deg);
+}
+
+/* Lista de ítems */
+.pagos-list {
+    margin-top: 0.5rem;
     display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* TARJETAS DE PAGO (Aquí matamos el blanco plano) */
+.pago-item {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    /* centra bien el icono */
-
-    width: 28px;
-    height: 28px;
-
-    font-size: 14px;
-    color: #555;
-
-    border-radius: 50%;
-    transition: all 0.25s ease;
+    padding: 16px;
+    background-color: var(--card-bg);
+    border-radius: 12px; /* Esquinas más suaves */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); /* Sombra ligera para dar profundidad */
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
     cursor: pointer;
 }
 
-
-.pago-item {
-    display: flex;
-    background-color: white;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    border-radius: 3px;
-    margin-bottom: 0.5rem;
-    transition: background 0.2s;
-}
-
 .pago-item:hover {
-    background-color: var(--fondo);
+    background-color: var(--card-bg);
+    transform: translateY(-2px); /* Efecto flotante al pasar el mouse */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 .pago-main-info {
     display: flex;
     flex-direction: column;
+    gap: 4px;
 }
 
 .pago-concepto {
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 0.9rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--texto-principal);
 }
 
 .pago-fecha {
     font-size: 0.8rem;
-    color: #555;
+    color: var(--texto-secundario);
 }
 
 .pago-details {
     text-align: right;
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
 }
 
 .pago-monto {
-    font-weight: bold;
+    font-weight: 700;
     font-size: 1.1rem;
+    color: var(--texto-principal);
 }
 
+/* Chips de estado modernos (reemplazan el texto plano aburrido) */
 .pago-estado {
-    font-size: 0.7rem;
+    font-size: 0.72rem;
+    font-weight: 700;
     text-transform: uppercase;
-    padding: 2px 8px;
-
-    margin-top: 4px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-top: 0;
+    display: inline-block;
 }
 
-/* Estados */
-.completado {
-    background-color: var(--PagoCompletado);
-    color: #fbffff;
+/* Dinamismo por estados */
+.pago-item .pago-estado.pendiente {
+    background-color: var(--PagoPendiente-bg);
+    color: var(--PagoPendiente);
 }
 
-.pendiente {
-    background-color: var(--PagoPendiente);
-    color: #1a1a1b;
-    font-weight: bold;
+.pago-item .pago-estado.vencido {
+    background-color: var(--PagoVencido-bg);
+    color: var(--PagoVencido);
 }
 
-.vencido {
-    background-color: var(--PagoVencido);
-    color: #fbffff;
+.pago-item .pago-estado.pagado {
+    background-color: var(--PagoCompletado-bg);
+    color: var(--PagoCompletado);
 }
 
+/* Botón "Ver Todo" */
 .btn-pago {
-    margin-top: 1.5rem;
+    margin-top: 2rem;
     width: 100%;
-    padding: 1rem;
-    background-color: #1a1a1b;
-    color: #fbffff;
+    padding: 14px;
+    background-color:#6366f1;
+    color: #ffffff;
     border: none;
-    font-weight: bold;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    transition: background-color 0.2s;
 }
 
 .btn-pago:hover {
-    background-color: #333;
+    background-color: var(--primary-hover);
+}
+
+/* Ajustes extras para el Modal (para que combine con el nuevo look) */
+.modal-detalle {
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    padding: 20px;
+}
+@media (max-width: 600px) {
+    /* Reducimos el padding general para ganar espacio en los bordes de la pantalla */
+    .pago-container {
+        margin: 0 auto;
+        padding: 16px 12px;
+    }
+
+    /* Achicamos un poco el título principal para que no ocupe 3 líneas */
+    .pago-header h2 {
+        font-size: 1.3rem;
+    }
+    
+    .pago-header p {
+        font-size: 0.85rem;
+    }
+
+    /* CLAVE: Los KPIs ya no se aplastan en 3 columnas; ahora se apilan verticalmente */
+    .pagos-kpis {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 1.5rem;
+    }
+
+    .kpi-pago {
+        padding: 12px 16px;
+        flex-direction: row; /* Ponemos la etiqueta al lado del valor */
+        justify-content: space-between; /* Uno a cada extremo */
+        align-items: center;
+    }
+
+    .kpi-label {
+        margin-bottom: 0; /* Alineación perfecta en horizontal */
+    }
+
+    .kpi-valor {
+        font-size: 1.05rem;
+    }
+
+    /* Ajustes en las filas de las pensiones */
+    .pago-item {
+        padding: 14px 12px;
+        gap: 10px; /* Evita que el texto choque si el nombre del mes es largo */
+    }
+
+    .pago-concepto {
+        font-size: 0.85rem; /* Un toque más pequeño para pantallas chicas */
+    }
+
+    .pago-fecha {
+        font-size: 0.75rem;
+    }
+
+    .pago-monto {
+        font-size: 0.95rem;
+    }
+
+    .pago-estado {
+        font-size: 0.65rem;
+        padding: 3px 6px; /* Chips más compactos para que no rompan la estructura */
+    }
+
+    /* Botón principal más cómodo para el pulgar */
+    .btn-pago {
+        margin-top: 1.5rem;
+        padding: 16px; /* Más alto para que sea más fácil de tocar en celulares */
+        font-size: 0.85rem;
+    }
+}
+
+/* Ajuste extra para pantallas ultra pequeñas (celulares antiguos o de gama baja) */
+@media (max-width: 360px) {
+    .pago-item {
+        flex-direction: column; /* Si la pantalla es diminuta, el precio baja */
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .pago-details {
+        text-align: left;
+        align-items: flex-start;
+        width: 100%;
+        flex-direction: row; /* El monto y el estado quedan lado a lado */
+        justify-content: space-between;
+    }
 }

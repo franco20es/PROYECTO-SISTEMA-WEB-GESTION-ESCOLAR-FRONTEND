@@ -38,6 +38,10 @@ export const INICIO_ROUTER: Routes = [
         path:'niveles',
         loadComponent: () => import('../inicio/components/niveles/niveles/niveles').then(m => m.Niveles)
       },
+      {
+        path:'matricula-online',
+        loadComponent: () => import('../inicio/components/matricula/matricula-online/matricula-online').then(m => m.MatriculaOnline)
+      }
     
      
     ]

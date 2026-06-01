@@ -1,7 +1,8 @@
 <div class="master-container">
 
     <div class="brand-side">
-      <img src="https://res.cloudinary.com/dgrdonnsk/image/upload/v1778548033/Gemini_Generated_Image_474wb3474wb3474w_tk0x0d.png" alt="">
+        <img src="https://res.cloudinary.com/dgrdonnsk/image/upload/v1778548033/Gemini_Generated_Image_474wb3474wb3474w_tk0x0d.png"
+            alt="">
     </div>
 
     <div class="form-side">
@@ -56,7 +57,9 @@
                             style="accent-color: var(--rose);">
                         Recordarme
                     </div>
-                    <a routerLink="/recuperar-contrasena-form" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                    <button type="button" class="forgot-link" (click)="router.navigate(['/recuperar-contrasena-form'])">
+                        ¿Olvidaste tu contraseña?
+                    </button>
                 </div>
 
                 <!-- Botón de Login -->

@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AutenticacionService } from '../../../../core/services/autenticacion/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -10,51 +11,47 @@ import { CommonModule } from '@angular/common';
   styleUrl: './login.css',
 })
 export class Login {
+  private auth = inject(AutenticacionService);
+  router = inject(Router); // ← sin private
+
   loginForm = {
     email: '',
     password: ''
   };
-  correo: string = 'rocacalderonjeanfranco@gmail.com';
-  password: string = '12345678';
-  googleLoading: boolean = false;
-  rememberMe: boolean = false;
-isLoading: boolean = false;
-  showPassword: boolean = false;
-  successMessage: string = '';
-  errorMessage: string = '';
-  constructor(private router: Router) {}
+  isLoading = false;
+  error = '';
+  successMessage = '';
+  errorMessage = '';
+  showPassword = false;
+  rememberMe = false;
 
-  login() {
-    if (this.loginForm.email === 'admin@ejemplo.com' && this.loginForm.password === '12345678') {
-      // Login exitoso (ficticio)
-      this.router.navigate(['/admin/dashboard']);
-      this.successMessage = 'Login exitoso';
+  login(): void {
+    if (!this.loginForm.email || !this.loginForm.password) {
+      this.error = 'Completa todos los campos';
+      return;
     }
-      if(this.loginForm.email==='alumno@ejemplo.com' && this.loginForm.password==='12345678') {
-        this.router.navigate(['/alumno/dashboard']);
+    this.isLoading = true;
+    this.error = '';
+
+    this.auth.login(this.loginForm.email, this.loginForm.password).subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        this.auth.redirigirSegunRol(res.rol);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.error = err.status === 401
+          ? 'Credenciales incorrectas'
+          : 'Error al conectar con el servidor';
       }
-      if(this.loginForm.email==='profesor@ejemplo.com' && this.loginForm.password==='12345678') {
-        this.router.navigate(['/profesor/cursos']);
-      }
-     else {
-      this.errorMessage = 'Credenciales incorrectas';
-    }
+    });
   }
 
   onSubmit() {
     this.login();
   }
 
-  onGoogleLogin() {
-    this.googleLoading = true;
-    // Simulación de login con Google
-    setTimeout(() => {
-      this.googleLoading = false;
-      alert('Login con Google (ficticio)');
-      this.router.navigate(['/admin/dashboard']);
-    }, 1500);
-  }
-
+ 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }

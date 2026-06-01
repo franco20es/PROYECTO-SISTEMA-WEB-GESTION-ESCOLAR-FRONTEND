@@ -29,10 +29,7 @@ export const ALUMNO_ROUTES: Routes = [
   {
     path: 'horario',
     loadComponent: () => import('./pages/horario/horario/horario').then(m => m.Horario)
-  }, {
-    path: 'dashboard',
-    loadComponent: () => import('./pages/dashboard/dashboard/dashboard').then(m => m.DashboardAlumno)
-  },
+  }, 
   {
     path: 'pagos',
     loadComponent: () => import('./pages/pagos/pago/pago').then(m => m.PagoAlumno)

@@ -1,128 +1,209 @@
-<section class="cursos-profesor">
-	<header class="page-header">
-		<div>
-			<p class="eyebrow">Panel docente</p>
-			<h1>Mis cursos asignados</h1>
-			<p class="subtitle">
-				Visualiza cursos de primaria y secundaria con avance del programa,
-				promedio de notas y acciones rápidas.
-			</p>
-		</div>
-	</header>
-
-	<section class="filters" aria-label="Filtros de cursos">
-		<label class="filter-input" for="buscarCurso">
-			<span>Buscar curso</span>
-			<input
-				id="buscarCurso"
-				type="search"
-				placeholder="Nombre, código o materia"
-				[ngModel]="searchTerm()"
-				(ngModelChange)="onSearchTerm($event)"
-			/>
-		</label>
-
-		<label class="filter-select" for="nivelCurso">
-			<span>Nivel</span>
-			<select
-				id="nivelCurso"
-				[ngModel]="nivelSeleccionado()"
-				(ngModelChange)="onNivel($event)"
-			>
-				<option value="Todos">Todos</option>
-				@for (nivel of niveles; track nivel) {
-					<option [value]="nivel">{{ nivel }}</option>
-				}
-			</select>
-		</label>
-
-		<label class="filter-select" for="estadoCurso">
-			<span>Estado</span>
-			<select
-				id="estadoCurso"
-				[ngModel]="estadoSeleccionado()"
-				(ngModelChange)="onEstado($event)"
-			>
-				<option value="Todos">Todos</option>
-				@for (estado of estados; track estado) {
-					<option [value]="estado">{{ estado }}</option>
-				}
-			</select>
-		</label>
-	</section>
-
-	@if (cursosFiltrados().length === 0) {
-		<article class="empty-state" aria-live="polite">
-			<h2>No hay cursos para mostrar</h2>
-			<p>Ajusta los filtros o verifica tus cursos asignados.</p>
-		</article>
-	} @else {
-		<section class="cards-grid" aria-label="Listado de cursos">
-			@for (curso of cursosFiltrados(); track curso.codigo) {
-				<article class="curso-card" [class]="'curso-card ' + areaClass(curso.area)">
-					<header class="card-header">
-						<div>
-							<p class="codigo">{{ curso.codigo }}</p>
-							<h2>{{ curso.nombre }}</h2>
-						</div>
-						<span class="estado" [class]="estadoClass(curso.estado)">
-							{{ curso.estado }}
-						</span>
-					</header>
-
-					<div class="meta-row">
-						<span class="chip">{{ curso.area }}</span>
-						<span class="chip">{{ curso.nivel }}</span>
-						<span class="chip">{{ curso.horasSemana }} h/sem</span>
-					</div>
-
-					<dl class="data-grid">
-						<div>
-							<dt>Alumnos</dt>
-							<dd>{{ curso.alumnos }}</dd>
-						</div>
-						<div>
-							<dt>Unidades</dt>
-							<dd>{{ curso.unidades }}</dd>
-						</div>
-						<div>
-							<dt>Promedio</dt>
-							<dd class="promedio">{{ formatPromedio(curso.promedioNotas) }}</dd>
-						</div>
-					</dl>
-
-					<div class="avance-wrap" aria-label="Avance del programa">
-						<div class="avance-head">
-							<span>Avance del programa</span>
-							<strong>{{ curso.avancePrograma }}%</strong>
-						</div>
-						<div class="progress-track" role="progressbar" [attr.aria-valuenow]="curso.avancePrograma" aria-valuemin="0" aria-valuemax="100">
-							<div class="progress-fill" [style.width.%]="curso.avancePrograma"></div>
-						</div>
-					</div>
-
-					<div class="horarios">
-						<h3>Horarios</h3>
-						<ul>
-							@for (horario of curso.horarios; track horario) {
-								<li>{{ horario }}</li>
-							}
-						</ul>
-					</div>
-
-					<footer class="card-actions">
-						<button type="button" class="btn ghost" (click)="verDetalle(curso)">
-							Ver detalle
-						</button>
-						<button type="button" class="btn secondary" (click)="editarCurso(curso)">
-							Editar curso
-						</button>
-						<button type="button" class="btn primary" (click)="registrarNotasAsistencia(curso)">
-							Registrar notas/asistencia
-						</button>
-					</footer>
-				</article>
-			}
-		</section>
-	}
-</section>
+<div class="main">
+ 
+<div class="hd">
+  <div class="hd-l"><div class="tag">Gestión académica</div><h1>Mis <em>Cursos</em></h1><p>Administra contenido, materiales y recursos educativos</p></div>
+  <div style="display:flex;gap:7px"><select class="fsel"><option>Bimestre II — 2025</option><option>Bimestre I — 2025</option></select></div>
+</div>
+ 
+<!-- CURSOS GRID -->
+<div class="c-grid" id="grid"></div>
+ 
+<!-- DETAIL PANEL -->
+<div class="detail" id="detail"></div>
+ 
+</div>
+ 
+<!-- MODAL: SUBIR MATERIAL -->
+<div class="mo" id="moUpload">
+  <div class="modal">
+    <div class="mh"><h3><svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>Subir material</h3><button class="mc" onclick="closeMo('moUpload')">✕</button></div>
+    <div class="mb">
+      <div class="ff"><label>Título del material <span class="req">*</span></label><input type="text" placeholder="Ej: Guía de ejercicios — Unidad 3"></div>
+      <div class="f2">
+        <div class="ff"><label>Unidad / Semana</label><select><option>Unidad 3 — Funciones</option><option>Unidad 2 — Sistemas</option><option>Unidad 1 — Ecuaciones</option><option>General</option></select></div>
+        <div class="ff"><label>Tipo</label><select><option>PDF</option><option>Documento Word</option><option>Hoja de cálculo</option><option>Imagen</option><option>Video</option><option>Enlace externo</option></select></div>
+      </div>
+      <div class="ff"><label>Descripción <span style="color:var(--g4);font-weight:400;text-transform:none">(opcional)</span></label><textarea placeholder="Breve descripción del material..."></textarea></div>
+      <div class="upload-zone" onclick="showToast('Archivo seleccionado','info')">
+        <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+        <p>Arrastra archivos aquí o <strong>haz click para seleccionar</strong></p>
+        <small>PDF, Word, Excel, Imágenes, Videos (máx 50MB)</small>
+      </div>
+    </div>
+    <div class="mf"><button class="btn btn-gh" onclick="closeMo('moUpload')">Cancelar</button><button class="btn btn-or" onclick="closeMo('moUpload');showToast('Material subido correctamente')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Subir material</button></div>
+  </div>
+</div>
+ 
+<!-- MODAL: NUEVO ANUNCIO -->
+<div class="mo" id="moAnuncio">
+  <div class="modal">
+    <div class="mh"><h3><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Nuevo anuncio</h3><button class="mc" onclick="closeMo('moAnuncio')">✕</button></div>
+    <div class="mb">
+      <div class="ff"><label>Título <span class="req">*</span></label><input type="text" placeholder="Ej: Cambio de fecha del examen parcial"></div>
+      <div class="ff"><label>Contenido <span class="req">*</span></label><textarea placeholder="Escribe el contenido del anuncio..." rows="4"></textarea></div>
+      <div class="f2">
+        <div class="ff"><label>Prioridad</label><select><option>Normal</option><option>Importante (fijado)</option></select></div>
+        <div class="ff"><label>Publicar</label><select><option>Ahora</option><option>Guardar borrador</option><option>Programar fecha</option></select></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn btn-gh" onclick="closeMo('moAnuncio')">Cancelar</button><button class="btn btn-or" onclick="closeMo('moAnuncio');showToast('Anuncio publicado')"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>Publicar</button></div>
+  </div>
+</div>
+ 
+<div class="toast t-ok" id="toast"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span id="toastMsg">OK</span></div>
+ 
+<script>
+const CURSOS=[
+  {id:1,name:'Matemáticas',color:'#2A63E6',secs:['3ro A','3ro B'],alum:62,mats:15,evals:8,hor:'Lun/Mié/Vie',prog:72},
+  {id:2,name:'Física',color:'#FF5B1F',secs:['4to A','4to B'],alum:59,mats:12,evals:6,hor:'Mar/Jue',prog:65},
+  {id:3,name:'Tutoría',color:'#F5A623',secs:['3ro A','3ro B'],alum:62,mats:4,evals:0,hor:'Mar/Vie',prog:80}
+];
+ 
+const svgBook='<path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>';
+ 
+function renderGrid(){
+  document.getElementById('grid').innerHTML=CURSOS.map(c=>`
+  <div class="cc" data-id="${c.id}" onclick="openCurso(${c.id})">
+    <div class="cc-bar" style="background:${c.color}"></div>
+    <div class="cc-body">
+      <div class="cc-row">
+        <div class="cc-ico" style="background:${c.color}12"><svg viewBox="0 0 24 24" style="fill:${c.color}">${svgBook}</svg></div>
+        <div class="cc-secs">${c.secs.map(s=>`<span>${s}</span>`).join('')}</div>
+      </div>
+      <div class="cc-name">${c.name}</div>
+      <div class="cc-meta"><div class="cc-mi"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg>${c.hor}</div><div class="cc-mi"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5z"/></svg>${c.alum} alumnos</div></div>
+      <div class="cc-stats">
+        <div class="cc-st"><strong>${c.mats}</strong><span>Materiales</span></div>
+        <div class="cc-st"><strong>${c.evals}</strong><span>Evaluaciones</span></div>
+        <div class="cc-st"><strong>${c.prog}%</strong><span>Avance</span></div>
+      </div>
+    </div>
+    <div class="cc-foot"><span>Gestionar curso</span><div class="cc-arrow"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div></div>
+  </div>`).join('');
+}
+renderGrid();
+ 
+let activeCurso=null;
+function openCurso(id){
+  document.querySelectorAll('.cc').forEach(c=>c.classList.remove('on'));
+  document.querySelector(`[data-id="${id}"]`).classList.add('on');
+  activeCurso=CURSOS.find(c=>c.id===id);
+  renderDetail();
+  setTimeout(()=>document.getElementById('detail').scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+function closeDetail(){document.getElementById('detail').classList.remove('show');document.querySelectorAll('.cc').forEach(c=>c.classList.remove('on'));activeCurso=null}
+ 
+function renderDetail(){
+  const c=activeCurso;
+  const d=document.getElementById('detail');d.classList.add('show');
+  d.innerHTML=`
+  <div class="dh"><div class="dh-bar" style="background:${c.color}"></div><div class="dh-inner"><div class="dh-bg">${c.name.toUpperCase()}</div><button class="dh-close" onclick="closeDetail()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+    <div class="dh-cnt"><div class="dh-left"><div class="dh-tag">${c.secs.join(' · ')} · Bimestre II</div><div class="dh-title">${c.name}</div><div class="dh-meta"><div class="dh-mi"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg>${c.hor}</div><div class="dh-mi"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5z"/></svg>${c.alum} alumnos</div><div class="dh-mi"><svg viewBox="0 0 24 24">${svgBook}</svg>${c.mats} materiales</div></div></div></div>
+  </div></div>
+  <div class="dtabs">
+    <div class="dt on" onclick="swDt(this,0)"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6z"/></svg><span>Contenido</span></div>
+    <div class="dt" onclick="swDt(this,1)"><svg viewBox="0 0 24 24"><path d="M2 12.5C2 9.46 4.46 7 7.5 7H18l-4-4 1.41-1.41L21.83 8l-6.42 6.41L14 13l4-4H7.5C5.57 9 4 10.57 4 12.5S5.57 16 7.5 16H11v2H7.5C4.46 18 2 15.54 2 12.5z"/></svg><span>Materiales</span><div class="dt-c">${c.mats}</div></div>
+    <div class="dt" onclick="swDt(this,2)"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span>Anuncios</span><div class="dt-c">3</div></div>
+    <div class="dt" onclick="swDt(this,3)"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg><span>Calendario</span></div>
+    <div class="dt" onclick="swDt(this,4)"><svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7z"/></svg><span>Accesos rápidos</span></div>
+  </div>
+  <div class="dp on" id="dt0">${tabContenido()}</div>
+  <div class="dp" id="dt1">${tabMateriales()}</div>
+  <div class="dp" id="dt2">${tabAnuncios()}</div>
+  <div class="dp" id="dt3">${tabCalendario()}</div>
+  <div class="dp" id="dt4">${tabAccesos()}</div>`;
+}
+ 
+function swDt(el,i){el.closest('.detail').querySelectorAll('.dt').forEach(t=>t.classList.remove('on'));el.classList.add('on');for(let j=0;j<5;j++)document.getElementById('dt'+j).classList.toggle('on',j===i)}
+ 
+/* ═══ TAB: CONTENIDO ═══ */
+function tabContenido(){
+  const units=[
+    {n:1,nm:'Ecuaciones lineales',sub:'4 temas · 8 sesiones · Completada',st:'done',topics:[
+      {t:'Introducción a ecuaciones',d:'3 Mar',s:'done'},{t:'Resolución paso a paso',d:'5 Mar',s:'done'},{t:'Problemas de aplicación',d:'10 Mar',s:'done'},{t:'Evaluación unidad 1',d:'12 Mar',s:'done'}]},
+    {n:2,nm:'Sistemas de ecuaciones',sub:'5 temas · 10 sesiones · Completada',st:'done',topics:[
+      {t:'Método de sustitución',d:'17 Mar',s:'done'},{t:'Método de igualación',d:'19 Mar',s:'done'},{t:'Método gráfico',d:'24 Mar',s:'done'},{t:'Problemas mixtos',d:'26 Mar',s:'done'},{t:'Evaluación unidad 2',d:'2 Abr',s:'done'}]},
+    {n:3,nm:'Funciones y gráficas',sub:'4 temas · 8 sesiones · En curso',st:'cur',topics:[
+      {t:'Concepto de función',d:'7 Abr',s:'done'},{t:'Función lineal',d:'9 Abr',s:'done'},{t:'Función cuadrática — Gráfica y vértice',d:'12 May',s:'cur'},{t:'Evaluación unidad 3',d:'21 May',s:'lock'}]},
+    {n:4,nm:'Estadística y probabilidad',sub:'3 temas · 6 sesiones · Bloqueada',st:'lock',topics:[
+      {t:'Medidas de tendencia central',d:'—',s:'lock'},{t:'Distribución de frecuencias',d:'—',s:'lock'},{t:'Introducción a probabilidad',d:'—',s:'lock'}]}
+  ];
+  return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px"><div class="stitle" style="margin-bottom:0">Unidades del curso</div><button class="btn btn-gh btn-sm" onclick="showToast('Función próximamente','info')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Agregar unidad</button></div>
+  ${units.map(u=>`<div class="unit ${u.st==='cur'?'open':''}" onclick="this.classList.toggle('open')"><div class="unit-h"><div class="unit-num">${u.n}</div><div class="unit-info"><div class="unit-nm">${u.nm}</div><div class="unit-sub">${u.sub}</div></div><span class="unit-badge ${u.st==='done'?'ub-done':u.st==='cur'?'ub-cur':'ub-lock'}">${u.st==='done'?'Completada':u.st==='cur'?'En curso':'Bloqueada'}</span><div class="unit-actions"><button class="ua" title="Editar" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="ua" title="Agregar tema" onclick="event.stopPropagation();showToast('Tema agregado','info')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button></div></div>
+  <div class="unit-body">${u.topics.map(tp=>`<div class="topic ${tp.s}"><svg viewBox="0 0 24 24"><path d="${tp.s==='done'?'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z':tp.s==='cur'?'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z':'M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z'}"/></svg>${tp.t}<div class="topic-right"><span class="topic-date">${tp.d}</span><button class="ua" title="Editar" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="ua" title="Eliminar" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div></div>`).join('')}</div></div>`).join('')}
+  <div class="recent"><div class="stitle">Subido recientemente</div>
+    <div class="rc-item"><div class="rc-ico mi-pdf"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div><div class="rc-info"><div class="rc-nm">Guía — Función cuadrática</div><div class="rc-date">Hoy 10:30 am</div></div></div>
+    <div class="rc-item"><div class="rc-ico mi-vid"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div><div class="rc-info"><div class="rc-nm">Video: Parábolas en GeoGebra</div><div class="rc-date">Ayer 3:15 pm</div></div></div>
+    <div class="rc-item"><div class="rc-ico mi-doc"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div><div class="rc-info"><div class="rc-nm">Ejercicios — Sistemas 2x2</div><div class="rc-date">10 May</div></div></div>
+  </div>`;
+}
+ 
+/* ═══ TAB: MATERIALES ═══ */
+function tabMateriales(){
+  const mats=[
+    {nm:'Guía — Función cuadrática',tipo:'pdf',unidad:'Unidad 3',date:'12 May 2025',upd:'Hoy',sz:'2.4 MB'},
+    {nm:'Video: Parábolas en GeoGebra',tipo:'vid',unidad:'Unidad 3',date:'11 May 2025',upd:'Ayer',sz:'18 min'},
+    {nm:'Ejercicios resueltos — Sistemas',tipo:'doc',unidad:'Unidad 2',date:'25 Abr 2025',upd:'25 Abr',sz:'1.8 MB'},
+    {nm:'Presentación — Método gráfico',tipo:'img',unidad:'Unidad 2',date:'20 Abr 2025',upd:'20 Abr',sz:'3.2 MB'},
+    {nm:'Formulario de ecuaciones',tipo:'pdf',unidad:'Unidad 1',date:'12 Mar 2025',upd:'12 Mar',sz:'480 KB'},
+    {nm:'Hoja de cálculo — Datos alumnos',tipo:'xls',unidad:'General',date:'5 Mar 2025',upd:'10 May',sz:'320 KB'},
+    {nm:'Simulador funciones — GeoGebra',tipo:'link',unidad:'Unidad 3',date:'8 May 2025',upd:'8 May',sz:'Enlace'},
+    {nm:'Video: Ecuaciones paso a paso',tipo:'vid',unidad:'Unidad 1',date:'5 Mar 2025',upd:'5 Mar',sz:'12 min'}
+  ];
+  const icoPath='<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>';
+  return `<div class="mat-toolbar"><div class="srch"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z"/></svg><input placeholder="Buscar material..."></div>
+  <div style="display:flex;gap:2px"><span class="chip on" onclick="fChip(this)">Todos</span><span class="chip" onclick="fChip(this)">PDF</span><span class="chip" onclick="fChip(this)">Video</span><span class="chip" onclick="fChip(this)">Doc</span><span class="chip" onclick="fChip(this)">Enlace</span></div>
+  <button class="btn btn-or" onclick="openMo('moUpload')"><svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>Subir material</button></div>
+  ${mats.map(m=>`<div class="mat-item"><div class="mi-ico mi-${m.tipo}"><svg viewBox="0 0 24 24">${icoPath}</svg></div><div class="mi-info"><div class="mi-nm">${m.nm}</div><div class="mi-meta"><span>${m.unidad}</span><span>Publicado: ${m.date}</span><span>Actualizado: ${m.upd}</span></div></div><div class="mi-right"><div class="mi-size">${m.sz}</div><div class="mi-actions"><button class="ua" title="Editar"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="ua" title="Descargar"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></button><button class="ua" title="Eliminar" onclick="showToast('Material eliminado','er')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div></div></div>`).join('')}
+  <div class="upload-zone" onclick="openMo('moUpload')"><svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg><p>Arrastra archivos aquí o <strong>haz click para subir</strong></p><small>PDF, Word, Excel, Imágenes, Videos, Enlaces (máx 50MB)</small></div>`;
+}
+ 
+/* ═══ TAB: ANUNCIOS ═══ */
+function tabAnuncios(){
+  return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="stitle" style="margin-bottom:0">Anuncios del curso</div><button class="btn btn-or" onclick="openMo('moAnuncio')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Nuevo anuncio</button></div>
+  <div class="anuncio an-pin"><div class="an-h"><div class="an-title">Indicaciones para el examen parcial <span class="an-pin-badge">FIJADO</span></div><div class="an-date">10 May 2025</div></div><div class="an-body">El examen parcial del Bimestre II será el miércoles 21 de mayo. Incluye las unidades 1 a 3. Traer calculadora científica y regla. Pueden consultar el formulario compartido en materiales.</div><div class="an-foot"><button class="btn btn-sm btn-gh">Editar</button><button class="btn btn-sm btn-gh" style="color:var(--er);border-color:rgba(229,48,48,.3)">Eliminar</button></div></div>
+  <div class="anuncio an-normal"><div class="an-h"><div class="an-title">Material nuevo disponible — Unidad 3</div><div class="an-date">8 May 2025</div></div><div class="an-body">Se ha subido la guía de ejercicios de función cuadrática y un video explicativo de GeoGebra. Revisar antes de la próxima clase.</div><div class="an-foot"><button class="btn btn-sm btn-gh">Editar</button><button class="btn btn-sm btn-gh" style="color:var(--er);border-color:rgba(229,48,48,.3)">Eliminar</button></div></div>
+  <div class="anuncio an-normal"><div class="an-h"><div class="an-title">Resultados de Práctica #4 publicados</div><div class="an-date">6 May 2025</div></div><div class="an-body">Las notas de la práctica calificada #4 ya están disponibles. Promedio: 15.6. Consultar en el módulo de calificaciones.</div><div class="an-foot"><button class="btn btn-sm btn-gh">Editar</button></div></div>
+  <div class="anuncio an-draft"><div class="an-h"><div class="an-title">Recuperación para desaprobados <span class="an-draft-badge">BORRADOR</span></div><div class="an-date">Sin publicar</div></div><div class="an-body">Se programará una evaluación de recuperación para alumnos desaprobados en el parcial...</div><div class="an-foot"><button class="btn btn-sm btn-ok">Publicar</button><button class="btn btn-sm btn-gh">Editar</button></div></div>`;
+}
+ 
+/* ═══ TAB: CALENDARIO ═══ */
+function tabCalendario(){
+  const days=['LUN','MAR','MIÉ','JUE','VIE','SÁB','DOM'];
+  const events={5:'<span class="cal-ev ce-tarea">Tarea #5</span>',8:'<span class="cal-ev ce-mat">Guía subida</span>',9:'<span class="cal-ev ce-exam">Exam. Fís.</span>',12:'<span class="cal-ev ce-mat">Video subido</span><span class="cal-ev ce-anun">Anuncio</span>',15:'<span class="cal-ev ce-tarea">Tarea #6</span>',19:'<span class="cal-ev ce-exam">Lab. Ondas</span>',21:'<span class="cal-ev ce-exam">Exam. Parcial</span>',28:'<span class="cal-ev ce-exam">Exam. Final</span>'};
+  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="stitle" style="margin-bottom:0">Mayo 2025</div><div style="display:flex;gap:4px"><span style="display:flex;align-items:center;gap:3px;font-size:9.5px;color:var(--g6)"><span class="cal-ev ce-exam" style="display:inline;padding:1px 4px">Eval</span></span><span style="display:flex;align-items:center;gap:3px;font-size:9.5px;color:var(--g6)"><span class="cal-ev ce-tarea" style="display:inline;padding:1px 4px">Tarea</span></span><span style="display:flex;align-items:center;gap:3px;font-size:9.5px;color:var(--g6)"><span class="cal-ev ce-mat" style="display:inline;padding:1px 4px">Material</span></span><span style="display:flex;align-items:center;gap:3px;font-size:9.5px;color:var(--g6)"><span class="cal-ev ce-anun" style="display:inline;padding:1px 4px">Anuncio</span></span></div></div>`;
+  html+='<div class="cal-month">';
+  days.forEach(d=>html+=`<div class="cal-dh">${d}</div>`);
+  // April fill (30 starts Thu)
+  for(let i=0;i<3;i++) html+=`<div class="cal-d other"><div class="cal-dn">${28+i}</div></div>`;
+  for(let d=1;d<=31;d++){
+    const isToday=d===12;
+    html+=`<div class="cal-d ${isToday?'today':''}"><div class="cal-dn">${d}</div>${events[d]||''}</div>`;
+  }
+  // June fill
+  html+=`<div class="cal-d other"><div class="cal-dn">1</div></div>`;
+  html+='</div>';
+  return html;
+}
+ 
+/* ═══ TAB: ACCESOS RÁPIDOS ═══ */
+function tabAccesos(){
+  return `<div class="stitle">Acceso rápido a otros módulos</div>
+  <div class="quick-grid">
+    <div class="qk-card" onclick="showToast('Redirigiendo a evaluaciones...','info')"><div class="qk-h"><div class="qk-ico" style="background:rgba(229,48,48,.08)"><svg viewBox="0 0 24 24" style="fill:var(--er)"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div><div class="qk-title">Evaluaciones del curso</div></div><div class="qk-list"><div class="qk-item">Examen Parcial — Bim. II <span>08/05</span></div><div class="qk-item">Práctica Calificada #4 <span>05/05</span></div><div class="qk-item">Tarea #6 — Función cuadrática <span>15/05</span></div></div></div>
+    <div class="qk-card" onclick="showToast('Redirigiendo a calificaciones...','info')"><div class="qk-h"><div class="qk-ico" style="background:rgba(42,99,230,.08)"><svg viewBox="0 0 24 24" style="fill:var(--bl)"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg></div><div class="qk-title">Calificaciones pendientes</div></div><div class="qk-list"><div class="qk-item">Exam. Parcial 3ro A <span style="color:var(--or)">4 pend.</span></div><div class="qk-item">Tarea #5 3ro B <span style="color:var(--or)">30 pend.</span></div></div></div>
+    <div class="qk-card" onclick="showToast('Redirigiendo a asistencia...','info')"><div class="qk-h"><div class="qk-ico" style="background:rgba(0,194,124,.08)"><svg viewBox="0 0 24 24" style="fill:var(--ok)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="qk-title">Asistencia del curso</div></div><div class="qk-list"><div class="qk-item">Promedio asistencia <span style="color:var(--ok)">94%</span></div><div class="qk-item">Alumnos en riesgo <span style="color:var(--er)">2</span></div></div></div>
+    <div class="qk-card" onclick="showToast('Redirigiendo a estudiantes...','info')"><div class="qk-h"><div class="qk-ico" style="background:rgba(245,166,35,.08)"><svg viewBox="0 0 24 24" style="fill:var(--wa)"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5z"/></svg></div><div class="qk-title">Mis estudiantes</div></div><div class="qk-list"><div class="qk-item">3ro A <span>32 alumnos</span></div><div class="qk-item">3ro B <span>30 alumnos</span></div></div></div>
+  </div>`;
+}
+ 
+/* ═══ HELPERS ═══ */
+function fChip(el){el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on')}
+function openMo(id){document.getElementById(id).classList.add('show')}
+function closeMo(id){document.getElementById(id).classList.remove('show')}
+document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('show')}));
+ 
+let _t;
+const _ti={ok:'<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',info:'<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>',warn:'<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>',er:'<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>'};
+function showToast(msg,type='ok'){clearTimeout(_t);const t=document.getElementById('toast');t.className='toast t-'+type;t.querySelector('svg').innerHTML=_ti[type]||_ti.ok;document.getElementById('toastMsg').textContent=msg;t.classList.add('show');_t=setTimeout(()=>t.classList.remove('show'),3200)}
+</script>

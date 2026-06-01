@@ -1,0 +1,650 @@
+<!-- ─── HERO ─────────────────────────────────────────────────── -->
+<section class="page-hero">
+  <div class="hero-inner">
+    <div>
+      <div class="breadcrumb">
+        <a href="inicio.html">Inicio</a>
+        <span>›</span>
+        <span class="cur">Matrícula Online</span>
+      </div>
+      <h1 class="hero-h">MATRÍCULA<br><em>ONLINE</em> 2026</h1>
+      <p class="hero-sub">Registra a tu hijo/a desde la comodidad de tu hogar. Tu solicitud será revisada por nuestro equipo y recibirás confirmación por correo electrónico en 24–48 horas hábiles.</p>
+    </div>
+    <div class="hero-steps">
+      <div class="step-badge"><div class="step-num">01</div><div class="step-txt"><strong>Datos del Alumno</strong><span>Información personal</span></div></div>
+      <div class="step-badge"><div class="step-num">02</div><div class="step-txt"><strong>Datos del Apoderado</strong><span>Contacto y responsable</span></div></div>
+      <div class="step-badge"><div class="step-num">03</div><div class="step-txt"><strong>Nivel y Documentos</strong><span>Grado y archivos</span></div></div>
+      <div class="step-badge"><div class="step-num">04</div><div class="step-txt"><strong>Confirmación</strong><span>Revisar y enviar</span></div></div>
+    </div>
+  </div>
+  <div class="page-hero-bg">MATRÍCULA</div>
+  <div class="hero-bar"></div>
+</section>
+ 
+<!-- ─── PROGRESS ─────────────────────────────────────────────── -->
+<div class="progress-wrap">
+  <div class="progress-inner" id="progressBar">
+    <div class="prog-step active" onclick="goStep(1)">
+      <div class="prog-circle" id="pc1">1</div>
+      <div class="prog-label">Alumno</div>
+    </div>
+    <div class="prog-step" onclick="goStep(2)">
+      <div class="prog-circle" id="pc2">2</div>
+      <div class="prog-label">Apoderado</div>
+    </div>
+    <div class="prog-step" onclick="goStep(3)">
+      <div class="prog-circle" id="pc3">3</div>
+      <div class="prog-label">Nivel y Docs</div>
+    </div>
+    <div class="prog-step" onclick="goStep(4)">
+      <div class="prog-circle" id="pc4">4</div>
+      <div class="prog-label">Confirmación</div>
+    </div>
+  </div>
+</div>
+ 
+<!-- ─── MAIN ──────────────────────────────────────────────────── -->
+<div class="main-outer">
+<div class="main-wrap">
+ 
+  <!-- FORM PANEL -->
+  <div class="form-panel">
+ 
+    <!-- ══ PASO 1: ALUMNO ══ -->
+    <div id="step1">
+      <div class="fp-header">
+        <div class="fp-ico">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V21.6h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        </div>
+        <div>
+          <div class="fp-title">Datos del Alumno</div>
+          <div class="fp-sub">Información personal del estudiante a matricular</div>
+        </div>
+      </div>
+      <div class="fp-body">
+        <div class="section-label">Información personal</div>
+        <div class="form-grid c2">
+          <div class="field">
+            <label>Nombres <span class="req">*</span></label>
+            <input type="text" id="a_nombres" placeholder="Nombres del alumno">
+          </div>
+          <div class="field">
+            <label>Apellidos <span class="req">*</span></label>
+            <input type="text" id="a_apellidos" placeholder="Apellidos completos">
+          </div>
+          <div class="field">
+            <label>DNI del Alumno <span class="req">*</span></label>
+            <input type="text" id="a_dni" placeholder="12345678" maxlength="8">
+          </div>
+          <div class="field">
+            <label>Fecha de Nacimiento <span class="req">*</span></label>
+            <input type="date" id="a_fnac">
+          </div>
+          <div class="field">
+            <label>Género <span class="req">*</span></label>
+            <select id="a_genero">
+              <option value="">Seleccionar...</option>
+              <option>Masculino</option>
+              <option>Femenino</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Lugar de Nacimiento</label>
+            <input type="text" placeholder="Ciudad, Región">
+          </div>
+          <div class="field s2">
+            <label>Dirección de Residencia <span class="req">*</span></label>
+            <input type="text" id="a_direccion" placeholder="Av. / Jr. / Calle, número, urbanización">
+          </div>
+          <div class="field">
+            <label>Distrito</label>
+            <input type="text" placeholder="Distrito">
+          </div>
+          <div class="field">
+            <label>Provincia</label>
+            <input type="text" placeholder="Provincia" value="Ica">
+          </div>
+        </div>
+ 
+        <div class="divider"></div>
+        <div class="section-label">Información académica previa</div>
+        <div class="form-grid c2">
+          <div class="field">
+            <label>Institución de procedencia</label>
+            <input type="text" placeholder="Nombre del colegio anterior (si aplica)">
+          </div>
+          <div class="field">
+            <label>Último grado cursado</label>
+            <select>
+              <option value="">Ninguno (Inicial)</option>
+              <option>1° Primaria</option><option>2° Primaria</option><option>3° Primaria</option>
+              <option>4° Primaria</option><option>5° Primaria</option><option>6° Primaria</option>
+              <option>1° Secundaria</option><option>2° Secundaria</option><option>3° Secundaria</option>
+              <option>4° Secundaria</option><option>5° Secundaria</option>
+            </select>
+          </div>
+          <div class="field s2">
+            <label>¿Tiene alguna necesidad educativa especial?</label>
+            <select>
+              <option value="">No</option>
+              <option>Dificultades de aprendizaje</option>
+              <option>Discapacidad visual</option>
+              <option>Discapacidad auditiva</option>
+              <option>Discapacidad motora</option>
+              <option>Trastorno del espectro autista</option>
+              <option>Otro (especificar en observaciones)</option>
+            </select>
+          </div>
+        </div>
+ 
+        <div class="btn-row">
+          <button class="btn-next" onclick="nextStep(1)" style="flex:1">
+            Continuar: Datos del Apoderado
+            <svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5v10z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ══ PASO 2: APODERADO ══ -->
+    <div id="step2" style="display:none">
+      <div class="fp-header">
+        <div class="fp-ico">
+          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        </div>
+        <div>
+          <div class="fp-title">Datos del Apoderado</div>
+          <div class="fp-sub">Padre, madre o tutor legal responsable del alumno</div>
+        </div>
+      </div>
+      <div class="fp-body">
+        <div class="section-label">Información del apoderado</div>
+        <div class="form-grid c2">
+          <div class="field">
+            <label>Nombres <span class="req">*</span></label>
+            <input type="text" id="ap_nombres" placeholder="Nombres completos">
+          </div>
+          <div class="field">
+            <label>Apellidos <span class="req">*</span></label>
+            <input type="text" id="ap_apellidos" placeholder="Apellidos completos">
+          </div>
+          <div class="field">
+            <label>DNI <span class="req">*</span></label>
+            <input type="text" id="ap_dni" placeholder="12345678" maxlength="8">
+          </div>
+          <div class="field">
+            <label>Relación con el alumno <span class="req">*</span></label>
+            <select id="ap_relacion">
+              <option value="">Seleccionar...</option>
+              <option>Padre</option><option>Madre</option><option>Tutor legal</option>
+              <option>Abuelo/a</option><option>Tío/a</option><option>Otro familiar</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Teléfono / Celular <span class="req">*</span></label>
+            <input type="tel" id="ap_telefono" placeholder="987 654 321">
+          </div>
+          <div class="field">
+            <label>Teléfono alternativo</label>
+            <input type="tel" placeholder="Fijo o emergencia">
+          </div>
+          <div class="field s2">
+            <label>Correo Electrónico <span class="req">*</span></label>
+            <input type="email" id="ap_email" placeholder="correo@ejemplo.com">
+          </div>
+          <div class="field">
+            <label>Ocupación</label>
+            <input type="text" placeholder="Profesión u ocupación">
+          </div>
+          <div class="field">
+            <label>Lugar de trabajo</label>
+            <input type="text" placeholder="Empresa o institución">
+          </div>
+        </div>
+ 
+        <div class="divider"></div>
+        <div class="section-label">Contacto de emergencia</div>
+        <div class="form-grid c2">
+          <div class="field">
+            <label>Nombre</label>
+            <input type="text" placeholder="Nombre completo del contacto">
+          </div>
+          <div class="field">
+            <label>Teléfono</label>
+            <input type="tel" placeholder="987 000 111">
+          </div>
+        </div>
+ 
+        <div class="btn-row">
+          <button class="btn-prev" onclick="prevStep(2)">← Anterior</button>
+          <button class="btn-next" onclick="nextStep(2)">
+            Continuar: Nivel y Documentos
+            <svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5v10z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ══ PASO 3: NIVEL Y DOCUMENTOS ══ -->
+    <div id="step3" style="display:none">
+      <div class="fp-header">
+        <div class="fp-ico">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+        </div>
+        <div>
+          <div class="fp-title">Nivel, Grado y Documentos</div>
+          <div class="fp-sub">Selecciona el nivel educativo y sube los documentos requeridos</div>
+        </div>
+      </div>
+      <div class="fp-body">
+        <div class="section-label">Nivel y grado solicitado</div>
+        <div class="form-grid c3">
+          <div class="field">
+            <label>Nivel educativo <span class="req">*</span></label>
+            <select id="nivel" onchange="updateGrados()">
+              <option value="">Seleccionar...</option>
+              <option>Inicial</option>
+              <option>Primaria</option>
+              <option>Secundaria</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Grado solicitado <span class="req">*</span></label>
+            <select id="grado">
+              <option value="">Primero selecciona nivel</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Turno preferido</label>
+            <select>
+              <option>Mañana (7:00 — 1:00 pm)</option>
+              <option>Tarde (1:00 — 6:30 pm)</option>
+              <option>Sin preferencia</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Año académico <span class="req">*</span></label>
+            <select><option>2026</option><option>2025</option></select>
+          </div>
+          <div class="field">
+            <label>Tipo de matrícula</label>
+            <select>
+              <option>Alumno nuevo</option>
+              <option>Traslado de otro colegio</option>
+              <option>Repitente</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>¿Tiene hermanos en la IE?</label>
+            <select>
+              <option>No</option>
+              <option>Sí (descuento aplicable)</option>
+            </select>
+          </div>
+          <div class="field s3">
+            <label>Observaciones adicionales</label>
+            <textarea placeholder="Información adicional relevante para la matrícula..."></textarea>
+          </div>
+        </div>
+ 
+        <div class="divider"></div>
+        <div class="section-label">Carga de documentos</div>
+        <div class="form-grid c2">
+          <div class="field">
+            <label>Partida de nacimiento <span class="req">*</span></label>
+            <div class="upload-zone" onclick="subirDoc('doc1','Partida_nacimiento.pdf')">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+              <p>Click para subir <strong>PDF o imagen</strong></p>
+              <small>Máx. 5MB · Original o copia legalizada</small>
+            </div>
+            <div class="uploaded-files" id="doc1"></div>
+          </div>
+          <div class="field">
+            <label>DNI del alumno</label>
+            <div class="upload-zone" onclick="subirDoc('doc2','DNI_alumno.jpg')">
+              <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>
+              <p>Click para subir <strong>PDF o imagen</strong></p>
+              <small>Máx. 5MB · Si cuenta con DNI</small>
+            </div>
+            <div class="uploaded-files" id="doc2"></div>
+          </div>
+          <div class="field">
+            <label>Libreta / Certificado de estudios <span class="req">*</span></label>
+            <div class="upload-zone" onclick="subirDoc('doc3','Libreta_notas.pdf')">
+              <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+              <p>Click para subir <strong>PDF o imagen</strong></p>
+              <small>Máx. 5MB · Del año anterior</small>
+            </div>
+            <div class="uploaded-files" id="doc3"></div>
+          </div>
+          <div class="field">
+            <label>Fotos carnet (2 unidades)</label>
+            <div class="upload-zone" onclick="subirDoc('doc4','Fotos_carnet.jpg')">
+              <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+              <p>Click para subir <strong>JPG o PNG</strong></p>
+              <small>Máx. 2MB · Fondo blanco, recientes</small>
+            </div>
+            <div class="uploaded-files" id="doc4"></div>
+          </div>
+        </div>
+ 
+        <div class="btn-row">
+          <button class="btn-prev" onclick="prevStep(3)">← Anterior</button>
+          <button class="btn-next" onclick="nextStep(3)">
+            Continuar: Confirmación
+            <svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5v10z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ══ PASO 4: CONFIRMACIÓN ══ -->
+    <div id="step4" style="display:none">
+      <div class="fp-header">
+        <div class="fp-ico">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        </div>
+        <div>
+          <div class="fp-title">Confirmar Solicitud</div>
+          <div class="fp-sub">Revisa los datos antes de enviar tu solicitud de matrícula</div>
+        </div>
+      </div>
+      <div class="fp-body">
+        <div class="section-label">Resumen de la solicitud</div>
+ 
+        <div class="resumen-grid">
+          <div class="resumen-card">
+            <div class="resumen-card-label">Alumno</div>
+            <div class="resumen-card-body" id="resumen_alumno"></div>
+          </div>
+          <div class="resumen-card">
+            <div class="resumen-card-label">Apoderado</div>
+            <div class="resumen-card-body" id="resumen_apoderado"></div>
+          </div>
+        </div>
+ 
+        <div class="resumen-nivel">
+          <div class="resumen-nivel-label">Nivel y grado solicitado</div>
+          <div class="resumen-nivel-val" id="resumen_nivel"></div>
+        </div>
+ 
+        <div class="terms-box">
+          <p>Al enviar esta solicitud, autorizo a la I.E. EduCampus a procesar mis datos personales conforme a la <a href="#">Política de Privacidad</a> y la Ley N° 29733 de Protección de Datos Personales del Perú.</p>
+          <div class="check-row">
+            <input type="checkbox" id="terms1">
+            <label for="terms1">Declaro que los datos proporcionados son verídicos y correctos.</label>
+          </div>
+          <div class="check-row">
+            <input type="checkbox" id="terms2">
+            <label for="terms2">Acepto los términos y condiciones del proceso de matrícula.</label>
+          </div>
+          <div class="check-row">
+            <input type="checkbox" id="terms3">
+            <label for="terms3">Autorizo recibir comunicaciones sobre el proceso de matrícula por email y WhatsApp.</label>
+          </div>
+        </div>
+ 
+        <div class="btn-row">
+          <button class="btn-prev" onclick="prevStep(4)">← Anterior</button>
+        </div>
+        <button class="btn-submit-final" onclick="submitForm()">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          ENVIAR SOLICITUD DE MATRÍCULA
+        </button>
+        <p style="font-size:11px;color:var(--g4);text-align:center;margin-top:12px;line-height:1.6">
+          Tu solicitud quedará en estado <strong>PENDIENTE</strong> hasta ser revisada por el equipo administrativo.<br>
+          Recibirás respuesta en 24–48 horas hábiles a tu correo electrónico.
+        </p>
+      </div>
+    </div>
+ 
+    <!-- ══ SUCCESS ══ -->
+    <div class="success-state" id="successState">
+      <div class="success-ico">
+        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+      </div>
+      <div class="success-h">¡SOLICITUD ENVIADA!</div>
+      <p class="success-p">Tu solicitud de matrícula ha sido registrada exitosamente. Nuestro equipo la revisará y te contactará a la brevedad.</p>
+      <div class="success-code" id="codigoSolicitud">SOL-2026-0001</div>
+      <p class="success-note">Guarda este código para hacer seguimiento de tu solicitud.<br>Recibirás un correo de confirmación en los próximos minutos.</p>
+      <a href="inicio.html" class="btn-next" style="margin-top:24px;max-width:280px;text-decoration:none">
+        Volver al inicio
+        <svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5v10z"/></svg>
+      </a>
+    </div>
+ 
+  </div>
+ 
+  <!-- ─── SIDEBAR ─────────────────────────────────────────────── -->
+  <div class="sidebar" id="sidebarPanel">
+ 
+    <div class="sb-card">
+      <div class="sb-card-header">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+        <span>Documentos requeridos</span>
+      </div>
+      <div class="sb-card-body">
+        <div class="req-item"><div class="req-dot"></div><div class="req-txt"><strong>Partida de nacimiento</strong><span>Original o copia legalizada</span></div></div>
+        <div class="req-item"><div class="req-dot"></div><div class="req-txt"><strong>DNI del alumno</strong><span>Si cuenta con uno</span></div></div>
+        <div class="req-item"><div class="req-dot"></div><div class="req-txt"><strong>DNI del apoderado</strong><span>Padre, madre o tutor</span></div></div>
+        <div class="req-item"><div class="req-dot"></div><div class="req-txt"><strong>Libreta de notas</strong><span>Del año anterior o certificado</span></div></div>
+        <div class="req-item"><div class="req-dot"></div><div class="req-txt"><strong>2 fotos carnet</strong><span>Fondo blanco, recientes</span></div></div>
+        <div class="req-item"><div class="req-dot"></div><div class="req-txt"><strong>Constancia de vacunas</strong><span>Solo Inicial y Primaria</span></div></div>
+      </div>
+    </div>
+ 
+    <div class="sb-card">
+      <div class="sb-card-header">
+        <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+        <span>Fechas importantes</span>
+      </div>
+      <div class="sb-card-body">
+        <div class="info-row"><span class="lbl">Ratificaciones</span><span class="val">10 Jun — 30 Jun</span></div>
+        <div class="info-row"><span class="lbl">Alumnos nuevos</span><span class="val ok">1 Jul — 31 Jul</span></div>
+        <div class="info-row"><span class="lbl">Inicio de clases</span><span class="val">11 Mar 2026</span></div>
+        <div class="info-row"><span class="lbl">Año académico</span><span class="val">2026</span></div>
+      </div>
+    </div>
+ 
+    <div class="sb-card">
+      <div class="sb-card-header">
+        <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>
+        <span>Niveles disponibles</span>
+      </div>
+      <div class="sb-card-body">
+        <div class="nivel-pills">
+         
+          <span class="nivel-pill">Primaria</span>
+          <span class="nivel-pill">Secundaria</span>
+        </div>
+        <p style="font-size:11.5px;color:var(--g6);line-height:1.6;margin-top:12px">Cupos limitados por sección. Se asignan por orden de llegada y disponibilidad.</p>
+      </div>
+    </div>
+ 
+    <div class="sb-card">
+      <div class="sb-card-header">
+        <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        <span>¿Necesitas ayuda?</span>
+      </div>
+      <div class="sb-card-body">
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+          056-223456 / 987 123 456
+        </div>
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          matriculas@educampus.edu.pe
+        </div>
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+          Lun–Vie: 8:00am – 4:30pm
+        </div>
+      </div>
+    </div>
+ 
+  </div>
+</div>
+</div>
+ 
+<!-- ─── TOAST ─────────────────────────────────────────────────── -->
+<div class="toast" id="toast" style="background:var(--ok)">
+  <svg viewBox="0 0 24 24" id="toastIco"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+  <span id="toastMsg">OK</span>
+</div>
+ 
+<script>
+let currentStep = 1;
+ 
+const gradosPorNivel = {
+  'Inicial': ['3 años','4 años','5 años'],
+  'Primaria': ['1° Primaria','2° Primaria','3° Primaria','4° Primaria','5° Primaria','6° Primaria'],
+  'Secundaria': ['1° Secundaria','2° Secundaria','3° Secundaria','4° Secundaria','5° Secundaria']
+};
+ 
+function updateGrados() {
+  const nivel = document.getElementById('nivel').value;
+  const grado = document.getElementById('grado');
+  grado.innerHTML = '<option value="">Seleccionar grado...</option>';
+  if (gradosPorNivel[nivel]) {
+    gradosPorNivel[nivel].forEach(g => {
+      const opt = document.createElement('option');
+      opt.textContent = g;
+      grado.appendChild(opt);
+    });
+  }
+}
+ 
+function goStep(n) {
+  if (n > currentStep) return;
+  mostrarPaso(n);
+}
+ 
+function nextStep(from) {
+  if (!validarPaso(from)) return;
+  mostrarPaso(from + 1);
+  if (from + 1 === 4) construirResumen();
+}
+ 
+function prevStep(from) {
+  mostrarPaso(from - 1);
+}
+ 
+function mostrarPaso(n) {
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('step' + i);
+    if (el) el.style.display = i === n ? 'block' : 'none';
+  }
+  currentStep = n;
+  actualizarProgress(n);
+  window.scrollTo({ top: 120, behavior: 'smooth' });
+}
+ 
+function actualizarProgress(n) {
+  document.querySelectorAll('.prog-step').forEach((s, i) => {
+    s.classList.remove('active', 'done');
+    const circle = s.querySelector('.prog-circle');
+    if (i + 1 === n) { s.classList.add('active'); circle.textContent = i + 1; }
+    else if (i + 1 < n) { s.classList.add('done'); circle.textContent = '✓'; }
+    else { circle.textContent = i + 1; }
+  });
+}
+ 
+function validarPaso(step) {
+  const reglas = {
+    1: [['a_nombres','Nombres del alumno'],['a_apellidos','Apellidos del alumno'],['a_dni','DNI del alumno'],['a_fnac','Fecha de nacimiento'],['a_genero','Género'],['a_direccion','Dirección']],
+    2: [['ap_nombres','Nombres del apoderado'],['ap_apellidos','Apellidos del apoderado'],['ap_dni','DNI del apoderado'],['ap_relacion','Relación con el alumno'],['ap_telefono','Teléfono'],['ap_email','Correo electrónico']],
+    3: [['nivel','Nivel educativo'],['grado','Grado solicitado']]
+  };
+  if (reglas[step]) {
+    for (const [id, nombre] of reglas[step]) {
+      const el = document.getElementById(id);
+      if (el && !el.value.trim()) {
+        showToast('Completa el campo: ' + nombre, 'er');
+        el.focus();
+        el.style.borderColor = 'var(--er)';
+        setTimeout(() => el.style.borderColor = '', 2500);
+        return false;
+      }
+    }
+  }
+  return true;
+}
+ 
+function construirResumen() {
+  const nombres = document.getElementById('a_nombres').value;
+  const apellidos = document.getElementById('a_apellidos').value;
+  const dni = document.getElementById('a_dni').value;
+  const fnac = document.getElementById('a_fnac').value;
+  const genero = document.getElementById('a_genero').value;
+ 
+  document.getElementById('resumen_alumno').innerHTML =
+    `<strong>${nombres} ${apellidos}</strong><br>DNI: ${dni}<br>Nacimiento: ${fnac}<br>Género: ${genero}`;
+ 
+  const apNombres = document.getElementById('ap_nombres').value;
+  const apApellidos = document.getElementById('ap_apellidos').value;
+  const apDni = document.getElementById('ap_dni').value;
+  const apRelacion = document.getElementById('ap_relacion').value;
+  const apTel = document.getElementById('ap_telefono').value;
+  const apEmail = document.getElementById('ap_email').value;
+ 
+  document.getElementById('resumen_apoderado').innerHTML =
+    `<strong>${apNombres} ${apApellidos}</strong><br>DNI: ${apDni}<br>Relación: ${apRelacion}<br>Tel: ${apTel}<br>Email: ${apEmail}`;
+ 
+  const nivel = document.getElementById('nivel').value;
+  const grado = document.getElementById('grado').value;
+  document.getElementById('resumen_nivel').innerHTML =
+    `<strong>${nivel} — ${grado}</strong> &nbsp;|&nbsp; Año académico 2026`;
+}
+ 
+function submitForm() {
+  if (!document.getElementById('terms1').checked) {
+    showToast('Debes declarar que los datos son verídicos', 'er'); return;
+  }
+  if (!document.getElementById('terms2').checked) {
+    showToast('Debes aceptar los términos y condiciones', 'er'); return;
+  }
+ 
+  // ─── CONECTAR CON BACKEND ──────────────────────────────────
+  // fetch('http://localhost:8080/api/v1/solicitudes-matricula', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({ alumno: {...}, apoderado: {...}, nivel, grado })
+  // }).then(r => r.json()).then(data => mostrarExito(data.codigo))
+ 
+  const codigo = 'SOL-2026-' + String(Math.floor(Math.random() * 9000) + 1000);
+  document.getElementById('codigoSolicitud').textContent = codigo;
+ 
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('step' + i);
+    if (el) el.style.display = 'none';
+  }
+  document.getElementById('successState').style.display = 'flex';
+  document.getElementById('sidebarPanel').style.display = 'none';
+  document.getElementById('progressBar').style.display = 'none';
+  showToast('¡Solicitud enviada exitosamente!', 'ok');
+}
+ 
+function subirDoc(id, nombre) {
+  const c = document.getElementById(id);
+  c.innerHTML = `<div class="uf-item">
+    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+    <span class="uf-nm">${nombre}</span>
+    <button class="uf-del" onclick="document.getElementById('${id}').innerHTML=''">✕</button>
+  </div>`;
+  showToast('Archivo cargado correctamente', 'ok');
+}
+ 
+let _t;
+function showToast(msg, tipo = 'ok') {
+  clearTimeout(_t);
+  const t = document.getElementById('toast');
+  const colors = { ok: 'var(--ok)', er: 'var(--er)', wa: '#F5A623' };
+  t.style.background = colors[tipo] || colors.ok;
+  document.getElementById('toastIco').innerHTML = tipo === 'ok'
+    ? '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>'
+    : '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>';
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  _t = setTimeout(() => t.classList.remove('show'), 3200);
+}
+</script>

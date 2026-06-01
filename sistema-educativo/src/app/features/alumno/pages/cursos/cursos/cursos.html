@@ -1,6 +1,7 @@
 <!-- PAGE HEADER -->
 <div class="page-header" style="margin-top:24px;">
   <div>
+    
    
     <div class="ph-title">Mis <em>Cursos</em></div>
     <div class="ph-sub">Selecciona un curso para ver tareas, evaluaciones, notas y más</div>
@@ -20,7 +21,7 @@
 </div>
 
 <!-- ════ GRID DE CURSOS ════ -->
-<div class="courses-grid">
+<div class="courses-grid" >
   <div class="course-card" *ngFor="let c of courses" (click)="onOpenCourse(c)" [attr.data-id]="c.id">
 
     <div class="cc-body">

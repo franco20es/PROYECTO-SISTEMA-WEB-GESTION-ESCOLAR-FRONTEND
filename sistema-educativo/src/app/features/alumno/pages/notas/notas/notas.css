@@ -580,170 +580,148 @@ hr {
   }
 }
 
+/* ==========================================================================
+   RESPONSIVIDAD PREMIUM OPTIMIZADA PARA CELULARES (Evita el estiramiento)
+   ========================================================================== */
+
 @media (max-width: 768px) {
   .notas-container {
-    padding: 16px 12px;
+    padding: 14px 10px;
   }
-  
-  .notas-header h1 {
-    font-size: 24px;
-  }
-  
-  .resumen-general {
-    padding: 20px;
-  }
-  
-  .resumen-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-  
-  .accordion-header {
-    padding: 14px 16px;
-  }
-  
-  .accordion-title {
-    font-size: 14px;
-  }
-  
-  .accordion-body {
-    padding: 18px 16px;
-  }
-  
-  .info-row {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-  
-  .stats-row {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-  
-  .modal-content-asistencia {
-    width: 94%;
-    max-height: 92vh;
-    padding: 24px 20px;
-    border-radius: 16px;
-  }
-  
-  .leyenda-items {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-  
-  .dias-row {
-    gap: 8px;
-  }
-  
-  .dia {
-    flex: 0 0 calc(50% - 4px);
-    padding: 10px 8px;
-  }
-  
-  .dia-label {
-    font-size: 11px;
-  }
-}
 
-@media (max-width: 480px) {
-  .notas-container {
-    padding: 12px 10px;
+  .notas-header h1 {
+    font-size: 22px;
+    margin-bottom: 8px;
   }
-  
+
+  /* Resumen General en 2 columnas en lugar de 1 sola lista larga */
   .resumen-general {
     padding: 16px;
-    border-radius: 10px;
+    border-radius: 12px;
+    margin-bottom: 16px;
   }
-  
-  .accordion-header {
-    padding: 12px 14px;
+
+  .resumen-grid {
+    grid-template-columns: repeat(2, 1fr) !important; /* Forzamos rejilla compacta */
+    gap: 12px;
   }
-  
+
+  .resumen-general h3 {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  /* --- El bloque interno del Accordion (La clave del cambio) --- */
   .accordion-body {
     padding: 16px 14px;
-  }
-  
-  .promedio-section {
+    display: flex;
     flex-direction: column;
-    gap: 8px;
-    text-align: center;
-    padding: 14px;
+    gap: 16px; /* Separación inteligente sin usar <hr> */
   }
-  
+
+  /* Eliminamos las líneas <hr> rústicas que quitan espacio útil */
+  .accordion-body hr {
+    display: none; 
+  }
+
+  /* Forzamos que los datos del docente pasen a 2 columnas bien alineadas */
+  .info-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px;
+    margin-bottom: 0;
+  }
+
+  /* Forzamos que las estadísticas pasen a 2 columnas en lugar de estirarse hacia abajo */
   .stats-row {
-    gap: 10px;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px;
   }
-  
+
+  /* Estilo de mini-tarjeta para cada dato técnico */
+  .stat-item, .info-col {
+    background: #f8f9fa;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #f1f1f4;
+  }
+
+  /* Etiquetas y valores más pequeños y balanceados */
+  .info-label, .stat-label {
+    font-size: 11px;
+    color: #8e8e93;
+    font-weight: 500;
+  }
+
+  .info-value, .stat-value {
+    font-size: 12px;
+    color: var(--texto);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  /* Evaluaciones: Lista más compacta */
+  .evaluaciones-section h4 {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .evaluaciones-list li {
+    padding: 6px 0;
+    border-bottom: 1px dashed #e5e5ea;
+  }
+
+  .eval-name {
+    font-size: 12px;
+  }
+
+  .eval-value {
+    font-size: 12px;
+  }
+
+  /* Fórmulas y Promedios compactos en una sola línea */
   .formula-section {
-    flex-direction: column;
-    gap: 8px;
-    text-align: center;
-    padding: 14px;
+    flex-direction: row; /* Se mantiene horizontal */
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 6px;
   }
-  
-  .dia {
-    flex: 0 0 calc(50% - 4px);
-    padding: 9px 6px;
+
+  .promedio-section {
+    flex-direction: row !important; /* Evita que el promedio se rompa en vertical */
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
   }
-  
-  .dia-icon {
-    width: 28px;
-    height: 28px;
-    font-size: 14px;
+
+  .promedio-value {
+    font-size: 16px;
+  }
+
+  /* Botón de asistencia más estilizado */
+  .btn-asistencia {
+    width: 100%; /* Ocupa el ancho completo para facilitar el clic táctil */
+    padding: 12px;
+    font-size: 13px;
   }
 }
 
-@media (max-width: 360px) {
-  .notas-container {
-    padding: 10px 8px;
-  }
-  
+/* Optimización para pantallas muy angostas (Celulares pequeños) */
+@media (max-width: 414px) {
   .accordion-header {
     padding: 12px;
   }
-  
+
   .accordion-title {
     font-size: 13.5px;
-  }
-  
-  .dia {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
-  
-  .resumen-general h3,
-  .evaluaciones-section h4,
-  .asistencia-section h4 {
-    font-size: 15px;
-  }
-}
-
-/* Mejoras generales de tipografía y espaciado en móviles */
-@media (max-width: 768px) {
-  .resumen-value {
-    font-size: 14px;
+    max-width: 230px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Evita que el nombre del curso rompa la fila */
   }
 
-  .stat-value {
-    font-size: 13.5px;
-  }
-  
-  .eval-name,
-  .info-value,
-  .asistencia-text {
-    font-size: 12.5px;
-  }
-}
-
-/* Soporte para pantallas muy pequeñas y orientación landscape */
-@media (max-width: 480px) and (orientation: landscape) {
-  .modal-content-asistencia {
-    max-height: 85vh;
-    padding: 20px;
-  }
-  
-  .calendario-container {
-    gap: 16px;
+  /* En pantallas críticas, mantenemos las 2 columnas pero reducimos los textos */
+  .info-value, .stat-value {
+    font-size: 11.5px;
   }
 }

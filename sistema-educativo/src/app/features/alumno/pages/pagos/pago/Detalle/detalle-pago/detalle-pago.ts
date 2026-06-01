@@ -1,63 +1,45 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-
-export interface DetalleCuotaPago {
-  titulo: string;
-  estado: 'Vencido' | 'Pagado' | 'Pendiente';
-  tipo: string;
-  ciclo: string;
-  fechaVencimiento: Date;
-  subtotal: number;
-  mora: number;
-  total: number;
-}
+import { Component, inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-detalle-pago',
   standalone: true,
-  imports: [CommonModule], // Ya no importamos DatePipe ni CurrencyPipe
+  imports: [CommonModule],
   templateUrl: './detalle-pago.html',
   styleUrl: './detalle-pago.css',
 })
 export class DetallePagoComponent implements OnInit {
-  idPago: string | null = null;
-  
-  pago: DetalleCuotaPago = {
-    titulo: 'Cuota 1',
-    estado: 'Vencido',
-    tipo: 'Pensiones',
-    ciclo: '2026 - Ciclo 1 Marzo',
-    fechaVencimiento: new Date(2026, 2, 26), 
-    subtotal: 755.96,
-    mora: 2.85,
-    total: 758.81
-  };
 
-  constructor(private route: ActivatedRoute) {}
+  private router = inject(Router);
+  pago: any = null;
+
+  get fechaVencimientoTexto(): string {
+    if (!this.pago?.fechaVencimiento) return '—';
+    const fecha = new Date(this.pago.fechaVencimiento);
+    return fecha.toLocaleDateString('es-PE', {
+      day: '2-digit', month: 'long', year: 'numeric'
+    });
+  }
+
+  formatearMoneda(monto: number): string {
+    return `S/ ${(monto || 0).toFixed(2)}`;
+  }
 
   ngOnInit(): void {
-    this.idPago = this.route.snapshot.paramMap.get('id');
-  }
-
-  // Formatea la fecha a: "26 mar 2026"
-  get fechaVencimientoTexto(): string {
-    return new Intl.DateTimeFormat('es-PE', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
-    }).format(this.pago.fechaVencimiento).replace('.', '');
-  }
-
-  // Formatea a moneda: "S/ 758.81"
-  formatearMoneda(monto: number): string {
-    return new Intl.NumberFormat('es-PE', {
-      style: 'currency',
-      currency: 'PEN',
-    }).format(monto);
+    const data = sessionStorage.getItem('pagoDetalle');
+    if (data) {
+      this.pago = JSON.parse(data);
+    } else {
+      this.router.navigate(['/alumno/pagos']);
+    }
   }
 
   onOpcionesPago(): void {
-    window.location.href = '/alumno/opciones-pago'; // Redirige a la página de opciones de pago
+    this.router.navigate(['/alumno/opciones-pago']);
+  }
+
+  volver(): void {
+    this.router.navigate(['/alumno/pagos']);
   }
 }

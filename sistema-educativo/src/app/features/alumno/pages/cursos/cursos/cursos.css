@@ -306,7 +306,130 @@
   text-transform: uppercase;
   margin-top: 1px;
 }
+/* Nuevo bloque de información intermedia */
+.course-info-body {
+  padding: 0 24px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espaciado idéntico entre filas */
+}
 
+.cc-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Micro-etiquetas premium */
+.cc-meta-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--blue-mid);
+  background: rgba(19, 64, 160, 0.06);
+  padding: 3px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.cc-meta-value {
+  font-size: 13px;
+  color: var(--gray-600);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Puntos suspensivos si el texto es excesivamente largo */
+}
+
+/* Modificación de la barra de progreso integrada */
+.cc-progress-container {
+  padding: 4px 24px 16px;
+}
+
+.cc-prog-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--gray-600);
+  margin-bottom: 8px;
+}
+
+/* Destacamos el número del progreso */
+.cc-prog-value {
+  color: var(--blue-light) !important;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+/* Barra de progreso estilo iOS (más delgada y elegante) */
+.cc-progress {
+  height: 6px;
+  background: var(--gray-100);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 0; /* Eliminamos margen viejo */
+}
+
+.cc-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue-mid), var(--blue-light)) !important;
+  border-radius: 10px;
+  transition: width .6s cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Ajustes del botón flecha redondeado */
+.cc-arrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--blue-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+}
+
+.course-card:hover .cc-arrow {
+  background: var(--orange);
+  transform: scale(1.08);
+}
+
+.course-card:hover .cc-arrow svg {
+  transform: translateX(1px);
+}
+
+/* ==========================================================================
+   RESPONSIVE OPTIMIZADO PARA MÓVILES
+   ========================================================================== */
+@media(max-width: 720px) {
+  .cc-name {
+    font-size: 22px;
+    padding: 0 16px;
+    margin-bottom: 12px;
+  }
+  
+  .course-info-body {
+    padding: 0 16px;
+    gap: 8px;
+  }
+  
+  .cc-meta-value {
+    font-size: 12px;
+  }
+  
+  .cc-progress-container {
+    padding: 4px 16px 14px;
+  }
+  
+  .cc-footer {
+    padding: 12px 16px;
+  }
+}
 .cc-image {
   width: 100%;
   height: 100%;

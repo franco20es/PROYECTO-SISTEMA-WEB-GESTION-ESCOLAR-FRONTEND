@@ -1,6 +1,8 @@
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { ModalAsistencia } from '../../../components/modales/modal-asistencia/modal-asistencia';
+import { environment } from '../../../../../../environment/environment';
 
 @Component({
   selector: 'app-notas',
@@ -9,199 +11,96 @@ import { ModalAsistencia } from '../../../components/modales/modal-asistencia/mo
   templateUrl: './notas.html',
   styleUrl: './notas.css',
 })
-export class NotasAlumno {
+export class NotasAlumno implements OnInit {
+
+  private http = inject(HttpClient);
+  private api = environment.apiUrl;
+
   expandedIndex: number | null = null;
   mostrarAsistencia = false;
   cursoSeleccionadoAsistencia: any = null;
+  cargando = true;
+  anio = new Date().getFullYear();
 
-  notas = [
-    {
-      curso: 'Desarrollo Web',
-      codigo: 'CS401',
-      docente: 'Donayre Perez, Juan Jose',
-      horario: 'Sábado: 18:30 - 20:00',
-      modalidad: 'Presencial',
-      horasSemanales: 2.0,
-      creditos: 2.00,
-      nroVez: 1,
-      seccion: '47166',
-      pc1: 17,
-      pc2: 16,
-      parcial: 15,
-      trabajo: 18,
-      promedio: 16.5,
-      eval1Name: 'Practica calificada 1',
-      eval1Code: 'PC1',
-      eval1Value: 15,
-      eval2Name: 'Practica calificada 2',
-      eval2Code: 'PC2',
-      eval2Value: '-',
-      eval3Name: 'Participacion en clase',
-      eval3Code: 'PA',
-      eval3Value: '-',
-      eval4Name: 'Proyecto final',
-      eval4Code: 'PROY',
-      eval4Value: '-',
-      formula: '10%*[PA] + 25%*[PC1] + 25%*[PC2] + 40%*[PROY]',
-      asistencia: {
-        asistio: 4,
-        noAsistio: 0,
-        pendiente: 12,
-        sinRegistro: 1,
-        calendario: [
-          { mes: 'Marzo 2026', dias: [{ fecha: 'Sáb 28', estado: 'asistio' }] },
-          { mes: 'Abril 2026', dias: [
-            { fecha: 'Sáb 04', estado: 'asistio' },
-            { fecha: 'Sáb 11', estado: 'asistio' },
-            { fecha: 'Sáb 18', estado: 'sinRegistro' },
-            { fecha: 'Sáb 25', estado: 'asistio' },
-          ] },
-          { mes: 'Mayo 2026', dias: [
-            { fecha: 'Sáb 02', estado: 'pendiente' },
-            { fecha: 'Sáb 09', estado: 'pendiente' },
-            { fecha: 'Sáb 16', estado: 'pendiente' },
-            { fecha: 'Sáb 23', estado: 'pendiente' },
-            { fecha: 'Sáb 30', estado: 'pendiente' },
-          ] },
-          { mes: 'Junio 2026', dias: [
-            { fecha: 'Sáb 06', estado: 'pendiente' },
-            { fecha: 'Sáb 13', estado: 'pendiente' },
-            { fecha: 'Sáb 20', estado: 'pendiente' },
-            { fecha: 'Sáb 27', estado: 'pendiente' },
-          ] },
-          { mes: 'Julio 2026', dias: [
-            { fecha: 'Sáb 04', estado: 'pendiente' },
-            { fecha: 'Sáb 11', estado: 'pendiente' },
-            { fecha: 'Sáb 18', estado: 'pendiente' },
-          ] },
-        ]
-      }
-    },
-    {
-      curso: 'Base de Datos',
-      codigo: 'CS402',
-      docente: 'Donayre Perez, Juan Jose',
-      horario: 'Martes: 18:30 - 20:00',
-      modalidad: 'Presencial',
-      horasSemanales: 2.0,
-      creditos: 2.00,
-      nroVez: 1,
-      seccion: '47166',
-      pc1: 14,
-      pc2: 13,
-      parcial: 15,
-      trabajo: 14,
-      promedio: 14.0,
-      eval1Name: 'Practica calificada 1',
-      eval1Code: 'PC1',
-      eval1Value: 14,
-      eval2Name: 'Practica calificada 2',
-      eval2Code: 'PC2',
-      eval2Value: '-',
-      eval3Name: 'Participacion en clase',
-      eval3Code: 'PA',
-      eval3Value: '-',
-      eval4Name: 'Proyecto final',
-      eval4Code: 'PROY',
-      eval4Value: '-',
-      formula: '10%*[PA] + 25%*[PC1] + 25%*[PC2] + 40%*[PROY]',
-      asistencia: {
-        asistio: 6,
-        noAsistio: 2,
-        pendiente: 8,
-        sinRegistro: 0,
-        calendario: [
-          { mes: 'Marzo 2026', dias: [{ fecha: 'Mar 31', estado: 'asistio' }] },
-          { mes: 'Abril 2026', dias: [
-            { fecha: 'Mar 07', estado: 'asistio' },
-            { fecha: 'Mar 14', estado: 'asistio' },
-            { fecha: 'Mar 21', estado: 'noAsistio' },
-            { fecha: 'Mar 28', estado: 'asistio' },
-          ] },
-          { mes: 'Mayo 2026', dias: [
-            { fecha: 'Mar 05', estado: 'pendiente' },
-            { fecha: 'Mar 12', estado: 'pendiente' },
-            { fecha: 'Mar 19', estado: 'noAsistio' },
-            { fecha: 'Mar 26', estado: 'pendiente' },
-          ] },
-          { mes: 'Junio 2026', dias: [
-            { fecha: 'Mar 02', estado: 'pendiente' },
-            { fecha: 'Mar 09', estado: 'pendiente' },
-            { fecha: 'Mar 16', estado: 'pendiente' },
-            { fecha: 'Mar 23', estado: 'asistio' },
-            { fecha: 'Mar 30', estado: 'asistio' },
-          ] },
-          { mes: 'Julio 2026', dias: [
-            { fecha: 'Mar 07', estado: 'pendiente' },
-            { fecha: 'Mar 14', estado: 'pendiente' },
-          ] },
-        ]
-      }
-    },
-    {
-      curso: 'Redes',
-      codigo: 'CS403',
-      docente: 'Donayre Perez, Juan Jose',
-      horario: 'Jueves: 18:30 - 20:00',
-      modalidad: 'Presencial',
-      horasSemanales: 2.0,
-      creditos: 2.00,
-      nroVez: 1,
-      seccion: '47166',
-      pc1: 10,
-      pc2: 12,
-      parcial: 11,
-      trabajo: 13,
-      promedio: 11.5,
-      eval1Name: 'Practica calificada 1',
-      eval1Code: 'PC1',
-      eval1Value: 10,
-      eval2Name: 'Practica calificada 2',
-      eval2Code: 'PC2',
-      eval2Value: '-',
-      eval3Name: 'Participacion en clase',
-      eval3Code: 'PA',
-      eval3Value: '-',
-      eval4Name: 'Proyecto final',
-      eval4Code: 'PROY',
-      eval4Value: '-',
-      formula: '10%*[PA] + 25%*[PC1] + 25%*[PC2] + 40%*[PROY]',
-      asistencia: {
-        asistio: 5,
-        noAsistio: 1,
-        pendiente: 10,
-        sinRegistro: 0,
-        calendario: [
-          { mes: 'Marzo 2026', dias: [{ fecha: 'Jue 26', estado: 'asistio' }] },
-          { mes: 'Abril 2026', dias: [
-            { fecha: 'Jue 02', estado: 'asistio' },
-            { fecha: 'Jue 09', estado: 'asistio' },
-            { fecha: 'Jue 16', estado: 'asistio' },
-            { fecha: 'Jue 23', estado: 'noAsistio' },
-            { fecha: 'Jue 30', estado: 'asistio' },
-          ] },
-          { mes: 'Mayo 2026', dias: [
-            { fecha: 'Jue 07', estado: 'pendiente' },
-            { fecha: 'Jue 14', estado: 'pendiente' },
-            { fecha: 'Jue 21', estado: 'pendiente' },
-            { fecha: 'Jue 28', estado: 'pendiente' },
-          ] },
-          { mes: 'Junio 2026', dias: [
-            { fecha: 'Jue 04', estado: 'pendiente' },
-            { fecha: 'Jue 11', estado: 'pendiente' },
-            { fecha: 'Jue 18', estado: 'pendiente' },
-            { fecha: 'Jue 25', estado: 'pendiente' },
-          ] },
-          { mes: 'Julio 2026', dias: [
-            { fecha: 'Jue 02', estado: 'pendiente' },
-          ] },
-        ]
-      }
-    },
-  ];
+  notas: any[] = [];
+
+  ngOnInit(): void {
+    this.cargarNotas();
+  }
+
+  cargarNotas(): void {
+    const anioParam = new HttpParams().set('anio', this.anio);
+
+    // Cargar horario y notas en paralelo
+    Promise.all([
+      this.http.get<any[]>(`${this.api}/portal/alumno/horario`, { params: anioParam }).toPromise(),
+      this.http.get<any>(`${this.api}/portal/alumno/notas`, {
+        params: new HttpParams().set('anio', this.anio).set('page', 0).set('size', 50)
+      }).toPromise()
+    ]).then(([horario, notasRes]) => {
+      const notasContent: any[] = notasRes?.content || [];
+
+      // Agrupar horario por curso
+      const cursosMap = new Map<string, any>();
+      (horario || []).forEach((h: any) => {
+        if (!cursosMap.has(h.cursoId)) {
+          cursosMap.set(h.cursoId, {
+            cursoId: h.cursoId,
+            curso: h.cursoNombre,
+            codigo: h.cursoId.slice(0, 6).toUpperCase(),
+            docente: h.docenteNombreCompleto,
+            horario: `${this.abrevDia(h.diaSemana)}: ${h.horaInicio.slice(0,5)} - ${h.horaFin.slice(0,5)}`,
+            modalidad: 'Presencial',
+            horasSemanales: 2.0,
+            creditos: 2.0,
+            nroVez: 1,
+            seccion: h.seccionDenominacion,
+            b1: '—', b2: '—', b3: '—', b4: '—',
+            promedio: null,
+            asistencia: { asistio: 0, noAsistio: 0, pendiente: 0, sinRegistro: 0, calendario: [] }
+          });
+        }
+      });
+
+      // Mapear notas por curso y bimestre
+      notasContent.forEach((n: any) => {
+        if (cursosMap.has(n.cursoId)) {
+          const curso = cursosMap.get(n.cursoId);
+          const key = `b${n.numeroBimestre}`;
+          curso[key] = n.calificacion?.toFixed(1) || '—';
+          curso.docente = n.docenteNombreCompleto;
+        }
+      });
+
+      // Calcular promedio por curso
+      cursosMap.forEach(curso => {
+        const bimestres = [curso.b1, curso.b2, curso.b3, curso.b4]
+          .filter((b: string) => b !== '—')
+          .map((b: string) => parseFloat(b));
+        curso.promedio = bimestres.length > 0
+          ? bimestres.reduce((a: number, b: number) => a + b, 0) / bimestres.length
+          : null;
+      });
+
+      this.notas = Array.from(cursosMap.values());
+      this.cargando = false;
+    }).catch(() => {
+      this.cargando = false;
+    });
+  }
+
+  abrevDia(dia: string): string {
+    const abrevs: Record<string, string> = {
+      LUNES: 'Lun', MARTES: 'Mar', MIERCOLES: 'Mié',
+      JUEVES: 'Jue', VIERNES: 'Vie', SABADO: 'Sáb', DOMINGO: 'Dom'
+    };
+    return abrevs[dia] || dia;
+  }
 
   get promedio(): number {
-    return this.notas.reduce((sum, nota) => sum + nota.promedio, 0) / this.notas.length;
+    const conNota = this.notas.filter(n => n.promedio !== null);
+    if (conNota.length === 0) return 0;
+    return conNota.reduce((sum, n) => sum + n.promedio, 0) / conNota.length;
   }
 
   toggleAccordion(index: number): void {

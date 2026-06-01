@@ -1,0 +1,66 @@
+<!-- recuperar-password.html -->
+<div class="master-container">
+
+  <div class="brand-side">
+    <img src="https://res.cloudinary.com/dgrdonnsk/image/upload/v1778548033/Gemini_Generated_Image_474wb3474wb3474w_tk0x0d.png" alt="">
+  </div>
+
+  <div class="form-side">
+    <div class="form-box">
+
+      <!-- Estado: formulario -->
+      <ng-container *ngIf="!enviado">
+        <div class="form-header">
+          <h2>¿Olvidaste tu contraseña?</h2>
+          <p>Ingresa tu correo y te enviaremos un enlace para restablecerla.</p>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-error" (click)="errorMessage = ''">
+          <i class="bi bi-exclamation-circle"></i>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <form (ngSubmit)="solicitar()">
+          <div class="input-group">
+            <label>Email</label>
+            <div class="input-wrapper">
+              <i class="bi bi-envelope"></i>
+              <input type="email" class="input-field"
+                     placeholder="tu@correo.com"
+                     [(ngModel)]="email"
+                     name="email"
+                     required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" [disabled]="isLoading">
+            <span *ngIf="!isLoading">Enviar enlace de recuperación</span>
+            <span *ngIf="isLoading">
+              <i class="bi bi-hourglass-split"></i> Enviando...
+            </span>
+          </button>
+        </form>
+      </ng-container>
+
+      <!-- Estado: enviado -->
+      <ng-container *ngIf="enviado">
+        <div class="form-header">
+          <div style="text-align:center;font-size:48px;margin-bottom:16px;">📧</div>
+          <h2>Revisa tu correo</h2>
+          <p>Si el correo está registrado, recibirás un enlace para restablecer tu contraseña en los próximos minutos.</p>
+        </div>
+        <div class="alert alert-success">
+          <i class="bi bi-check-circle"></i>
+          <span>El enlace expira en <b>30 minutos</b>.</span>
+        </div>
+      </ng-container>
+
+      <!-- Volver al login -->
+      <div style="text-align:center;margin-top:20px;">
+        <a routerLink="/login" class="forgot-link">← Volver al inicio de sesión</a>
+      </div>
+
+    </div>
+  </div>
+
+</div>

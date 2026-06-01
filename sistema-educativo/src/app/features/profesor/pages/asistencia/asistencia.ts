@@ -17,5 +17,4 @@ import { FormsModule } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Asistencia {
-
 }

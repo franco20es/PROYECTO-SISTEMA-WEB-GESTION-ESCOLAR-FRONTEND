@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -22,4 +23,15 @@ export class UsuarioSidebar {
   emitNavigate(route: string): void {
     this.navigate.emit(route);
   }
+
+ // Agrega en la clase
+private router = inject(Router);
+
+cerrarSesion(): void {
+  // Limpiar todo el localStorage
+  localStorage.clear();
+  
+  // Redirigir al login
+  this.router.navigate(['/login']);
+}
 }

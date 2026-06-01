@@ -1,53 +1,199 @@
-<div class="asistencia-container">
-  <!-- Header -->
-  <div class="asistencia-header">
-    <h1>Mi Asistencia</h1>
-    <p>Control de asistencias por curso</p>
+<div class="hd">
+  <div class="hd-l">
+    <div class="tag">Control académico</div>
+    <h1>Mi <em>Asistencia</em></h1>
+    <p>Revisa tu historial de asistencia por curso</p>
   </div>
-
-  <!-- Cursos Grid -->
-  <div class="asistencia-grid">
-    <div *ngFor="let curso of cursos" class="asistencia-card">
-      <!-- Encabezado -->
-      <div class="asistencia-card-header">
-        <div>
-          <h3 class="asistencia-nombre">{{curso.nombre}}</h3>
-          <p class="asistencia-profesor">{{curso.profesor}}</p>
-        </div>
-        <div class="asistencia-porcentaje" [ngClass]="'porcentaje-' + getColorEstado(curso.estado)">
-          {{curso.porcentaje}}%
-        </div>
-      </div>
-
-      <!-- Detalles -->
-      <div class="asistencia-card-body">
-        <div class="asistencia-fila">
-          <span class="asistencia-label">Clases:</span>
-          <span class="asistencia-valor">{{curso.clasesAsistidas}}/{{curso.clasesTotal}}</span>
-        </div>
-        <div class="asistencia-fila">
-          <span class="asistencia-label">Estado:</span>
-          <span class="asistencia-estado" [ngClass]="'estado-' + curso.estado">
-            <span *ngIf="curso.estado === 'aprobado'">✓ Aprobado</span>
-            <span *ngIf="curso.estado === 'enRiesgo'">✗ En riesgo</span>
-          </span>
-        </div>
-        
-        <!-- Barra de progreso -->
-        <div class="asistencia-barra-container">
-          <div class="asistencia-barra" [ngClass]="'barra-' + curso.estado" [style.width.%]="curso.porcentaje"></div>
-        </div>
-
-        <!-- Botón -->
-        <button class="btn-ver-asistencia" (click)="verAsistencia(curso)">Ver asistencia</button>
-      </div>
-    </div>
-  </div>
+  <div style="display:flex;gap:7px"><select class="fsel">
+      <option>Bimestre II — 2025</option>
+      <option>Bimestre I — 2025</option>
+    </select></div>
 </div>
 
-<!-- Modal de Asistencia Reutilizable -->
-<app-modal-asistencia 
-  [mostrarAsistencia]="mostrarAsistencia"
-  [cursoSeleccionadoAsistencia]="cursoSeleccionadoAsistencia"
-  (cerrarModal)="cerrarAsistencia()">
-</app-modal-asistencia>
+<!-- RESUMEN GENERAL -->
+<div class="resumen" id="resumen"></div>
+
+<!-- CURSOS GRID -->
+<div class="cursos-grid" id="cursosGrid"></div>
+
+<!-- DETALLE -->
+<div class="detail" id="detail"></div>
+
+
+
+<div class="toast t-ok" id="toast"><svg viewBox="0 0 24 24">
+    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+  </svg><span id="toastMsg">OK</span></div>
+
+<script>
+  /* ═══ DATA ═══ */
+  const CURSOS = [
+    { id: 1, name: 'Matemáticas', color: '#2A63E6', prof: 'Prof. Mendoza', hor: 'Lun/Mié 7:30', sec: '3ro A', total: 24, p: 21, t: 1, f: 1, j: 1 },
+    { id: 2, name: 'Comunicación', color: '#FF5B1F', prof: 'Prof. García', hor: 'Mar/Jue 8:30', sec: '3ro A', total: 22, p: 20, t: 1, f: 1, j: 0 },
+    { id: 3, name: 'Ciencia y Tecnología', color: '#00C27C', prof: 'Prof. Ríos', hor: 'Lun/Vie 10:00', sec: '3ro A', total: 20, p: 18, t: 0, f: 1, j: 1 },
+    { id: 4, name: 'Historia y Geografía', color: '#9B59B6', prof: 'Prof. Vargas', hor: 'Mié/Vie 8:30', sec: '3ro A', total: 22, p: 19, t: 2, f: 1, j: 0 },
+    { id: 5, name: 'Inglés', color: '#F5A623', prof: 'Prof. Torres', hor: 'Mar/Jue 10:00', sec: '3ro A', total: 22, p: 22, t: 0, f: 0, j: 0 },
+    { id: 6, name: 'Educación Física', color: '#E53030', prof: 'Prof. López', hor: 'Vie 11:00', sec: '3ro A', total: 10, p: 9, t: 1, f: 0, j: 0 }
+  ];
+
+  const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+  const ESTADOS = ['P', 'T', 'F', 'J'];
+  const MESES = [
+    { nm: 'Marzo', p: 18, t: 1, f: 1, j: 0, total: 20 },
+    { nm: 'Abril', p: 20, t: 1, f: 0, j: 1, total: 22 },
+    { nm: 'Mayo', p: 10, t: 0, f: 0, j: 0, total: 10 }
+  ];
+
+  function pct(p, total) { return total ? Math.round(p / total * 100) : 0 }
+  function pctColor(v) { return v >= 90 ? 'var(--ok)' : v >= 75 ? 'var(--wa)' : 'var(--er)' }
+  function ringDash(pct, r) { const c = 2 * Math.PI * r; return `${c * pct / 100} ${c * (1 - pct / 100)}` }
+  function rndState() { const r = Math.random(); return r < .84 ? 'P' : r < .92 ? 'T' : r < .97 ? 'F' : 'J' }
+
+  // Generate historial
+  function genHistorial(curso) {
+    const fechas = [];
+    const startDay = 3;// March 3
+    const months = [{ m: 'Mar', days: 29 }, { m: 'Abr', days: 30 }, { m: 'May', days: 12 }];
+    let d = startDay;
+    months.forEach(mo => {
+      while (d <= mo.days) {
+        const dow = new Date(2025, mo.m === 'Mar' ? 2 : mo.m === 'Abr' ? 3 : 4, d).getDay();
+        if (dow >= 1 && dow <= 5) {
+          fechas.push({ fecha: `${String(d).padStart(2, '0')}/${mo.m === 'Mar' ? '03' : mo.m === 'Abr' ? '04' : '05'}/2025`, dia: DIAS[dow - 1], hora: curso.hor.split(' ')[1] || '7:30', mes: mo.m, sem: Math.ceil(d / 7) });
+        }
+        d += 1;
+      }
+      d = 1;
+    });
+    return fechas.map(f => {
+      const st = rndState();
+      const obs = st === 'T' ? 'Llegó 10 min tarde' : st === 'F' ? '' : st === 'J' ? 'Certificado médico' : '';
+      return { ...f, estado: st, obs };
+    });
+  }
+
+  /* ═══ RENDER RESUMEN ═══ */
+  function renderResumen() {
+    let totalP = 0, totalT = 0, totalF = 0, totalJ = 0, totalAll = 0;
+    CURSOS.forEach(c => { totalP += c.p; totalT += c.t; totalF += c.f; totalJ += c.j; totalAll += c.total });
+    const gPct = pct(totalP, totalAll);
+    const r = 38;
+    document.getElementById('resumen').innerHTML = `
+    <div class="res-ring"><svg viewBox="0 0 84 84" width="90" height="90"><circle class="res-ring-bg" cx="42" cy="42" r="${r}"/><circle class="res-ring-val" cx="42" cy="42" r="${r}" stroke-dasharray="${ringDash(gPct, r)}" style="stroke:${pctColor(gPct)}"/></svg><div class="res-pct"><strong>${gPct}%</strong><span>Asistencia</span></div></div>
+    <div class="res-info"><div class="res-title">Resumen general de asistencia</div><div class="res-sub">${CURSOS.length} cursos matriculados · Bimestre II — 2025</div>
+    <div class="res-stats">
+      <div class="rs rs-tot"><strong>${totalAll}</strong><span>Sesiones</span></div>
+      <div class="rs rs-p"><strong>${totalP}</strong><span>Asistió</span></div>
+      <div class="rs rs-t"><strong>${totalT}</strong><span>Tardanzas</span></div>
+      <div class="rs rs-f"><strong>${totalF}</strong><span>Faltas</span></div>
+      <div class="rs rs-j"><strong>${totalJ}</strong><span>Justific.</span></div>
+    </div></div>`;
+  }
+
+  /* ═══ RENDER CURSOS ═══ */
+  function renderCursos() {
+    const grid = document.getElementById('cursosGrid');
+    grid.innerHTML = CURSOS.map(c => {
+      const pc = pct(c.p, c.total);
+      const r = 15;
+      const pBar = c.p / c.total * 100, tBar = c.t / c.total * 100, fBar = c.f / c.total * 100, jBar = c.j / c.total * 100;
+      return `<div class="curso-card" data-id="${c.id}" onclick="openCurso(${c.id})">
+      <div class="curso-bar" style="background:${c.color}"></div>
+      <div class="curso-body">
+        <div class="curso-top">
+          <div><div class="curso-nm">${c.name}</div><div class="curso-meta"><div class="curso-mi"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12z"/></svg>${c.prof}</div><div class="curso-mi"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg>${c.hor}</div></div></div>
+          <div class="curso-ring-sm"><svg viewBox="0 0 36 36" width="40" height="40"><circle class="crs-bg" cx="18" cy="18" r="${r}"/><circle class="crs-val" cx="18" cy="18" r="${r}" stroke-dasharray="${ringDash(pc, r)}" style="stroke:${pctColor(pc)};transform:rotate(-90deg);transform-origin:center"/></svg><div class="curso-ring-pct">${pc}%</div></div>
+        </div>
+        <div class="curso-bars"><div class="cb-seg" style="width:${pBar}%;background:var(--ok)"></div><div class="cb-seg" style="width:${tBar}%;background:var(--wa)"></div><div class="cb-seg" style="width:${fBar}%;background:var(--er)"></div><div class="cb-seg" style="width:${jBar}%;background:var(--bl)"></div></div>
+        <div class="curso-legend"><div class="cl-item"><div class="cl-dot" style="background:var(--ok)"></div>${c.p}P</div><div class="cl-item"><div class="cl-dot" style="background:var(--wa)"></div>${c.t}T</div><div class="cl-item"><div class="cl-dot" style="background:var(--er)"></div>${c.f}F</div><div class="cl-item"><div class="cl-dot" style="background:var(--bl)"></div>${c.j}J</div></div>
+      </div>
+      <div class="curso-foot"><span>${c.total} sesiones registradas</span><div class="cf-arrow"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div></div>
+    </div>`;
+    }).join('');
+  }
+
+  /* ═══ OPEN CURSO ═══ */
+  let activeCurso = null;
+  function openCurso(id) {
+    document.querySelectorAll('.curso-card').forEach(c => c.classList.remove('on'));
+    document.querySelector(`[data-id="${id}"]`).classList.add('on');
+    activeCurso = CURSOS.find(c => c.id === id);
+    renderDetail();
+    setTimeout(() => document.getElementById('detail').scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+  }
+  function closeDetail() { document.getElementById('detail').classList.remove('show'); document.querySelectorAll('.curso-card').forEach(c => c.classList.remove('on')); activeCurso = null }
+
+  function renderDetail() {
+    const c = activeCurso;
+    const hist = genHistorial(c);
+    const pc = pct(c.p, c.total);
+    const d = document.getElementById('detail'); d.classList.add('show');
+
+    // Calendar data
+    const calData = {};
+    hist.forEach(h => {
+      const day = parseInt(h.fecha.split('/')[0]);
+      const mon = h.fecha.split('/')[1];
+      if (mon === '05') calData[day] = h.estado;
+    });
+
+    d.innerHTML = `
+  <div class="dh"><div class="dh-bar" style="background:${c.color}"></div><div class="dh-inner">
+    <button class="dh-close" onclick="closeDetail()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+    <div class="dh-cnt"><div class="dh-left"><div class="dh-tag">${c.sec} · Bimestre II</div><div class="dh-title">${c.name}</div><div class="dh-meta"><div class="dh-mi"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12z"/></svg>${c.prof}</div><div class="dh-mi"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg>${c.hor}</div></div></div>
+    <div class="dh-stats"><div class="dhs"><strong style="color:${pctColor(pc)}">${pc}%</strong><span>Asistencia</span></div><div class="dhs"><strong style="color:var(--ok)">${c.p}</strong><span>Asistió</span></div><div class="dhs"><strong style="color:var(--wa)">${c.t}</strong><span>Tard.</span></div><div class="dhs"><strong style="color:var(--er)">${c.f}</strong><span>Faltas</span></div><div class="dhs"><strong style="color:var(--bl)">${c.j}</strong><span>Just.</span></div></div>
+  </div></div></div>
+ 
+  <div class="dtabs">
+    <div class="dt on" onclick="swDt(this,0)"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg><span>Historial</span></div>
+    <div class="dt" onclick="swDt(this,1)"><svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg><span>Por mes</span></div>
+    <div class="dt" onclick="swDt(this,2)"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg><span>Calendario</span></div>
+  </div>
+ 
+  <!-- TAB 1: HISTORIAL -->
+  <div class="dp on" id="dt0">
+    <div class="alert-i"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>Registro de asistencia registrado por el docente. No es posible modificar estos datos.</div>
+    <div class="legend"><div class="leg"><div class="leg-d" style="background:var(--ok)"></div>Asistió (P)</div><div class="leg"><div class="leg-d" style="background:var(--wa)"></div>Tardanza (T)</div><div class="leg"><div class="leg-d" style="background:var(--er)"></div>Falta (F)</div><div class="leg"><div class="leg-d" style="background:var(--bl)"></div>Justificado (J)</div></div>
+    <div style="overflow-x:auto"><table class="ht"><thead><tr><th>Fecha</th><th>Día</th><th>Hora</th><th>Estado</th><th style="text-align:left">Observación</th></tr></thead><tbody>
+    ${hist.slice().reverse().map((h, i) => {
+      const mkCls = { P: 'mk-p', T: 'mk-t', F: 'mk-f', J: 'mk-j' };
+      const mkTxt = { P: 'P', T: 'T', F: 'F', J: 'J' };
+      return `<tr><td class="td-fecha">${h.fecha}</td><td class="td-dia">${h.dia}</td><td class="td-hora">${h.hora}</td><td><span class="mk ${mkCls[h.estado]}">${mkTxt[h.estado]}</span></td><td class="td-obs">${h.obs || '—'}</td></tr>`;
+    }).join('')}
+    </tbody></table></div>
+  </div>
+ 
+  <!-- TAB 2: POR MES -->
+  <div class="dp" id="dt1">
+    <div class="stitle">Resumen mensual</div>
+    <div class="month-grid">${MESES.map((m, i) => {
+      const mpc = pct(m.p, m.total);
+      return `<div class="month-card ${i === 2 ? 'active' : ''}"><div class="mc-nm">${m.nm} 2025</div><div class="mc-pct" style="color:${pctColor(mpc)}">${mpc}%</div><div class="mc-detail"><span>P: <strong style="color:var(--ok)">${m.p}</strong></span><span>T: <strong style="color:var(--wa)">${m.t}</strong></span><span>F: <strong style="color:var(--er)">${m.f}</strong></span><span>J: <strong style="color:var(--bl)">${m.j}</strong></span></div></div>`;
+    }).join('')}</div>
+  </div>
+ 
+  <!-- TAB 3: CALENDARIO -->
+  <div class="dp" id="dt2">
+    <div class="stitle">Calendario — Mayo 2025</div>
+    <div class="cal">${['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'].map(d => `<div class="cal-dh">${d}</div>`).join('')}
+    ${[28, 29, 30].map(d => `<div class="cal-d other"><div class="cal-dn">${d}</div></div>`).join('')}
+    ${Array.from({ length: 31 }, (_, i) => {
+      const day = i + 1; const isToday = day === 12;
+      const mk = calData[day];
+      const mkHtml = mk ? `<span class="cal-mk cmk-${mk.toLowerCase()}">${mk}</span>` : '';
+      return `<div class="cal-d ${isToday ? 'today' : ''}"><div class="cal-dn">${day}</div>${mkHtml}</div>`;
+    }).join('')}
+    <div class="cal-d other"><div class="cal-dn">1</div></div></div>
+    <div class="legend" style="margin-top:6px"><div class="leg"><span class="cal-mk cmk-p" style="display:inline-block">P</span>Asistió</div><div class="leg"><span class="cal-mk cmk-t" style="display:inline-block">T</span>Tardanza</div><div class="leg"><span class="cal-mk cmk-f" style="display:inline-block">F</span>Falta</div><div class="leg"><span class="cal-mk cmk-j" style="display:inline-block">J</span>Justificado</div></div>
+  </div>`;
+  }
+
+  function swDt(el, i) { el.closest('.detail').querySelectorAll('.dt').forEach(t => t.classList.remove('on')); el.classList.add('on'); for (let j = 0; j < 3; j++) { const p = document.getElementById('dt' + j); if (p) p.classList.toggle('on', j === i) } }
+
+  /* ═══ INIT ═══ */
+  renderResumen();
+  renderCursos();
+
+  let _t;
+  function showToast(msg, type = 'ok') { clearTimeout(_t); const t = document.getElementById('toast'); t.className = 'toast t-' + type; document.getElementById('toastMsg').textContent = msg; t.classList.add('show'); _t = setTimeout(() => t.classList.remove('show'), 3200) }
+</script>

@@ -1,8 +1,11 @@
-<div class="contenedor-principal">
+<div class="contenedor-principal" *ngIf="pago">
+
+  <button class="btn-volver" (click)="volver()">← Volver</button>
+
   <div class="ticket-pago">
     
     <div class="fila-encabezado">
-      <h2 class="titulo-cuota">{{ pago.titulo }}</h2>
+      <h2 class="titulo-cuota">Pensión {{ pago.mes }} {{ pago.anio }}</h2>
       <span class="estado-badge" [ngClass]="pago.estado.toLowerCase()">
         {{ pago.estado }}
       </span>
@@ -11,11 +14,19 @@
     <div class="seccion-detalles">
       <div class="fila-detalle">
         <span class="etiqueta">Tipo</span>
-        <span class="valor">{{ pago.tipo }}</span>
+        <span class="valor">Pensión mensual</span>
       </div>
       <div class="fila-detalle">
         <span class="etiqueta">Ciclo</span>
-        <span class="valor">{{ pago.ciclo }}</span>
+        <span class="valor">{{ pago.mes }} {{ pago.anio }}</span>
+      </div>
+      <div class="fila-detalle">
+        <span class="etiqueta">Alumno</span>
+        <span class="valor">{{ pago.alumnoNombreCompleto }}</span>
+      </div>
+      <div class="fila-detalle">
+        <span class="etiqueta">Código matrícula</span>
+        <span class="valor mono">{{ pago.codigoMatricula }}</span>
       </div>
     </div>
 
@@ -24,7 +35,6 @@
     <div class="seccion-vencimiento">
       <div class="fila-detalle">
         <span class="etiqueta-vencimiento">Vencimiento</span>
-        <!-- Usamos el getter de TS -->
         <span class="valor-vencimiento">{{ fechaVencimientoTexto }}</span>
       </div>
     </div>
@@ -34,13 +44,12 @@
     <div class="seccion-costos">
       <div class="fila-costo">
         <span class="etiqueta-costo">Subtotal</span>
-        <span class="valor-costo">{{ formatearMoneda(pago.subtotal) }}</span>
+        <span class="valor-costo">{{ formatearMoneda(pago.monto) }}</span>
       </div>
-      
       <div class="fila-costo">
         <div class="columna-mora">
           <span class="etiqueta-costo mora">Mora</span>
-          <p class="nota-mora">El monto aumenta cada día.</p>
+          <p class="nota-mora" *ngIf="pago.mora > 0">El monto aumenta cada día.</p>
         </div>
         <span class="valor-costo mora">+ {{ formatearMoneda(pago.mora) }}</span>
       </div>
@@ -51,13 +60,15 @@
     <div class="seccion-total">
       <div class="fila-total">
         <span class="etiqueta-total">Total a pagar</span>
-        <span class="valor-total">{{ formatearMoneda(pago.total) }}</span>
+        <span class="valor-total">{{ formatearMoneda(pago.totalAPagar) }}</span>
       </div>
     </div>
 
   </div>
 
-  <button class="btn-opciones-pago" (click)="onOpcionesPago()">
+  <button class="btn-opciones-pago" (click)="onOpcionesPago()"
+          *ngIf="pago.estado === 'PENDIENTE' || pago.estado === 'VENCIDO'">
     Opciones de pago
   </button>
+
 </div>
