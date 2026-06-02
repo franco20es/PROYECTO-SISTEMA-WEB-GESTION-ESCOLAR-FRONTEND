@@ -1,360 +1,306 @@
-<!-- detalle-curso.component.html -->
- 
-<!-- LOADING -->
-<div class="loading-state" *ngIf="cargando">
-  <div class="spinner"></div>
-  <p>Cargando curso...</p>
-</div>
- 
-<!-- ERROR -->
-<div class="error-state" *ngIf="!cargando && error">
-  <i class="ti ti-alert-circle"></i>
-  <p>{{ error }}</p>
-  <button class="btn btn-or" (click)="cargarDetalle()">Reintentar</button>
-</div>
- 
-<!-- CONTENIDO PRINCIPAL -->
-<ng-container *ngIf="!cargando && !error && curso">
- 
-  <!-- ─── HERO ──────────────────────────────────────────────────────────── -->
-  <div class="hero">
-    <div class="hero-left">
-      <button class="hero-back" (click)="volverACursos()">
-        <i class="ti ti-arrow-left"></i>
-        Mis cursos
+
+<div class="dc-wrap">
+
+  <!-- TOP BAR -->
+  <div class="dc-topbar">
+    <button class="dc-back" (click)="volverACursos()">
+      <i class="ti ti-arrow-left"></i> Volver a cursos
+    </button>
+    <span class="dc-sep">|</span>
+    <span class="dc-breadcrumb">{{ curso.nombre }} — {{ curso.seccion }}</span>
+    <span class="dc-badge">Presencial</span>
+  </div>
+
+  <!-- TABS -->
+  <div class="dc-tabs">
+    <div class="dc-tab" *ngFor="let tab of tabs"
+         [class.active]="tabActiva === tab.key"
+         (click)="setTab(tab.key)">
+      <i class="ti" [class]="tab.icon"></i>
+      {{ tab.label }}
+    </div>
+  </div>
+
+  <!-- INFO DOCENTE + STATS -->
+  <div class="dc-info-card">
+    <div class="dc-ic-left">
+      <div class="dc-ic-avatar">{{ curso.iniciales }}</div>
+      <div>
+        <div class="dc-ic-title">{{ curso.profesor }}</div>
+        <div class="dc-ic-sub">
+          <i class="ti ti-clock"></i> {{ curso.horario }}
+          &nbsp;·&nbsp;
+          <i class="ti ti-map-pin"></i> {{ curso.seccion }}
+        </div>
+      </div>
+    </div>
+    <div class="dc-stats">
+      <div class="dc-stat">
+        <div class="dc-stat-val" [class.ok]="curso.promedio >= 11" [class.er]="curso.promedio < 11 && curso.promedio > 0">
+          {{ curso.promedio > 0 ? curso.promedio : '—' }}
+        </div>
+        <div class="dc-stat-lbl">Promedio</div>
+      </div>
+      <div class="dc-stat">
+        <div class="dc-stat-val ok">{{ curso.asistencia }}%</div>
+        <div class="dc-stat-lbl">Asistencia</div>
+      </div>
+      <div class="dc-stat">
+        <div class="dc-stat-val" [class.wa]="pendientes.length > 0">{{ pendientes.length }}</div>
+        <div class="dc-stat-lbl">Pendientes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: SÍLABO ── -->
+  <div class="dc-body" *ngIf="tabActiva === 'silabo'">
+    <div class="sec-label">Información general del curso</div>
+    <div class="silabo-grid">
+      <div class="silabo-item">
+        <span class="si-label">Curso</span>
+        <span class="si-val">{{ curso.nombre }}</span>
+      </div>
+      <div class="silabo-item">
+        <span class="si-label">Docente</span>
+        <span class="si-val">{{ curso.profesor }}</span>
+      </div>
+      <div class="silabo-item">
+        <span class="si-label">Sección</span>
+        <span class="si-val">{{ curso.seccion }}</span>
+      </div>
+      <div class="silabo-item">
+        <span class="si-label">Horario</span>
+        <span class="si-val">{{ curso.horario }}</span>
+      </div>
+      <div class="silabo-item">
+        <span class="si-label">Año académico</span>
+        <span class="si-val">{{ anio }}</span>
+      </div>
+    </div>
+
+    <div class="sec-label" style="margin-top:24px">Notas por bimestre</div>
+    <div class="bimestre-row">
+      <div class="bim-card" *ngFor="let b of bimestres"
+           [class.aprobado]="b.nota !== '—' && +b.nota >= 11"
+           [class.desaprobado]="b.nota !== '—' && +b.nota < 11">
+        <div class="bim-label">{{ b.label }}</div>
+        <div class="bim-nota">{{ b.nota }}</div>
+        <div class="bim-estado">{{ b.estado }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: CONTENIDO ── -->
+  <div class="dc-body" *ngIf="tabActiva === 'contenido'">
+    <div class="sec-label">Total de bimestres (4)</div>
+
+    <div class="accordion" *ngFor="let bim of contenido; let i = index">
+      <div class="acc-header" (click)="toggleBim(i)" [class.active]="bimAbiert[i]">
+        <div class="acc-bar" [style.background]="bim.color"></div>
+        <div class="acc-title">{{ bim.titulo }}</div>
+        <div class="acc-meta">{{ bim.semanas.length }} semanas · {{ bim.estado }}</div>
+        <i class="ti ti-chevron-down acc-chevron" [class.open]="bimAbiert[i]"></i>
+      </div>
+      <div class="acc-body" *ngIf="bimAbiert[i]">
+        <div class="acc-sub" *ngFor="let sem of bim.semanas" (click)="abrirSemana(sem)">
+          <div class="acc-sub-dot" [style.background]="sem.color"></div>
+          <div class="acc-sub-title">{{ sem.titulo }}</div>
+          <div class="acc-sub-right">
+            <span class="chip" [ngClass]="sem.chipClass">{{ sem.chipLabel }}</span>
+            <i class="ti ti-chevron-right acc-chevron2"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: TAREAS ── -->
+  <div class="dc-body" *ngIf="tabActiva === 'tareas'">
+    <div class="sec-label">Tareas del curso</div>
+
+    <div class="empty-state" *ngIf="tareas.length === 0">
+      <i class="ti ti-clipboard-list"></i>
+      <p>No hay tareas registradas aún.</p>
+    </div>
+
+    <div class="act-item" *ngFor="let t of tareas"
+         [class.pendiente]="t.estado === 'PENDIENTE'"
+         (click)="t.estado === 'PENDIENTE' && abrirModalTarea(t)">
+      <div class="act-ico ai-tarea"><i class="ti ti-file-text"></i></div>
+      <div class="act-info">
+        <div class="act-nm">{{ t.nombre }}</div>
+        <div class="act-desc">
+          Fecha límite: {{ t.fechaLimite }}
+          &nbsp;·&nbsp;
+          {{ t.presencial ? 'Presencial' : 'Entrega en línea' }}
+        </div>
+      </div>
+      <div class="act-right">
+        <span class="act-status" [ngClass]="'as-' + t.estado.toLowerCase()">{{ t.estado }}</span>
+        <span class="act-nota" *ngIf="t.nota" [style.color]="colorNota(t.nota)">{{ t.nota }}</span>
+        <button class="btn-entregar" *ngIf="t.estado === 'PENDIENTE'"
+                (click)="$event.stopPropagation(); abrirModalTarea(t)">
+          <i class="ti ti-upload"></i> Entregar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: EVALUACIONES ── -->
+  <div class="dc-body" *ngIf="tabActiva === 'evaluaciones'">
+    <div class="sec-label">Evaluaciones del curso</div>
+
+    <div class="empty-state" *ngIf="evaluaciones.length === 0">
+      <i class="ti ti-clipboard"></i>
+      <p>No hay evaluaciones registradas aún.</p>
+    </div>
+
+    <div class="act-item" *ngFor="let e of evaluaciones">
+      <div class="act-ico ai-exam"><i class="ti ti-clipboard"></i></div>
+      <div class="act-info">
+        <div class="act-nm">{{ e.nombre }}</div>
+        <div class="act-desc">Fecha: {{ e.fecha }} · {{ e.tipo }}</div>
+      </div>
+      <div class="act-right">
+        <span class="act-status" [ngClass]="'as-' + e.estado.toLowerCase()">{{ e.estado }}</span>
+        <span class="act-nota" *ngIf="e.nota" [style.color]="colorNota(e.nota)">{{ e.nota }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: ANUNCIOS ── -->
+  <div class="dc-body" *ngIf="tabActiva === 'anuncios'">
+    <div class="sec-label">Anuncios del docente</div>
+
+    <div class="empty-state" *ngIf="anuncios.length === 0">
+      <i class="ti ti-speakerphone"></i>
+      <p>No hay anuncios publicados aún.</p>
+    </div>
+
+    <div class="anuncio" *ngFor="let a of anuncios" [class.an-pin]="a.fijado">
+      <div class="an-header">
+        <div class="an-title">
+          {{ a.titulo }}
+          <span class="an-pin-b" *ngIf="a.fijado">FIJADO</span>
+        </div>
+        <div class="an-date">{{ a.fecha }}</div>
+      </div>
+      <div class="an-body">{{ a.cuerpo }}</div>
+    </div>
+  </div>
+
+  <!-- ── TAB: FORO ── -->
+  <div class="dc-body" *ngIf="tabActiva === 'foro'">
+    <div class="dc-foro-header">
+      <div class="sec-label">Foro de consultas</div>
+      <button class="btn-nueva-pregunta" (click)="abrirModalForo()">
+        <i class="ti ti-plus"></i> Nueva pregunta
       </button>
-      <div class="hero-tag">Curso activo · {{ curso.bimestre }}</div>
-      <h1 class="hero-title">{{ curso.nombre }}</h1>
-      <div class="hero-meta">
-        <span class="hm"><i class="ti ti-user"></i>{{ curso.docenteNombre }}</span>
-        <span class="hm"><i class="ti ti-clock"></i>{{ curso.horario }}</span>
-        <span class="hm"><i class="ti ti-map-pin"></i>{{ curso.aula }}</span>
-      </div>
-      <div class="hero-chips">
-        <span class="hchip hc-sec">{{ curso.seccion }}</span>
-        <span class="hchip hc-bim">{{ curso.bimestre }}</span>
-      </div>
     </div>
- 
-    <div class="hero-stats">
-      <div class="hs hs-ok">
-        <strong>{{ curso.promedio }}</strong>
-        <span>Promedio</span>
-      </div>
-      <div class="hs hs-bl">
-        <strong>{{ curso.asistencia }}%</strong>
-        <span>Asistencia</span>
-      </div>
-      <div class="hs hs-or">
-        <strong>{{ curso.avance }}%</strong>
-        <span>Avance</span>
-      </div>
-      <div class="hs hs-wa">
-        <strong>{{ pendientesTotales.length }}</strong>
-        <span>Pendientes</span>
+
+    <div class="empty-state" *ngIf="foro.length === 0">
+      <i class="ti ti-message-circle"></i>
+      <p>Sé el primero en hacer una pregunta.</p>
+    </div>
+
+    <div class="foro-item" *ngFor="let f of foro">
+      <div class="foro-avatar">{{ f.iniciales }}</div>
+      <div class="foro-content">
+        <div class="foro-autor">{{ f.autor }} <span class="foro-fecha">· {{ f.fecha }}</span></div>
+        <div class="foro-pregunta">{{ f.pregunta }}</div>
+        <div class="foro-respuesta" *ngIf="f.respuesta">
+          <i class="ti ti-corner-down-right"></i>
+          <div>
+            <span class="fr-docente">Docente:</span>
+            {{ f.respuesta }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
- 
-  <!-- ─── LAYOUT ────────────────────────────────────────────────────────── -->
-  <div class="layout">
- 
-    <!-- SIDEBAR -->
-    <aside class="sidebar-nav">
-      <div class="sn-title">Contenido del curso</div>
- 
-      <div
-        *ngFor="let unidad of curso.unidades; let i = index; trackBy: trackByUnidad"
-        class="sn-item"
-        [class.done]="unidad.estado === 'completada'"
-        [class.cur]="unidad.estado === 'en_curso'"
-        [class.lock]="unidad.estado === 'bloqueada'"
-        [class.on]="indiceActivo === i"
-        (click)="seleccionarUnidad(i)">
-        <div class="sn-num">{{ unidad.numero }}</div>
-        <div class="sn-info">
-          <div class="sn-nm">{{ unidad.nombre }}</div>
-          <div class="sn-sub">{{ unidad.totalTemas }} temas · {{ unidad.totalSesiones }} sesiones</div>
-        </div>
-        <span class="sn-badge"
-          [class.snb-done]="unidad.estado === 'completada'"
-          [class.snb-cur]="unidad.estado === 'en_curso'"
-          [class.snb-lock]="unidad.estado === 'bloqueada'">
-          <ng-container [ngSwitch]="unidad.estado">
-            <i *ngSwitchCase="'completada'" class="ti ti-check"></i>
-            <i *ngSwitchCase="'en_curso'" class="ti ti-circle-dot"></i>
-            <i *ngSwitchCase="'bloqueada'" class="ti ti-lock"></i>
-          </ng-container>
-        </span>
-      </div>
- 
-      <!-- Actividades pendientes -->
-      <div class="sn-pend" *ngIf="pendientesTotales.length > 0">
-        <div class="sn-pend-title">
-          <i class="ti ti-alert-triangle"></i>
-          Pendientes ({{ pendientesTotales.length }})
-        </div>
-        <div
-          *ngFor="let act of pendientesTotales"
-          class="sn-pend-item"
-          (click)="abrirModal(act)">
-          <i class="ti ti-file-text" [style.color]="act.tipo === 'tarea' ? 'var(--or)' : 'var(--bl)'"></i>
-          <span>{{ act.nombre }}</span>
-          <span class="sn-pend-date">{{ act.fechaLimite }}</span>
-        </div>
-      </div>
-    </aside>
- 
-    <!-- MAIN CONTENT -->
-    <main class="main-content" *ngIf="unidadActiva">
- 
-      <!-- ANUNCIOS -->
-      <div class="content-panel" *ngIf="curso.anuncios.length > 0">
-        <div class="panel-header">
-          <div class="panel-title">
-            <div class="panel-ico"><i class="ti ti-speakerphone"></i></div>
-            <h3>Anuncios del <em>docente</em></h3>
-          </div>
-        </div>
-        <div class="panel-body">
-          <div
-            *ngFor="let anuncio of curso.anuncios"
-            class="anuncio"
-            [class.an-pin]="anuncio.fijado"
-            [class.an-norm]="!anuncio.fijado">
-            <div class="an-title">
-              {{ anuncio.titulo }}
-              <span class="an-pin-b" *ngIf="anuncio.fijado">FIJADO</span>
-            </div>
-            <div class="an-body">{{ anuncio.cuerpo }}</div>
-            <div class="an-date">{{ anuncio.fecha }}</div>
-          </div>
-        </div>
-      </div>
- 
-      <!-- UNIDAD ACTIVA -->
-      <div class="content-panel">
-        <div class="panel-header">
-          <div class="panel-title">
-            <div class="panel-ico"><i class="ti ti-books"></i></div>
-            <h3>Unidad {{ unidadActiva.numero }} — <em>{{ unidadActiva.nombre }}</em></h3>
-          </div>
-          <span class="panel-meta">
-            {{ unidadActiva.totalTemas }} temas · {{ unidadActiva.totalSesiones }} sesiones
-          </span>
-        </div>
-        <div class="panel-body">
-          <div class="section-label">Temas de la unidad</div>
-          <div
-            *ngFor="let tema of unidadActiva.temas"
-            class="topic"
-            [class.done]="tema.estado === 'completado'"
-            [class.cur]="tema.estado === 'en_curso'"
-            [class.lock]="tema.estado === 'bloqueado'">
-            <div class="tp-ico"
-              [class.tp-done]="tema.estado === 'completado'"
-              [class.tp-cur]="tema.estado === 'en_curso'"
-              [class.tp-lock]="tema.estado === 'bloqueado'">
-              <i class="ti"
-                [class.ti-check]="tema.estado === 'completado'"
-                [class.ti-circle]="tema.estado === 'en_curso'"
-                [class.ti-lock]="tema.estado === 'bloqueado'"></i>
-            </div>
-            <div class="tp-info">
-              <div class="tp-nm">{{ tema.nombre }}</div>
-              <div class="tp-desc">{{ tema.descripcion }}</div>
-            </div>
-            <div class="tp-right">
-              <span class="tp-date">{{ tema.fecha }}</span>
-              <span class="tp-badge tpb-done" *ngIf="tema.estado === 'completado'">Completado</span>
-              <span class="tp-badge tpb-cur" *ngIf="tema.estado === 'en_curso'">En curso</span>
-            </div>
-          </div>
-        </div>
-      </div>
- 
-      <!-- MATERIALES -->
-      <div class="content-panel">
-        <div class="panel-header">
-          <div class="panel-title">
-            <div class="panel-ico"><i class="ti ti-paperclip"></i></div>
-            <h3>Materiales de la <em>unidad</em></h3>
-          </div>
-        </div>
-        <div class="panel-body">
-          <div *ngIf="unidadActiva.materiales.length === 0" class="empty-state">
-            Sin materiales disponibles para esta unidad.
-          </div>
-          <div
-            *ngFor="let mat of unidadActiva.materiales"
-            class="mat-item">
-            <div class="mat-ico" [ngClass]="'mi-' + mat.tipo">
-              <i class="ti"
-                [class.ti-file-type-pdf]="mat.tipo === 'pdf'"
-                [class.ti-file-type-doc]="mat.tipo === 'doc'"
-                [class.ti-video]="mat.tipo === 'video'"
-                [class.ti-link]="mat.tipo === 'link'"
-                [class.ti-photo]="mat.tipo === 'imagen'"></i>
-            </div>
-            <div class="mat-info">
-              <div class="mat-nm">{{ mat.nombre }}</div>
-              <div class="mat-meta">{{ mat.fecha }} · {{ mat.tamanio }}</div>
-            </div>
-            <button class="mat-dl" title="Descargar" (click)="mostrarToast('Descargando...', 'info')">
-              <i class="ti ti-download"></i>
-            </button>
-          </div>
-        </div>
-      </div>
- 
-      <!-- ACTIVIDADES -->
-      <div class="content-panel">
-        <div class="panel-header">
-          <div class="panel-title">
-            <div class="panel-ico"><i class="ti ti-clipboard-list"></i></div>
-            <h3>Tareas y <em>evaluaciones</em></h3>
-          </div>
-        </div>
-        <div class="panel-body">
-          <div *ngIf="unidadActiva.actividades.length === 0" class="empty-state">
-            Sin actividades para esta unidad.
-          </div>
-          <div
-            *ngFor="let act of unidadActiva.actividades; trackBy: trackByActividad"
-            class="act-item"
-            [class.clickable]="act.estado === 'pendiente'"
-            (click)="act.estado === 'pendiente' && abrirModal(act)">
-            <div class="act-ico" [ngClass]="'ai-' + act.tipo">
-              <i class="ti"
-                [class.ti-file-text]="act.tipo === 'tarea'"
-                [class.ti-clipboard]="act.tipo === 'examen'"
-                [class.ti-message-circle]="act.tipo === 'foro'"
-                [class.ti-pencil]="act.tipo === 'practica'"></i>
-            </div>
-            <div class="act-info">
-              <div class="act-nm">{{ act.nombre }}</div>
-              <div class="act-desc">
-                Fecha: {{ act.fechaLimite }} ·
-                {{ act.presencial ? 'Presencial' : 'Entrega en línea' }}
-              </div>
-            </div>
-            <div class="act-right">
-              <span class="act-status" [ngClass]="'as-' + act.estado">
-                {{ act.estado | titlecase }}
-              </span>
-              <span class="act-nota" *ngIf="act.nota" [style.color]="colorNota(act.nota)">
-                {{ act.nota }}
-              </span>
-              <button
-                *ngIf="act.estado === 'pendiente'"
-                class="btn btn-sm btn-or"
-                (click)="$event.stopPropagation(); abrirModal(act)">
-                Entregar
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
- 
-      <!-- CALIFICACIONES -->
-      <div class="content-panel">
-        <div class="panel-header">
-          <div class="panel-title">
-            <div class="panel-ico"><i class="ti ti-award"></i></div>
-            <h3>Mis <em>calificaciones</em></h3>
-          </div>
-        </div>
-        <div class="panel-body">
-          <div *ngIf="unidadActiva.notas.length === 0" class="empty-state">
-            Sin calificaciones disponibles.
-          </div>
-          <div *ngFor="let nota of unidadActiva.notas" class="nota-row">
-            <div class="nr-name">{{ nota.nombre }}</div>
-            <div class="nr-nota" [style.color]="colorNota(nota.nota)">
-              {{ nota.nota !== null ? nota.nota : '—' }}
-            </div>
-            <div class="nr-obs">{{ nota.observacion || 'Sin observaciones' }}</div>
-          </div>
-        </div>
-      </div>
- 
-    </main>
-  </div>
-</ng-container>
- 
-<!-- ─── MODAL ENTREGAR TAREA ──────────────────────────────────────────────── -->
-<div class="modal-overlay" [class.show]="modalAbierto" (click)="cerrarModal()">
-  <div class="modal-box" (click)="$event.stopPropagation()" *ngIf="actividadSeleccionada">
+
+</div>
+
+<!-- ══ MODAL: ENTREGAR TAREA ══ -->
+<div class="modal-wrap" [class.show]="modalTareaVisible" (click)="cerrarModalTarea()">
+  <div class="modal-box" (click)="$event.stopPropagation()" *ngIf="tareaSeleccionada">
     <div class="modal-header">
       <h3><i class="ti ti-upload"></i> Entregar tarea</h3>
-      <button class="modal-close" (click)="cerrarModal()">
-        <i class="ti ti-x"></i>
-      </button>
+      <button class="modal-close" (click)="cerrarModalTarea()"><i class="ti ti-x"></i></button>
     </div>
- 
     <div class="modal-body">
-      <!-- Info de la actividad -->
-      <div class="modal-info">
-        <div class="info-item">
+      <div class="modal-info-row">
+        <div class="mi-item">
           <label>Tarea</label>
-          <span>{{ actividadSeleccionada.nombre }}</span>
+          <span>{{ tareaSeleccionada.nombre }}</span>
         </div>
-        <div class="info-item">
+        <div class="mi-item">
           <label>Fecha límite</label>
-          <span class="text-warning">{{ actividadSeleccionada.fechaLimite }}</span>
+          <span class="text-warning">{{ tareaSeleccionada.fechaLimite }}</span>
         </div>
       </div>
- 
-      <!-- Upload zone -->
-      <div
-        *ngIf="!archivoEntrega && !entregaExitosa"
-        class="upload-zone"
-        (click)="fileInput.click()">
+
+      <div class="upload-zone" *ngIf="!archivoEntrega && !entregaExitosa" (click)="fileInput.click()">
         <i class="ti ti-cloud-upload"></i>
-        <p>Arrastra tu archivo aquí o <strong>haz click para seleccionar</strong></p>
+        <p>Arrastra tu archivo o <strong>haz click para seleccionar</strong></p>
         <small>PDF, Word, Excel, Imágenes (máx 25MB)</small>
         <input #fileInput type="file" hidden (change)="onArchivoSeleccionado($event)">
       </div>
- 
-      <!-- Archivo seleccionado -->
+
       <div class="uploaded-file" *ngIf="archivoEntrega && !entregaExitosa">
         <div class="uf-ico"><i class="ti ti-check"></i></div>
         <div class="uf-nm">{{ archivoEntrega.name }} ({{ tamanioArchivo }})</div>
-        <button class="uf-del" (click)="quitarArchivo()">
-          <i class="ti ti-x"></i>
-        </button>
+        <button class="uf-del" (click)="quitarArchivo()"><i class="ti ti-x"></i></button>
       </div>
- 
-      <!-- Comentario -->
+
       <div class="form-field" *ngIf="!entregaExitosa">
         <label>Comentario <span class="optional">(opcional)</span></label>
-        <textarea
-          [(ngModel)]="comentarioEntrega"
-          placeholder="Agrega un comentario para el profesor...">
-        </textarea>
+        <textarea [(ngModel)]="comentarioEntrega"
+                  placeholder="Agrega un comentario para el docente..."></textarea>
       </div>
- 
-      <!-- Confirmación -->
-      <div class="alert-confirm" *ngIf="entregaExitosa">
+
+      <div class="alert-ok" *ngIf="entregaExitosa">
         <i class="ti ti-circle-check"></i>
-        <span>¡Tarea enviada correctamente! El profesor ha sido notificado.</span>
+        <span>¡Tarea enviada correctamente!</span>
       </div>
     </div>
- 
     <div class="modal-footer">
       <ng-container *ngIf="!entregaExitosa">
-        <button class="btn btn-ghost" (click)="cerrarModal()">Cancelar</button>
-        <button class="btn btn-or" (click)="enviarTarea()" [disabled]="entregando">
+        <button class="btn-cancel" (click)="cerrarModalTarea()">Cancelar</button>
+        <button class="btn-submit" (click)="enviarTarea()" [disabled]="entregando || !archivoEntrega">
           <i class="ti ti-send" *ngIf="!entregando"></i>
-          <i class="ti ti-loader" *ngIf="entregando" style="animation: spin 1s linear infinite"></i>
+          <i class="ti ti-loader" *ngIf="entregando"></i>
           {{ entregando ? 'Enviando...' : 'Enviar tarea' }}
         </button>
       </ng-container>
-      <button class="btn btn-ok" *ngIf="entregaExitosa" (click)="cerrarModal()">
+      <button class="btn-submit" *ngIf="entregaExitosa" (click)="cerrarModalTarea()">
         <i class="ti ti-check"></i> Cerrar
       </button>
     </div>
   </div>
 </div>
- 
+
+<!-- ══ MODAL: NUEVA PREGUNTA FORO ══ -->
+<div class="modal-wrap" [class.show]="modalForoVisible" (click)="cerrarModalForo()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3><i class="ti ti-message-circle"></i> Nueva pregunta</h3>
+      <button class="modal-close" (click)="cerrarModalForo()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field">
+        <label>Tu pregunta</label>
+        <textarea [(ngModel)]="preguntaForo" rows="4"
+                  placeholder="Escribe tu consulta al docente..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="cerrarModalForo()">Cancelar</button>
+      <button class="btn-submit" (click)="enviarPregunta()" [disabled]="!preguntaForo.trim()">
+        <i class="ti ti-send"></i> Publicar pregunta
+      </button>
+    </div>
+  </div>
+</div>
+
 <app-toast></app-toast>

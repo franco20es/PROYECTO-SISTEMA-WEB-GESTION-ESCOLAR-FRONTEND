@@ -1,36 +1,29 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+// pago.service.ts
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../environment/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class PagoService {
-    constructor(private http: HttpClient) { }
 
-    private API_PAGO = 'http://localhost:8080/api/pago';
+  private http = inject(HttpClient);
+  private api = environment.apiUrl;
 
-    //obtener los pagos del alumno 
-    getPagoByCodigo(codigo: string) {
-        return this.API_PAGO + '/' + codigo;
-    }
+  // ─── Pensiones ────────────────────────────────────────────────────────────
 
-    //obetener el detalle de pago del alumno
-    getDetallePagoByCodigo(codigo: string) {
-        return this.API_PAGO + '/detalle/' + codigo;
-    }
+  getPensiones(anio: number, page = 0, size = 12): Observable<any> {
+    return this.http.get<any>(`${this.api}/portal/alumno/pensiones`, {
+      params: { anio, page, size }
+    });
+  }
 
-    //obtener el estado de pago del alumno
-    getEstadoPagoByCodigo(codigo: string) {
-        return this.API_PAGO + '/estado/' + codigo;
-    }
+  // ─── MercadoPago ──────────────────────────────────────────────────────────
 
-    //obtener el historial de pagos del alumno
-    getHistorialPagoByCodigo(codigo: string) {
-        return this.API_PAGO + '/historial/' + codigo;
-    }
-
-    //obtener los pagos pendientes del alumno
-    getPagosPendientesByCodigo(codigo: string) {
-        return this.API_PAGO + '/pendientes/' + codigo;
-    }
+  crearPreferencia(referenciaId: string, tipo: 'PENSION' | 'MATRICULA'): Observable<any> {
+    return this.http.post<any>(`${this.api}/pagos/crear-preferencia`, {
+      referenciaId,
+      tipo
+    });
+  }
 }

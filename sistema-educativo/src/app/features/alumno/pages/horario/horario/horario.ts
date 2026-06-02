@@ -1,225 +1,213 @@
-
-
-declare global {
-  interface Window {
-    jspdf: any;
-  }
-}
+// horario.ts
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { SpinnerComponent } from '../../../../../core/components/spiner/spiner/spiner';
-
-
+import { HorarioService } from '../../../service/horario.service';
 import jsPDF from 'jspdf';
-
-
-interface HorarioAlumno {
-  curso: string;
-  docente: string;
-  seccion: string;
-  vecesDesaprobado: number;
-  HorasSemanales: number;
-  Creditos: number;
-  Grado: string;
-}
+import autoTable from 'jspdf-autotable';
 @Component({
   selector: 'app-horario',
   standalone: true,
-  imports: [CommonModule,SpinnerComponent],
+  imports: [CommonModule, SpinnerComponent],
   templateUrl: './horario.html',
   styleUrl: './horario.css',
 })
-
 export class Horario implements OnInit {
 
-  cargandoDatos: boolean = true;
- horario: HorarioAlumno[] = [
-    {
-      curso: 'S01 - Arquitectura de Microservicios',
-      docente: 'Ing. Carlos Rodríguez',
-      seccion: '43082 - Lunes 08:30 am a 10:45 am',
-      vecesDesaprobado: 0,
-      HorasSemanales: 3,
-      Creditos: 4,
-      Grado: 'Séptimo'
-    },
-    {
-      curso: 'S02 - Desarrollo Web Integrado',
-      docente: 'Mag. makanki Joel Donayre',
-      seccion: '47164 - Martes 18:30 pm a 21:00 pm',
-      vecesDesaprobado: 0,
-      HorasSemanales: 4,
-      Creditos: 3,
-      Grado: 'Séptimo'
-    },
-    {
-      curso: 'S03 - Seguridad Informática',
-      docente: 'Dr. Alejandro Gallardo',
-      seccion: '18456 - Miércoles 07:30 am a 09:45 am',
-      vecesDesaprobado: 0,
-      HorasSemanales: 3,
-      Creditos: 3,
-      Grado: 'Séptimo'
-    },
-    {
-      curso: 'S04 - Inteligencia de Negocios',
-      docente: 'Ing. Gonzalo Ortiz',
-      seccion: '47166 - Jueves 14:00 pm a 16:30 pm',
-      vecesDesaprobado: 0,
-      HorasSemanales: 3,
-      Creditos: 3,
-      Grado: 'Séptimo'
-    },
-    {
-      curso: 'S05 - Gestión de Proyectos TI',
-      docente: 'Mag. Francy Pazos',
-      seccion: '18390 - Viernes 10:00 am a 12:15 pm',
-      vecesDesaprobado: 1,
-      HorasSemanales: 3,
-      Creditos: 4,
-      Grado: 'Séptimo'
-    },
-    {
-      curso: 'S06 - Taller de Base de Datos (Redis/Postgres)',
-      docente: 'Ing. Claudio Ibarra',
-      seccion: '52441 - Sábado 15:00 pm a 18:00 pm',
-      vecesDesaprobado: 0,
-      HorasSemanales: 4,
-      Creditos: 3,
-      Grado: 'Séptimo'
-    },
-    {
-      curso: 'S07 - Ética y Liderazgo Profesional',
-      docente: 'Dra. Mercedes Cherres',
-      seccion: '18411 - Sábado 08:00 am a 10:15 am',
-      vecesDesaprobado: 0,
-      HorasSemanales: 2,
-      Creditos: 2,
-      Grado: 'Séptimo'
-    }
-  ];
-  totalHoras: number = 0;
-  totalCreditos: number = 0;
+  private horarioService = inject(HorarioService);
+  private cdr            = inject(ChangeDetectorRef);
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) {
-    this.calcularTotales();
-  }
+  cargandoDatos = true;
+  anio          = new Date().getFullYear();
+  horario: any[] = [];
+  seccion   = '';
+  error     = '';
+
+  // Horas a mostrar (6am - 6pm)
+  readonly START_HOUR = 6;
+  readonly PX_PER_HOUR = 48;
+  readonly horas = [6,7,8,9,10,11,12,13,14,15,16,17];
+  readonly diasOrden = ['LUNES','MARTES','MIERCOLES','JUEVES','VIERNES','SABADO'];
+
+  // Paleta de colores para cursos
+  private readonly COLORS = [
+    { bg:'#E6F1FB', border:'#378ADD', text:'#0C447C' },
+    { bg:'#E1F5EE', border:'#1D9E75', text:'#085041' },
+    { bg:'#FAEEDA', border:'#EF9F27', text:'#633806' },
+    { bg:'#FBEAF0', border:'#D4537E', text:'#72243E' },
+    { bg:'#EEEDFE', border:'#7F77DD', text:'#3C3489' },
+    { bg:'#FAECE7', border:'#D85A30', text:'#712B13' },
+    { bg:'#EAF3DE', border:'#639922', text:'#27500A' },
+  ];
+  private colorMap = new Map<string, { bg: string; border: string; text: string }>();
+  private colorIdx = 0;
 
   ngOnInit(): void {
-    // Implementación inicial de OnInit
-    console.log('Componente Horario inicializado');
-
-    setTimeout(() => {
-      this.cargandoDatos = false;
-
-      this.changeDetectorRef.detectChanges(); // Asegura que Angular detecte el cambio de estado
-    }, 700); // Simula una carga de datos de 2 segundos
+    this.cargarHorario();
   }
 
-  calcularTotales() {
-    this.totalHoras = this.horario.reduce((total, item) => total + item.HorasSemanales, 0);
-    this.totalCreditos = this.horario.reduce((total, item) => total + item.Creditos, 0);
+  cargarHorario(): void {
+    this.cargandoDatos = true;
+    this.horarioService.getMiHorario(this.anio).subscribe({
+      next: (data) => {
+        this.horario = data;
+        if (data.length > 0) {
+          this.seccion = data[0].seccionDenominacion;
+          // Pre-asignar colores a todos los cursos
+          this.cursosUnicos.forEach(c => this.getColor(c));
+        }
+        this.cargandoDatos = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.error = 'No se pudo cargar el horario.';
+        this.cargandoDatos = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
-  descargarPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('p', 'mm', 'a4'); // Orientación vertical
+  // ─── Getters ──────────────────────────────────────────────────────────────
 
-  // --- CONFIGURACIÓN DE COLORES (Basado en la imagen) ---
-  const rojoUTP = [191, 13, 62];
-  const azulHeader = [234, 244, 250]; // Azul muy claro para cabeceras
+  get diasVisibles(): string[] {
+    const dias = new Set(this.horario.map(h => h.diaSemana));
+    return this.diasOrden.filter(d => dias.has(d));
+  }
 
-  // --- 1. LOGO Y ENCABEZADO ---
-  // Si tienes el logo en Base64, descomenta la siguiente línea:
-  // doc.addImage(imgData, 'PNG', 14, 10, 40, 12); 
-  
-  // Texto representativo del logo si no tienes la imagen a mano:
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(rojoUTP[0], rojoUTP[1], rojoUTP[2]);
-  doc.setFontSize(22);
-  doc.text("UTP", 14, 20); 
-  doc.setFontSize(8);
-  doc.text("Universidad\nTecnológica\ndel Perú", 32, 17);
+  get cursosUnicos(): string[] {
+    return [...new Set(this.horario.map(h => h.cursoNombre))];
+  }
 
-  // --- 2. DATOS DEL ALUMNO (Izquierda y Derecha) ---
-  doc.setTextColor(0);
-  doc.setFontSize(12);
-  doc.text("Horario de clase", 14, 35);
+  // ─── Helpers de calendario ────────────────────────────────────────────────
 
+  getClasesEnHora(dia: string, hora: number): any[] {
+    return this.horario.filter(h => {
+      if (h.diaSemana !== dia) return false;
+      const startH = parseInt(h.horaInicio.split(':')[0]);
+      return startH === hora;
+    });
+  }
+
+  calcularAltura(clase: any): number {
+    const [sh, sm] = clase.horaInicio.split(':').map(Number);
+    const [eh, em] = clase.horaFin.split(':').map(Number);
+    const duracion = (eh * 60 + em) - (sh * 60 + sm);
+    return (duracion / 60) * this.PX_PER_HOUR - 4;
+  }
+
+  calcularTop(clase: any, hora: number): number {
+    const [, sm] = clase.horaInicio.split(':').map(Number);
+    return (sm / 60) * this.PX_PER_HOUR + 2;
+  }
+
+  getColor(curso: string): { bg: string; border: string; text: string } {
+    if (!this.colorMap.has(curso)) {
+      this.colorMap.set(curso, this.COLORS[this.colorIdx++ % this.COLORS.length]);
+    }
+    return this.colorMap.get(curso)!;
+  }
+
+  // ─── Formateo ─────────────────────────────────────────────────────────────
+
+  formatearDia(dia: string): string {
+    const map: Record<string, string> = {
+      LUNES: 'Lunes', MARTES: 'Martes', MIERCOLES: 'Miércoles',
+      JUEVES: 'Jueves', VIERNES: 'Viernes', SABADO: 'Sábado'
+    };
+    return map[dia] || dia;
+  }
+
+  formatearHoraLabel(hora: number): string {
+    return hora < 10 ? `0${hora}:00` : `${hora}:00`;
+  }
+
+  formatearHora(hora: string): string {
+    if (!hora) return '';
+    const [h, m] = hora.split(':').map(Number);
+    const ampm = h >= 12 ? 'pm' : 'am';
+    const h12  = h > 12 ? h - 12 : h === 0 ? 12 : h;
+    return `${h12}:${m.toString().padStart(2,'0')} ${ampm}`;
+  }
+
+  descargarPDF(): void {
+  const doc = new jsPDF('l', 'mm', 'a4'); // landscape
+
+  // Título
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.setTextColor(15, 23, 42);
+  doc.text('Horario de Clases', 14, 18);
+
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.setFont("helvetica", "normal");
-  
-  // Bloque Izquierdo
-  doc.text(`Alumno: U13206542 - JAN MARCO LOPEZ`, 14, 42);
-  doc.text(`Carrera: PST50`, 14, 46);
-  doc.text(`Campus: ICA`, 14, 50);
-  doc.text(`Periodo: 2026 - Ciclo 1 Marzo`, 14, 54);
+  doc.setTextColor(100, 116, 139);
+  doc.text(`Periodo: ${this.anio}`, 14, 24);
+  if (this.seccion) doc.text(this.seccion, 14, 29);
 
-  // Bloque Derecho (Fecha y Hora)
+  // Fecha
   const ahora = new Date();
-  doc.text(`Fecha: ${ahora.toLocaleDateString()}`, 150, 42);
-  doc.text(`Hora: ${ahora.toLocaleTimeString()}`, 150, 46);
+  doc.text(`Generado: ${ahora.toLocaleDateString('es-PE')} ${ahora.toLocaleTimeString('es-PE')}`, 200, 18);
 
-  // --- 3. TABLA DE CURSOS ---
-  const columnas = [
-    "Curso", "Docente", "Sección - Horario", "Veces\ndesap.", "Horas\nsemanales", "Créditos", "Ciclo", "Ubicación"
-  ];
+  // Tabla
+  const columnas = ['Día', 'Horario', 'Curso', 'Docente', 'Sección'];
+  const filas = this.diasOrden
+    .filter(dia => this.diasVisibles.includes(dia))
+    .flatMap(dia =>
+      this.horario
+        .filter(h => h.diaSemana === dia)
+        .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio))
+        .map(h => [
+          this.formatearDia(h.diaSemana),
+          `${this.formatearHora(h.horaInicio)} - ${this.formatearHora(h.horaFin)}`,
+          h.cursoNombre,
+          h.docenteNombreCompleto,
+          h.seccionDenominacion
+        ])
+    );
 
-  const filas = this.horario.map(h => [
-    h.curso,
-    h.docente,
-    `${h.seccion} - ${h.HorasSemanales}`, // Ajustar según tu lógica de horario
-    h.vecesDesaprobado || 0,
-    h.HorasSemanales,
-    h.Creditos,
-    h.Grado || '07', // Usando 07 como ejemplo de tu ciclo actual
-    'UTP+clase'
-  ]);
-
-  doc.autoTable({
-    startY: 60,
+  autoTable(doc, {
+    startY: 35,
     head: [columnas],
     body: filas,
-    theme: 'plain', // Estilo limpio sin bordes pesados
-    headStyles: { 
-      fillColor: azulHeader, 
-      textColor: [80, 80, 80], 
+    theme: 'plain',
+    headStyles: {
+      fillColor: [241, 245, 249],
+      textColor: [51, 65, 85],
       fontStyle: 'bold',
-      fontSize: 8,
-      halign: 'left'
+      fontSize: 9
     },
-    bodyStyles: { 
+    bodyStyles: {
       fontSize: 8,
-      textColor: [50, 50, 50],
-      cellPadding: 4
+      textColor: [30, 41, 59]
+    },
+    alternateRowStyles: {
+      fillColor: [248, 250, 252]
     },
     columnStyles: {
-      0: { fontStyle: 'bold', cellWidth: 35 }, // Columna Curso
-      2: { cellWidth: 40 } // Columna Horario
+      0: { fontStyle: 'bold', cellWidth: 25 },
+      1: { cellWidth: 35 },
+      2: { cellWidth: 45 },
+      3: { cellWidth: 55 },
     },
     didDrawCell: (data: any) => {
-      // Dibujar línea inferior sutil en cada fila (como en la imagen)
       if (data.section === 'body') {
-        doc.setDrawColor(230, 230, 230);
-        doc.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height);
+        doc.setDrawColor(226, 232, 240);
+        doc.line(
+          data.cell.x,
+          data.cell.y + data.cell.height,
+          data.cell.x + data.cell.width,
+          data.cell.y + data.cell.height
+        );
       }
     }
   });
 
-  // --- 4. RESUMEN FINAL ---
-  const finalY = doc.lastAutoTable.finalY + 10;
+  // Total
+  const finalY = (doc as any).lastAutoTable.finalY + 8;
   doc.setFontSize(8);
-  doc.text(`Total de cursos: ${this.horario.length}`, 14, finalY);
-  doc.text(`Total de horas semanales: ${this.totalHoras}`, 14, finalY + 4);
-  doc.text(`Total de créditos: ${this.totalCreditos}`, 14, finalY + 8);
+  doc.setTextColor(100, 116, 139);
+  doc.text(`Total: ${this.horario.length} sesión(es) · ${this.cursosUnicos.length} curso(s)`, 14, finalY);
 
-  // Pie de página
-  doc.setFontSize(7);
-  doc.text("Secretaría Académica", 14, 285);
-  doc.text("UTP - Gerencia de sistemas", 150, 285);
-
-  // --- 5. DESCARGA ---
-  doc.save('Horario_UTP_JANMARCOLOPEZ.pdf');
+  doc.save(`Horario_${this.anio}.pdf`);
 }
 }
-

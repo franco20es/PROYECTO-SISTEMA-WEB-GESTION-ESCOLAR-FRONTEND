@@ -1,61 +1,72 @@
-
+<!-- horario.html -->
 <app-spiner [isLoading]="cargandoDatos"></app-spiner>
-
-<div class="horario-container">
-
-  <!-- ENCABEZADO -->
-  <div class="header">
-    <h2>Horario de Clases</h2>
-    <div class="info-alumno">
-      <p><strong>Alumno:</strong> U13206542 - JAN MARCO LOPEZ</p>
-      <p><strong>Periodo:</strong> 2024-2</p>
+ 
+<div class="horario-wrap" *ngIf="!cargandoDatos">
+ 
+  <!-- HEADER -->
+  <div class="cal-header">
+    <div>
+      <h2 class="cal-title">Horario de clases — {{ anio }}</h2>
+      <p class="cal-seccion" *ngIf="seccion">{{ seccion }}</p>
+    </div>
+    <button class="btn-print" onclick="window.print()">Imprimir</button>
+    <button class="btn-pdf" (click)="descargarPDF()">⬇ Descargar PDF</button>
+  </div>
+ 
+  <!-- SIN DATOS -->
+  <div class="sin-datos" *ngIf="!error && horario.length === 0">
+    No tienes horario registrado para {{ anio }}.
+  </div>
+ 
+  <!-- ERROR -->
+  <div class="error-msg" *ngIf="error">{{ error }}</div>
+ 
+  <!-- CALENDARIO -->
+  <div class="cal-scroll" *ngIf="horario.length > 0">
+    <div class="cal-grid" [style.grid-template-columns]="'56px repeat(' + diasVisibles.length + ', 1fr)'">
+ 
+      <!-- Cabecera días -->
+      <div class="cal-corner"></div>
+      <div class="cal-day-header" *ngFor="let dia of diasVisibles">
+        {{ formatearDia(dia) }}
+      </div>
+ 
+      <!-- Filas de horas -->
+      <ng-container *ngFor="let hora of horas">
+        <div class="cal-time">{{ formatearHoraLabel(hora) }}</div>
+        <div class="cal-cell" *ngFor="let dia of diasVisibles">
+          <ng-container *ngFor="let clase of getClasesEnHora(dia, hora)">
+            <div class="class-block"
+                 [style.background]="getColor(clase.cursoNombre).bg"
+                 [style.border-left]="'3px solid ' + getColor(clase.cursoNombre).border"
+                 [style.height.px]="calcularAltura(clase)"
+                 [style.top.px]="calcularTop(clase, hora)"
+                 [title]="clase.cursoNombre + ' · ' + clase.docenteNombreCompleto">
+              <div class="cb-curso" [style.color]="getColor(clase.cursoNombre).text">
+                {{ clase.cursoNombre }}
+              </div>
+              <div class="cb-hora" [style.color]="getColor(clase.cursoNombre).text">
+                {{ formatearHora(clase.horaInicio) }} - {{ formatearHora(clase.horaFin) }}
+              </div>
+              <div class="cb-docente" [style.color]="getColor(clase.cursoNombre).text">
+                {{ clase.docenteNombreCompleto }}
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+ 
     </div>
   </div>
-
-  <!-- TABLA -->
-  <table class="horario-table">
-    <thead>
-      <tr>
-     
-        <th>Curso</th>
-        <th>Docente</th>
-        <th>Sección - Horario</th>
-        <th>Veces Desaprobadas</th>
-        <th>Horas Semanales</th>
-        <th>Créditos</th>
-        <th>Grado</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr *ngFor="let h of horario">
-      
-        <td>{{ h.curso }}</td>
-        <td>{{ h.docente }}</td>
-        <td>{{ h.seccion }} - {{ h.HorasSemanales }}</td>
-        <td>{{ h.vecesDesaprobado }}</td>
-        <td>{{ h.HorasSemanales }}</td>
-        <td>{{ h.Creditos }}</td>
-        <td>{{ h.Grado }}</td>
-      </tr>
-    </tbody>
-
-    <!-- TOTALES -->
-    <tfoot>
-      <tr>
-        <td colspan="4"><strong>Totales</strong></td>
-        <td></td>
-        <td>{{ totalHoras }}</td>
-        <td>{{ totalCreditos }}</td>
-        <td>{{ horario.length }} cursos</td>
-      </tr>
-    </tfoot>
-  </table>
-
-  <!-- ACCIONES -->
-  <div class="horario-actions">
-    <button class="btn-pdf" (click)="descargarPDF()">Descargar PDF</button>
-    <button class="btn-print" onclick="window.print()">Imprimir</button>
+ 
+  <!-- LEYENDA -->
+  <div class="leyenda" *ngIf="horario.length > 0">
+    <div class="leyenda-item" *ngFor="let curso of cursosUnicos">
+      <div class="ley-dot"
+           [style.background]="getColor(curso).bg"
+           [style.border]="'1.5px solid ' + getColor(curso).border"></div>
+      <span>{{ curso }}</span>
+    </div>
   </div>
-
+ 
 </div>

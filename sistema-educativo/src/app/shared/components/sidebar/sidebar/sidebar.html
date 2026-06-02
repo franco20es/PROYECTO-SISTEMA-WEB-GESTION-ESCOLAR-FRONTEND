@@ -30,19 +30,18 @@
     </div>
   </div> -->
 
- <div class="sb-user" (click)="emitNavigate('dashboard')">
+<div class="sb-user">
 
   <div class="sb-avatar">
-    MP
+    {{ nombre.charAt(0) }}
     <span class="sb-avatar-status"></span>
   </div>
 
   <div class="sb-user-info">
     <div class="sb-user-header">
-      <span class="sb-user-name"></span>
-      <span class="sb-user-role">Portal</span>
+      <span class="sb-user-name">{{ nombre }}</span>
+      <span class="sb-user-role">{{ rol }}</span>
     </div>
-    <span class="sb-user-email"></span>
   </div>
 
 </div>

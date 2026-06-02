@@ -1,16 +1,17 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+// horario.service.ts
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../environment/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class HorarioService {
-    constructor(http: HttpClient) { }
 
-    private API_HORARIO = 'http://localhost:8080/api/horario';
+  private http = inject(HttpClient);
+  private api  = environment.apiUrl;
 
-    //obtener el horario por el codigo del alumno
-    getHorarioByCodigo(codigo: string) {
-        return this.API_HORARIO + '/' + codigo;
-    }
+  getMiHorario(anio: number): Observable<any[]> {
+    const params = new HttpParams().set('anio', anio);
+    return this.http.get<any[]>(`${this.api}/portal/alumno/horario`, { params });
+  }
 }

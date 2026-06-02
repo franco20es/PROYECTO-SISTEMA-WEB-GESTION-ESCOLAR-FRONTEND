@@ -21,34 +21,94 @@
 </div>
 
 <!-- ════ GRID DE CURSOS ════ -->
-<div class="courses-grid" >
-  <div class="course-card" *ngFor="let c of courses" (click)="onOpenCourse(c)" [attr.data-id]="c.id">
+<div class="courses-grid">
+  <div class="course-card"
+       *ngFor="let c of courses"
+       (click)="onOpenCourse(c)"
+       [class.selected]="selectedCourse?.id === c.id"
+       [attr.data-id]="c.id">
 
+    <!-- Banner imagen -->
+    <div class="cc-banner">
+      <img *ngIf="c.img" [src]="c.img" [alt]="c.nombre" class="cc-image">
+      <div class="cc-overlay"></div>
+      <div class="cc-badge-estado">En curso</div>
+      <div class="cc-color-bar" [style.background]="c.color || 'var(--blue-mid)'"></div>
+    </div>
+
+    <!-- Cuerpo -->
     <div class="cc-body">
-      <div class="cc-top">
 
-        <div class="cc-nota-wrap">
-          <img *ngIf="c.img" [src]="c.img" [alt]="c.nombre" class="cc-image">
+      <!-- Nombre -->
+      <div class="cc-name">{{ c.nombre }}</div>
 
+      <!-- Profesor -->
+      <div class="cc-profesor">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        {{ c.profesor }}
+      </div>
 
+      <!-- Horario -->
+      <div class="cc-horario-info">
+        <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+        {{ c.horario }}
+      </div>
+
+      <!-- Notas por bimestre -->
+      <div class="cc-notas-row">
+        <div class="cc-nota-chip"
+             [class.aprobado]="c.b1 !== '—' && +c.b1 >= 11"
+             [class.desaprobado]="c.b1 !== '—' && +c.b1 < 11">
+          <span class="cnc-label">B1</span>
+          <span class="cnc-val">{{ c.b1 }}</span>
+        </div>
+        <div class="cc-nota-chip"
+             [class.aprobado]="c.b2 !== '—' && +c.b2 >= 11"
+             [class.desaprobado]="c.b2 !== '—' && +c.b2 < 11">
+          <span class="cnc-label">B2</span>
+          <span class="cnc-val">{{ c.b2 }}</span>
+        </div>
+        <div class="cc-nota-chip"
+             [class.aprobado]="c.b3 !== '—' && +c.b3 >= 11"
+             [class.desaprobado]="c.b3 !== '—' && +c.b3 < 11">
+          <span class="cnc-label">B3</span>
+          <span class="cnc-val">{{ c.b3 }}</span>
+        </div>
+        <div class="cc-nota-chip prom"
+             [class.aprobado]="c.prom !== '—' && +c.prom >= 11"
+             [class.desaprobado]="c.prom !== '—' && +c.prom < 11">
+          <span class="cnc-label">Prom</span>
+          <span class="cnc-val">{{ c.prom }}</span>
         </div>
       </div>
-      <div class="cc-name">{{c.nombre}}</div>
-      <div class="cc-teacher">{{c.profesor}} · {{c.horario}}</div>
-      <div class="cc-progress">
-        <div class="cc-progress-fill" [style.width.%]="c.progreso" [style.background]=""></div>
+
+      <!-- Progreso -->
+      <div class="cc-prog-wrap">
+        <div class="cc-prog-label">
+          <span>Progreso del bimestre</span>
+          <span class="cc-prog-val">{{ c.progreso }}%</span>
+        </div>
+        <div class="cc-progress">
+          <div class="cc-progress-fill"
+               [style.width.%]="c.progreso"
+               [style.background]="c.color || 'var(--blue-mid)'">
+          </div>
+        </div>
       </div>
-      <div class="cc-prog-label">
-        <span>Progreso del bimestre</span>
-        <span>{{c.progreso}}%</span>
-      </div>
+
     </div>
+
+    <!-- Footer -->
     <div class="cc-footer">
       <div class="cc-tags">
-        <span *ngFor="let t of c.tags" class="cc-tag" [ngClass]="t.class">{{t.text}}</span>
+        <span *ngFor="let t of c.tags" class="cc-tag" [ngClass]="t.class">{{ t.text }}</span>
+        <span *ngIf="!c.tags || c.tags.length === 0" class="cc-tag ct-activo">Activo</span>
       </div>
-      <div class="cc-arrow">→</div>
+      <div class="cc-arrow">
+        <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+      </div>
     </div>
+
   </div>
 </div>
 
