@@ -4,8 +4,6 @@ import { AlumnoForm } from '../../alumno-form/alumno-form/alumno-form';
 import { ApoderadoForm } from '../../apoderado-form/apoderado-form/apoderado-form';
 import { GradoForm } from '../../grado/grado-form/grado-form';
 import { PagoForm } from '../../pago/pago-form/pago-form';
-import { ConfirmacionMatricula } from "../../modal/confirmacionMatruicula/confirmacion-matricula/confirmacion-matricula";
-
 @Component({
   selector: 'app-matricula-wizard',
   standalone: true,
@@ -15,7 +13,6 @@ import { ConfirmacionMatricula } from "../../modal/confirmacionMatruicula/confir
     ApoderadoForm,
     GradoForm,
     PagoForm,
-    ConfirmacionMatricula
 ],
   templateUrl: './matricula-wizard.html',
   styleUrl: './matricula-wizard.css',
