@@ -12,26 +12,42 @@ import { AutenticacionService } from '../../../../core/services/autenticacion/au
 })
 export class Login {
   private auth = inject(AutenticacionService);
-  router = inject(Router); // ← sin private
+  router = inject(Router);
 
   loginForm = {
     email: '',
     password: ''
   };
   isLoading = false;
-  error = '';
-  successMessage = '';
   errorMessage = '';
+  successMessage = '';
   showPassword = false;
   rememberMe = false;
 
+  // Validación simple de email
+  emailValido(): boolean {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(this.loginForm.email.trim());
+  }
+
+  // El formulario es válido si email tiene formato y password no está vacío
+  formValido(): boolean {
+    return this.emailValido() && this.loginForm.password.trim().length > 0;
+  }
+
   login(): void {
+    this.errorMessage = '';
+
     if (!this.loginForm.email || !this.loginForm.password) {
-      this.error = 'Completa todos los campos';
+      this.errorMessage = 'Completa todos los campos';
       return;
     }
+    if (!this.emailValido()) {
+      this.errorMessage = 'Ingresa un email válido';
+      return;
+    }
+
     this.isLoading = true;
-    this.error = '';
 
     this.auth.login(this.loginForm.email, this.loginForm.password).subscribe({
       next: (res) => {
@@ -40,23 +56,22 @@ export class Login {
       },
       error: (err) => {
         this.isLoading = false;
-        this.error = err.status === 401
-          ? 'Credenciales incorrectas'
-          : 'Error al conectar con el servidor';
+        this.errorMessage = err.status === 401
+          ? 'Credenciales incorrectas. Verifica tu email y contraseña.'
+          : 'Error al conectar con el servidor. Intenta de nuevo.';
       }
     });
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.login();
   }
 
- 
-  togglePasswordVisibility() {
+  togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
-  clearMessages() {
+  clearMessages(): void {
     this.successMessage = '';
     this.errorMessage = '';
   }

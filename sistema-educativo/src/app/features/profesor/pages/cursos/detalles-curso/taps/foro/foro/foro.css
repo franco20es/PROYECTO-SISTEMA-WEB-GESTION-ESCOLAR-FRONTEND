@@ -1,0 +1,182 @@
+:host {
+  --bd: #0A1A3E; 
+  --bm: #1340A0; 
+  --or: #FF5B1F; 
+  --er: #E53030; 
+  --ok: #1D9E75;
+  --g1: #F8FAFC; 
+  --g2: #E2E8F0; 
+  --g4: #94A3B8; 
+  --g6: #64748B;
+  display: block;
+}
+
+.stitle { 
+  font-size: 15px; 
+  font-weight: 800; 
+  color: var(--bd); 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 8px; 
+}
+.stitle i { color: var(--bm); font-size: 16px; }
+
+/* Botones con curvatura de 12px */
+.btn { 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 8px; 
+  padding: 10px 18px; 
+  border-radius: 12px; 
+  font-size: 13px; 
+  font-weight: 600; 
+  cursor: pointer; 
+  border: none; 
+  transition: all .15s ease-in-out; 
+}
+.btn i { font-size: 14px; }
+.btn-sm { padding: 8px 14px; font-size: 12px; }
+
+.btn-or { background: var(--or); color: #fff; }
+.btn-or:hover:not(:disabled) { background: #E04800; transform: translateY(-1px); }
+.btn-or:disabled { opacity: .6; cursor: not-allowed; }
+
+.btn-gh { background: #fff; border: 1px solid var(--g2); color: var(--g6); }
+.btn-gh:hover { border-color: var(--g4); color: var(--bd); background: var(--g1); }
+
+/* Feedback de Carga */
+.fd-loading { display: flex; justify-content: center; padding: 40px; }
+.spinner-d { width: 30px; height: 30px; border: 3px solid var(--g2); border-top-color: var(--bm); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Contenedor Vacío */
+.empty-d { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  padding: 50px 20px; 
+  gap: 12px; 
+  color: var(--g4); 
+  text-align: center; 
+  border: 2px dashed var(--g2); 
+  border-radius: 12px; 
+  background: #fff;
+}
+.empty-d i { font-size: 42px; color: var(--g4); }
+.empty-d p { font-size: 13.5px; max-width: 360px; margin: 0; font-weight: 500; line-height: 1.4; }
+
+/* Items del listado de Foros */
+.foros-container { display: flex; flex-direction: column; gap: 10px; }
+
+.foro { 
+  display: flex; 
+  align-items: center; 
+  gap: 14px; 
+  padding: 16px; 
+  border: 1px solid var(--g2); 
+  border-radius: 12px; 
+  background: #fff;
+  cursor: pointer; 
+  transition: all .15s ease-in-out; 
+}
+.foro:hover { border-color: var(--bm); background: var(--g1); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
+
+.foro-ico { 
+  width: 40px; 
+  height: 40px; 
+  border-radius: 12px; 
+  background: rgba(19, 64, 160, 0.06); 
+  color: var(--bm); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  flex-shrink: 0; 
+  border: 1px solid rgba(19, 64, 160, 0.1);
+}
+.foro-ico i { font-size: 18px; }
+
+.foro-info { flex: 1; min-width: 0; }
+.foro-titulo { font-size: 14.5px; font-weight: 700; color: var(--bd); }
+.foro-desc { font-size: 12.5px; color: var(--g6); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.foro-meta { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--g4); margin-top: 6px; font-weight: 500; }
+.foro-meta span { display: inline-flex; align-items: center; gap: 5px; }
+.foro-meta i { font-size: 13px; color: var(--g4); }
+
+.foro-actions { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.foro-arrow { font-size: 14px; color: var(--g4); transition: transform 0.15s; }
+.foro:hover .foro-arrow { transform: translateX(2px); color: var(--bm); }
+
+.ua-del { width: 34px; height: 34px; border-radius: 12px; border: none; background: transparent; color: var(--g4); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+.ua-del:hover { background: rgba(229, 48, 48, 0.08); color: var(--er); }
+.ua-del i { font-size: 15px; }
+
+/* Detalle e Hilado de Mensajes */
+.fd-header { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--g2); }
+.fd-header h3 { font-size: 18px; font-weight: 800; color: var(--bd); margin: 0; }
+.fd-header p { font-size: 13.5px; color: var(--g6); margin-top: 6px; line-height: 1.5; font-weight: 450; }
+
+.mensajes { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+.sin-mensajes { display: flex; flex-direction: column; align-items: center; padding: 40px 20px; gap: 8px; color: var(--g4); background: var(--g1); border-radius: 12px; border: 1px dashed var(--g2); }
+.sin-mensajes i { font-size: 32px; }
+.sin-mensajes p { font-size: 13px; margin: 0; font-weight: 500; }
+
+.mensaje { display: flex; gap: 12px; align-items: flex-start; }
+.mensaje.mio { flex-direction: row-reverse; }
+
+/* Avatares Modernos en 12px */
+.msg-avatar { width: 36px; height: 36px; border-radius: 12px; background: linear-gradient(135deg, var(--bm), #1e53c2); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; box-shadow: 0 2px 4px rgba(19,64,160,0.1); }
+.mensaje.mio .msg-avatar { background: linear-gradient(135deg, var(--or), #ff7c43); box-shadow: 0 2px 4px rgba(255,91,31,0.1); }
+
+/* Cuerpo de Mensajes */
+.msg-body { flex: 1; min-width: 0; background: var(--g1); border: 1px solid var(--g2); border-radius: 12px; padding: 12px 16px; max-width: 78%; }
+.mensaje.mio .msg-body { background: #FFF4EF; border-color: rgba(255, 91, 31, 0.2); }
+
+.msg-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+.msg-autor { font-size: 13px; font-weight: 700; color: var(--bd); }
+.msg-rol { font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 12px; background: rgba(19, 64, 160, 0.08); color: var(--bm); text-transform: uppercase; letter-spacing: 0.3px; }
+.mensaje.mio .msg-rol { background: rgba(255, 91, 31, 0.1); color: var(--or); }
+.msg-fecha { font-size: 11px; color: var(--g4); margin-left: auto; font-weight: 500; }
+
+.msg-texto { font-size: 13.5px; color: #334155; line-height: 1.5; white-space: pre-line; font-weight: 450; }
+
+/* Caja de Entrada de Comentarios */
+.msg-input-box { display: flex; gap: 10px; align-items: flex-end; border-top: 1px solid var(--g2); padding-top: 16px; background: #fff; }
+.msg-input-box textarea { flex: 1; padding: 12px 14px; border: 1.5px solid var(--g2); border-radius: 12px; font-family: inherit; font-size: 14px; color: var(--bd); outline: none; resize: none; transition: border-color 0.15s; background: #fff; height: 46px; min-height: 46px; }
+.msg-input-box textarea:focus { border-color: var(--bm); box-shadow: 0 0 0 3px rgba(19, 64, 160, 0.04); }
+.msg-input-box .btn { height: 46px; padding: 0 18px; border-radius: 12px; justify-content: center; }
+
+/* Modales Unificados a 12px de Curvatura */
+.mo { position: fixed; inset: 0; z-index: 1000; background: rgba(15, 23, 42, .4); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.modal { background: #fff; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: 0 20px 25px -5px rgba(0,0,0,.1); overflow: hidden; display: flex; flex-direction: column; }
+
+.mh { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid var(--g2); background: #fff; }
+.mh h3 { font-size: 16px; font-weight: 800; color: var(--bd); display: flex; align-items: center; gap: 8px; margin: 0; }
+.mh h3 i { font-size: 18px; color: var(--or); }
+.mc { background: none; border: none; font-size: 16px; color: var(--g4); cursor: pointer; }
+
+.mb { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.ff { display: flex; flex-direction: column; gap: 6px; }
+.ff label { font-size: 11px; font-weight: 700; color: var(--g6); text-transform: uppercase; letter-spacing: .5px; }
+.req { color: var(--er); }
+
+.ff input, .ff textarea { 
+  padding: 11px 14px; 
+  border: 1.5px solid var(--g2); 
+  border-radius: 12px; 
+  font-family: inherit; 
+  font-size: 14px; 
+  color: var(--bd); 
+  outline: none; 
+  background: #fff;
+  transition: border-color 0.15s;
+}
+.ff input:focus, .ff textarea:focus { border-color: var(--bm); box-shadow: 0 0 0 3px rgba(19, 64, 160, 0.04); }
+.ff textarea { resize: vertical; }
+
+.mf { display: flex; justify-content: flex-end; gap: 10px; padding: 18px 24px; border-top: 1px solid var(--g2); background: var(--g1); }
+
+@media(max-width:600px) {
+  .msg-body { max-width: 88%; }
+  .mensaje.mio .msg-body { max-width: 88%; }
+}

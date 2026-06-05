@@ -1,0 +1,92 @@
+<!-- Estado de Carga -->
+<div class="tab-loading" *ngIf="cargando">
+  <div class="tl-spinner"></div>
+</div>
+
+<ng-container *ngIf="!cargando">
+  
+  <div class="silabo-wrapper">
+    
+    <!-- Encabezado de Sección -->
+    <div class="sec-head">
+      <div class="sec-title">
+        <i class="ti ti-file-description"></i> 
+        Sílabo del curso
+      </div>
+    </div>
+
+    <!-- Sin sílabo (Empty State) -->
+    <div class="empty-state" *ngIf="!silabo">
+      <div class="empty-icon-wrap">
+        <i class="ti ti-file-off"></i>
+      </div>
+      <h3>Sílabo no disponible</h3>
+      <p>El docente aún no ha subido el sílabo de este curso.</p>
+    </div>
+
+    <!-- Card del PDF Mejorado -->
+    <div class="pdf-card" *ngIf="silabo">
+      
+      <div class="pdf-main-info">
+        <div class="pdf-ico">
+          <i class="ti ti-file-type-pdf"></i>
+          <span class="pdf-badge">PDF</span>
+        </div>
+
+        <div class="pdf-info">
+          <div class="pdf-tag">Documento Oficial</div>
+          <h3 class="pdf-nombre">{{ silabo.nombre }}</h3>
+          
+          <div class="pdf-meta">
+            <span class="meta-item">
+              Subido: <strong>{{ silabo.fecha }}</strong>
+            </span>
+            <span class="meta-sep">·</span>
+            <span class="meta-item">
+              Peso: <strong>{{ silabo.tamanio }}</strong>
+            </span>
+            <span class="meta-sep">·</span>
+            <span class="meta-item status-ok">
+              Validado
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones con Iconos Profesionales -->
+      <div class="pdf-actions">
+        <button class="pdf-btn ver" (click)="ver()" [disabled]="abriendo">
+          <!-- Si está cargando muestra el spinner, si no, el ojo industrial -->
+          <i class="ti" [class.ti-loader-2]="abriendo" [class.spin]="abriendo" [class.ti-eye]="!abriendo"></i>
+          <span>{{ abriendo ? 'Abriendo...' : 'Ver' }}</span>
+        </button>
+        
+        <button class="pdf-btn descargar" (click)="descargar()" [disabled]="descargando">
+          <!-- Si está cargando muestra el spinner, si no, la flecha de descarga -->
+          <i class="ti" [class.ti-loader-2]="descargando" [class.spin]="descargando" [class.ti-download]="!descargando"></i>
+          <span>{{ descargando ? 'Descargando...' : 'Descargar' }}</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Bloque informativo inferior -->
+    <div class="silabo-specifications" *ngIf="silabo">
+      <div class="spec-card">
+        <div class="spec-txt">
+          <h4>Estructura Académica</h4>
+          <p>Planificación de competencias, unidades de aprendizaje y cronograma de evaluaciones oficiales para este bimestre.</p>
+        </div>
+      </div>
+      
+      <div class="spec-card">
+        <div class="spec-txt">
+          <h4>Nota de Obligatoriedad</h4>
+          <p>Es responsabilidad del estudiante revisar los lineamientos y políticas de asistencia dictadas en este documento.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</ng-container>

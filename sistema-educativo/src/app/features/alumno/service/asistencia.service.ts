@@ -1,15 +1,24 @@
-import { Injectable } from "@angular/core";
+// asistencia.service.ts
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../environment/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AsistenciaService {
-    constructor() { }
 
-    private API_ASISTENCIA = 'http://localhost:8080/api/asistencia';
+  private http = inject(HttpClient);
+  private api  = environment.apiUrl;
 
-    //obtener la asistencia por el codigo del alumno
-    getAsistenciaByCodigo(codigo: string) {
-        return this.API_ASISTENCIA + '/' + codigo;
-    }
+  // Resumen de mi asistencia por curso
+  miAsistencia(anio: number): Observable<any[]> {
+    const params = new HttpParams().set('anio', anio);
+    return this.http.get<any[]>(`${this.api}/asistencias/mi-asistencia`, { params });
+  }
+
+  // Detalle (historial) de un curso
+  miAsistenciaCurso(cursoId: string, anio: number): Observable<any[]> {
+    const params = new HttpParams().set('anio', anio);
+    return this.http.get<any[]>(`${this.api}/asistencias/mi-asistencia/curso/${cursoId}`, { params });
+  }
 }

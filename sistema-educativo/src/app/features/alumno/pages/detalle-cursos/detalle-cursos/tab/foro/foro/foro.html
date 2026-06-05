@@ -1,0 +1,119 @@
+<div class="tab-loading" *ngIf="cargando">
+  <div class="tl-spinner"></div>
+</div>
+
+<ng-container *ngIf="!cargando && vista === 'lista'">
+  <div class="foros-wrapper">
+    
+    <div class="sec-head">
+      <div class="sec-title">
+        <i class="bi bi-chat-square-quote-fill"></i> 
+        Foros de discusión del curso
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="foros.length === 0">
+      <div class="empty-icon-wrap">
+        <i class="bi bi-chat-square-x-fill"></i>
+      </div>
+      <h3>No hay foros activos</h3>
+      <p>El cuerpo docente aún no ha iniciado debates ni foros temáticos para este ciclo.</p>
+    </div>
+
+    <div class="foro-card" *ngFor="let f of foros" (click)="abrirForo(f)">
+      <div class="foro-ico">
+        <i class="bi bi-chat-left-text-fill"></i>
+      </div>
+      <div class="foro-info">
+        <div class="foro-titulo">
+          <span class="title-text">{{ f.titulo }}</span>
+          <span class="foro-cerrado" *ngIf="f.cerrado">
+            <i class="bi bi-lock-fill"></i> Concluido
+          </span>
+        </div>
+        <p class="foro-desc" *ngIf="f.descripcion">{{ f.descripcion }}</p>
+        
+        <div class="foro-meta">
+          <span class="meta-pill">
+            <i class="bi bi-chat-dots"></i> {{ f.totalMensajes }} aportes
+          </span>
+          <span class="meta-sep">·</span>
+          <span class="meta-pill">
+            <i class="bi bi-calendar-event"></i> Apertura: {{ formatearFecha(f.fechaCreacion) }}
+          </span>
+        </div>
+      </div>
+      <div class="foro-arrow-wrap">
+        <i class="bi bi-chevron-right foro-arrow"></i>
+      </div>
+    </div>
+
+  </div>
+</ng-container>
+
+<ng-container *ngIf="vista === 'detalle'">
+  <div class="foro-detalle-wrapper">
+    
+    <button class="btn-volver" (click)="volverALista()">
+      <i class="bi bi-arrow-left-short"></i> Volver al listado de foros
+    </button>
+
+    <div class="tab-loading" *ngIf="cargandoDetalle">
+      <div class="tl-spinner"></div>
+    </div>
+
+    <ng-container *ngIf="!cargandoDetalle && foroActivo">
+      
+      <div class="foro-header">
+        <h3 class="fh-titulo">{{ foroActivo.titulo }}</h3>
+        <p class="fh-desc" *ngIf="foroActivo.descripcion">{{ foroActivo.descripcion }}</p>
+      </div>
+
+      <div class="hilo">
+        
+        <div class="msg-vacio" *ngIf="!foroActivo.mensajes || foroActivo.mensajes.length === 0">
+          <div class="mv-icon"><i class="bi bi-chat-square-heart-fill"></i></div>
+          <h4>Hilos de participación vacíos</h4>
+          <p>No hay respuestas registradas aún. Sé el primero en iniciar el debate académico.</p>
+        </div>
+
+        <div class="msg" *ngFor="let m of foroActivo.mensajes" [class.msg-mio]="m.esMio">
+          <div class="msg-avatar" [class.av-docente]="m.autorTipo === 'DOCENTE'">
+            {{ iniciales(m.autorNombre) }}
+          </div>
+          
+          <div class="msg-content">
+            <div class="msg-autor">
+              <span class="author-name">{{ m.autorNombre }}</span>
+              <span class="msg-rol" [class.rol-docente]="m.autorTipo === 'DOCENTE'">
+                {{ m.autorTipo === 'DOCENTE' ? 'Docente' : 'Estudiante' }}
+              </span>
+              <span class="msg-fecha"><i class="bi bi-clock"></i> {{ formatearFecha(m.fecha) }}</span>
+            </div>
+            <div class="msg-texto">{{ m.cuerpo }}</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="composer-zone" *ngIf="!foroActivo.cerrado">
+        <div class="composer">
+          <textarea [(ngModel)]="nuevoMensaje"
+                    placeholder="Escribe tu postura, aporte o réplica fundamentada..."
+                    rows="2"
+                    (keydown.enter)="$event.preventDefault(); enviarMensaje()"></textarea>
+          <button class="btn-enviar" (click)="enviarMensaje()" [disabled]="enviando || !nuevoMensaje.trim()">
+            <i class="bi bi-send-fill" *ngIf="!enviando"></i>
+            <i class="bi bi-arrow-clockwise spin" *ngIf="enviando"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="foro-cerrado-aviso" *ngIf="foroActivo.cerrado">
+        <i class="bi bi-lock-fill"></i> 
+        <span>Este espacio de discusión ha sido catalogado como <strong>Concluido</strong> por el docente. La edición y envío de aportes están deshabilitados.</span>
+      </div>
+
+    </ng-container>
+  </div>
+</ng-container>

@@ -1,12 +1,7 @@
-
-import { Router, Routes } from '@angular/router';
-import { Matricula } from './matricula/matricula';
-import { Nosotros } from '../inicio/components/nosotros/nosotros/nosotros';
-import { Contacto } from '../inicio/components/contacto/contacto/contacto';
+import { Component } from '@angular/core';
+import { Routes, RouterOutlet } from '@angular/router';
 import { TopbarWebComponent } from '../matricula/components/topbar-web/topbar-web';
 import { FooterWebComponent } from '../matricula/components/footer-web/footer-web';
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-inicio-layout',
@@ -14,52 +9,46 @@ import { RouterOutlet } from '@angular/router';
   imports: [TopbarWebComponent, FooterWebComponent, RouterOutlet],
   template: `
     <app-topbar-web></app-topbar-web>
+    
     <main class="main-content">
       <router-outlet></router-outlet>
     </main>
+    
     <app-footer-web></app-footer-web>
   `,
-  styles: [`
-    :host { 
-      display: flex; 
-      flex-direction: column; 
-      min-height: 100vh; /* Ocupa al menos el alto total de la ventana */
-    }
-    .main-content {
-      flex: 1; /* Esto hace que el contenido se expanda y empuje el footer hacia el final */
-    }
-  `]
 })
-class InicioLayout {}
+export class InicioLayout {}
 
 export const INICIO_ROUTER: Routes = [
   {
     path: '',
     component: InicioLayout,
     children: [
-      { path: '', redirectTo: 'inicio', pathMatch: 'full' },
-      {
-        path: 'inicio',
-        loadComponent: () => import('../inicio/inicio/inicio').then(m => m.Inicio)
+      // Al entrar a '/inicio', se renderiza directamente el componente base de la Landing Page
+      { 
+        path: '', 
+        loadComponent: () => import('../inicio/inicio/inicio').then(m => m.Inicio) 
       },
+      //  Rutas hijas correspondientes: '/inicio/nosotros'
       {
         path: 'nosotros',
         loadComponent: () => import('../inicio/components/nosotros/nosotros/nosotros').then(m => m.Nosotros)
       },
+      //  Rutas hijas correspondientes: '/inicio/contacto'
       {
         path: 'contacto',
         loadComponent: () => import('../inicio/components/contacto/contacto/contacto').then(m => m.Contacto)
       },
+      //  Rutas hijas correspondientes: '/inicio/niveles'
       {
-        path:'niveles',
+        path: 'niveles',
         loadComponent: () => import('../inicio/components/niveles/niveles/niveles').then(m => m.Niveles)
       },
+      //  Rutas hijas correspondientes: '/inicio/matricula-online'
       {
-        path:'matricula-online',
+        path: 'matricula-online',
         loadComponent: () => import('../inicio/components/matricula/matricula-online/matricula-online').then(m => m.MatriculaOnline)
       }
-    
-     
     ]
   }
 ];

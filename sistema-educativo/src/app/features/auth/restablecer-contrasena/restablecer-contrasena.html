@@ -1,56 +1,61 @@
-<!-- restablecer-contrasena.html -->
 <div class="master-container">
 
   <div class="brand-side">
-    <img src="https://res.cloudinary.com/dgrdonnsk/image/upload/v1778548033/Gemini_Generated_Image_474wb3474wb3474w_tk0x0d.png" alt="Logo">
+    <img src="https://res.cloudinary.com/dgrdonnsk/image/upload/v1778548033/Gemini_Generated_Image_474wb3474wb3474w_tk0x0d.png" 
+         alt="Ilustración Restablecer" class="brand-illustration">
   </div>
 
   <div class="form-side">
     <div class="form-box">
 
-      <!-- ─── TOKEN INVÁLIDO ─── -->
+      <div class="form-logo-container">
+        <img src="https://res.cloudinary.com/dgrdonnsk/image/upload/v1778545840/ChatGPT_Image_11_may_2026_19_30_36_rqnapm.png" 
+             alt="Logo AdminRC" class="form-logo">
+      </div>
+
       <ng-container *ngIf="tokenInvalido">
-        <div class="error-icon">❌</div>
         <div class="form-header" style="text-align:center">
+          <div class="error-icon-wrapper">
+            <i class="bi bi-x-circle"></i>
+          </div>
           <h2>Enlace inválido</h2>
           <p>El enlace de recuperación no es válido o ha expirado.</p>
         </div>
-        <a routerLink="/recuperar-contrasena-form" class="btn-primary" style="text-decoration:none;margin-top:16px;">
+        <a routerLink="/recuperar-contrasena-form" class="btn-primary" style="text-decoration:none; margin-top:16px; display:block; text-align:center;">
           Solicitar nuevo enlace
         </a>
       </ng-container>
 
-      <!-- ─── ÉXITO ─── -->
       <ng-container *ngIf="exitoso">
-        <div class="success-icon">✅</div>
         <div class="form-header" style="text-align:center">
+          <div class="success-icon-wrapper">
+            <i class="bi bi-shield-check" style="font-size: 3.5rem; color: var(--brand-blue);"></i>
+          </div>
           <h2>¡Contraseña actualizada!</h2>
-          <p>Tu contraseña fue restablecida correctamente. Serás redirigido al login en unos segundos...</p>
+          <p>Tu contraseña fue restablecida correctamente.</p>
         </div>
         <div class="alert alert-success">
-          <i class="bi bi-check-circle"></i>
+          <i class="bi bi-hourglass-split"></i>
           <span>Redirigiendo al inicio de sesión...</span>
         </div>
       </ng-container>
 
-      <!-- ─── FORMULARIO ─── -->
       <ng-container *ngIf="!tokenInvalido && !exitoso">
 
-        <div class="form-header">
+        <div class="form-header" style="text-align: center;">
           <h2>Nueva contraseña</h2>
           <p>Crea una contraseña segura para tu cuenta.</p>
         </div>
 
-        <div *ngIf="errorMessage" class="alert alert-error" (click)="errorMessage = ''">
+        <div *ngIf="errorMessage" class="alert alert-error" (click)="errorMessage = ''" style="cursor: pointer;">
           <i class="bi bi-exclamation-circle"></i>
           <span>{{ errorMessage }}</span>
         </div>
 
         <form (ngSubmit)="restablecer()" #f="ngForm" novalidate>
 
-          <!-- Nueva contraseña -->
           <div class="input-group">
-            <label for="pass">Nueva contraseña <span style="color:var(--error)">*</span></label>
+            <label for="pass">Nueva contraseña <span style="color: #E53E3E;">*</span></label>
             <div class="input-wrapper">
               <i class="bi bi-shield-lock"></i>
               <input
@@ -69,37 +74,34 @@
               </button>
             </div>
 
-            <!-- Validadores -->
-            <div *ngIf="passCtrl.invalid && passCtrl.touched">
+            <div *ngIf="passCtrl.invalid && passCtrl.touched" style="margin-top: 6px;">
               <div *ngIf="passCtrl.errors?.['required']" class="field-hint error">
-                <i class="bi bi-x-circle-fill"></i> La contraseña es obligatoria
+                <i class="bi bi-x-circle"></i> La contraseña es obligatoria
               </div>
               <div *ngIf="passCtrl.errors?.['minlength']" class="field-hint error">
-                <i class="bi bi-x-circle-fill"></i> Mínimo 8 caracteres
+                <i class="bi bi-x-circle"></i> Mínimo 8 caracteres
               </div>
               <div *ngIf="passCtrl.errors?.['pattern']" class="field-hint error">
-                <i class="bi bi-x-circle-fill"></i> Debe incluir al menos una mayúscula y un número
+                <i class="bi bi-x-circle"></i> Debe incluir una mayúscula y un número
               </div>
             </div>
 
-            <!-- Reglas visuales -->
             <div class="password-rules" *ngIf="passwordNuevo">
-              <div class="rule" [class.ok]="passwordNuevo.length >= 8">
+              <div class="rule-item" [class.ok]="passwordNuevo.length >= 8">
                 <i [class]="passwordNuevo.length >= 8 ? 'bi bi-check-circle-fill' : 'bi bi-circle'"></i>
                 Mínimo 8 caracteres
               </div>
-              <div class="rule" [class.ok]="/[A-Z]/.test(passwordNuevo)">
+              <div class="rule-item" [class.ok]="/[A-Z]/.test(passwordNuevo)">
                 <i [class]="/[A-Z]/.test(passwordNuevo) ? 'bi bi-check-circle-fill' : 'bi bi-circle'"></i>
                 Una letra mayúscula
               </div>
-              <div class="rule" [class.ok]="/\d/.test(passwordNuevo)">
+              <div class="rule-item" [class.ok]="/\d/.test(passwordNuevo)">
                 <i [class]="/\d/.test(passwordNuevo) ? 'bi bi-check-circle-fill' : 'bi bi-circle'"></i>
                 Un número
               </div>
             </div>
 
-            <!-- Barra de fortaleza -->
-            <div class="strength-bar" *ngIf="passwordNuevo">
+            <div class="strength-container" *ngIf="passwordNuevo">
               <div class="strength-track">
                 <div class="strength-fill"
                      [style.width]="strengthPercent + '%'"
@@ -109,9 +111,8 @@
             </div>
           </div>
 
-          <!-- Confirmar contraseña -->
           <div class="input-group">
-            <label for="confirm">Confirmar contraseña <span style="color:var(--error)">*</span></label>
+            <label for="confirm">Confirmar contraseña <span style="color: #E53E3E;">*</span></label>
             <div class="input-wrapper">
               <i class="bi bi-shield-check"></i>
               <input
@@ -128,17 +129,15 @@
               </button>
             </div>
 
-            <div *ngIf="confirmCtrl.invalid && confirmCtrl.touched">
+            <div *ngIf="confirmCtrl.touched" style="margin-top: 6px;">
               <div *ngIf="confirmCtrl.errors?.['required']" class="field-hint error">
-                <i class="bi bi-x-circle-fill"></i> Confirma tu contraseña
+                <i class="bi bi-x-circle"></i> Confirma tu contraseña
               </div>
-            </div>
-            <div *ngIf="confirmarPassword && confirmCtrl.touched">
-              <div *ngIf="!passwordsCoinciden" class="field-hint error">
-                <i class="bi bi-x-circle-fill"></i> Las contraseñas no coinciden
+              <div *ngIf="confirmarPassword && !passwordsCoinciden" class="field-hint error">
+                <i class="bi bi-x-circle"></i> Las contraseñas no coinciden
               </div>
-              <div *ngIf="passwordsCoinciden" class="field-hint success">
-                <i class="bi bi-check-circle-fill"></i> Las contraseñas coinciden
+              <div *ngIf="confirmarPassword && passwordsCoinciden" class="field-hint success">
+                <i class="bi bi-check-circle"></i> Las contraseñas coinciden
               </div>
             </div>
           </div>
@@ -146,7 +145,7 @@
           <button type="submit" class="btn-primary"
                   [disabled]="isLoading || f.invalid || !passwordsCoinciden">
             <span *ngIf="!isLoading">
-              <i class="bi bi-lock-fill"></i> Restablecer contraseña
+              <i class="bi bi-check2-shield"></i> Restablecer contraseña
             </span>
             <span *ngIf="isLoading">
               <i class="bi bi-hourglass-split"></i> Actualizando...
@@ -156,7 +155,7 @@
         </form>
       </ng-container>
 
-      <div style="text-align:center;margin-top:24px;">
+      <div class="back-to-login-container">
         <a routerLink="/login" class="forgot-link">← Volver al inicio de sesión</a>
       </div>
 

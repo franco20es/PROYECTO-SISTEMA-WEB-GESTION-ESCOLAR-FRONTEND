@@ -1,12 +1,21 @@
 <div class="master-container">
 
+    <!-- LADO IZQUIERDO: ILUSTRACIÓN (Fondo blanco limpio) -->
     <div class="brand-side">
-        <img src="https://res.cloudinary.com/dgrdonnsk/image/upload/v1778548033/Gemini_Generated_Image_474wb3474wb3474w_tk0x0d.png"
-            alt="">
+        <img src="https://res.cloudinary.com/dgrdonnsk/image/upload/v1778548033/Gemini_Generated_Image_474wb3474wb3474w_tk0x0d.png" 
+             alt="Ilustración Login" class="brand-illustration">
     </div>
 
+    <!-- LADO DERECHO: LOGIN CON LOGO EN LA PARTE SUPERIOR -->
     <div class="form-side">
         <div class="form-box">
+            
+            <!-- Tu Logotipo encima del título del login -->
+            <div class="form-logo-container">
+                <img src="https://res.cloudinary.com/dgrdonnsk/image/upload/v1778545840/ChatGPT_Image_11_may_2026_19_30_36_rqnapm.png" 
+                     alt="Logo AdminRC" class="form-logo">
+            </div>
+
             <div class="form-header">
                 <h2>Iniciar Sesión</h2>
                 <p>Bienvenido de nuevo a tu panel de control.</p>
@@ -31,8 +40,14 @@
                     <div class="input-wrapper">
                         <i class="bi bi-person-badge"></i>
                         <input type="email" class="input-field" placeholder="f.roca@adminrc.com"
-                            [(ngModel)]="loginForm.email" name="email" required>
+                            [(ngModel)]="loginForm.email" name="email" #email="ngModel" required email>
                     </div>
+                    <small class="field-hint" *ngIf="email.touched && !loginForm.email">
+                        El email es obligatorio
+                    </small>
+                    <small class="field-hint" *ngIf="email.touched && loginForm.email && !emailValido()">
+                        Ingresa un email válido
+                    </small>
                 </div>
 
                 <!-- Contraseña Input -->
@@ -41,18 +56,20 @@
                     <div class="input-wrapper">
                         <i class="bi bi-shield-lock"></i>
                         <input [type]="showPassword ? 'text' : 'password'" class="input-field" placeholder="••••••••"
-                            [(ngModel)]="loginForm.password" name="password" required>
+                            [(ngModel)]="loginForm.password" name="password" #password="ngModel" required>
                         <button type="button" class="toggle-password" (click)="togglePasswordVisibility()"
                             [title]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
                             <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
                         </button>
                     </div>
+                    <small class="field-hint" *ngIf="password.touched && !loginForm.password">
+                        La contraseña es obligatoria
+                    </small>
                 </div>
 
                 <!-- Recordarme y Olvide contraseña -->
                 <div class="flex-row">
-                    <div
-                        style="font-size: 0.8rem; color: var(--text-gray); display: flex; align-items: center; gap: 5px;">
+                    <div style="font-size: 0.8rem; color: var(--text-gray); display: flex; align-items: center; gap: 5px;">
                         <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe"
                             style="accent-color: var(--rose);">
                         Recordarme
@@ -63,8 +80,8 @@
                 </div>
 
                 <!-- Botón de Login -->
-                <button type="submit" class="btn-primary" [disabled]="isLoading">
-                    <span *ngIf="!isLoading">Aceder al Sistema</span>
+                <button type="submit" class="btn-primary" [disabled]="isLoading || !formValido()">
+                    <span *ngIf="!isLoading">Acceder al Sistema</span>
                     <span *ngIf="isLoading">
                         <i class="bi bi-hourglass-split"></i> Iniciando sesión...
                     </span>

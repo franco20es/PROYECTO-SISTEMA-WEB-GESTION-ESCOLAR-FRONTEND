@@ -39,6 +39,34 @@
   --f-serif:    'Playfair Display', serif;
   --f-body:     'DM Sans', sans-serif;
 }
+/* ════════════════════════════════════════════════════════ */
+/* AGREGA esto a tu navbar.css (reemplaza .notif-pip si existe) */
+/* ════════════════════════════════════════════════════════ */
+ 
+.topbar-icon-btn {
+  position: relative;   /* necesario para posicionar el badge */
+}
+ 
+.notif-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  background: #E53030;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 99px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  border: 2px solid #fff;       /* borde para separar del ícono; ajusta al color de tu navbar */
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+ 
 /* ══════════════════════════════════════════════════════
    §05 — OVERLAY MOBILE
 ══════════════════════════════════════════════════════ */

@@ -1,0 +1,80 @@
+/* ==========================================================================
+   1. VISTA MÓVIL (POR DEFECTO)
+   ========================================================================== */
+
+/* ─── CONTENEDOR PRINCIPAL DEL HERO ─── */
+.hero-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+
+    display: block;
+    line-height: 0;
+    /* Elimina espacios fantasmas debajo de las imágenes */
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.hero-container:hover {
+    opacity: 0.95;
+}
+
+/* 🌟 LA CLAVE: IMAGEN TOTALMENTE FLUIDA */
+.hero-fluid-image {
+    width: 100%;
+    height: auto;
+    /* 🎯 Hace que la altura se adapte en proporción exacta al ancho */
+    display: block;
+    object-fit: cover;
+    /* Mantiene la cobertura limpia */
+}
+
+/* ─── DETALLES COMPLEMENTARIOS (LA BARRA INFERIOR) ─── */
+.hero-bar {
+    height: 4px;
+    background: var(--orange);
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+}
+
+.hero-bar::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 4px;
+    width: 40%;
+    background: var(--blue-light);
+}
+
+@media (max-width: 768px) {
+
+    .hero-container {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .hero-fluid-image {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+}
+
+@media (max-width: 480px) {
+    .hero-container {
+        /* Sin altura fija, la imagen se adapta naturalmente */
+    }
+}
+
+/* Opcional: Ajuste de colchón superior solo para pantallas de escritorio */
+@media (min-width: 1024px) {
+    .hero-container {
+        /* Si tu topbar fija tapa un poco el inicio, puedes jugar con un padding superior */
+        padding-top: 0px;
+    }
+}

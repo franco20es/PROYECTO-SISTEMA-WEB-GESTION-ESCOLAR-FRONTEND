@@ -1,0 +1,132 @@
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:8px">
+  <div class="stitle" style="margin-bottom:0">Tareas del curso</div>
+  <button class="btn btn-or" (click)="abrirModalCrear()">
+    <i class="bi bi-plus-lg"></i> Nueva tarea
+  </button>
+</div>
+
+@if (cargando()) {
+  <div class="td-loading"><div class="spinner-d"></div></div>
+}
+
+@if (!cargando()) {
+  @if (tareas().length === 0) {
+    <div class="empty-d">
+      <i class="bi bi-journal-text"></i>
+      <p>No hay tareas. Crea la primera para evaluar el rendimiento.</p>
+    </div>
+  }
+
+  @for (t of tareas(); track t.id) {
+    <div class="tarea">
+      <div class="tarea-ico">
+        <i class="bi bi-file-earmark-text-fill"></i>
+      </div>
+      <div class="tarea-info">
+        <div class="tarea-nombre">{{ t.nombre }}</div>
+        <div class="tarea-desc" *ngIf="t.descripcion">{{ t.descripcion }}</div>
+        <div class="tarea-meta">
+          <span><i class="bi bi-calendar3"></i> Límite: {{ formatearFecha(t.fechaLimite) }}</span>
+          <span *ngIf="t.presencial" class="badge-pres">Entrega Presencial</span>
+        </div>
+      </div>
+      <div class="tarea-actions">
+        <button class="btn btn-gh btn-sm" (click)="verEntregas(t)">
+          <i class="bi bi-inbox-fill"></i> Entregas
+        </button>
+        <button class="ua-del" title="Eliminar" (click)="eliminar(t, $event)">
+          <i class="bi bi-trash3-fill"></i>
+        </button>
+      </div>
+    </div>
+  }
+}
+
+<!-- Modal crear adaptado exactamente al TareaRequest del Backend -->
+@if (modalCrear()) {
+  <div class="mo show" (click)="modalCrear.set(false)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="mh">
+        <h3><i class="bi bi-file-earmark-plus-fill"></i> Crear nueva tarea</h3>
+        <button class="mc" (click)="modalCrear.set(false)">✕</button>
+      </div>
+      <div class="mb">
+        <div class="ff">
+          <label>Nombre de la tarea <span class="req">*</span></label>
+          <input type="text" [(ngModel)]="form.nombre" placeholder="Ej: Práctica Calificada 2">
+        </div>
+        
+        <div class="ff">
+          <label>Fecha límite <span class="req">*</span></label>
+          <input type="date" [(ngModel)]="form.fechaLimite">
+        </div>
+
+        <div class="ff">
+          <label>Descripción e Instrucciones</label>
+          <textarea [(ngModel)]="form.descripcion" rows="4" placeholder="Especifica detalladamente los lineamientos de la tarea..."></textarea>
+        </div>
+
+        <div class="ff-check" style="margin-top: 4px;">
+          <label>
+            <input type="checkbox" [(ngModel)]="form.presencial">
+            <span>Esta tarea requiere entrega en físico (Presencial)</span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="mf">
+        <button class="btn btn-gh" (click)="modalCrear.set(false)">Cancelar</button>
+        <button class="btn btn-or" (click)="crear()" [disabled]="guardando()">
+          <i class="bi bi-check-lg"></i> {{ guardando() ? 'Creando...' : 'Crear tarea' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Modal entregas -->
+@if (modalEntregas()) {
+  <div class="mo show" (click)="modalEntregas.set(false)">
+    <div class="modal modal-lg" (click)="$event.stopPropagation()">
+      <div class="mh">
+        <h3><i class="bi bi-inbox-fill"></i> Entregas — {{ tareaActiva?.nombre }}</h3>
+        <button class="mc" (click)="modalEntregas.set(false)">✕</button>
+      </div>
+      <div class="mb">
+        @if (cargandoEntregas()) {
+          <div class="td-loading"><div class="spinner-d"></div></div>
+        }
+        @if (!cargandoEntregas()) {
+          @if (entregas().length === 0) {
+            <div class="sin-entregas">
+              <i class="bi bi-archive"></i>
+              <p>Ningún alumno ha entregado esta tarea todavía.</p>
+            </div>
+          }
+          @for (e of entregas(); track e.id) {
+            <div class="entrega">
+              <div class="ent-avatar">{{ (e.alumnoNombre || '?').charAt(0) }}</div>
+              <div class="ent-info">
+                <div class="ent-nombre">{{ e.alumnoNombre }}</div>
+                <div class="ent-meta">
+                  <span><i class="bi bi-file-earmark-arrow-down-fill"></i> {{ e.archivoNombre }}</span>
+                  <span><i class="bi bi-clock-history"></i> {{ formatearFecha(e.fechaEntrega) }}</span>
+                </div>
+                <div class="ent-coment" *ngIf="e.comentario">"{{ e.comentario }}"</div>
+              </div>
+              <div class="ent-right">
+                <span class="ent-estado" [style.color]="estadoColor(e.estado)">{{ e.estado }}</span>
+                <button class="btn btn-gh btn-sm" (click)="descargarEntrega(e)">
+                  <i class="bi bi-download"></i> Descargar
+                </button>
+              </div>
+            </div>
+          }
+        }
+      </div>
+      <div class="mf">
+        <button class="btn btn-gh" (click)="modalEntregas.set(false)">Cerrar</button>
+      </div>
+    </div>
+  </div>
+}

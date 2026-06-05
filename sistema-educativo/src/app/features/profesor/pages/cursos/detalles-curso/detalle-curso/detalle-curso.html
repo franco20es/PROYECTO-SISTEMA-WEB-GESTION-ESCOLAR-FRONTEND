@@ -1,0 +1,43 @@
+<!-- detalle-curso-docente.html -->
+<div class="dc-wrap">
+
+  <!-- HERO -->
+  <div class="dc-hero" [style.background]="curso?.color || '#1340A0'">
+    <button class="dc-back" (click)="volver()">
+      <i class="ti ti-arrow-left"></i> Mis cursos
+    </button>
+    <div class="dc-hero-content">
+      <span class="dc-tag" *ngIf="curso?.secs?.length">{{ curso.secs.join(' · ') }}</span>
+      <h1>{{ curso?.name }}</h1>
+      <div class="dc-meta">
+        <span *ngIf="curso?.codigo"><i class="ti ti-book"></i> {{ curso.codigo }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="dc-tabs">
+    <button class="dc-tab" *ngFor="let t of tabs"
+            [class.active]="tabActiva === t.key"
+            (click)="setTab(t.key)">
+      <i class="ti" [ngClass]="t.icon"></i>
+      <span>{{ t.label }}</span>
+    </button>
+  </div>
+
+  <!-- CONTENIDO DE CADA TAB -->
+  <div class="dc-body">
+
+    <!-- Anuncios (conectado) -->
+    <app-anuncios-docente *ngIf="tabActiva === 'anuncios'" [cursoId]="cursoId"></app-anuncios-docente>
+
+    <!-- Sílabo (conectado) -->
+    <app-silabo-docente *ngIf="tabActiva === 'silabo'" [cursoId]="cursoId"></app-silabo-docente>
+
+   <!-- Contenido (conectado) -->
+<app-contenido-docente *ngIf="tabActiva === 'contenido'" [cursoId]="cursoId"></app-contenido-docente>
+    <app-tareas-docente *ngIf="tabActiva === 'tareas'" [cursoId]="cursoId"></app-tareas-docente>
+    <app-evaluaciones-docente *ngIf="tabActiva === 'evaluaciones'" [cursoId]="cursoId"></app-evaluaciones-docente>
+    <app-foro-docente *ngIf="tabActiva === 'foro'" [cursoId]="cursoId"></app-foro-docente>
+  </div>
+</div>

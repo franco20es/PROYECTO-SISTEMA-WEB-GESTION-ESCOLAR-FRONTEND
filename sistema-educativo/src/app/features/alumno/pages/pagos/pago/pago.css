@@ -1,165 +1,272 @@
 :host {
-    /* Paleta de colores más moderna y sofisticada */
-    --primary: #007AFF;
-    --primary-hover: #0056b3;
-    --fondo: #F4F6F9; /* Un gris/azul muy suave que descansa la vista */
-    --card-bg: #FFFFFF;
-    --texto-principal: #1C1C1E; /* Evita el negro puro (#000) para mejor legibilidad */
-    --texto-secundario: #636366;
-    
-    /* Estados con colores sutiles y pasteles (más profesionales) */
-    --PagoCompletado: #34C759;
-    --PagoCompletado-bg: #EAFAF1;
-    --PagoVencido: #FF3B30;
-    --PagoVencido-bg: #FFEBEA;
-    --PagoPendiente: #FF9500;
-    --PagoPendiente-bg: #FFF5E6;
+  --primary: #007AFF;
+  --primary-hover: #0056b3;
+  --fondo: #F8FAFC; /* Fondo de la página */
+  --card-bg: #FFFFFF;
+  --texto-principal: #475569;
+  --texto-secundario: #475569;
+  
+  --PagoCompletado: #00C27C;
+  --PagoCompletado-bg: rgba(0, 192, 124, 0.06);
+  --PagoVencido: #E24B4A;
+  --PagoVencido-bg: rgba(226, 75, 74, 0.06);
+  --PagoPendiente: #FF9500;
+  --PagoPendiente-bg: rgba(255, 149, 0, 0.06);
+  
+  --tr: .22s cubic-bezier(.4, 0, .2, 1);
+  --b-radius: 12px;
 }
 
-/* Contenedor general */
 .pago-container {
-    max-width: 680px;
-    margin: 2rem auto;
-    padding: 24px;
-    background-color: var(--fondo);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: var(--texto-principal);
+  max-width: 720px;
+  margin: 3rem auto;
+  padding: 32px;
+  background-color: var(--card-bg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--texto-principal);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  position: relative;
+  /* El festoneado usa el color de fondo de la página para simular el recorte */
 }
 
-/* Header principal */
+/* --- Estilos del Ticket (Efecto Festoneado) --- */
+.pago-container::before,
+.pago-container::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 12px;
+  /* Usamos --fondo para que el hueco coincida con el color exterior */
+  background-image: radial-gradient(circle at 12px 0, var(--fondo) 11px, transparent 12px);
+  background-size: 24px 24px;
+  z-index: 1;
+}
+
+.pago-container::before {
+  top: -12px;
+  background-position: center top;
+}
+
+.pago-container::after {
+  bottom: -12px;
+  background-position: center bottom;
+  transform: rotate(180deg);
+}
+/* Header con Ícono Integrado */
 .pago-header {
-    margin-bottom: 1.5rem;
+    margin-bottom: 24px;
+}
+
+.pago-title-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.pago-icon-main {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--b-radius);
+    background: #0A1A3E;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
 }
 
 .pago-header h2 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: 800;
     color: var(--texto-principal);
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px; /* Aspecto más premium */
+    margin: 0;
+    letter-spacing: -0.5px;
 }
 
 .pago-header p {
     color: var(--texto-secundario);
-    font-size: 0.95rem;
-    margin: 0;
+    font-size: 0.9rem;
+    margin: 4px 0 0 0;
+    font-weight: 500;
 }
 
-/* KPIs Modernizados como tarjetas flotantes */
+/* Grid de KPIs */
 .pagos-kpis {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    background: transparent;
-    padding: 0;
-    margin-bottom: 2rem;
+    margin-bottom: 24px;
 }
 
 .kpi-pago {
     background: var(--card-bg);
     padding: 16px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    border-radius: var(--b-radius);
+    border: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
+}
+
+.kpi-icon-wrapper {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.deuda .kpi-icon-wrapper { background: var(--PagoVencido-bg); color: var(--PagoVencido); }
+.pagado .kpi-icon-wrapper { background: var(--PagoCompletado-bg); color: var(--PagoCompletado); }
+.total .kpi-icon-wrapper { background: rgba(10, 26, 62, 0.05); color: #0A1A3E; }
+
+.kpi-text {
     display: flex;
     flex-direction: column;
-    gap: 6px;
 }
 
 .kpi-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: var(--texto-secundario);
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .kpi-valor {
-    font-size: 1.15rem;
-    font-weight: 700;
+    font-size: 1.1rem;
+    font-weight: 800;
     color: var(--texto-principal);
+    margin-top: 2px;
 }
 
 .kpi-pago.deuda .kpi-valor {
-    color: var(--PagoVencido); /* Resalta la deuda con elegancia */
+    color: var(--PagoVencido);
 }
 
-/* Adiós a las líneas azules toscas */
 .separador {
-    display: none; /* Las eliminamos; manejamos la separación con espacios y sombras */
+    display: none;
 }
 
-/* Secciones de Estados (Pendientes / Pagados) */
+/* Colapsables de Secciones */
 .pagos-estado {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 4px;
-    margin-top: 1rem;
+    padding: 16px 8px;
+    margin-top: 8px;
     cursor: pointer;
+    border-bottom: 1px solid #E2E8F0;
+    user-select: none;
 }
 
 .pagos-estado h2 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--texto-principal);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     margin: 0;
 }
 
-/* Badges numéricos */
+.pagos-estado h2 i {
+    font-size: 1.3rem;
+}
+.icon-pendiente { color: var(--PagoPendiente); }
+.icon-pagado { color: var(--PagoCompletado); }
+
+/* Badges Flotantes */
 .badge-count {
-    font-size: 0.8rem;
-    background: #E8E8ED;
+    font-size: 0.75rem;
+    background: #E2E8F0;
     color: var(--texto-principal);
     padding: 2px 8px;
-    border-radius: 20px;
-    font-weight: 600;
+    border-radius: var(--b-radius);
+    font-weight: 700;
 }
 
 .badge-count.pagado {
     background: var(--PagoCompletado-bg);
     color: var(--PagoCompletado);
+    border: 1px solid rgba(0, 192, 124, 0.15);
 }
 
 .flecha {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--texto-secundario);
-    transition: transform 0.2s ease;
+    transition: transform var(--tr);
 }
 
 .flecha.abierto {
     transform: rotate(180deg);
 }
 
-/* Lista de ítems */
+/* Lista Dinámica de Ítems */
 .pagos-list {
-    margin-top: 0.5rem;
+    margin: 12px 0;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-/* TARJETAS DE PAGO (Aquí matamos el blanco plano) */
+/* Estados Vacíos Integrados */
+.sin-pagos {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px;
+    background: var(--card-bg);
+    border-radius: var(--b-radius);
+    border: 1px solid #E2E8F0;
+    font-size: 0.88rem;
+    color: var(--texto-secundario);
+    font-weight: 500;
+}
+.sin-pagos i { font-size: 18px; }
+
+/* Tarjetas de Registro */
 .pago-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px;
+    padding: 16px 20px;
     background-color: var(--card-bg);
-    border-radius: 12px; /* Esquinas más suaves */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); /* Sombra ligera para dar profundidad */
-    border: 1px solid rgba(0, 0, 0, 0.02);
-    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+    border-radius: var(--b-radius);
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);
+    border: 1px solid #E2E8F0;
+    transition: all var(--tr);
     cursor: pointer;
 }
 
 .pago-item:hover {
-    background-color: var(--card-bg);
-    transform: translateY(-2px); /* Efecto flotante al pasar el mouse */
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+    border-color: var(--g4);
 }
+
+.pago-item-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.pago-avatar-type {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+}
+.type-pendiente { background: var(--PagoPendiente-bg); color: var(--PagoPendiente); }
+.type-pagado { background: var(--PagoCompletado-bg); color: var(--PagoCompletado); }
 
 .pago-main-info {
     display: flex;
@@ -168,7 +275,7 @@
 }
 
 .pago-concepto {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.95rem;
     color: var(--texto-principal);
 }
@@ -176,6 +283,10 @@
 .pago-fecha {
     font-size: 0.8rem;
     color: var(--texto-secundario);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .pago-details {
@@ -186,147 +297,240 @@
     gap: 4px;
 }
 
-.pago-monto {
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: var(--texto-principal);
-}
-
-/* Chips de estado modernos (reemplazan el texto plano aburrido) */
-.pago-estado {
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 6px;
-    margin-top: 0;
-    display: inline-block;
-}
-
-/* Dinamismo por estados */
-.pago-item .pago-estado.pendiente {
-    background-color: var(--PagoPendiente-bg);
-    color: var(--PagoPendiente);
-}
-
-.pago-item .pago-estado.vencido {
-    background-color: var(--PagoVencido-bg);
+.pago-mora {
+    font-size: 0.75rem;
     color: var(--PagoVencido);
+    font-weight: 700;
+    background: var(--PagoVencido-bg);
+    padding: 2px 6px;
+    border-radius: 6px;
 }
 
-.pago-item .pago-estado.pagado {
-    background-color: var(--PagoCompletado-bg);
-    color: var(--PagoCompletado);
+.pago-monto {
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: var(--texto-principal);
+    letter-spacing: -0.3px;
 }
 
-/* Botón "Ver Todo" */
+/* Chips de Estado Modernos */
+.pago-estado {
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: var(--b-radius);
+    letter-spacing: 0.3px;
+}
+
+.pago-item .pago-estado.pendiente { background-color: var(--PagoPendiente-bg); color: var(--PagoPendiente); }
+.pago-item .pago-estado.vencido { background-color: var(--PagoVencido-bg); color: var(--PagoVencido); }
+.pago-item .pago-estado.pagado { background-color: var(--PagoCompletado-bg); color: var(--PagoCompletado); }
+
+/* Accionador Principal */
 .btn-pago {
-    margin-top: 2rem;
+    margin-top: 24px;
     width: 100%;
     padding: 14px;
-    background-color:#6366f1;
+    background-color: #6366F1;
     color: #ffffff;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    font-weight: 600;
+    border: none;
+    border-radius: var(--b-radius);
+    font-size: 0.88rem;
+    font-weight: 700;
     cursor: pointer;
     letter-spacing: 0.5px;
-    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color var(--tr);
 }
 
 .btn-pago:hover {
     background-color: var(--primary-hover);
 }
 
-/* Ajustes extras para el Modal (para que combine con el nuevo look) */
+/* Estabilización de Estados de Carga (Spinner) */
+.loading-pagos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+    gap: 12px;
+}
+.spinner-pago {
+    width: 28px;
+    height: 28px;
+    border: 3px solid #E2E8F0;
+    border-top-color: #0A1A3E;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ══ VISTA MODAL FLOTANTE ══ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
 .modal-detalle {
     background: var(--card-bg);
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    padding: 20px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    padding: 24px;
+    width: 100%;
+    max-width: 460px;
+    border: 1px solid #E2E8F0;
 }
-@media (max-width: 600px) {
-    /* Reducimos el padding general para ganar espacio en los bordes de la pantalla */
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--texto-principal);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+.modal-header h3 i { color: #0A1A3E; }
+
+.btn-cerrar {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: var(--texto-secundario);
+    cursor: pointer;
+    padding: 4px;
+    transition: color var(--tr);
+}
+.btn-cerrar:hover { color: var(--PagoVencido); }
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.detalle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.88rem;
+    padding: 4px 0;
+}
+
+.detalle-label {
+    color: var(--texto-secundario);
+    font-weight: 500;
+}
+
+.detalle-valor {
+    color: var(--texto-principal);
+    font-weight: 700;
+}
+.detalle-valor.mora { color: var(--PagoVencido); }
+.detalle-valor.mono { font-family: monospace; font-size: 0.95rem; color: #0A1A3E; background: #F1F5F9; padding: 2px 6px; border-radius: 4px; }
+
+/* Caja Destacada para el Total */
+.detalle-total-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--fondo);
+    padding: 14px 16px;
+    border-radius: var(--b-radius);
+    border: 1px solid #E2E8F0;
+    margin: 6px 0;
+}
+.detalle-label-total { font-weight: 800; font-size: 0.9rem; color: var(--texto-principal); }
+.detalle-valor-total { font-weight: 900; font-size: 1.2rem; color: #0A1A3E; }
+
+.estado-chip {
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: var(--b-radius);
+    text-transform: uppercase;
+}
+.estado-chip.pendiente { background: var(--PagoPendiente-bg); color: var(--PagoPendiente); }
+.estado-chip.vencido { background: var(--PagoVencido-bg); color: var(--PagoVencido); }
+.estado-chip.pagado { background: var(--PagoCompletado-bg); color: var(--PagoCompletado); }
+
+/* Sistema Autónomo de Toast */
+.toast-pago {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #0A1A3E;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: var(--b-radius);
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: transform .3s ease, opacity .3s ease;
+    z-index: 2000;
+}
+.toast-pago.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast-content { display: flex; align-items: center; gap: 8px; }
+.toast-content i { color: var(--PagoPendiente); }
+
+/* Responsive Quirks */
+@media (max-width: 680px) {
     .pago-container {
-        margin: 0 auto;
-        padding: 16px 12px;
+        margin: 0;
+        border-radius: 0;
+        border: none;
+        padding: 24px 16px;
     }
 
-    /* Achicamos un poco el título principal para que no ocupe 3 líneas */
-    .pago-header h2 {
-        font-size: 1.3rem;
-    }
-    
-    .pago-header p {
-        font-size: 0.85rem;
-    }
-
-    /* CLAVE: Los KPIs ya no se aplastan en 3 columnas; ahora se apilan verticalmente */
     .pagos-kpis {
         grid-template-columns: 1fr;
         gap: 8px;
-        margin-bottom: 1.5rem;
     }
 
     .kpi-pago {
         padding: 12px 16px;
-        flex-direction: row; /* Ponemos la etiqueta al lado del valor */
-        justify-content: space-between; /* Uno a cada extremo */
-        align-items: center;
     }
 
-    .kpi-label {
-        margin-bottom: 0; /* Alineación perfecta en horizontal */
-    }
-
-    .kpi-valor {
-        font-size: 1.05rem;
-    }
-
-    /* Ajustes en las filas de las pensiones */
     .pago-item {
-        padding: 14px 12px;
-        gap: 10px; /* Evita que el texto choque si el nombre del mes es largo */
-    }
-
-    .pago-concepto {
-        font-size: 0.85rem; /* Un toque más pequeño para pantallas chicas */
-    }
-
-    .pago-fecha {
-        font-size: 0.75rem;
-    }
-
-    .pago-monto {
-        font-size: 0.95rem;
-    }
-
-    .pago-estado {
-        font-size: 0.65rem;
-        padding: 3px 6px; /* Chips más compactos para que no rompan la estructura */
-    }
-
-    /* Botón principal más cómodo para el pulgar */
-    .btn-pago {
-        margin-top: 1.5rem;
-        padding: 16px; /* Más alto para que sea más fácil de tocar en celulares */
-        font-size: 0.85rem;
+        padding: 14px 16px;
     }
 }
 
-/* Ajuste extra para pantallas ultra pequeñas (celulares antiguos o de gama baja) */
-@media (max-width: 360px) {
+@media (max-width: 420px) {
     .pago-item {
-        flex-direction: column; /* Si la pantalla es diminuta, el precio baja */
+        flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
+        gap: 12px;
     }
 
     .pago-details {
         text-align: left;
         align-items: flex-start;
         width: 100%;
-        flex-direction: row; /* El monto y el estado quedan lado a lado */
+        flex-direction: row-reverse;
         justify-content: space-between;
+        border-top: 1px dashed #E2E8F0;
+        padding-top: 10px;
     }
 }

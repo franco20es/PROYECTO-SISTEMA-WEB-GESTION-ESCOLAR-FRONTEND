@@ -1,0 +1,295 @@
+@if (cargandoPeriodos()) {
+  <div class="ed-loading"><div class="spinner-d"></div></div>
+}
+
+@if (!cargandoPeriodos()) {
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div class="ed-periodo">
+      <i class="bi bi-calendar3"></i>
+      <select [value]="periodoSel()" (change)="onCambiarPeriodo($any($event.target).value)">
+        @for (p of periodos(); track p.id) { <option [value]="p.id">{{ p.nombre }}</option> }
+      </select>
+    </div>
+    <button class="btn btn-or" (click)="abrirModalComp()">
+      <i class="bi bi-plus-lg"></i> Nuevo componente
+    </button>
+  </div>
+
+  <!-- Barra de pesos de alto contraste -->
+  <div class="pesos-bar" [class.bar-complete]="sumaPesos() === 100">
+    <div style="display:flex;align-items:center;gap:8px">
+      <i class="bi bi-pie-chart-fill"></i>
+      <span>Suma total de pesos asignados:</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-left:auto">
+      <strong [style.color]="pesoColor">{{ sumaPesos() }}%</strong>
+      <span class="pesos-hint">
+        @if (sumaPesos() === 100) {
+          <span class="badge-status ok"><i class="bi bi-check-circle-fill"></i> Completo</span>
+        } @else {
+          <span class="badge-status wa"><i class="bi bi-exclamation-triangle-fill"></i> Debe sumar 100%</span>
+        }
+      </span>
+    </div>
+  </div>
+
+  @if (cargando()) {
+    <div class="ed-loading"><div class="spinner-d"></div></div>
+  }
+
+  @if (!cargando()) {
+    @if (componentes().length === 0) {
+      <div class="empty-d">
+        <i class="bi bi-clipboard-x-fill"></i>
+        <p>No hay componentes de evaluación creados para este período. Configura las evaluaciones de este bimestre para poder calificar.</p>
+      </div>
+    }
+
+    <!-- Lista de componentes evaluativos -->
+    @for (c of componentes(); track c.id) {
+      <div class="comp">
+        <div class="comp-ico"><span>0{{ c.orden }}</span></div>
+        <div class="comp-info">
+          <div class="comp-nombre">
+            {{ c.nombre }} 
+            <span class="comp-peso">{{ c.peso }}% del curso</span>
+          </div>
+          <div class="comp-desc" *ngIf="c.descripcion">{{ c.descripcion }}</div>
+        </div>
+        <div class="comp-actions">
+          <button class="btn btn-gh btn-sm" (click)="abrirCalificar(c)">
+            <i class="bi bi-pencil-square"></i> Calificar
+          </button>
+          <button class="ua-del" title="Eliminar" (click)="eliminarComponente(c, $event)">
+            <i class="bi bi-trash3-fill"></i>
+          </button>
+        </div>
+      </div>
+    }
+  }
+
+  <!-- ═══════════ SECCIÓN: EXÁMENES EN LÍNEA ═══════════ -->
+  <div class="examenes-sep">
+    <div class="stitle"><i class="bi bi-laptop-fill"></i> Exámenes en línea</div>
+    <button class="btn btn-or btn-sm" (click)="abrirModalExamen()">
+      <i class="bi bi-plus-lg"></i> Crear examen
+    </button>
+  </div>
+
+  @if (examenes().length === 0) {
+    <div class="empty-d empty-sm">
+      <i class="bi bi-journal-x"></i>
+      <p>No hay exámenes en línea asignados. Crea uno vinculándolo a un componente evaluativo existente.</p>
+    </div>
+  }
+
+  <!-- Lista de exámenes evaluativos -->
+  @for (ex of examenes(); track ex.id) {
+    <div class="examen">
+      <div class="ex-ico"><i class="bi bi-file-earmark-text-fill"></i></div>
+      <div class="ex-info">
+        <div class="ex-titulo">
+          {{ ex.titulo }}
+          <span class="ex-estado" [class.pub]="ex.publicado || ex.estado === 'PUBLICADO'">
+            <i class="bi" [class.bi-eye-fill]="ex.publicado || ex.estado === 'PUBLICADO'" [class.bi-pencil-fill]="!(ex.publicado || ex.estado === 'PUBLICADO')"></i>
+            {{ (ex.publicado || ex.estado === 'PUBLICADO') ? 'Publicado' : 'Borrador' }}
+          </span>
+        </div>
+        <div class="ex-meta">
+          <span><i class="bi bi-clock"></i> {{ ex.duracionMinutos }} min</span>
+          <span><i class="bi bi-list-check"></i> {{ ex.totalPreguntas || ex.preguntas?.length || 0 }} preguntas</span>
+          <span *ngIf="ex.componenteNombre" class="ex-vinc">
+            <i class="bi bi-link-45deg"></i> Vinculado: {{ ex.componenteNombre }}
+          </span>
+        </div>
+      </div>
+      <div class="ex-actions">
+        @if (!(ex.publicado || ex.estado === 'PUBLICADO')) {
+          <button class="btn btn-gh btn-sm btn-pub" (click)="publicarExamen(ex, $event)">
+            <i class="bi bi-send-fill"></i> Publicar
+          </button>
+        }
+        <button class="ua-del" title="Eliminar examen" (click)="eliminarExamen(ex, $event)">
+          <i class="bi bi-trash3-fill"></i>
+        </button>
+      </div>
+    </div>
+  }
+}
+
+<!-- Modal: Crear Componente -->
+@if (modalComp()) {
+  <div class="mo show" (click)="modalComp.set(false)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="mh">
+        <h3><i class="bi bi-clipboard-plus-fill"></i> Nuevo componente</h3>
+        <button class="mc" (click)="modalComp.set(false)">✕</button>
+      </div>
+      <div class="mb">
+        <div class="ff">
+          <label>Nombre del componente <span class="req">*</span></label>
+          <input type="text" [(ngModel)]="formComp.nombre" placeholder="Ej: Práctica Calificada 1">
+        </div>
+        <div class="ff">
+          <label>Descripción</label>
+          <input type="text" [(ngModel)]="formComp.descripcion" placeholder="Ej: Evaluación síncrona del bimestre">
+        </div>
+        <div class="f2">
+          <div class="ff">
+            <label>Peso (%) <span class="req">*</span></label>
+            <input type="number" [(ngModel)]="formComp.peso" min="1" max="100" placeholder="0">
+          </div>
+          <div class="ff">
+            <label>Orden de visualización</label>
+            <input type="number" [(ngModel)]="formComp.orden" min="1" placeholder="1">
+          </div>
+        </div>
+        <div class="peso-aviso">
+          <i class="bi bi-info-circle-fill"></i> Porcentaje disponible para asignar: {{ 100 - sumaPesos() }}%
+        </div>
+      </div>
+      <div class="mf">
+        <button class="btn btn-gh" (click)="modalComp.set(false)">Cancelar</button>
+        <button class="btn btn-or" (click)="crearComponente()" [disabled]="guardandoComp()">
+          {{ guardandoComp() ? 'Creando...' : 'Crear componente' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Modal: Calificar Alumnos -->
+@if (modalNotas()) {
+  <div class="mo show" (click)="cerrarNotas()">
+    <div class="modal modal-lg" (click)="$event.stopPropagation()">
+      <div class="mh">
+        <h3><i class="bi bi-pencil-square"></i> Calificar — {{ compActivo?.nombre }}</h3>
+        <button class="mc" (click)="cerrarNotas()">✕</button>
+      </div>
+      <div class="mb" style="max-height:60vh;">
+        @if (cargandoNotas()) {
+          <div class="ed-loading"><div class="spinner-d"></div></div>
+        }
+        @if (!cargandoNotas()) {
+          <div class="nota-hint">
+            <i class="bi bi-info-circle-fill"></i>
+            <span>Ingresa las calificaciones en la escala vigesimal (0-20) y presiona guardar por fila.</span>
+          </div>
+          <div class="alumnos-list">
+            @for (al of alumnos(); track al.matriculaId) {
+              <div class="nota-row">
+                <div class="nr-avatar">{{ al.nombre.charAt(0) }}</div>
+                <div class="nr-info">
+                  <div class="nr-nombre">{{ al.nombre }}</div>
+                  <div class="nr-dni">DNI: {{ al.dni }}</div>
+                </div>
+                <div class="nr-action-zone">
+                  <input class="nr-input" type="number" min="0" max="20" step="0.1"
+                         [(ngModel)]="al.nota" placeholder="--">
+                  <button class="btn btn-or btn-sm btn-save" title="Guardar nota" (click)="guardarNota(al)">
+                    <i class="bi bi-floppy-fill"></i>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+      <div class="mf">
+        <button class="btn btn-gh" (click)="cerrarNotas()">Cerrar panel</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Modal: Crear Examen XL -->
+@if (modalExamen()) {
+  <div class="mo show" (click)="modalExamen.set(false)">
+    <div class="modal modal-xl" (click)="$event.stopPropagation()">
+      <div class="mh">
+        <h3><i class="bi bi-laptop-fill"></i> Configurar Examen en Línea</h3>
+        <button class="mc" (click)="modalExamen.set(false)">✕</button>
+      </div>
+      <div class="mb">
+        <div class="ff">
+          <label>Título del Examen <span class="req">*</span></label>
+          <input type="text" [(ngModel)]="formExamen.titulo" placeholder="Ej: Examen Parcial - Arquitectura Microservicios">
+        </div>
+        <div class="ff">
+          <label>Instrucciones / Descripción</label>
+          <input type="text" [(ngModel)]="formExamen.descripcion" placeholder="Escribe las directrices para el estudiante...">
+        </div>
+        <div class="f3">
+          <div class="ff">
+            <label>Vincular a Componente <span class="req">*</span></label>
+            <select [(ngModel)]="formExamen.componenteId">
+              <option value="" disabled selected>Selecciona un componente...</option>
+              @for (c of componentes(); track c.id) {
+                <option [value]="c.id">{{ c.nombre }} (Evalúa: {{ c.peso }}%)</option>
+              }
+            </select>
+          </div>
+          <div class="ff">
+            <label>Duración (minutos)</label>
+            <input type="number" [(ngModel)]="formExamen.duracionMinutos" min="1" placeholder="60">
+          </div>
+          <div class="ff">
+            <label>Fecha de Cierre <span class="req">*</span></label>
+            <input type="date" [(ngModel)]="formExamen.fechaLimite">
+          </div>
+        </div>
+
+        <div class="ex-preg-sep">
+          <span>Banco de Preguntas Estructuradas ({{ formExamen.preguntas.length }})</span>
+          <button class="btn btn-gh btn-sm" (click)="agregarPregunta()">
+            <i class="bi bi-plus-circle-fill"></i> Agregar pregunta
+          </button>
+        </div>
+
+        <!-- Preguntas Dinámicas -->
+        @for (preg of formExamen.preguntas; track $index; let i = $index) {
+          <div class="ex-preg">
+            <div class="ex-preg-h">
+              <span class="ex-preg-num"><i class="bi bi-patch-question-fill"></i> Ítem {{ i + 1 }}</span>
+              <div class="ex-preg-pts">
+                <label>Puntaje asignado:</label>
+                <input type="number" [(ngModel)]="preg.puntaje" min="1" style="width:60px">
+              </div>
+              <button class="ua-del" (click)="eliminarPregunta(i)" title="Eliminar ítem">
+                <i class="bi bi-trash3-fill"></i>
+              </button>
+            </div>
+            <input class="ex-preg-enun" type="text" [(ngModel)]="preg.enunciado"
+                   placeholder="Escribe el enunciado de la pregunta central aquí...">
+
+            <div class="ex-alts">
+              @for (alt of preg.alternativas; track $index; let j = $index) {
+                <div class="ex-alt" [class.correcta]="alt.esCorrecta">
+                  <input type="radio" [name]="'correcta-' + i" [checked]="alt.esCorrecta"
+                         (change)="marcarCorrecta(preg, j)" title="Marcar como alternativa válida">
+                  <input class="ex-alt-txt" type="text" [(ngModel)]="alt.texto"
+                         [placeholder]="'Escribir texto alternativa ' + (j + 1)">
+                  <button class="ua-del ua-mini" (click)="eliminarAlternativa(preg, j)" title="Remover">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </div>
+              }
+            </div>
+            <button class="btn-add-alt" (click)="agregarAlternativa(preg)">
+              <i class="bi bi-plus-lg"></i> Insertar opción de respuesta
+            </button>
+          </div>
+        }
+      </div>
+      <div class="mf">
+        <button class="btn btn-gh" (click)="modalExamen.set(false)">Cancelar</button>
+        <button class="btn btn-gh" style="color:var(--bm); border-color:var(--bm)" (click)="crearExamen(false)" [disabled]="guardandoExamen()">
+          <i class="bi bi-archive-fill"></i> Guardar en borrador
+        </button>
+        <button class="btn btn-or" (click)="crearExamen(true)" [disabled]="guardandoExamen()">
+          <i class="bi bi-cloud-arrow-up-fill"></i> {{ guardandoExamen() ? 'Guardando...' : 'Crear y publicar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

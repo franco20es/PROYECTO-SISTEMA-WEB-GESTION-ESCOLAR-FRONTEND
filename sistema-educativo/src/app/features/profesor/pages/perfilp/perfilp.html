@@ -19,52 +19,45 @@
       </div>
 
       <div class="av-info">
-        <h2>Carlos Eduardo Mendoza Ríos</h2>
-        <p>carlos.mendoza@iesanmarcos.edu.pe</p>
-        <div class="av-tag">Docente — Área de Ciencias</div>
+        <h2>{{ perfil()?.nombreCompleto }}</h2>
+        <p>{{ perfil()?.email }}</p>
+        <div class="av-tag">Docente — {{ perfil()?.especialidad }}</div>
       </div>
     </div>
 
     <div class="f2">
       <div class="ff">
         <label>Nombres <span class="req">*</span></label>
-        <input type="text" value="Carlos Eduardo" readonly></div>
-      <div class="ff"><label>Apellidos <span class="req">*</span></label><input type="text" value="Mendoza Ríos"
+        <input type="text" [value]="perfil()?.nombres" readonly></div>
+      <div class="ff"><label>Apellidos <span class="req">*</span></label><input type="text" [value]="perfil()?.apellidos"
           readonly></div>
     </div>
     <div class="f2">
-      <div class="ff"><label>DNI</label><input type="text" value="41234567" class="mono" readonly></div>
-      <div class="ff"><label>Teléfono</label><input type="tel" value="956 321 478" readonly></div>
+      <div class="ff"><label>DNI</label><input type="text" [value]="perfil()?.dni" class="mono" readonly></div>
+      <div class="ff"><label>Teléfono</label><input type="tel" [(ngModel)]="contacto.telefono"></div>
     </div>
     <div class="f2">
-      <div class="ff"><label>Email institucional</label><input type="email" value="carlos.mendoza@iesanmarcos.edu.pe"
+      <div class="ff"><label>Código docente</label><input type="text" [value]="perfil()?.codigoDocente" class="mono"
           readonly></div>
-      <div class="ff"><label>Email personal <span class="opt">(opcional)</span></label><input type="email"
-          value="cmendoza85@gmail.com"></div>
+      <div class="ff"><label>Email <span class="opt">(contacto)</span></label><input type="email"
+          [(ngModel)]="contacto.email"></div>
     </div>
     <div class="f2">
-      <div class="ff"><label>Fecha de nacimiento</label><input type="date" value="1985-03-15" readonly></div>
-      <div class="ff"><label>Dirección</label><input type="text" value="Av. Los Olivos 432, Ica"></div>
+      <div class="ff"><label>Fecha de nacimiento</label><input type="date" [value]="perfil()?.fechaNacimiento" readonly></div>
+      <div class="ff"><label>Dirección</label><input type="text" [(ngModel)]="contacto.direccion"></div>
     </div>
 
     <div class="section-sep">Información académica</div>
-    <div class="f3">
-      <div class="ff"><label>Especialidad</label><input type="text" value="Matemáticas y Física" readonly></div>
-      <div class="ff"><label>Nivel</label><select>
-          <option>Secundaria</option>
-          <option>Primaria</option>
-        </select></div>
-      <div class="ff"><label>Años de experiencia</label><input type="number" value="12" min="0"></div>
-    </div>
-    <div class="ff"><label>Formación académica <span
-          class="opt">(breve)</span></label><textarea>Lic. en Educación — Matemáticas (UNICA). Maestría en Didáctica de las Ciencias (PUCP).</textarea>
+    <div class="f2">
+      <div class="ff"><label>Especialidad</label><input type="text" [value]="perfil()?.especialidad" readonly></div>
+      <div class="ff"><label>Título profesional</label><input type="text" [value]="perfil()?.tituloProfesional" readonly></div>
     </div>
 
     <div style="display:flex;gap:8px;margin-top:6px">
-      <button class="btn btn-or" onclick="showToast()"><svg viewBox="0 0 24 24">
+      <button class="btn btn-or" (click)="guardarContacto()"><svg viewBox="0 0 24 24">
           <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
         </svg>Guardar cambios</button>
-      <button class="btn btn-gh">Cancelar</button>
+      <button class="btn btn-gh" (click)="cancelarContacto()">Cancelar</button>
     </div>
   </div>
 </div>
@@ -83,21 +76,16 @@
         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
       </svg>La contraseña debe tener mínimo 8 caracteres, una mayúscula y un número.</div>
     <div class="ff"><label>Contraseña actual <span class="req">*</span></label><input type="password"
-        placeholder="••••••••"></div>
+        [(ngModel)]="pass.actual" placeholder="••••••••"></div>
     <div class="f2">
       <div class="ff"><label>Nueva contraseña <span class="req">*</span></label><input type="password"
-          placeholder="Mínimo 8 caracteres"></div>
+          [(ngModel)]="pass.nueva" placeholder="Mínimo 8 caracteres"></div>
       <div class="ff"><label>Confirmar contraseña <span class="req">*</span></label><input type="password"
-          placeholder="Repetir contraseña"></div>
+          [(ngModel)]="pass.confirmar" placeholder="Repetir contraseña"></div>
     </div>
-    <button class="btn btn-gh" style="margin-top:4px"><svg viewBox="0 0 24 24">
+    <button class="btn btn-gh" style="margin-top:4px" (click)="cambiarPassword()"><svg viewBox="0 0 24 24">
         <path
           d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z" />
       </svg>Actualizar contraseña</button>
   </div>
 </div>
-
-
-<div class="toast" id="toast"><svg viewBox="0 0 24 24">
-    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-  </svg>Perfil actualizado correctamente</div>

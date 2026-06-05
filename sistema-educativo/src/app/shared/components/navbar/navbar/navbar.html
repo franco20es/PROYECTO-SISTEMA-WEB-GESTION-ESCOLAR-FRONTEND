@@ -32,15 +32,17 @@
       <input type="text" placeholder="Buscar..." />
     </div>
 
-    <!-- Notifications -->
-    <div
-      class="topbar-icon-btn"
-      (click)="navigateTo('/' + currentModule.toLowerCase() + '/notificaciones')"
-      title="Notificaciones"
-    >
-      <i class="bi bi-bell"></i>
-      <span class="notif-pip"></span>
-    </div>
+   <!-- Notifications -->
+<div
+  class="topbar-icon-btn"
+  (click)="irANotificaciones()"
+  title="Notificaciones"
+>
+  <i class="bi bi-bell"></i>
+  @if (notiService.noLeidas() > 0) {
+    <span class="notif-badge">{{ notiService.noLeidas() > 9 ? '9+' : notiService.noLeidas() }}</span>
+  }
+</div>
 
     <!-- Settings -->
     <div

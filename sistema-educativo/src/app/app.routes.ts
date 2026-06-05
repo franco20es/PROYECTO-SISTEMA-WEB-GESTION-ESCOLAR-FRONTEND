@@ -22,6 +22,10 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'inicios',
+    loadComponent: () => import('./features/web/inicio/components/inicioPage/inicio-page/inicio-page').then(m => m.InicioPage)
+  },
+  {
   path: 'recuperar-contrasena-form',
   loadComponent: () => import('./features/auth/recuperar-contraseña/recuperar-contrasena/recuperar-contrasena')
     .then(m => m.RecuperarPassword)

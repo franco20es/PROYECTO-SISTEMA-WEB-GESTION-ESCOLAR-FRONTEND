@@ -1,0 +1,135 @@
+<!-- Estado de Carga Inicial -->
+<div class="tab-loading" *ngIf="cargandoPeriodos">
+  <div class="tl-spinner"></div>
+</div>
+
+<ng-container *ngIf="!cargandoPeriodos">
+  <div class="evaluaciones-wrapper">
+    
+    <!-- Encabezado de Sección y Filtros -->
+    <div class="sec-head">
+      <div class="sec-title">
+        <i class="bi bi-clipboard-check-fill"></i> 
+        Evaluaciones Académicas
+      </div>
+      <div class="periodo-select" *ngIf="periodos.length > 0">
+        <i class="bi bi-calendar3"></i>
+        <select [value]="periodoSeleccionado"
+                (change)="onCambiarPeriodo($any($event.target).value)">
+          <option *ngFor="let p of periodos" [value]="p.id">{{ p.nombre }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ═══ SECCIÓN 1: EXÁMENES EN LÍNEA ═══ -->
+    <ng-container *ngIf="examenes.length > 0">
+      <div class="bloque-label">
+        <i class="bi bi-laptop"></i> Exámenes en línea disponibles
+      </div>
+      
+      <div class="examen-item" *ngFor="let ex of examenes" [class.rendido]="ex.yaRindio">
+        <div class="examen-ico" [class.ok]="ex.yaRindio">
+          <i class="bi" [class.bi-display]="!ex.yaRindio" [class.bi-check-circle-fill]="ex.yaRindio"></i>
+        </div>
+        <div class="examen-info">
+          <h4 class="examen-nombre">{{ ex.titulo }}</h4>
+          <p class="examen-desc">{{ ex.descripcion }}</p>
+          <div class="examen-meta">
+            <span class="meta-pill"><i class="bi bi-list-ol"></i> {{ ex.totalPreguntas }} preguntas</span>
+            <span class="meta-sep" *ngIf="ex.duracionMinutos">·</span>
+            <span class="meta-pill" *ngIf="ex.duracionMinutos"><i class="bi bi-clock"></i> {{ ex.duracionMinutos }} min</span>
+          </div>
+        </div>
+        <button class="btn-rendir" *ngIf="!ex.yaRindio" (click)="rendirExamen(ex)">
+          <i class="bi bi-play-fill"></i> Rendir evaluación
+        </button>
+        <span class="rendido-badge" *ngIf="ex.yaRindio">
+          <i class="bi bi-patch-check-fill"></i> Rendido
+        </span>
+      </div>
+    </ng-container>
+
+    <!-- Estado Vacío: Sin Periodos -->
+    <div class="empty-state" *ngIf="periodos.length === 0">
+      <div class="empty-icon-wrap">
+        <i class="bi bi-calendar-x"></i>
+      </div>
+      <h3>Sin periodos configurados</h3>
+      <p>No se encontraron bimestres o ciclos configurados para el año académico {{ anio }}.</p>
+    </div>
+
+    <!-- Carga de Componentes de Notas -->
+    <div class="tab-loading" *ngIf="cargandoEval">
+      <div class="tl-spinner"></div>
+    </div>
+
+    <!-- ═══ SECCIÓN 2: COMPONENTES DE NOTA DEL PERIODO ═══ -->
+    <ng-container *ngIf="!cargandoEval && periodos.length > 0">
+
+      <div class="bloque-label" *ngIf="examenes.length > 0 && tieneComponentes">
+        <i class="bi bi-journal-check"></i> Componentes de nota del periodo
+      </div>
+
+      <!-- Estado Vacío: Sin Componentes Configurados -->
+      <div class="empty-state" *ngIf="!tieneComponentes">
+        <div class="empty-icon-wrap">
+          <i class="bi bi-folder-x"></i>
+        </div>
+        <h3>Fórmula de evaluación no definida</h3>
+        <p>El docente aún no ha estructurado los criterios ni los componentes ponderados de este periodo.</p>
+      </div>
+
+      <ng-container *ngIf="tieneComponentes">
+        
+        <!-- Barra de Resumen Analítico -->
+        <div class="resumen-bar">
+          <div class="resumen-item">
+            <span class="ri-label">Progreso de Calificaciones</span>
+            <span class="ri-val">
+              <i class="bi bi-check-all"></i> {{ calificadas }} de {{ evaluaciones.length }} registradas
+            </span>
+          </div>
+          <div class="resumen-item">
+            <span class="ri-label">Promedio del Periodo</span>
+            <span class="ri-val nota-final" *ngIf="todoCalificado" [style.color]="colorNota(notaFinal)">
+              {{ notaFinal != null ? notaFinal : '—' }}
+            </span>
+            <span class="ri-val parcial" *ngIf="!todoCalificado">
+              <i class="bi bi-hourglass-split"></i> Pendiente ({{ calificadas }}/{{ evaluaciones.length }})
+            </span>
+          </div>
+        </div>
+
+        <!-- Lista de Criterios / Evaluaciones -->
+        <div class="eval-item" *ngFor="let ev of evaluaciones">
+          <div class="eval-ico" [class.calificada]="ev.estado === 'CALIFICADA'">
+            <i class="bi" [class.bi-file-earmark-check-fill]="ev.estado === 'CALIFICADA'" [class.bi-file-earmark-lock-fill]="ev.estado === 'PENDIENTE'"></i>
+          </div>
+          <div class="eval-info">
+            <h4 class="eval-nombre">{{ ev.nombre }}</h4>
+            <p class="eval-desc" *ngIf="ev.descripcion">{{ ev.descripcion }}</p>
+            <div class="eval-meta">
+              <span class="peso-badge"><i class="bi bi-percentage"></i> Peso {{ ev.peso }}%</span>
+              <span *ngIf="ev.observacion" class="eval-obs">
+                <i class="bi bi-chat-left-text-fill"></i> Feedback: {{ ev.observacion }}
+              </span>
+            </div>
+          </div>
+          <div class="eval-right">
+            <div class="eval-nota" [style.color]="colorNota(ev.nota)">
+              {{ ev.nota != null ? ev.nota : '—' }}
+            </div>
+            <div class="eval-aporte" *ngIf="ev.nota != null">
+              Aporte: <strong>+{{ aporte(ev) }}</strong>
+            </div>
+            <span class="eval-estado" [class.est-cal]="ev.estado === 'CALIFICADA'" [class.est-pend]="ev.estado === 'PENDIENTE'">
+              {{ ev.estado }}
+            </span>
+          </div>
+        </div>
+
+      </ng-container>
+    </ng-container>
+
+  </div>
+</ng-container>

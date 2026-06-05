@@ -1,0 +1,79 @@
+<div class="tab-loading" *ngIf="cargando">
+  <div class="tl-spinner"></div>
+</div>
+
+<ng-container *ngIf="!cargando">
+  <div class="contenido-wrapper">
+    
+    <div class="sec-head">
+      <div class="sec-title">
+        <i class="bi bi-collection-play-fill"></i> 
+        Contenido por semanas
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="semanas.length === 0">
+      <div class="empty-icon-wrap">
+        <i class="bi bi-folder-x"></i>
+      </div>
+      <h3>Sin contenido asignado</h3>
+      <p>El docente aún no ha publicado materiales didácticos para este curso.</p>
+    </div>
+
+    <div class="week-card" *ngFor="let sem of semanas; let i = index" [class.week-is-open]="abierta[i]">
+      
+      <div class="week-head" (click)="toggle(i)">
+        <div class="week-num">{{ sem.numero }}</div>
+        <div class="week-info">
+          <div class="week-title">{{ sem.titulo }}</div>
+          <div class="week-sub">
+            <i class="bi bi-files"></i> {{ sem.materiales.length }} recurso(s) disponible(s)
+          </div>
+        </div>
+        <div class="week-chevron-wrap">
+          <i class="bi bi-chevron-down week-chevron" [class.open]="abierta[i]"></i>
+        </div>
+      </div>
+
+      <div class="week-body" *ngIf="abierta[i]">
+        
+        <div class="empty-mat" *ngIf="sem.materiales.length === 0">
+          <i class="bi bi-info-circle"></i> No hay archivos o enlaces cargados para esta sesión.
+        </div>
+
+        <div class="week-mat" *ngFor="let mat of sem.materiales">
+          <div class="wm-ico" [ngClass]="claseIcono(mat.tipo)">
+            <i class="bi" 
+               [class.bi-file-earmark-pdf-fill]="mat.tipo === 'PDF'"
+               [class.bi-play-btn-fill]="mat.tipo === 'VIDEO'"
+               [class.bi-file-earmark-word-fill]="mat.tipo === 'DOC'"
+               [class.bi-link-45deg]="mat.tipo === 'LINK'"></i>
+          </div>
+          
+          <div class="wm-info">
+            <div class="wm-nombre">{{ mat.nombre }}</div>
+            <div class="wm-meta">
+              <span>{{ mat.meta }}</span>
+            </div>
+          </div>
+          
+          <div class="wm-actions">
+            <button class="wm-btn btn-view" (click)="abrirMaterial(mat)" [disabled]="procesando[mat.id]" [attr.title]="'Visualizar ' + mat.tipo">
+              <i class="bi"
+                 [class.bi-eye-fill]="mat.tipo !== 'VIDEO' && mat.tipo !== 'LINK'"
+                 [class.bi-play-fill]="mat.tipo === 'VIDEO'"
+                 [class.bi-box-arrow-up-right]="mat.tipo === 'LINK'"></i>
+            </button>
+            
+            <button class="wm-btn btn-download" *ngIf="mat.tipo !== 'LINK' && mat.tipo !== 'VIDEO'"
+                    (click)="descargarMaterial(mat)" [disabled]="procesando[mat.id]" title="Descargar archivo">
+              <i class="bi bi-cloud-arrow-down-fill"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</ng-container>

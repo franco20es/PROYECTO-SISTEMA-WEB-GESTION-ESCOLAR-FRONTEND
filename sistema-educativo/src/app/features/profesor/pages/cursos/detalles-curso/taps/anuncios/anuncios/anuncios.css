@@ -1,0 +1,145 @@
+:host {
+  --bd: #0A1A3E; 
+  --bm: #1340A0; 
+  --or: #FF5B1F; 
+  --er: #E53030;
+  --g1: #F8FAFC; 
+  --g2: #E2E8F0; 
+  --g4: #94A3B8; 
+  --g6: #64748B;
+  display: block;
+  width: 100%;
+}
+
+.stitle { 
+  font-size: 16px; 
+  font-weight: 800; 
+  color: var(--bd); 
+  letter-spacing: -0.3px;
+}
+
+/* Botones Robustos con radio uniforme de 12px */
+.btn { 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 8px; 
+  padding: 10px 20px; 
+  border-radius: 12px; 
+  font-size: 13px; 
+  font-weight: 600; 
+  cursor: pointer; 
+  border: none; 
+  transition: all .15s ease-in-out; 
+}
+.btn i { font-size: 14px; }
+.btn-sm { padding: 8px 14px; font-size: 12px; }
+
+.btn-or { background: var(--or); color: #fff; }
+.btn-or:hover:not(:disabled) { background: #E04800; transform: translateY(-1px); }
+.btn-or:disabled { opacity: .6; cursor: not-allowed; }
+
+.btn-gh { background: #fff; border: 1px solid var(--g2); color: var(--g6); }
+.btn-gh:hover { border-color: var(--g4); color: var(--bd); background: var(--g1); }
+
+/* Acción de Eliminación Crítica */
+.sd-del { color: var(--er); border-color: rgba(229, 48, 48, 0.2); }
+.sd-del:hover { border-color: var(--er); background: rgba(229, 48, 48, 0.05); color: var(--er); }
+
+/* Animación de Carga */
+.cd-loading { display: flex; justify-content: center; padding: 60px; }
+.spinner-d { width: 32px; height: 32px; border: 3px solid var(--g2); border-top-color: var(--bm); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Estado Desierto */
+.empty-d { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  padding: 64px 20px; 
+  gap: 12px; 
+  color: var(--g4); 
+  text-align: center; 
+  background: #fff;
+  border-radius: 12px;
+  border: 2px dashed var(--g2);
+}
+.empty-d i { font-size: 44px; color: var(--g4); }
+.empty-d p { font-size: 14px; font-weight: 500; margin: 0; }
+
+/* Tarjetas de Anuncios Industriales (Esquinas exteriores estilizadas de 12px) */
+.anuncio { 
+  padding: 18px 20px; 
+  border-radius: 12px; 
+  background: #fff; 
+  margin-bottom: 12px; 
+  border: 1px solid var(--g2); 
+  border-left: 4px solid var(--bm); 
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.01);
+  transition: box-shadow 0.2s ease;
+}
+.anuncio:hover {
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+}
+
+/* Variante de Anuncio Destacado / Fijado */
+.an-pin { 
+  border-left-color: var(--or); 
+  background: #FFFBF9; 
+  border-color: rgba(255, 91, 31, 0.15);
+}
+
+.an-h { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 16px; }
+.an-title { font-size: 15px; font-weight: 700; color: var(--bd); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.an-pin-icon { color: var(--or); font-size: 14px; }
+
+.an-pin-badge { 
+  font-size: 10px; 
+  font-weight: 800; 
+  padding: 2px 8px; 
+  background: rgba(255, 91, 31, .08); 
+  color: var(--or); 
+  border-radius: 12px; 
+  letter-spacing: .5px; 
+}
+.an-date { font-size: 12px; color: var(--g6); font-weight: 500; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+.an-date i { color: var(--g4); }
+
+.an-body { font-size: 13.5px; color: var(--g6); line-height: 1.6; white-space: pre-line; margin-bottom: 12px; font-weight: 450; }
+.an-foot { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* Modales Pro-Level e Inputs Robustos (border-radius: 12px) */
+.mo { position: fixed; inset: 0; z-index: 1000; background: rgba(15, 23, 42, .4); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.modal { background: #fff; border-radius: 16px; width: 100%; max-width: 480px; box-shadow: 0 20px 25px -5px rgba(0,0,0,.1); overflow: hidden; }
+
+.mh { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid var(--g2); }
+.mh h3 { font-size: 16px; font-weight: 800; color: var(--bd); display: flex; align-items: center; gap: 10px; margin: 0; }
+.mh h3 i { font-size: 18px; color: var(--or); }
+.mc { background: none; border: none; font-size: 16px; color: var(--g4); cursor: pointer; padding: 4px; }
+
+.mb { padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+.ff { display: flex; flex-direction: column; gap: 6px; }
+.ff label { font-size: 11px; font-weight: 700; color: var(--g6); text-transform: uppercase; letter-spacing: .5px; }
+.req { color: var(--er); }
+
+.ff input, .ff textarea { 
+  padding: 11px 14px; 
+  border: 1.5px solid var(--g2); 
+  border-radius: 12px; 
+  font-family: inherit; 
+  font-size: 14px; 
+  color: var(--bd); 
+  outline: none; 
+  transition: border-color .15s, box-shadow .15s; 
+}
+.ff input:focus, .ff textarea:focus { border-color: var(--bm); box-shadow: 0 0 0 3px rgba(19, 64, 160, 0.08); }
+.ff textarea { resize: vertical; }
+
+.ff-check label { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--g6); cursor: pointer; font-weight: 500; }
+.ff-check input { 
+  width: 18px; 
+  height: 18px; 
+  cursor: pointer; 
+  border-radius: 6px; 
+  border: 1.5px solid var(--g2); 
+}
+.mf { display: flex; justify-content: flex-end; gap: 10px; padding: 18px 24px; border-top: 1px solid var(--g2); background: var(--g1); }

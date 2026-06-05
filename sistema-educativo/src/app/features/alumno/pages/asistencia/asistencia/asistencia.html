@@ -4,227 +4,203 @@
     <h1>Mi <em>Asistencia</em></h1>
     <p>Revisa tu historial de asistencia por curso</p>
   </div>
-  <div style="display:flex;gap:7px">
-    <select class="fsel">
-      <option>Bimestre II — 2025</option>
-      <option>Bimestre I — 2025</option>
-    </select>
-  </div>
 </div>
 
-<!-- RESUMEN GENERAL -->
-<div class="resumen" id="resumen">
-  <div class="res-ring">
-    <svg viewBox="0 0 84 84" width="90" height="90">
-      <circle class="res-ring-bg" cx="42" cy="42" r="38"/>
-      <circle class="res-ring-val" cx="42" cy="42" r="38" 
-              [attr.stroke-dasharray]="ringDash(gPct, 38)" 
-              [style.stroke]="pctColor(gPct)"/>
-    </svg>
-    <div class="res-pct"><strong>{{ gPct }}%</strong><span>Asistencia</span></div>
+<!-- Loading -->
+<div class="loading-state" *ngIf="cargando">
+  <div class="spinner"></div>
+  <p>Cargando asistencia...</p>
+</div>
+
+<ng-container *ngIf="!cargando">
+
+  <!-- Sin datos -->
+  <div class="empty-asis" *ngIf="CURSOS.length === 0">
+    <svg viewBox="0 0 24 24" width="46" height="46"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z"/></svg>
+    <p>Aún no hay registros de asistencia para el año {{ anio }}.</p>
   </div>
-  <div class="res-info">
-    <div class="res-title">Resumen general de asistencia</div>
-    <div class="res-sub">{{ CURSOS.length }} cursos matriculados · Bimestre II — 2025</div>
-    <div class="res-stats">
-      <div class="rs rs-tot"><strong>{{ totalAll }}</strong><span>Sesiones</span></div>
-      <div class="rs rs-p"><strong>{{ totalP }}</strong><span>Asistió</span></div>
-      <div class="rs rs-t"><strong>{{ totalT}</strong><span>Tardanzas</span></div>
-      <div class="rs rs-f"><strong>{{ totalF }}</strong><span>Faltas</span></div>
-      <div class="rs rs-j"><strong>{{ totalJ }}</strong><span>Justific.</span></div>
+
+  <ng-container *ngIf="CURSOS.length > 0">
+    <!-- RESUMEN GENERAL -->
+    <div class="resumen" id="resumen">
+      <div class="res-ring">
+        <svg viewBox="0 0 84 84" width="90" height="90">
+          <circle class="res-ring-bg" cx="42" cy="42" r="38"/>
+          <circle class="res-ring-val" cx="42" cy="42" r="38"
+                  [attr.stroke-dasharray]="ringDash(gPct, 38)"
+                  [style.stroke]="pctColor(gPct)"/>
+        </svg>
+        <div class="res-pct"><strong>{{ gPct }}%</strong><span>Asistencia</span></div>
+      </div>
+      <div class="res-info">
+        <div class="res-title">Resumen general de asistencia</div>
+        <div class="res-sub">{{ CURSOS.length }} curso(s) · Año {{ anio }}</div>
+        <div class="res-stats">
+          <div class="rs rs-tot"><strong>{{ totalAll }}</strong><span>Sesiones</span></div>
+          <div class="rs rs-p"><strong>{{ totalP }}</strong><span>Asistió</span></div>
+          <div class="rs rs-t"><strong>{{ totalT }}</strong><span>Tardanzas</span></div>
+          <div class="rs rs-f"><strong>{{ totalF }}</strong><span>Faltas</span></div>
+          <div class="rs rs-j"><strong>{{ totalJ }}</strong><span>Justific.</span></div>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-<!-- CURSOS GRID -->
-<div class="cursos-grid">
-  @for (c of CURSOS; track c.id) {
-    <div class="curso-card" [class.on]="activeCurso?.id === c.id" (click)="openCurso(c)">
-      <div class="curso-bar" [style.background]="c.color"></div>
-      <div class="curso-body">
-        <div class="curso-top">
-          <div>
-            <div class="curso-nm">{{ c.name }}</div>
-            <div class="curso-meta">
-              <div class="curso-mi">
-                <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12z"/></svg>
-                {{ c.prof }}
+    <!-- CURSOS GRID -->
+    <div class="cursos-grid">
+      @for (c of CURSOS; track c.cursoId) {
+        <div class="curso-card" [class.on]="activeCurso?.cursoId === c.cursoId" (click)="openCurso(c)">
+          <div class="curso-bar" [style.background]="c.color"></div>
+          <div class="curso-body">
+            <div class="curso-top">
+              <div>
+                <div class="curso-nm">{{ c.name }}</div>
+                <div class="curso-meta">
+                  <div class="curso-mi">
+                    <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12z"/></svg>
+                    {{ c.prof }}
+                  </div>
+                </div>
               </div>
-              <div class="curso-mi">
-                <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg>
-                {{ c.hor }}
+              <div class="curso-ring-sm">
+                <svg viewBox="0 0 36 36" width="40" height="40">
+                  <circle class="crs-bg" cx="18" cy="18" r="15"/>
+                  <circle class="crs-val" cx="18" cy="18" r="15"
+                          [attr.stroke-dasharray]="ringDash(c.pct, 15)"
+                          [style.stroke]="pctColor(c.pct)"
+                          style="transform:rotate(-90deg);transform-origin:center"/>
+                </svg>
+                <div class="curso-ring-pct">{{ c.pct }}%</div>
+              </div>
+            </div>
+
+            <div class="curso-bars">
+              <div class="cb-seg" [style.width.%]="(c.p / c.total) * 100" style="background:var(--ok)"></div>
+              <div class="cb-seg" [style.width.%]="(c.t / c.total) * 100" style="background:var(--wa)"></div>
+              <div class="cb-seg" [style.width.%]="(c.f / c.total) * 100" style="background:var(--er)"></div>
+              <div class="cb-seg" [style.width.%]="(c.j / c.total) * 100" style="background:var(--bl)"></div>
+            </div>
+
+            <div class="curso-legend">
+              <div class="cl-item"><div class="cl-dot" style="background:var(--ok)"></div>{{ c.p }}P</div>
+              <div class="cl-item"><div class="cl-dot" style="background:var(--wa)"></div>{{ c.t }}T</div>
+              <div class="cl-item"><div class="cl-dot" style="background:var(--er)"></div>{{ c.f }}F</div>
+              <div class="cl-item"><div class="cl-dot" style="background:var(--bl)"></div>{{ c.j }}J</div>
+            </div>
+          </div>
+          <div class="curso-foot">
+            <span>{{ c.total }} sesiones registradas</span>
+            <div class="cf-arrow">
+              <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- DETALLE -->
+    @if (activeCurso) {
+      <div class="detail show" id="detail">
+        <div class="dh">
+          <div class="dh-bar" [style.background]="activeCurso.color"></div>
+          <div class="dh-inner">
+            <button class="dh-close" (click)="closeDetail()">
+              <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+            <div class="dh-cnt">
+              <div class="dh-left">
+                <div class="dh-title">{{ activeCurso.name }}</div>
+                <div class="dh-meta">
+                  <div class="dh-mi"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12z"/></svg>{{ activeCurso.prof }}</div>
+                </div>
+              </div>
+              <div class="dh-stats">
+                <div class="dhs"><strong [style.color]="pctColor(activeCurso.pct)">{{ activeCurso.pct }}%</strong><span>Asistencia</span></div>
+                <div class="dhs"><strong style="color:var(--ok)">{{ activeCurso.p }}</strong><span>Asistió</span></div>
+                <div class="dhs"><strong style="color:var(--wa)">{{ activeCurso.t }}</strong><span>Tard.</span></div>
+                <div class="dhs"><strong style="color:var(--er)">{{ activeCurso.f }}</strong><span>Faltas</span></div>
+                <div class="dhs"><strong style="color:var(--bl)">{{ activeCurso.j }}</strong><span>Just.</span></div>
               </div>
             </div>
           </div>
-          <div class="curso-ring-sm">
-            <svg viewBox="0 0 36 36" width="40" height="40">
-              <circle class="crs-bg" cx="18" cy="18" r="15"/>
-              <circle class="crs-val" cx="18" cy="18" r="15" 
-                      [attr.stroke-dasharray]="ringDash(pct(c.p, c.total), 15)" 
-                      [style.stroke]="pctColor(pct(c.p, c.total))" 
-                      style="transform:rotate(-90deg);transform-origin:center"/>
-            </svg>
-            <div class="curso-ring-pct">{{ pct(c.p, c.total) }}%</div>
-          </div>
         </div>
-        
-        <div class="curso-bars">
-          <div class="cb-seg" [style.width.%]="(c.p / c.total) * 100" style="background:var(--ok)"></div>
-          <div class="cb-seg" [style.width.%]="(c.t / c.total) * 100" style="background:var(--wa)"></div>
-          <div class="cb-seg" [style.width.%]="(c.f / c.total) * 100" style="background:var(--er)"></div>
-          <div class="cb-seg" [style.width.%]="(c.j / c.total) * 100" style="background:var(--bl)"></div>
-        </div>
-        
-        <div class="curso-legend">
-          <div class="cl-item"><div class="cl-dot" style="background:var(--ok)"></div>{{ c.p }}P</div>
-          <div class="cl-item"><div class="cl-dot" style="background:var(--wa)"></div>{{ c.t }}T</div>
-          <div class="cl-item"><div class="cl-dot" style="background:var(--er)"></div>{{ c.f }}F</div>
-          <div class="cl-item"><div class="cl-dot" style="background:var(--bl)"></div>{{ c.j }}J</div>
-        </div>
-      </div>
-      <div class="curso-foot">
-        <span>{{ c.total }} sesiones registradas</span>
-        <div class="cf-arrow">
-          <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
-        </div>
-      </div>
-    </div>
-  }
-</div>
 
-<!-- DETALLE -->
-@if (activeCurso) {
-  <div class="detail show" id="detail">
-    <div class="dh">
-      <div class="dh-bar" [style.background]="activeCurso.color"></div>
-      <div class="dh-inner">
-        <button class="dh-close" (click)="closeDetail()">
-          <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-        </button>
-        <div class="dh-cnt">
-          <div class="dh-left">
-            <div class="dh-tag">{{ activeCurso.sec }} · Bimestre II</div>
-            <div class="dh-title">{{ activeCurso.name }}</div>
-            <div class="dh-meta">
-              <div class="dh-mi"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12z"/></svg>{{ activeCurso.prof }}</div>
-              <div class="dh-mi"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg>{{ activeCurso.hor }}</div>
-            </div>
-          </div>
-          <div class="dh-stats">
-            <div class="dhs"><strong [style.color]="pctColor(pct(activeCurso.p, activeCurso.total))">{{ pct(activeCurso.p, activeCurso.total) }}%</strong><span>Asistencia</span></div>
-            <div class="dhs"><strong style="color:var(--ok)">{{ activeCurso.p }}</strong><span>Asistió</span></div>
-            <div class="dhs"><strong style="color:var(--wa)">{{ activeCurso.t }}</strong><span>Tard.</span></div>
-            <div class="dhs"><strong style="color:var(--er)">{{ activeCurso.f }}</strong><span>Faltas</span></div>
-            <div class="dhs"><strong style="color:var(--bl)">{{ activeCurso.j }}</strong><span>Just.</span></div>
-          </div>
+        <!-- TABS -->
+        <div class="dtabs">
+          <div class="dt" [class.on]="activeTab === 0" (click)="swDt(0)"><span>Historial</span></div>
+          <div class="dt" [class.on]="activeTab === 1" (click)="swDt(1)"><span>Por mes</span></div>
         </div>
-      </div>
-    </div>
 
-    <!-- PESTAÑAS (TABS) -->
-    <div class="dtabs">
-      <div class="dt" [class.on]="activeTab === 0" (click)="swDt(0)"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg><span>Historial</span></div>
-      <div class="dt" [class.on]="activeTab === 1" (click)="swDt(1)"><svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg><span>Por mes</span></div>
-      <div class="dt" [class.on]="activeTab === 2" (click)="swDt(2)"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg><span>Calendario</span></div>
-    </div>
-
-    <!-- TAB 1: HISTORIAL -->
-    @if (activeTab === 0) {
-      <div class="dp on">
-        <div class="alert-i"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>Registro de asistencia registrado por el docente. No es posible modificar estos datos.</div>
-        <div class="legend">
-          <div class="leg"><div class="leg-d" style="background:var(--ok)"></div>Asistió (P)</div>
-          <div class="leg"><div class="leg-d" style="background:var(--wa)"></div>Tardanza (T)</div>
-          <div class="leg"><div class="leg-d" style="background:var(--er)"></div>Falta (F)</div>
-          <div class="leg"><div class="leg-d" style="background:var(--bl)"></div>Justificado (J)</div>
+        <!-- Loading detalle -->
+        <div class="loading-state" *ngIf="cargandoDetalle">
+          <div class="spinner"></div>
         </div>
-        <div style="overflow-x:auto">
-          <table class="ht">
-            <thead>
-              <tr><th>Fecha</th><th>Día</th><th>Hora</th><th>Estado</th><th style="text-align:left">Observación</th></tr>
-            </thead>
-            <tbody>
-              <!-- .slice().reverse() simulado nativamente ordenando el array -->
-              @for (h of historialActiveCurso; track $index) {
-                <tr>
-                  <td class="td-fecha">{{ h.fecha }}</td>
-                  <td class="td-dia">{{ h.dia }}</td>
-                  <td class="td-hora">{{ h.hora }}</td>
-                  <td>
-                    <span class="mk" [ngClass]="{
-                      'mk-p': h.estado === 'P',
-                      'mk-t': h.estado === 'T',
-                      'mk-f': h.estado === 'F',
-                      'mk-j': h.estado === 'J'
-                    }">{{ h.estado }}</span>
-                  </td>
-                  <td class="td-obs">{{ h.obs || '—' }}</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </div>
-    }
 
-    <!-- TAB 2: POR MES -->
-    @if (activeTab === 1) {
-      <div class="dp on">
-        <div class="stitle">Resumen mensual</div>
-        <div class="month-grid">
-          @for (m of MESES; track m.nm; let i = $index) {
-            <div class="month-card" [class.active]="i === 2">
-              <div class="mc-nm">{{ m.nm }} 2025</div>
-              <div class="mc-pct" [style.color]="pctColor(pct(m.p, m.total))">{{ pct(m.p, m.total) }}%</div>
-              <div class="mc-detail">
-                <span>P: <strong style="color:var(--ok)">{{ m.p }}</strong></span>
-                <span>T: <strong style="color:var(--wa)">{{ m.t }}</strong></span>
-                <span>F: <strong style="color:var(--er)">{{ m.f }}</strong></span>
-                <span>J: <strong style="color:var(--bl)">{{ m.j }}</strong></span>
+        <ng-container *ngIf="!cargandoDetalle">
+          <!-- TAB 1: HISTORIAL -->
+          @if (activeTab === 0) {
+            <div class="dp on">
+              <div class="alert-i"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>Registro de asistencia del docente. No es posible modificar estos datos.</div>
+              <div class="legend">
+                <div class="leg"><div class="leg-d" style="background:var(--ok)"></div>Asistió (P)</div>
+                <div class="leg"><div class="leg-d" style="background:var(--wa)"></div>Tardanza (T)</div>
+                <div class="leg"><div class="leg-d" style="background:var(--er)"></div>Falta (F)</div>
+                <div class="leg"><div class="leg-d" style="background:var(--bl)"></div>Justificado (J)</div>
+              </div>
+
+              <div class="hist-vacio" *ngIf="historialActiveCurso.length === 0">
+                No hay registros de asistencia en este curso todavía.
+              </div>
+
+              <div style="overflow-x:auto" *ngIf="historialActiveCurso.length > 0">
+                <table class="ht">
+                  <thead>
+                    <tr><th>Fecha</th><th>Día</th><th>Estado</th><th style="text-align:left">Observación</th></tr>
+                  </thead>
+                  <tbody>
+                    @for (h of historialActiveCurso; track $index) {
+                      <tr>
+                        <td class="td-fecha">{{ h.fecha }}</td>
+                        <td class="td-dia">{{ h.dia }}</td>
+                        <td>
+                          <span class="mk" [ngClass]="{
+                            'mk-p': h.estado === 'P', 'mk-t': h.estado === 'T',
+                            'mk-f': h.estado === 'F', 'mk-j': h.estado === 'J'
+                          }">{{ h.estado }}</span>
+                        </td>
+                        <td class="td-obs">{{ h.obs || '—' }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
               </div>
             </div>
           }
-        </div>
-      </div>
-    }
 
-    <!-- TAB 3: CALENDARIO -->
-    @if (activeTab === 2) {
-      <div class="dp on">
-        <div class="stitle">Calendario — Mayo 2025</div>
-        <div class="cal">
-          <!-- Días de la semana -->
-          @for (d of ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM']; track d) {
-            <div class="cal-dh">{{ d }}</div>
-          }
-          <!-- Días mes anterior -->
-          @for (d of prevMonthDays; track d) {
-            <div class="cal-d other"><div class="cal-dn">{{ d }}</div></div>
-          }
-          <!-- Días mes actual -->
-          @for (day of currentMonthDays; track day) {
-            <div class="cal-d" [class.today]="day === 12">
-              <div class="cal-dn">{{ day }}</div>
-              @if (calData[day]) {
-                <span class="cal-mk" [ngClass]="'cmk-' + calData[day].toLowerCase()">
-                  {{ calData[day] }}
-                </span>
-              }
+          <!-- TAB 2: POR MES -->
+          @if (activeTab === 1) {
+            <div class="dp on">
+              <div class="stitle">Resumen mensual</div>
+              <div class="hist-vacio" *ngIf="resumenPorMes.length === 0">
+                Sin datos para mostrar.
+              </div>
+              <div class="month-grid">
+                @for (m of resumenPorMes; track m.nm) {
+                  <div class="month-card">
+                    <div class="mc-nm">{{ m.nm }} {{ anio }}</div>
+                    <div class="mc-pct" [style.color]="pctColor(pct(m.p + m.t, m.total))">{{ pct(m.p + m.t, m.total) }}%</div>
+                    <div class="mc-detail">
+                      <span>P: <strong style="color:var(--ok)">{{ m.p }}</strong></span>
+                      <span>T: <strong style="color:var(--wa)">{{ m.t }}</strong></span>
+                      <span>F: <strong style="color:var(--er)">{{ m.f }}</strong></span>
+                      <span>J: <strong style="color:var(--bl)">{{ m.j }}</strong></span>
+                    </div>
+                  </div>
+                }
+              </div>
             </div>
           }
-          <!-- Días mes siguiente -->
-          @for (d of nextMonthDays; track d) {
-            <div class="cal-d other"><div class="cal-dn">{{ d }}</div></div>
-          }
-        </div>
-        
-        <div class="legend" style="margin-top:6px">
-          <div class="leg"><span class="cal-mk cmk-p" style="display:inline-block">P</span>Asistió</div>
-          <div class="leg"><span class="cal-mk cmk-t" style="display:inline-block">T</span>Tardanza</div>
-          <div class="leg"><span class="cal-mk cmk-f" style="display:inline-block">F</span>Falta</div>
-          <div class="leg"><span class="cal-mk cmk-j" style="display:inline-block">J</span>Justificado</div>
-        </div>
+        </ng-container>
       </div>
     }
-  </div>
-}
+  </ng-container>
+</ng-container>

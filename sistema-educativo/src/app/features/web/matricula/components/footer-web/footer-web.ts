@@ -8,6 +8,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./footer-web.css']
 })
 export class FooterWebComponent {
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   aliados = [
     { nombre: 'BCP', img: 'https://res.cloudinary.com/dfspsnrmp/image/upload/v1780226236/bcp-4_pgz0c0.svg' },
     { nombre: 'Interbank', img: 'https://res.cloudinary.com/dfspsnrmp/image/upload/v1780226365/interbank-2_kf9qcc.svg' },

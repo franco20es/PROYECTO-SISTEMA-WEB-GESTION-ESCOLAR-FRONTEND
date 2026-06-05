@@ -1,58 +1,39 @@
-
- 
 <div class="ph">
   <div><h1>Mis <em>Notificaciones</em></h1><p>Avisos, alertas y comunicados del colegio</p></div>
-  <button class="btn btn-gh" onclick="markAllRead()"><svg viewBox="0 0 24 24"><path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"/></svg>Marcar todo como leído</button>
+  <button class="btn btn-gh" (click)="marcarTodas()"><svg viewBox="0 0 24 24"><path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"/></svg>Marcar todo como leído</button>
 </div>
- 
-<div class="filtros">
-  <span class="chip on" onclick="filterNoti(this,'all')">Todas <span class="count">12</span></span>
-  <span class="chip" onclick="filterNoti(this,'unread')">No leídas <span class="count">5</span></span>
-  <span class="chip" onclick="filterNoti(this,'acad')">Académico</span>
-  <span class="chip" onclick="filterNoti(this,'admin')">Administrativo</span>
-  <span class="chip" onclick="filterNoti(this,'sist')">Sistema</span>
-</div>
- 
-<div class="card">
-  <div class="ch"><div class="ch-t"><div class="ch-ico"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div><h3>Todas las <em>notificaciones</em></h3></div><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--g4)">12 totales · 5 sin leer</span></div>
- 
-  <!-- HOY -->
-  <div class="date-group">Hoy — Lunes 12 Mayo</div>
- 
-  <div class="noti unread" data-type="acad">
-    <div class="noti-ico" style="background:rgba(229,48,48,.08)"><svg viewBox="0 0 24 24" style="fill:var(--er)"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div>
-    <div class="noti-body">
-      <div class="noti-title">Fecha límite: Calificar examen parcial 3ro A</div>
-      <div class="noti-desc">Tienes 4 exámenes pendientes de calificar en Matemáticas — 3ro A. La fecha límite es hoy.</div>
-      <div class="noti-meta"><span class="noti-time">Hace 30 min</span><span class="noti-tag tag-urg">Urgente</span></div>
-    </div>
-    <div class="noti-actions"><button class="na-btn" title="Marcar leída" onclick="event.stopPropagation();this.closest('.noti').classList.remove('unread')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></button><button class="na-btn" title="Eliminar"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div>
-  </div>
- 
-  <div class="noti unread" data-type="admin">
-    <div class="noti-ico" style="background:rgba(245,166,35,.08)"><svg viewBox="0 0 24 24" style="fill:var(--wa)"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
-    <div class="noti-body">
-      <div class="noti-title">Reunión de coordinación — Área de Ciencias</div>
-      <div class="noti-desc">Se convoca a reunión el miércoles 14 de mayo a las 12:00 en la sala de profesores. Asistencia obligatoria.</div>
-      <div class="noti-meta"><span class="noti-time">Hace 2 horas</span><span class="noti-tag tag-admin">Administrativo</span></div>
-    </div>
-    <div class="noti-actions"><button class="na-btn" title="Marcar leída" onclick="event.stopPropagation();this.closest('.noti').classList.remove('unread')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></button><button class="na-btn" title="Eliminar"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div>
-  </div>
- 
-  <div class="noti unread" data-type="acad">
-    <div class="noti-ico" style="background:rgba(42,99,230,.06)"><svg viewBox="0 0 24 24" style="fill:var(--bl)"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div>
-    <div class="noti-body">
-      <div class="noti-title">Solicitud de justificación de falta — Ramírez García, Gabriel</div>
-      <div class="noti-desc">El apoderado ha enviado un certificado médico para justificar la inasistencia del 9 de mayo.</div>
-      <div class="noti-meta"><span class="noti-time">Hace 3 horas</span><span class="noti-tag tag-acad">Académico</span></div>
-    </div>
-    <div class="noti-actions"><button class="na-btn" title="Marcar leída" onclick="event.stopPropagation();this.closest('.noti').classList.remove('unread')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></button><button class="na-btn" title="Eliminar"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button></div>
-  </div>
- 
 
- 
-  <div class="card-footer">
-    <button class="btn btn-gh">Ver notificaciones anteriores</button>
-  </div>
+<div class="filtros">
+  <span class="chip" [class.on]="filtro() === 'all'" (click)="setFiltro('all')">Todas <span class="count">{{ total() }}</span></span>
+  <span class="chip" [class.on]="filtro() === 'unread'" (click)="setFiltro('unread')">No leídas <span class="count">{{ totalNoLeidas() }}</span></span>
 </div>
- 
+
+<div class="card">
+  <div class="ch"><div class="ch-t"><div class="ch-ico"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div><h3>Todas las <em>notificaciones</em></h3></div><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--g4)">{{ total() }} totales · {{ totalNoLeidas() }} sin leer</span></div>
+
+  @if (cargando()) {
+    <div style="padding:40px;text-align:center;color:var(--g4)">Cargando notificaciones...</div>
+  }
+
+  @if (!cargando() && visibles().length === 0) {
+    <div style="padding:40px;text-align:center;color:var(--g4)">No tienes notificaciones.</div>
+  }
+
+  @for (n of visibles(); track n.id) {
+    <div class="noti" [class.unread]="!n.leida" (click)="abrir(n)">
+      <div class="noti-ico" [style.background]="iconoFondo(n.tipo)">
+        <svg viewBox="0 0 24 24" [style.fill]="iconoColor(n.tipo)"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+      </div>
+      <div class="noti-body">
+        <div class="noti-title">{{ n.titulo }}</div>
+        <div class="noti-desc">{{ n.mensaje }}</div>
+        <div class="noti-meta"><span class="noti-time">{{ tiempoRelativo(n.fechaCreacion) }}</span><span class="noti-tag tag-acad">{{ etiquetaTipo(n.tipo) }}</span></div>
+      </div>
+      <div class="noti-actions">
+        @if (!n.leida) {
+          <button class="na-btn" title="Marcar leída" (click)="marcarLeida(n, $event)"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></button>
+        }
+      </div>
+    </div>
+  }
+</div>

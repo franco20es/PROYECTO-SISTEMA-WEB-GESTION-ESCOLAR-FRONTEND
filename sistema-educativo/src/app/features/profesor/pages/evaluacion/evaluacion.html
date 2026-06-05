@@ -1,8 +1,16 @@
 <div class="hd">
-  <div class="hd-l"><div class="tag">Gestión académica</div><h1>Gestión de <em>Evaluaciones</em></h1><p>Crea, programa, califica y analiza tus evaluaciones</p></div>
-  <div style="display:flex;gap:7px"><button class="btn btn-gh"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar</button></div>
+  <div class="hd-l">
+    <div class="tag">Gestión académica</div>
+    <h1>Gestión de <em>Evaluaciones</em></h1>
+    <p>Crea, programa, califica y analiza tus evaluaciones</p>
+  </div>
+  <div style="display:flex;gap:7px">
+    <button class="btn btn-gh" (click)="mostrarToast('PDF generado','info')">
+      <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar
+    </button>
+  </div>
 </div>
- 
+
 <div class="kpis">
   <div class="kpi"><div class="kpi-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div><div><strong>24</strong><span>Total evaluaciones</span></div></div>
   <div class="kpi"><div class="kpi-ico"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div><strong>18</strong><span>Publicadas</span></div></div>
@@ -10,314 +18,117 @@
   <div class="kpi"><div class="kpi-ico"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg></div><div><strong>3</strong><span>Programadas</span></div></div>
   <div class="kpi"><div class="kpi-ico"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div><div><strong>42</strong><span>Por calificar</span></div></div>
 </div>
- 
+
 <div class="tabs">
-  <div class="tab on" onclick="swTab(this,0)"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6z"/></svg><span>Mis evaluaciones</span></div>
-  <div class="tab" onclick="swTab(this,1)"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Crear nueva</span></div>
-  <div class="tab" onclick="swTab(this,2)"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg><span>Calificar</span><div class="tab-cnt">42</div></div>
-  <div class="tab" onclick="swTab(this,3)"><svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg><span>Estadísticas</span></div>
+  <div class="tab" [ngClass]="{'on': tabActiva() === 0}" (click)="cambiarTab(0)"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6z"/></svg><span>Mis evaluaciones</span></div>
+  <div class="tab" [ngClass]="{'on': tabActiva() === 1}" (click)="cambiarTab(1)"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Crear nueva</span></div>
+  <div class="tab" [ngClass]="{'on': tabActiva() === 2}" (click)="cambiarTab(2)"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg><span>Calificar</span><div class="tab-cnt">42</div></div>
+  <div class="tab" [ngClass]="{'on': tabActiva() === 3}" (click)="cambiarTab(3)"><svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg><span>Estadísticas</span></div>
 </div>
- 
-<!-- ═══════════════════════════════════
-     TAB 1: MIS EVALUACIONES
-     ═══════════════════════════════════ -->
-<div class="panel on" id="p0">
+
+<div class="panel" [ngClass]="{'on': tabActiva() === 0}" id="p0">
   <div class="pb">
     <div class="ev-toolbar">
       <div class="srch"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z"/></svg><input placeholder="Buscar evaluación..."></div>
-      <select class="fsel"><option>Todos los cursos</option><option>Matemáticas — 3ro A</option><option>Matemáticas — 3ro B</option><option>Física — 4to A</option><option>Física — 4to B</option></select>
+      <select class="fsel"><option>Todos los cursos</option><option>Matemáticas — 3ro A</option></select>
       <div class="chips">
-        <span class="chip on" onclick="fChip(this)">Todas</span>
-        <span class="chip" onclick="fChip(this)">Publicadas</span>
-        <span class="chip" onclick="fChip(this)">Borrador</span>
-        <span class="chip" onclick="fChip(this)">Programadas</span>
+        <span class="chip" [ngClass]="{'on': chipSeleccionado() === 'Todas'}" (click)="cambiarChip('Todas')">Todas</span>
+        <span class="chip" [ngClass]="{'on': chipSeleccionado() === 'Publicadas'}" (click)="cambiarChip('Publicadas')">Publicadas</span>
+        <span class="chip" [ngClass]="{'on': chipSeleccionado() === 'Borrador'}" (click)="cambiarChip('Borrador')">Borrador</span>
       </div>
     </div>
- 
-    <!-- EVAL 1 -->
-    <div class="ev-card" onclick="this.classList.toggle('open')">
-      <div class="ev-h">
-        <div class="ev-type et-exam">Examen</div>
-        <div class="ev-info"><div class="ev-name">Examen Parcial — Bimestre II</div><div class="ev-meta"><div class="ev-mi"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Matemáticas 3ro A</div><div class="ev-mi"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg>08/05/2025</div><div class="ev-mi">20 pts · 10 preguntas</div></div></div>
-        <div class="ev-right">
-          <div><div class="ev-avg na">14.8</div><div style="font-size:8.5px;color:var(--g4);text-align:center;letter-spacing:.5px">PROMEDIO</div></div>
-          <div><span class="ev-status es-pub">Publicada</span><div class="ev-prog"><div class="ev-prog-bar"><div class="ev-prog-fill" style="width:88%"></div></div>28/32</div></div>
-          <div class="ev-arrow"><svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div>
-        </div>
-      </div>
-      <div class="ev-detail">
-        <div class="ed-grid">
-          <div class="ed-item"><strong style="color:var(--ok)">14.8</strong><span>Promedio</span></div>
-          <div class="ed-item"><strong style="color:var(--ok)">19</strong><span>Nota más alta</span></div>
-          <div class="ed-item"><strong style="color:var(--er)">6</strong><span>Nota más baja</span></div>
-          <div class="ed-item"><strong style="color:var(--bl)">78%</strong><span>Aprobados</span></div>
-        </div>
-        <div class="stitle">Notas registradas (28 de 32)</div>
-        <div class="ng">
-          <div class="ng-item"><div class="ng-name">Aguirre López, Pedro</div><div class="ng-nota na">16</div></div>
-          <div class="ng-item"><div class="ng-name">Álvarez Quispe, María</div><div class="ng-nota na">19</div></div>
-          <div class="ng-item"><div class="ng-name">Benites Ruiz, Ana</div><div class="ng-nota na">15</div></div>
-          <div class="ng-item"><div class="ng-name">Campos Torres, Luis</div><div class="ng-nota nc">12</div></div>
-          <div class="ng-item"><div class="ng-name">Castillo Vega, Rosa</div><div class="ng-nota na">17</div></div>
-          <div class="ng-item"><div class="ng-name">Chávez Díaz, Jorge</div><div class="ng-nota nd">6</div></div>
-          <div class="ng-item"><div class="ng-name">Cruz Mendoza, Lucía</div><div class="ng-nota na">18</div></div>
-          <div class="ng-item"><div class="ng-name">Delgado Ramos, Carlos</div><div class="ng-nota nb">14</div></div>
-        </div>
-        <div class="ed-actions">
-          <button class="btn btn-bl btn-sm" onclick="event.stopPropagation();swTab(document.querySelectorAll('.tab')[2],2)"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>Calificar pendientes</button>
-          <button class="btn btn-gh btn-sm" onclick="event.stopPropagation();showToast('PDF generado','info')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar notas</button>
-          <button class="btn btn-gh btn-sm" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>Editar</button>
-          <button class="btn btn-gh btn-sm" style="color:var(--er);border-color:rgba(229,48,48,.3)" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg>Eliminar</button>
-        </div>
-      </div>
+    
     </div>
- 
-    <!-- EVAL 2 -->
-    <div class="ev-card" onclick="this.classList.toggle('open')">
-      <div class="ev-h">
-        <div class="ev-type et-prac">Práctica</div>
-        <div class="ev-info"><div class="ev-name">Práctica Calificada #4 — Sistemas de ecuaciones</div><div class="ev-meta"><div class="ev-mi"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Matemáticas 3ro A</div><div class="ev-mi"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg>05/05/2025</div><div class="ev-mi">20 pts · 5 preguntas</div></div></div>
-        <div class="ev-right"><div><div class="ev-avg na">15.6</div><div style="font-size:8.5px;color:var(--g4);text-align:center;letter-spacing:.5px">PROMEDIO</div></div><div><span class="ev-status es-pub">Publicada</span><div class="ev-prog"><div class="ev-prog-bar"><div class="ev-prog-fill" style="width:100%"></div></div>32/32</div></div><div class="ev-arrow"><svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div></div>
-      </div>
-      <div class="ev-detail"><div class="ed-grid"><div class="ed-item"><strong style="color:var(--ok)">15.6</strong><span>Promedio</span></div><div class="ed-item"><strong style="color:var(--ok)">20</strong><span>Más alta</span></div><div class="ed-item"><strong style="color:var(--er)">8</strong><span>Más baja</span></div><div class="ed-item"><strong style="color:var(--bl)">84%</strong><span>Aprobados</span></div></div><div class="ed-actions"><button class="btn btn-gh btn-sm" onclick="event.stopPropagation();showToast('PDF generado','info')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar</button><button class="btn btn-gh btn-sm" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>Editar</button></div></div>
-    </div>
- 
-    <!-- EVAL 3 BORRADOR -->
-    <div class="ev-card" onclick="this.classList.toggle('open')">
-      <div class="ev-h">
-        <div class="ev-type et-tarea">Tarea</div>
-        <div class="ev-info"><div class="ev-name">Tarea #6 — Función cuadrática</div><div class="ev-meta"><div class="ev-mi"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Matemáticas 3ro A</div><div class="ev-mi"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg>15/05/2025</div><div class="ev-mi">20 pts</div></div></div>
-        <div class="ev-right"><div><div class="ev-avg ng">—</div><div style="font-size:8.5px;color:var(--g4);text-align:center">BORRADOR</div></div><div><span class="ev-status es-borr">Borrador</span></div><div class="ev-arrow"><svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div></div>
-      </div>
-      <div class="ev-detail"><div class="ed-actions"><button class="btn btn-ok btn-sm" onclick="event.stopPropagation();showToast('Evaluación publicada')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Publicar</button><button class="btn btn-gh btn-sm" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>Editar</button><button class="btn btn-gh btn-sm" style="color:var(--er);border-color:rgba(229,48,48,.3)" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg>Eliminar</button></div></div>
-    </div>
- 
-    <!-- EVAL 4 PROGRAMADA -->
-    <div class="ev-card" onclick="this.classList.toggle('open')">
-      <div class="ev-h">
-        <div class="ev-type et-lab">Laboratorio</div>
-        <div class="ev-info"><div class="ev-name">Laboratorio #5 — Ondas mecánicas</div><div class="ev-meta"><div class="ev-mi"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Física 4to A</div><div class="ev-mi"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg>19/05/2025</div><div class="ev-mi">20 pts · Rúbrica</div></div></div>
-        <div class="ev-right"><div><div class="ev-avg nb" style="font-size:16px">19 May</div><div style="font-size:8.5px;color:var(--g4);text-align:center">PROGRAMADA</div></div><div><span class="ev-status es-prog">Programada</span></div><div class="ev-arrow"><svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div></div>
-      </div>
-      <div class="ev-detail"><div class="ed-actions"><button class="btn btn-gh btn-sm" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>Editar</button><button class="btn btn-gh btn-sm" onclick="event.stopPropagation();showToast('Evaluación cancelada','er')"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>Cancelar</button></div></div>
-    </div>
- 
-    <!-- EVAL 5 -->
-    <div class="ev-card" onclick="this.classList.toggle('open')">
-      <div class="ev-h">
-        <div class="ev-type et-exam">Examen</div>
-        <div class="ev-info"><div class="ev-name">Examen Parcial — Bimestre II</div><div class="ev-meta"><div class="ev-mi"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Física 4to A</div><div class="ev-mi"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg>09/05/2025</div><div class="ev-mi">20 pts · 8 preguntas</div></div></div>
-        <div class="ev-right"><div><div class="ev-avg nb">13.5</div><div style="font-size:8.5px;color:var(--g4);text-align:center;letter-spacing:.5px">PROMEDIO</div></div><div><span class="ev-status es-pub">Publicada</span><div class="ev-prog"><div class="ev-prog-bar"><div class="ev-prog-fill" style="width:43%"></div></div>12/28</div></div><div class="ev-arrow"><svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div></div>
-      </div>
-      <div class="ev-detail"><div class="ed-grid"><div class="ed-item"><strong style="color:var(--wa)">13.5</strong><span>Promedio</span></div><div class="ed-item"><strong style="color:var(--ok)">18</strong><span>Más alta</span></div><div class="ed-item"><strong style="color:var(--er)">5</strong><span>Más baja</span></div><div class="ed-item"><strong style="color:var(--wa)">67%</strong><span>Aprobados</span></div></div><div class="ed-actions"><button class="btn btn-bl btn-sm" onclick="event.stopPropagation();swTab(document.querySelectorAll('.tab')[2],2)"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>Calificar (16 pendientes)</button><button class="btn btn-gh btn-sm" onclick="event.stopPropagation();showToast('PDF generado','info')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar</button></div></div>
-    </div>
- 
-    <!-- EVAL 6 -->
-    <div class="ev-card" onclick="this.classList.toggle('open')">
-      <div class="ev-h">
-        <div class="ev-type et-expo">Exposición</div>
-        <div class="ev-info"><div class="ev-name">Exposición grupal — Aplicaciones de ecuaciones</div><div class="ev-meta"><div class="ev-mi"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Matemáticas 3ro B</div><div class="ev-mi"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg>02/05/2025</div><div class="ev-mi">20 pts · Rúbrica</div></div></div>
-        <div class="ev-right"><div><div class="ev-avg na">16.3</div><div style="font-size:8.5px;color:var(--g4);text-align:center;letter-spacing:.5px">PROMEDIO</div></div><div><span class="ev-status es-pub">Publicada</span><div class="ev-prog"><div class="ev-prog-bar"><div class="ev-prog-fill" style="width:100%"></div></div>30/30</div></div><div class="ev-arrow"><svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div></div>
-      </div>
-      <div class="ev-detail"><div class="ed-grid"><div class="ed-item"><strong style="color:var(--ok)">16.3</strong><span>Promedio</span></div><div class="ed-item"><strong style="color:var(--ok)">20</strong><span>Más alta</span></div><div class="ed-item"><strong style="color:var(--wa)">11</strong><span>Más baja</span></div><div class="ed-item"><strong style="color:var(--ok)">90%</strong><span>Aprobados</span></div></div></div>
-    </div>
-  </div>
 </div>
- 
-<!-- ═══════════════════════════════════
-     TAB 2: CREAR NUEVA EVALUACIÓN
-     ═══════════════════════════════════ -->
-<div class="panel" id="p1">
+
+<div class="panel" [ngClass]="{'on': tabActiva() === 1}" id="p1">
   <div class="pb">
     <div class="stitle">Información general</div>
-    <div class="ff"><label>Título de la evaluación <span class="req">*</span></label><input type="text" placeholder="Ej: Examen Parcial — Bimestre II" id="evalTitle"></div>
-    <div class="f3">
-      <div class="ff"><label>Curso <span class="req">*</span></label><select id="evalCurso"><option>Matemáticas — 3ro A</option><option>Matemáticas — 3ro B</option><option>Física — 4to A</option><option>Física — 4to B</option></select></div>
-      <div class="ff"><label>Tipo <span class="req">*</span></label><select id="evalType"><option value="exam">Examen</option><option value="prac">Práctica calificada</option><option value="tarea">Tarea</option><option value="lab">Laboratorio</option><option value="expo">Exposición</option><option value="quiz">Quiz rápido</option></select></div>
-      <div class="ff"><label>Competencia</label><select><option>Resuelve problemas de cantidad</option><option>Resuelve problemas de regularidad</option><option>Resuelve problemas de forma</option><option>Resuelve problemas de gestión de datos</option><option>Todas</option></select></div>
-    </div>
-    <div class="f3">
-      <div class="ff"><label>Fecha de aplicación <span class="req">*</span></label><input type="date" value="2025-05-20"></div>
-      <div class="ff"><label>Hora inicio</label><input type="time" value="10:00"></div>
-      <div class="ff"><label>Duración (minutos)</label><input type="number" value="45" min="5" max="180"></div>
-    </div>
-    <div class="f2">
-      <div class="ff"><label>Puntaje máximo</label><input type="number" value="20" min="1" max="100" class="mono"></div>
-      <div class="ff"><label>Nota mínima aprobatoria</label><input type="number" value="11" min="1" max="100" class="mono"></div>
-    </div>
-    <div class="ff"><label>Instrucciones para el alumno <span class="opt">(opcional)</span></label><textarea placeholder="Ej: No se permite calculadora. Desarrolle cada ejercicio con procedimiento completo..."></textarea></div>
- 
+    <div class="ff"><label>Título de la evaluación <span class="req">*</span></label><input type="text" placeholder="Ej: Examen Parcial"></div>
+    
     <div class="section-sep">Preguntas / Estructura</div>
     <div class="preg-list" id="pregList">
-      <div class="preg">
-        <div class="preg-h"><div class="preg-num">1</div><div class="preg-type">Desarrollo</div><div class="preg-pts">4 pts</div></div>
-        <button class="preg-del" onclick="this.closest('.preg').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
-        <div class="preg-text">Resuelve el sistema de ecuaciones: 2x + 3y = 12 ; x - y = 1</div>
-      </div>
-      <div class="preg">
-        <div class="preg-h"><div class="preg-num">2</div><div class="preg-type">Opción múltiple</div><div class="preg-pts">2 pts</div></div>
-        <button class="preg-del" onclick="this.closest('.preg').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
-        <div class="preg-text">¿Cuál es el vértice de la parábola y = x² - 4x + 3?</div>
-        <div class="preg-opts">
-          <div class="preg-opt"><div class="preg-opt-marker"></div>a) (2, 1)</div>
-          <div class="preg-opt correct"><div class="preg-opt-marker"></div>b) (2, -1)</div>
-          <div class="preg-opt"><div class="preg-opt-marker"></div>c) (-2, 1)</div>
-          <div class="preg-opt"><div class="preg-opt-marker"></div>d) (-2, -1)</div>
+      @for (preg of preguntas(); track preg.id; let i = $index) {
+        <div class="preg">
+          <div class="preg-h">
+            <div class="preg-num">{{ preg.id }}</div>
+            <div class="preg-type">{{ preg.tipoEtiqueta }}</div>
+            <div class="preg-pts">{{ preg.puntos }} pts</div>
+          </div>
+          <button class="preg-del" (click)="eliminarPregunta(i)">
+            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+          </button>
+          <div class="preg-text" contenteditable="true" style="border:1px dashed var(--br);padding:6px 8px;outline:none;min-height:24px;color:var(--g4)">
+            {{ preg.texto }}
+          </div>
         </div>
-      </div>
-      <div class="preg">
-        <div class="preg-h"><div class="preg-num">3</div><div class="preg-type">Verdadero/Falso</div><div class="preg-pts">2 pts</div></div>
-        <button class="preg-del" onclick="this.closest('.preg').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
-        <div class="preg-text">Toda función cuadrática tiene exactamente dos raíces reales.</div>
-        <div class="preg-opts">
-          <div class="preg-opt"><div class="preg-opt-marker"></div>Verdadero</div>
-          <div class="preg-opt correct"><div class="preg-opt-marker"></div>Falso</div>
-        </div>
-      </div>
+      }
     </div>
+    
     <div style="display:flex;gap:6px;margin-bottom:16px">
-      <button class="btn btn-gh btn-sm" onclick="addPreg('desarrollo')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>+ Desarrollo</button>
-      <button class="btn btn-gh btn-sm" onclick="addPreg('opcion')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>+ Opción múltiple</button>
-      <button class="btn btn-gh btn-sm" onclick="addPreg('vf')"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>+ V/F</button>
-    </div>
- 
-    <div class="section-sep">Rúbrica de evaluación <span class="opt" style="font-size:9px;color:var(--g4);text-transform:none;letter-spacing:0;font-weight:400">(para exposiciones y laboratorios)</span></div>
-    <table class="rubrica-tbl">
-      <thead><tr><th>Criterio</th><th style="width:50px">Peso</th><th>Excelente (17-20)</th><th>Bueno (14-16)</th><th>Regular (11-13)</th><th>Bajo (0-10)</th></tr></thead>
-      <tbody>
-        <tr><td><input value="Dominio del tema" placeholder="Criterio"></td><td><input class="mono" value="5"></td><td><input value="Explica con precisión" placeholder="Descriptor"></td><td><input value="Explica correctamente"></td><td><input value="Explica parcialmente"></td><td><input value="No domina el tema"></td></tr>
-        <tr><td><input value="Presentación" placeholder="Criterio"></td><td><input class="mono" value="5"></td><td><input value="Material excelente"></td><td><input value="Material adecuado"></td><td><input value="Material básico"></td><td><input value="Sin material"></td></tr>
-        <tr><td><input value="Trabajo en equipo" placeholder="Criterio"></td><td><input class="mono" value="5"></td><td><input value="Todos participan"></td><td><input value="Mayoría participa"></td><td><input value="Poca participación"></td><td><input value="No trabajan en equipo"></td></tr>
-        <tr><td><input value="Respuestas a preguntas" placeholder="Criterio"></td><td><input class="mono" value="5"></td><td><input value="Responde con solidez"></td><td><input value="Responde bien"></td><td><input value="Responde vagamente"></td><td><input value="No responde"></td></tr>
-      </tbody>
-    </table>
- 
-    <div class="section-sep">Material adjunto</div>
-    <div class="mat-attach">
-      <div class="ma-item"><div class="ma-ico ma-pdf"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div><div class="ma-info"><div class="ma-name">Formulario_ecuaciones.pdf</div><div class="ma-size">480 KB</div></div><button class="ma-del"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
-      <div class="ma-item"><div class="ma-ico ma-img"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2z"/></svg></div><div class="ma-info"><div class="ma-name">Tabla_de_funciones.png</div><div class="ma-size">1.2 MB</div></div><button class="ma-del"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
-    </div>
-    <div class="upload-zone" onclick="showToast('Archivo adjuntado','info')"><svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg><p>Arrastra archivos aquí o <strong>haz click para subir</strong></p></div>
- 
-    <div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end">
-      <button class="btn btn-gh"><svg viewBox="0 0 24 24"><path d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2V7l-4-4z"/></svg>Guardar borrador</button>
-      <button class="btn btn-bl"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg>Programar</button>
-      <button class="btn btn-or" onclick="showToast('Evaluación publicada exitosamente')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Publicar ahora</button>
+      <button class="btn btn-gh btn-sm" (click)="agregarPregunta('desarrollo')">+ Desarrollo</button>
+      <button class="btn btn-gh btn-sm" (click)="agregarPregunta('opcion')">+ Opción múltiple</button>
+      <button class="btn btn-gh btn-sm" (click)="agregarPregunta('vf')">+ V/F</button>
     </div>
   </div>
 </div>
- 
-<!-- ═══════════════════════════════════
-     TAB 3: CALIFICAR
-     ═══════════════════════════════════ -->
-<div class="panel" id="p2">
+
+<div class="panel" [ngClass]="{'on': tabActiva() === 2}" id="p2">
   <div class="pb">
     <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
       <div class="stitle" style="margin-bottom:0">Calificar evaluación</div>
-      <select class="fsel" style="margin-left:auto"><option>Examen Parcial — Mat. 3ro A (4 pendientes)</option><option>Examen Parcial — Fís. 4to A (16 pendientes)</option><option>Práctica #5 — Mat. 3ro B (30 pendientes)</option></select>
+      <select class="fsel" style="margin-left:auto"><option>Examen Parcial — Mat. 3ro A</option></select>
     </div>
     <div style="overflow-x:auto">
-      <table class="calif-tbl" id="califTbl">
-        <thead><tr><th>#</th><th>Estudiante</th><th style="text-align:center">P1 (4pts)</th><th style="text-align:center">P2 (4pts)</th><th style="text-align:center">P3 (4pts)</th><th style="text-align:center">P4 (4pts)</th><th style="text-align:center">P5 (4pts)</th><th style="text-align:center;background:var(--or)">Total</th><th>Observación</th></tr></thead>
-        <tbody id="califBody"></tbody>
+      <table class="calif-tbl">
+        <thead>
+          <tr>
+            <th>#</th><th>Estudiante</th>
+            <th style="text-align:center">P1 (4pts)</th><th style="text-align:center">P2 (4pts)</th>
+            <th style="text-align:center">P3 (4pts)</th><th style="text-align:center">P4 (4pts)</th>
+            <th style="text-align:center">P5 (4pts)</th>
+            <th style="text-align:center;background:var(--or)">Total</th><th>Observación</th>
+          </tr>
+        </thead>
+        <tbody>
+         @for (est of estudiantes(); track est.id; let estIdx = $index) {
+            <tr>
+              <td style="font-family:'DM Mono',monospace;font-size:10px;color:var(--g4)">{{ est.id }}</td>
+              <td class="td-name">{{ est.nombre }}</td>
+              
+              @for (nota of est.notas; track $index; let notaIdx = $index) {
+                <td style="text-align:center">
+                  <input type="number" min="0" max="4" class="nota-input"
+                         [value]="nota"
+                         [ngClass]="obtenerClaseNota(nota, 4)"
+                         (input)="actualizarNota(estIdx, notaIdx, $event, 4)"
+                         placeholder="—">
+                </td>
+              }
+              
+              <td style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:18px;"
+                  [style.color]="obtenerColorTotal(est.notas)">
+                {{ calcularSumaTotal(est.notas) }}
+              </td>
+              <td>
+                <input class="obs-input" [(ngModel)]="est.observacion" placeholder="Observación...">
+              </td>
+            </tr>
+          }
+        </tbody>
       </table>
     </div>
-    <div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end">
-      <button class="btn btn-gh"><svg viewBox="0 0 24 24"><path d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2V7l-4-4z"/></svg>Guardar borrador</button>
-      <button class="btn btn-or" onclick="showToast('Notas guardadas y publicadas')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Guardar y publicar notas</button>
-    </div>
   </div>
 </div>
- 
-<!-- ═══════════════════════════════════
-     TAB 4: ESTADÍSTICAS
-     ═══════════════════════════════════ -->
-<div class="panel" id="p3">
-  <div class="pb">
-    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
-      <div class="stitle" style="margin-bottom:0">Análisis de rendimiento</div>
-      <select class="fsel" style="margin-left:auto"><option>Todos los cursos</option><option>Matemáticas — 3ro A</option><option>Física — 4to A</option></select>
-    </div>
-    <div class="stats-grid">
-      <div class="stat-card"><strong style="color:var(--bl)">14.6</strong><span>Promedio general</span></div>
-      <div class="stat-card"><strong style="color:var(--ok)">82%</strong><span>Tasa aprobación</span></div>
-      <div class="stat-card"><strong style="color:var(--ok)">20</strong><span>Nota más alta</span></div>
-      <div class="stat-card"><strong style="color:var(--er)">5</strong><span>Nota más baja</span></div>
-    </div>
- 
-    <div class="stitle">Promedio por evaluación</div>
-    <div class="chart-h" style="margin-bottom:20px">
-      <div class="ch-row"><div class="ch-label">Exam. Parcial 3A</div><div class="ch-track"><div class="ch-fill" style="width:74%;background:var(--bl)"></div></div><div class="ch-val">14.8</div></div>
-      <div class="ch-row"><div class="ch-label">Práct. #4 3A</div><div class="ch-track"><div class="ch-fill" style="width:78%;background:var(--ok)"></div></div><div class="ch-val">15.6</div></div>
-      <div class="ch-row"><div class="ch-label">Expo. 3B</div><div class="ch-track"><div class="ch-fill" style="width:82%;background:var(--ok)"></div></div><div class="ch-val">16.3</div></div>
-      <div class="ch-row"><div class="ch-label">Exam. Parcial 4A</div><div class="ch-track"><div class="ch-fill" style="width:68%;background:var(--wa)"></div></div><div class="ch-val">13.5</div></div>
-    </div>
- 
-    <div class="stitle">Distribución de notas — Examen Parcial Mat. 3ro A</div>
-    <div class="chart-h" style="margin-bottom:20px">
-      <div class="ch-row"><div class="ch-label">Excelente (17-20)</div><div class="ch-track"><div class="ch-fill" style="width:28%;background:var(--ok)">28%</div></div><div class="ch-val">9</div></div>
-      <div class="ch-row"><div class="ch-label">Bueno (14-16)</div><div class="ch-track"><div class="ch-fill" style="width:38%;background:var(--bl)">38%</div></div><div class="ch-val">12</div></div>
-      <div class="ch-row"><div class="ch-label">Regular (11-13)</div><div class="ch-track"><div class="ch-fill" style="width:22%;background:var(--wa)">22%</div></div><div class="ch-val">7</div></div>
-      <div class="ch-row"><div class="ch-label">Bajo (0-10)</div><div class="ch-track"><div class="ch-fill" style="width:12%;background:var(--er)">12%</div></div><div class="ch-val">4</div></div>
-    </div>
- 
-    <div class="stitle">Comparación entre secciones</div>
-    <div class="chart-h">
-      <div class="ch-row"><div class="ch-label">Mat. 3ro A</div><div class="ch-track"><div class="ch-fill" style="width:76%;background:var(--bl)">15.2</div></div><div class="ch-val">15.2</div></div>
-      <div class="ch-row"><div class="ch-label">Mat. 3ro B</div><div class="ch-track"><div class="ch-fill" style="width:70%;background:var(--bl)">14.0</div></div><div class="ch-val">14.0</div></div>
-      <div class="ch-row"><div class="ch-label">Fís. 4to A</div><div class="ch-track"><div class="ch-fill" style="width:68%;background:var(--or)">13.5</div></div><div class="ch-val">13.5</div></div>
-      <div class="ch-row"><div class="ch-label">Fís. 4to B</div><div class="ch-track"><div class="ch-fill" style="width:72%;background:var(--or)">14.4</div></div><div class="ch-val">14.4</div></div>
-    </div>
-  </div>
-</div>
- 
 
- 
-<div class="toast t-ok" id="toast"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span id="toastMsg">OK</span></div>
- 
-<script>
-const NAMES=['Aguirre López, Pedro','Álvarez Quispe, María','Benites Ruiz, Ana','Campos Torres, Luis','Castillo Vega, Rosa','Chávez Díaz, Jorge','Cruz Mendoza, Lucía','Delgado Ramos, Carlos','Espinoza Paredes, Sofía','Fernández León, Diego','García Huamán, Andrea','Gómez Salazar, Kevin','Gutiérrez Flores, Valeria','Herrera Sánchez, Marco','Huamán Rivera, Carmen','López Castro, Daniel'];
- 
-function swTab(el,idx){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');for(let i=0;i<4;i++)document.getElementById('p'+i).classList.toggle('on',i===idx);if(idx===2)buildCalif()}
-function fChip(el){el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on')}
- 
-/* ADD PREGUNTA */
-let pregCount=3;
-function addPreg(type){
-  pregCount++;
-  const types={desarrollo:'Desarrollo',opcion:'Opción múltiple',vf:'Verdadero/Falso'};
-  const list=document.getElementById('pregList');
-  const div=document.createElement('div');div.className='preg';
-  div.innerHTML=`<div class="preg-h"><div class="preg-num">${pregCount}</div><div class="preg-type">${types[type]}</div><div class="preg-pts">2 pts</div></div><button class="preg-del" onclick="this.closest('.preg').remove()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button><div class="preg-text" contenteditable="true" style="border:1px dashed var(--br);padding:6px 8px;outline:none;min-height:24px;color:var(--g4)">Escribe la pregunta aquí...</div>`;
-  list.appendChild(div);
-  showToast('Pregunta agregada','info');
-}
- 
-/* BUILD CALIF TABLE */
-function buildCalif(){
-  const body=document.getElementById('califBody');
-  if(body.children.length>0)return;
-  NAMES.forEach((name,i)=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td style="font-family:'DM Mono',monospace;font-size:10px;color:var(--g4)">${i+1}</td><td class="td-name">${name}</td><td style="text-align:center"><input class="nota-input" maxlength="1" oninput="colorNota(this,4);calcRow(this)" placeholder="—"></td><td style="text-align:center"><input class="nota-input" maxlength="1" oninput="colorNota(this,4);calcRow(this)" placeholder="—"></td><td style="text-align:center"><input class="nota-input" maxlength="1" oninput="colorNota(this,4);calcRow(this)" placeholder="—"></td><td style="text-align:center"><input class="nota-input" maxlength="1" oninput="colorNota(this,4);calcRow(this)" placeholder="—"></td><td style="text-align:center"><input class="nota-input" maxlength="1" oninput="colorNota(this,4);calcRow(this)" placeholder="—"></td><td style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--g4)" class="row-total">—</td><td><input class="obs-input" placeholder="Observación..."></td>`;
-    body.appendChild(tr);
-  });
-}
-function colorNota(input,max){
-  const v=parseInt(input.value);if(isNaN(v))return;
-  input.className='nota-input '+(v>=max*.75?'high':v>=max*.5?'mid':'low');
-}
-function calcRow(input){
-  const tr=input.closest('tr');
-  const inputs=tr.querySelectorAll('.nota-input');
-  let sum=0,count=0;
-  inputs.forEach(inp=>{const v=parseInt(inp.value);if(!isNaN(v)){sum+=v;count++;}});
-  const total=tr.querySelector('.row-total');
-  if(count>0){total.textContent=sum;total.style.color=sum>=11?'var(--ok)':sum>=8?'var(--wa)':'var(--er)'}else{total.textContent='—';total.style.color='var(--g4)'}
-}
- 
-/* TOAST */
-let _t;
-const _ti={ok:'<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',info:'<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>',warn:'<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>',er:'<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>'};
-function showToast(msg,type='ok'){clearTimeout(_t);const t=document.getElementById('toast');t.className='toast t-'+type;t.querySelector('svg').innerHTML=_ti[type]||_ti.ok;document.getElementById('toastMsg').textContent=msg;t.classList.add('show');_t=setTimeout(()=>t.classList.remove('show'),3200)}
-</script>
+<div class="panel" [ngClass]="{'on': tabActiva() === 3}" id="p3">
+  </div>
+
+<div class="toast" [ngClass]="['t-' + toastType(), toastVisible() ? 'show' : '']" id="toast">
+  <svg viewBox="0 0 24 24" [innerHTML]="
+    toastType() === 'ok' ? '<path d=\'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z\'/>' :
+    toastType() === 'info' ? '<path d=\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z\'/>' :
+    '<path d=\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z\'/>'
+  "></svg>
+  <span>{{ toastMsg() }}</span>
+</div>

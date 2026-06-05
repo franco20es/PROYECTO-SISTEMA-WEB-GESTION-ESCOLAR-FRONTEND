@@ -1,306 +1,56 @@
+<div class="dc2-loading" *ngIf="cargando">
+  <div class="dc2-spinner"></div>
+  <p>Cargando información académica...</p>
+</div>
 
-<div class="dc-wrap">
+<div class="dc2" *ngIf="!cargando && curso">
 
-  <!-- TOP BAR -->
-  <div class="dc-topbar">
-    <button class="dc-back" (click)="volverACursos()">
-      <i class="ti ti-arrow-left"></i> Volver a cursos
+  <div class="dc2-hero">
+    <button class="dc2-back" (click)="volverACursos()">
+      <i class="bi bi-arrow-left"></i> Volver a mis asignaturas
     </button>
-    <span class="dc-sep">|</span>
-    <span class="dc-breadcrumb">{{ curso.nombre }} — {{ curso.seccion }}</span>
-    <span class="dc-badge">Presencial</span>
-  </div>
-
-  <!-- TABS -->
-  <div class="dc-tabs">
-    <div class="dc-tab" *ngFor="let tab of tabs"
-         [class.active]="tabActiva === tab.key"
-         (click)="setTab(tab.key)">
-      <i class="ti" [class]="tab.icon"></i>
-      {{ tab.label }}
-    </div>
-  </div>
-
-  <!-- INFO DOCENTE + STATS -->
-  <div class="dc-info-card">
-    <div class="dc-ic-left">
-      <div class="dc-ic-avatar">{{ curso.iniciales }}</div>
-      <div>
-        <div class="dc-ic-title">{{ curso.profesor }}</div>
-        <div class="dc-ic-sub">
-          <i class="ti ti-clock"></i> {{ curso.horario }}
-          &nbsp;·&nbsp;
-          <i class="ti ti-map-pin"></i> {{ curso.seccion }}
+    
+    <div class="dc2-hero-row">
+      <div class="dc2-hero-left">
+        <div class="dc2-htag">Periodo Vigente · 2° Bimestre</div>
+        <h1 class="dc2-htitle">{{ curso.nombre }}</h1>
+        <div class="dc2-hmeta">
+          <span class="dc2-hm"><i class="bi bi-person-badge-fill"></i> {{ curso.profesor }}</span>
+          <span class="dc2-hm"><i class="bi bi-calendar-week-fill"></i> {{ curso.horario }}</span>
+          <span class="dc2-hm"><i class="bi bi-geo-alt-fill"></i> {{ curso.seccion }}</span>
         </div>
       </div>
-    </div>
-    <div class="dc-stats">
-      <div class="dc-stat">
-        <div class="dc-stat-val" [class.ok]="curso.promedio >= 11" [class.er]="curso.promedio < 11 && curso.promedio > 0">
-          {{ curso.promedio > 0 ? curso.promedio : '—' }}
+      
+      <div class="dc2-hstats">
+        <div class="dc2-hstat">
+          <div class="dc2-hstat-val ok">{{ curso.promedio > 0 ? curso.promedio : '—' }}</div>
+          <div class="dc2-hstat-lbl">Promedio</div>
         </div>
-        <div class="dc-stat-lbl">Promedio</div>
-      </div>
-      <div class="dc-stat">
-        <div class="dc-stat-val ok">{{ curso.asistencia }}%</div>
-        <div class="dc-stat-lbl">Asistencia</div>
-      </div>
-      <div class="dc-stat">
-        <div class="dc-stat-val" [class.wa]="pendientes.length > 0">{{ pendientes.length }}</div>
-        <div class="dc-stat-lbl">Pendientes</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── TAB: SÍLABO ── -->
-  <div class="dc-body" *ngIf="tabActiva === 'silabo'">
-    <div class="sec-label">Información general del curso</div>
-    <div class="silabo-grid">
-      <div class="silabo-item">
-        <span class="si-label">Curso</span>
-        <span class="si-val">{{ curso.nombre }}</span>
-      </div>
-      <div class="silabo-item">
-        <span class="si-label">Docente</span>
-        <span class="si-val">{{ curso.profesor }}</span>
-      </div>
-      <div class="silabo-item">
-        <span class="si-label">Sección</span>
-        <span class="si-val">{{ curso.seccion }}</span>
-      </div>
-      <div class="silabo-item">
-        <span class="si-label">Horario</span>
-        <span class="si-val">{{ curso.horario }}</span>
-      </div>
-      <div class="silabo-item">
-        <span class="si-label">Año académico</span>
-        <span class="si-val">{{ anio }}</span>
-      </div>
-    </div>
-
-    <div class="sec-label" style="margin-top:24px">Notas por bimestre</div>
-    <div class="bimestre-row">
-      <div class="bim-card" *ngFor="let b of bimestres"
-           [class.aprobado]="b.nota !== '—' && +b.nota >= 11"
-           [class.desaprobado]="b.nota !== '—' && +b.nota < 11">
-        <div class="bim-label">{{ b.label }}</div>
-        <div class="bim-nota">{{ b.nota }}</div>
-        <div class="bim-estado">{{ b.estado }}</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── TAB: CONTENIDO ── -->
-  <div class="dc-body" *ngIf="tabActiva === 'contenido'">
-    <div class="sec-label">Total de bimestres (4)</div>
-
-    <div class="accordion" *ngFor="let bim of contenido; let i = index">
-      <div class="acc-header" (click)="toggleBim(i)" [class.active]="bimAbiert[i]">
-        <div class="acc-bar" [style.background]="bim.color"></div>
-        <div class="acc-title">{{ bim.titulo }}</div>
-        <div class="acc-meta">{{ bim.semanas.length }} semanas · {{ bim.estado }}</div>
-        <i class="ti ti-chevron-down acc-chevron" [class.open]="bimAbiert[i]"></i>
-      </div>
-      <div class="acc-body" *ngIf="bimAbiert[i]">
-        <div class="acc-sub" *ngFor="let sem of bim.semanas" (click)="abrirSemana(sem)">
-          <div class="acc-sub-dot" [style.background]="sem.color"></div>
-          <div class="acc-sub-title">{{ sem.titulo }}</div>
-          <div class="acc-sub-right">
-            <span class="chip" [ngClass]="sem.chipClass">{{ sem.chipLabel }}</span>
-            <i class="ti ti-chevron-right acc-chevron2"></i>
-          </div>
+        <div class="dc2-hstat">
+          <div class="dc2-hstat-val bl">{{ curso.asistencia }}%</div>
+          <div class="dc2-hstat-lbl">Asistencia</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ── TAB: TAREAS ── -->
-  <div class="dc-body" *ngIf="tabActiva === 'tareas'">
-    <div class="sec-label">Tareas del curso</div>
-
-    <div class="empty-state" *ngIf="tareas.length === 0">
-      <i class="ti ti-clipboard-list"></i>
-      <p>No hay tareas registradas aún.</p>
-    </div>
-
-    <div class="act-item" *ngFor="let t of tareas"
-         [class.pendiente]="t.estado === 'PENDIENTE'"
-         (click)="t.estado === 'PENDIENTE' && abrirModalTarea(t)">
-      <div class="act-ico ai-tarea"><i class="ti ti-file-text"></i></div>
-      <div class="act-info">
-        <div class="act-nm">{{ t.nombre }}</div>
-        <div class="act-desc">
-          Fecha límite: {{ t.fechaLimite }}
-          &nbsp;·&nbsp;
-          {{ t.presencial ? 'Presencial' : 'Entrega en línea' }}
-        </div>
-      </div>
-      <div class="act-right">
-        <span class="act-status" [ngClass]="'as-' + t.estado.toLowerCase()">{{ t.estado }}</span>
-        <span class="act-nota" *ngIf="t.nota" [style.color]="colorNota(t.nota)">{{ t.nota }}</span>
-        <button class="btn-entregar" *ngIf="t.estado === 'PENDIENTE'"
-                (click)="$event.stopPropagation(); abrirModalTarea(t)">
-          <i class="ti ti-upload"></i> Entregar
-        </button>
+  <div class="dc2-tabs-container">
+    <div class="dc2-tabs">
+      <div class="dc2-tab" *ngFor="let t of tabs"
+           [class.active]="tabActiva === t.key"
+           (click)="setTab(t.key)">
+        <i [class]="t.icon"></i> {{ t.label }}
       </div>
     </div>
   </div>
 
-  <!-- ── TAB: EVALUACIONES ── -->
-  <div class="dc-body" *ngIf="tabActiva === 'evaluaciones'">
-    <div class="sec-label">Evaluaciones del curso</div>
-
-    <div class="empty-state" *ngIf="evaluaciones.length === 0">
-      <i class="ti ti-clipboard"></i>
-      <p>No hay evaluaciones registradas aún.</p>
-    </div>
-
-    <div class="act-item" *ngFor="let e of evaluaciones">
-      <div class="act-ico ai-exam"><i class="ti ti-clipboard"></i></div>
-      <div class="act-info">
-        <div class="act-nm">{{ e.nombre }}</div>
-        <div class="act-desc">Fecha: {{ e.fecha }} · {{ e.tipo }}</div>
-      </div>
-      <div class="act-right">
-        <span class="act-status" [ngClass]="'as-' + e.estado.toLowerCase()">{{ e.estado }}</span>
-        <span class="act-nota" *ngIf="e.nota" [style.color]="colorNota(e.nota)">{{ e.nota }}</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── TAB: ANUNCIOS ── -->
-  <div class="dc-body" *ngIf="tabActiva === 'anuncios'">
-    <div class="sec-label">Anuncios del docente</div>
-
-    <div class="empty-state" *ngIf="anuncios.length === 0">
-      <i class="ti ti-speakerphone"></i>
-      <p>No hay anuncios publicados aún.</p>
-    </div>
-
-    <div class="anuncio" *ngFor="let a of anuncios" [class.an-pin]="a.fijado">
-      <div class="an-header">
-        <div class="an-title">
-          {{ a.titulo }}
-          <span class="an-pin-b" *ngIf="a.fijado">FIJADO</span>
-        </div>
-        <div class="an-date">{{ a.fecha }}</div>
-      </div>
-      <div class="an-body">{{ a.cuerpo }}</div>
-    </div>
-  </div>
-
-  <!-- ── TAB: FORO ── -->
-  <div class="dc-body" *ngIf="tabActiva === 'foro'">
-    <div class="dc-foro-header">
-      <div class="sec-label">Foro de consultas</div>
-      <button class="btn-nueva-pregunta" (click)="abrirModalForo()">
-        <i class="ti ti-plus"></i> Nueva pregunta
-      </button>
-    </div>
-
-    <div class="empty-state" *ngIf="foro.length === 0">
-      <i class="ti ti-message-circle"></i>
-      <p>Sé el primero en hacer una pregunta.</p>
-    </div>
-
-    <div class="foro-item" *ngFor="let f of foro">
-      <div class="foro-avatar">{{ f.iniciales }}</div>
-      <div class="foro-content">
-        <div class="foro-autor">{{ f.autor }} <span class="foro-fecha">· {{ f.fecha }}</span></div>
-        <div class="foro-pregunta">{{ f.pregunta }}</div>
-        <div class="foro-respuesta" *ngIf="f.respuesta">
-          <i class="ti ti-corner-down-right"></i>
-          <div>
-            <span class="fr-docente">Docente:</span>
-            {{ f.respuesta }}
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="dc2-content">
+    <app-silabo-tab       *ngIf="tabActiva === 'silabo'"       [cursoId]="cursoId"></app-silabo-tab>
+    <app-contenido-tab    *ngIf="tabActiva === 'contenido'"    [cursoId]="cursoId"></app-contenido-tab>
+    <app-tareas-tab       *ngIf="tabActiva === 'tareas'"       [cursoId]="cursoId"></app-tareas-tab>
+    <app-evaluaciones-tab *ngIf="tabActiva === 'evaluaciones'" [cursoId]="cursoId"></app-evaluaciones-tab>
+    <app-anuncios-tab     *ngIf="tabActiva === 'anuncios'"     [cursoId]="cursoId"></app-anuncios-tab>
+    <app-foro-tab         *ngIf="tabActiva === 'foro'"         [cursoId]="cursoId"></app-foro-tab>
   </div>
 
 </div>
-
-<!-- ══ MODAL: ENTREGAR TAREA ══ -->
-<div class="modal-wrap" [class.show]="modalTareaVisible" (click)="cerrarModalTarea()">
-  <div class="modal-box" (click)="$event.stopPropagation()" *ngIf="tareaSeleccionada">
-    <div class="modal-header">
-      <h3><i class="ti ti-upload"></i> Entregar tarea</h3>
-      <button class="modal-close" (click)="cerrarModalTarea()"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-info-row">
-        <div class="mi-item">
-          <label>Tarea</label>
-          <span>{{ tareaSeleccionada.nombre }}</span>
-        </div>
-        <div class="mi-item">
-          <label>Fecha límite</label>
-          <span class="text-warning">{{ tareaSeleccionada.fechaLimite }}</span>
-        </div>
-      </div>
-
-      <div class="upload-zone" *ngIf="!archivoEntrega && !entregaExitosa" (click)="fileInput.click()">
-        <i class="ti ti-cloud-upload"></i>
-        <p>Arrastra tu archivo o <strong>haz click para seleccionar</strong></p>
-        <small>PDF, Word, Excel, Imágenes (máx 25MB)</small>
-        <input #fileInput type="file" hidden (change)="onArchivoSeleccionado($event)">
-      </div>
-
-      <div class="uploaded-file" *ngIf="archivoEntrega && !entregaExitosa">
-        <div class="uf-ico"><i class="ti ti-check"></i></div>
-        <div class="uf-nm">{{ archivoEntrega.name }} ({{ tamanioArchivo }})</div>
-        <button class="uf-del" (click)="quitarArchivo()"><i class="ti ti-x"></i></button>
-      </div>
-
-      <div class="form-field" *ngIf="!entregaExitosa">
-        <label>Comentario <span class="optional">(opcional)</span></label>
-        <textarea [(ngModel)]="comentarioEntrega"
-                  placeholder="Agrega un comentario para el docente..."></textarea>
-      </div>
-
-      <div class="alert-ok" *ngIf="entregaExitosa">
-        <i class="ti ti-circle-check"></i>
-        <span>¡Tarea enviada correctamente!</span>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <ng-container *ngIf="!entregaExitosa">
-        <button class="btn-cancel" (click)="cerrarModalTarea()">Cancelar</button>
-        <button class="btn-submit" (click)="enviarTarea()" [disabled]="entregando || !archivoEntrega">
-          <i class="ti ti-send" *ngIf="!entregando"></i>
-          <i class="ti ti-loader" *ngIf="entregando"></i>
-          {{ entregando ? 'Enviando...' : 'Enviar tarea' }}
-        </button>
-      </ng-container>
-      <button class="btn-submit" *ngIf="entregaExitosa" (click)="cerrarModalTarea()">
-        <i class="ti ti-check"></i> Cerrar
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ MODAL: NUEVA PREGUNTA FORO ══ -->
-<div class="modal-wrap" [class.show]="modalForoVisible" (click)="cerrarModalForo()">
-  <div class="modal-box" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h3><i class="ti ti-message-circle"></i> Nueva pregunta</h3>
-      <button class="modal-close" (click)="cerrarModalForo()"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="modal-body">
-      <div class="form-field">
-        <label>Tu pregunta</label>
-        <textarea [(ngModel)]="preguntaForo" rows="4"
-                  placeholder="Escribe tu consulta al docente..."></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" (click)="cerrarModalForo()">Cancelar</button>
-      <button class="btn-submit" (click)="enviarPregunta()" [disabled]="!preguntaForo.trim()">
-        <i class="ti ti-send"></i> Publicar pregunta
-      </button>
-    </div>
-  </div>
-</div>
-
-<app-toast></app-toast>

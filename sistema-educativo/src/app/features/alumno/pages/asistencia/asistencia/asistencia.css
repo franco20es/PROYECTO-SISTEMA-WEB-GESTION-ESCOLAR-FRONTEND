@@ -38,7 +38,20 @@ body {
 .main {
   padding: 24px 30px 60px
 }
-
+/* ════ AGREGAR ESTO A TU asistencia.css EXISTENTE ════ */
+ 
+/* Loading */
+.loading-state { display:flex; flex-direction:column; align-items:center; padding:50px; gap:14px; color:var(--g4, #94A3B8); }
+.spinner { width:30px; height:30px; border:3px solid #E2E8F0; border-top-color:var(--bm, #1340A0); border-radius:50%; animation:spin .8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+ 
+/* Vacíos */
+.empty-asis { display:flex; flex-direction:column; align-items:center; padding:50px 20px; gap:12px; color:var(--g4, #94A3B8); text-align:center; }
+.empty-asis svg { fill:currentColor; opacity:.5; }
+.empty-asis p { font-size:14px; }
+ 
+.hist-vacio { padding:24px; text-align:center; color:var(--g4, #94A3B8); font-size:13px; background:#F8FAFC; border-radius:10px; margin-top:10px; }
+ 
 /* HEADER */
 .hd {
   display: flex;

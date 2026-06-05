@@ -1,0 +1,144 @@
+<div class="tab-loading" *ngIf="cargando">
+  <div class="tl-spinner"></div>
+</div>
+
+<ng-container *ngIf="!cargando">
+  <div class="tareas-wrapper">
+    
+    <div class="sec-head">
+      <div class="sec-title">
+        <i class="bi bi-folder-symlink-fill"></i> 
+        Tareas del curso
+      </div>
+      <span class="sec-badge" *ngIf="pendientes.length > 0">
+        <i class="bi bi-clock-history"></i> {{ pendientes.length }} pendiente(s)
+      </span>
+    </div>
+
+    <div class="empty-state" *ngIf="tareas.length === 0">
+      <div class="empty-icon-wrap">
+        <i class="bi bi-clipboard-x"></i>
+      </div>
+      <h3>No hay tareas asignadas</h3>
+      <p>El docente aún no ha publicado asignaciones o entregables para este periodo.</p>
+    </div>
+
+    <div class="tarea-item" *ngFor="let t of tareas"
+         [class.pendiente]="t.estado === 'PENDIENTE'"
+         (click)="t.estado === 'PENDIENTE' && abrirModal(t)">
+      
+      <div class="tarea-ico" [ngClass]="'ti-estado-' + t.estado.toLowerCase()">
+        <i class="bi" 
+           [class.bi-file-earmark-text-fill]="t.estado === 'PENDIENTE'"
+           [class.bi-file-earmark-check-fill]="t.estado === 'ENTREGADO'"
+           [class.bi-file-earmark-font-fill]="t.estado === 'CALIFICADO'"
+           [class.bi-file-earmark-x-fill]="t.estado === 'VENCIDO'"></i>
+      </div>
+      
+      <div class="tarea-info">
+        <h3 class="tarea-nombre">{{ t.nombre }}</h3>
+        <p class="tarea-desc" *ngIf="t.descripcion">{{ t.descripcion }}</p>
+        
+        <div class="tarea-meta">
+          <span class="meta-pill date">
+            <i class="bi bi-calendar-event"></i> Límite: {{ formatearFecha(t.fechaLimite) }}
+          </span>
+          <span class="meta-sep">·</span>
+          <span class="meta-pill modality">
+            <i class="bi" [class.bi-building]="t.presencial" [class.bi-globe]:="!t.presencial"></i>
+            {{ t.presencial ? 'Presencial' : 'Entrega en línea' }}
+          </span>
+          <span class="meta-pill file" *ngIf="t.archivoEntregado">
+            <span class="meta-sep">·</span>
+            <i class="bi bi-paperclip"></i> Enviado: <strong>{{ t.archivoEntregado }}</strong>
+          </span>
+        </div>
+      </div>
+      
+      <div class="tarea-right">
+        <span class="tarea-estado" [ngClass]="'est-' + t.estado.toLowerCase()">
+          {{ t.estado }}
+        </span>
+        <span class="tarea-nota" *ngIf="t.nota != null" [style.color]="colorNota(t.nota)">
+          {{ t.nota }}
+        </span>
+        <button class="btn-entregar" *ngIf="t.estado === 'PENDIENTE'"
+                (click)="$event.stopPropagation(); abrirModal(t)">
+          <i class="bi bi-cloud-arrow-up-fill"></i> Entregar
+        </button>
+      </div>
+    </div>
+
+  </div>
+</ng-container>
+
+<div class="modal-wrap" [class.show]="modalVisible" (click)="cerrarModal()">
+  <div class="modal-box" (click)="$event.stopPropagation()" *ngIf="tareaSeleccionada">
+    
+    <div class="modal-header">
+      <h3><i class="bi bi-cloud-arrow-up-fill"></i> Entregar entregable académico</h3>
+      <button class="modal-close" (click)="cerrarModal()"><i class="bi bi-x-lg"></i></button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="modal-info-row">
+        <div class="mi-item">
+          <label>Evaluación / Actividad</label>
+          <span>{{ tareaSeleccionada.nombre }}</span>
+        </div>
+        <div class="mi-item">
+          <label>Plazo límite de envío</label>
+          <span class="text-warning"><i class="bi bi-exclamation-triangle-fill"></i> {{ formatearFecha(tareaSeleccionada.fechaLimite) }}</span>
+        </div>
+      </div>
+
+      <div class="upload-zone" *ngIf="!archivoEntrega && !entregaExitosa" (click)="fileInput.click()">
+        <div class="uz-icon-wrap">
+          <i class="bi bi-cloud-upload"></i>
+        </div>
+        <p>Haz clic para arrastrar o seleccionar tu documento</p>
+        <small>Extensiones admitidas: PDF, Word, Excel, Imágenes (Máx. 25MB)</small>
+        <input #fileInput type="file" hidden (change)="onArchivo($event)">
+      </div>
+
+      <div class="uploaded-file" *ngIf="archivoEntrega && !entregaExitosa">
+        <div class="uf-ico"><i class="bi bi-file-earmark-check-fill"></i></div>
+        <div class="uf-info">
+          <div class="uf-nm">{{ archivoEntrega.name }}</div>
+          <div class="uf-size">{{ tamanioArchivo }}</div>
+        </div>
+        <button class="uf-del" (click)="quitarArchivo()" title="Quitar archivo"><i class="bi bi-trash3-fill"></i></button>
+      </div>
+
+      <div class="form-field" *ngIf="!entregaExitosa">
+        <label>Comentarios adicionales <span class="optional">(Opcional)</span></label>
+        <textarea [(ngModel)]="comentario"
+                  placeholder="Escribe aquí notas o aclaraciones dirigidas al docente sobre tu entrega..."></textarea>
+      </div>
+
+      <div class="alert-ok" *ngIf="entregaExitosa">
+        <div class="aok-icon"><i class="bi bi-check-circle-fill"></i></div>
+        <div class="aok-text">
+          <h4>¡Transacción de envío exitosa!</h4>
+          <p>Tu tarea ha sido procesada y almacenada en el servidor institucional correctamente.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <ng-container *ngIf="!entregaExitosa">
+        <button class="btn-cancel" (click)="cerrarModal()">Cancelar operación</button>
+        <button class="btn-submit" (click)="enviar()" [disabled]="entregando || !archivoEntrega">
+          <i class="bi bi-send-fill" *ngIf="!entregando"></i>
+          <i class="bi bi-arrow-clockwise spin" *ngIf="entregando"></i>
+          <span>{{ entregando ? 'Enviando...' : 'Confirmar Envío' }}</span>
+        </button>
+      </ng-container>
+      
+      <button class="btn-submit" *ngIf="entregaExitosa" (click)="cerrarModal()">
+        <i class="bi bi-check-lg"></i> Finalizar
+      </button>
+    </div>
+
+  </div>
+</div>

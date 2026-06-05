@@ -1,0 +1,156 @@
+:host {
+  --bd: #0A1A3E; 
+  --bm: #1340A0; 
+  --or: #FF5B1F;
+  --g1: #F8FAFC; 
+  --g2: #E2E8F0; 
+  --g4: #94A3B8; 
+  --g6: #64748B;
+  display: block; 
+  background: #F1F5F9; 
+  min-height: 100vh;
+}
+
+/* Modificado: Removido el max-width y centrado para que sea amplio e industrial */
+.dc-wrap { 
+  width: 100%; 
+  margin: 0; 
+  padding: 0 0 40px; 
+}
+
+/* Hero: Fluido a los extremos con alineación izquierda */
+.dc-hero { 
+  padding: 32px 4% 36px; 
+  color: #fff; 
+  position: relative; 
+}
+
+.dc-back { 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 8px; 
+  background: rgba(255, 255, 255, .15); 
+  border: none; 
+  color: #fff; 
+  font-size: 13px; 
+  font-weight: 600; 
+  padding: 8px 16px; 
+  border-radius: 12px; /* Consistencia visual de 12px */
+  cursor: pointer; 
+  margin-bottom: 20px; 
+  transition: background .15s; 
+}
+
+.dc-back:hover { 
+  background: rgba(255, 255, 255, .25); 
+}
+
+.dc-tag { 
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px; 
+  font-weight: 700; 
+  background: rgba(255, 255, 255, .2); 
+  padding: 5px 12px; 
+  border-radius: 12px; /* Consistencia visual de 12px */
+  margin-bottom: 12px; 
+}
+
+.dc-hero h1 { 
+  font-size: 32px; 
+  font-weight: 700; 
+  margin: 0 0 12px 0; 
+  letter-spacing: -0.5px;
+}
+
+.dc-meta { 
+  display: flex; 
+  gap: 20px; 
+  flex-wrap: wrap; 
+}
+
+.dc-meta span { 
+  font-size: 13px; 
+  display: flex; 
+  align-items: center; 
+  gap: 6px; 
+  opacity: .9; 
+}
+
+/* Tabs: Alineadas al inicio y extendidas */
+.dc-tabs { 
+  display: flex; 
+  gap: 8px; 
+  background: #fff; 
+  padding: 0 4%; 
+  border-bottom: 1px solid var(--g2); 
+  overflow-x: auto; 
+}
+
+.dc-tab { 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  padding: 18px 20px; 
+  background: none; 
+  border: none; 
+  border-bottom: 3px solid transparent; 
+  color: var(--g6); 
+  font-size: 14px; 
+  font-weight: 600; 
+  cursor: pointer; 
+  white-space: nowrap; 
+  transition: all .15s; 
+}
+
+.dc-tab:hover { 
+  color: var(--bm); 
+}
+
+.dc-tab.active { 
+  color: var(--bm); 
+  border-bottom-color: var(--bm); 
+}
+
+.dc-tab i { 
+  font-size: 18px; 
+}
+
+/* Body: Área de trabajo masiva */
+.dc-body { 
+  background: #fff; 
+  padding: 32px 4%; 
+  min-height: 400px; 
+}
+
+/* Placeholder */
+.dc-placeholder { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center;
+  padding: 80px 20px; 
+  gap: 14px; 
+  color: var(--g4); 
+}
+
+.dc-placeholder i { 
+  font-size: 48px; 
+}
+
+.dc-placeholder p { 
+  font-size: 15px; 
+  font-weight: 500;
+  margin: 0;
+}
+
+@media(max-width: 600px) {
+  .dc-hero, .dc-tabs, .dc-body { 
+    padding-left: 16px; 
+    padding-right: 16px; 
+  }
+  .dc-hero h1 {
+    font-size: 24px;
+  }
+}

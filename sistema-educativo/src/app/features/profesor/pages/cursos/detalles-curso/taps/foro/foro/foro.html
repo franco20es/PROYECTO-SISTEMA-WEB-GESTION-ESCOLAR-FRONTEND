@@ -1,0 +1,125 @@
+@if (!foroAbierto()) {
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+    <div class="stitle" style="margin-bottom:0">
+      <i class="bi bi-chat-square-quote-fill"></i> Foros de discusión académica
+    </div>
+    <button class="btn btn-or" (click)="abrirModalCrear()">
+      <i class="bi bi-plus-lg"></i> Nuevo tema de foro
+    </button>
+  </div>
+
+  @if (cargando()) {
+    <div class="fd-loading"><div class="spinner-d"></div></div>
+  }
+
+  @if (!cargando()) {
+    @if (foros().length === 0) {
+      <div class="empty-d">
+        <i class="bi bi-chat-square-x-fill"></i>
+        <p>No se han encontrado foros activos en este curso. Crea un espacio para abrir debates y absolver dudas con tus estudiantes.</p>
+      </div>
+    }
+
+    <div class="foros-container">
+      @for (f of foros(); track f.id) {
+        <div class="foro" (click)="abrirForo(f)">
+          <div class="foro-ico">
+            <i class="bi bi-chat-left-text-fill"></i>
+          </div>
+          <div class="foro-info">
+            <div class="foro-titulo">{{ f.titulo }}</div>
+            <div class="foro-desc" *ngIf="f.descripcion">{{ f.descripcion }}</div>
+            <div class="foro-meta">
+              <span><i class="bi bi-chat-dots"></i> {{ f.totalMensajes || 0 }} respuestas</span>
+              <span *ngIf="f.fechaCreacion"><i class="bi bi-calendar3"></i> {{ formatearFecha(f.fechaCreacion) }}</span>
+            </div>
+          </div>
+          <div class="foro-actions">
+            <button class="ua-del" title="Eliminar foro" (click)="eliminar(f, $event)">
+              <i class="bi bi-trash3-fill"></i>
+            </button>
+            <i class="bi bi-chevron-right foro-arrow"></i>
+          </div>
+        </div>
+      }
+    </div>
+  }
+}
+
+@if (foroAbierto(); as foro) {
+  <div class="foro-detalle">
+    <button class="btn btn-gh btn-sm" (click)="volverALista()" style="margin-bottom:16px">
+      <i class="bi bi-arrow-left"></i> Volver al listado
+    </button>
+
+    <div class="fd-header">
+      <h3>{{ foro.titulo }}</h3>
+      <p *ngIf="foro.descripcion">{{ foro.descripcion }}</p>
+    </div>
+
+    @if (cargandoMensajes()) {
+      <div class="fd-loading"><div class="spinner-d"></div></div>
+    }
+
+    @if (!cargandoMensajes()) {
+      <div class="mensajes">
+        @if (!foro.mensajes?.length) {
+          <div class="sin-mensajes">
+            <i class="bi bi-chat-square-dots"></i>
+            <p>Este foro no cuenta con interacciones aún. Inicia la conversación planteando una pregunta.</p>
+          </div>
+        }
+        
+        @for (m of foro.mensajes; track m.id) {
+          <div class="mensaje" [class.mio]="m.esMio">
+            <div class="msg-avatar">{{ (m.autorNombre || '?').charAt(0) }}</div>
+            <div class="msg-body">
+              <div class="msg-head">
+                <span class="msg-autor">{{ m.autorNombre }}</span>
+                <span class="msg-rol" *ngIf="m.autorRol">{{ m.autorRol }}</span>
+                <span class="msg-fecha">{{ formatearFecha(m.fechaPublicacion) }}</span>
+              </div>
+              <div class="msg-texto">{{ m.contenido }}</div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="msg-input-box">
+        <textarea [(ngModel)]="nuevoMensaje" rows="2"
+                  placeholder="Escribe un aporte o respuesta al foro..."
+                  (keydown.enter)="$event.preventDefault(); enviarMensaje()"></textarea>
+        <button class="btn btn-or" (click)="enviarMensaje()" [disabled]="enviando() || !nuevoMensaje.trim()">
+          <i class="bi bi-send-fill"></i>
+        </button>
+      </div>
+    }
+  </div>
+}
+
+@if (modalCrear()) {
+  <div class="mo show" (click)="modalCrear.set(false)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="mh">
+        <h3><i class="bi bi-chat-square-plus-fill"></i> Aperturar nuevo foro</h3>
+        <button class="mc" (click)="modalCrear.set(false)">✕</button>
+      </div>
+      <div class="mb">
+        <div class="ff">
+          <label>Título del foro de discusión <span class="req">*</span></label>
+          <input type="text" [(ngModel)]="form.titulo" placeholder="Ej: Debate 01 - Arquitectura de Microservicios vs Monolito">
+        </div>
+        <div class="ff">
+          <label>Instrucciones o Descripción de apertura</label>
+          <textarea [(ngModel)]="form.descripcion" rows="4" placeholder="Especifica las preguntas detonantes o lineamientos de participación..."></textarea>
+        </div>
+      </div>
+      <div class="mf">
+        <button class="btn btn-gh" (click)="modalCrear.set(false)">Cancelar</button>
+        <button class="btn btn-or" (click)="crear()" [disabled]="guardando()">
+          {{ guardando() ? 'Aperturando...' : 'Crear espacio' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

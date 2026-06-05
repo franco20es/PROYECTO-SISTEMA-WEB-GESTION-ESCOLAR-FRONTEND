@@ -23,11 +23,11 @@ export const PROFESOR_ROUTES: Routes = [
   },
   {
     path: 'evaluacion',
-    loadComponent: () => import('./pages/evaluacion/evaluacion').then(m => m.Evaluacion),
+    loadComponent: () => import('./pages/evaluacion/evaluacion').then(m => m.GestionEvaluacionesComponent),
   },
   {
     path: 'horario',
-    loadComponent: () => import('./pages/horariop/horariop').then(m => m.Horariop),
+    loadComponent: () => import('./pages/horariop/horariop').then(m => m.HorarioDocente),
   },
   {
     path: 'reportes',
@@ -44,6 +44,11 @@ export const PROFESOR_ROUTES: Routes = [
   {
     path: 'dashboard',
     loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard),
+  },
+    {
+  path: 'detalle-curso/:id',
+  loadComponent: () => import('./pages/cursos/detalles-curso/detalle-curso/detalle-curso').then(m => m.DetalleCursoDocente)
+
   }
    // Otras rutas para el módulo de profesores
   

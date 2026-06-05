@@ -1,766 +1,232 @@
-.master-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    height: 100vh;
-}
-
-  /* --- LADO IZQUIERDO: BRANDING --- */
-  .brand-side {
-    position: relative;
-    overflow: hidden;
-    border-right: 1px solid var(--border);
-}
-
- .brand-side img {
-    position: absolute;
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-}
-
-  .brand-side::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 5px;
-      background: linear-gradient(90deg, var(--white), var(--rose), var(--white));
-  }
-
-  .brand-tag {
-      color: var(--rose);
-      font-weight: 800;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 4px;
-      margin-bottom: 20px;
-      display: block;
-  }
-
-  .brand-side h1 {
-      font-size: 3.5rem;
-      font-weight: 800;
-      line-height: 1;
-      margin-bottom: 25px;
-      color: var(--text-dark);
-  }
-
-  .brand-side h1 span {
-      color: var(--rose);
-  }
-
-  .brand-side p {
-      color: var(--text-gray);
-      font-size: 1.1rem;
-      line-height: 1.6;
-      max-width: 450px;
-  }
-
-  /* --- LADO DERECHO: FORMS --- */
-  .form-side {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 60px;
-      position: relative;
-      background: var(--white);
-  }
-
-  .form-box {
-      width: 100%;
-      max-width: 420px;
-      position: relative;
-  }
-
-  /* Control de Vistas */
-  .auth-view {
-      display: none;
-      animation: fadeIn 0.6s ease-out forwards;
-  }
-
-  .auth-view.active {
-      display: block;
-  }
-
-  @keyframes fadeIn {
-      from {
-          opacity: 0;
-          transform: translateY(10px);
-      }
-
-      to {
-          opacity: 1;
-          transform: translateY(0);
-      }
-  }
-
-  .form-header {
-      margin-bottom: 40px;
-  }
-
-  .form-header h2 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-  }
-
-  .form-header p {
-      font-size: 0.9rem;
-      color: var(--text-gray);
-  }
-
-  /* INPUTS ESTILIZADOS */
-  .input-group {
-      margin-bottom: 22px;
-  }
-
-  .input-group label {
-      display: block;
-      font-size: 0.7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 10px;
-  }
-
-  .input-wrapper {
-      position: relative;
-      border-bottom: 2px solid var(--border);
-      transition: 0.3s;
-  }
-
-  .input-wrapper i {
-      position: absolute;
-      left: 0;
-      top: 12px;
-      color: #CCC;
-      font-size: 1.1rem;
-  }
-
-  .input-field {
-      width: 100%;
-      border: none;
-      background: transparent;
-      padding: 12px 10px 12px 35px;
-      font-size: 0.95rem;
-      font-family: inherit;
-  }
-
-  .input-wrapper:focus-within {
-      border-color: var(--rose);
-  }
-
-  .input-wrapper:focus-within i {
-      color: var(--rose);
-  }
-
-  /* ACCIONES */
-  .flex-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-  }
-
-  .forgot-link {
-      font-size: 0.8rem;
-      color: var(--rose);
-      text-decoration: none;
-      font-weight: 600;
-  }
-
-  .btn-primary {
-      width: 100%;
-      padding: 18px;
-      background: var(--text-dark);
-      color: var(--white);
-      border: none;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      cursor: pointer;
-      transition: var(--transition);
-  }
-
-  .btn-primary:hover {
-      background: var(--rose);
-      box-shadow: 0 15px 30px var(--rose-light);
-      transform: translateY(-3px);
-  }
-
-  .btn-ghost {
-      width: 100%;
-      padding: 14px;
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-dark);
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
-      cursor: pointer;
-      transition: 0.3s;
-  }
-
-  .btn-ghost:hover {
-      background: var(--light-bg);
-      border-color: var(--text-gray);
-  }
-
-  /* ALERTAS DE ERROR Y ÉXITO */
-  .alert {
-      padding: 12px 16px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      animation: slideDown 0.3s ease-out;
-      cursor: pointer;
-      transition: opacity 0.3s ease;
-  }
-
-  .alert:hover {
-      opacity: 0.9;
-  }
-
-  .alert-error {
-      background: #FEE2E2;
-      color: #991B1B;
-      border: 1px solid #FCA5A5;
-  }
-
-  body.dark-mode .alert-error {
-      background: rgba(127, 29, 29, 0.2);
-      color: #FCA5A5;
-      border: 1px solid #7F1D1D;
-  }
-
-  .alert-success {
-      background: #DCFCE7;
-      color: #166534;
-      border: 1px solid #86EFAC;
-  }
-
-  body.dark-mode .alert-success {
-      background: rgba(34, 197, 94, 0.15);
-      color: #86EFAC;
-      border: 1px solid #22C55E;
-  }
-
-  .alert i {
-      font-size: 1.2rem;
-      flex-shrink: 0;
-  }
-
-  @keyframes slideDown {
-      from {
-          opacity: 0;
-          transform: translateY(-10px);
-      }
-      to {
-          opacity: 1;
-          transform: translateY(0);
-      }
-  }
-
-  /* TOGGLE DE CONTRASEÑA */
-  .toggle-password {
-      position: absolute;
-      right: 10px;
-      top: 12px;
-      background: none;
-      border: none;
-      color: var(--text-gray);
-      cursor: pointer;
-      font-size: 1rem;
-      transition: color 0.3s ease;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-  }
-
-  .toggle-password:hover {
-      color: var(--rose);
-  }
-
-  /* BOTÓN DESHABILITADO */
-  .btn-primary:disabled,
-  .btn-ghost:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-  }
-
-  .footer-text {
-      text-align: center;
-      margin-top: 40px;
-      font-size: 0.85rem;
-      color: var(--text-gray);
-  }
-
-  .footer-text span,
-  .footer-text .create-account-link {
-      color: var(--rose);
-      cursor: pointer;
-      font-weight: 700;
-      text-decoration: underline;
-  }
-
-  /* TÉRMINOS Y CONDICIONES */
-  .terms-row {
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-      margin: 20px 0 30px;
-      font-size: 0.75rem;
-      color: #888;
-      text-align: left;
-  }
-
-  .check-custom {
-      min-width: 20px;
-      height: 20px;
-      border: 1px solid var(--rose);
-      background: rgba(255, 255, 255, 0.05);
-      cursor: pointer;
-      position: relative;
-      appearance: none;
-      transition: 0.3s;
-  }
-
-  .check-custom:checked {
-      background: var(--rose);
-      border-color: var(--rose);
-  }
-
-  .check-custom:checked::after {
-      content: '\F26E';
-      font-family: 'bootstrap-icons';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: rgb(255, 255, 255);
-      font-weight: bold;
-      font-size: 12px;
-  }
-
-  .terms-row span {
-      color: var(--rose);
-      cursor: pointer;
-      text-decoration: underline;
-  }
-
 :root {
     --rose: #FF007F;
     --rose-hover: #E60072;
-    --rose-light: #FFF0F6;
     --white: #FFFFFF;
-    --light-bg: #FDFDFD;
-    --text-dark: #121212;
-    --text-gray: #6C757D;
-    --border: #F1F3F5;
-    --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    --text-dark: #1F2937;
+    --text-gray: #4A5568;
+    --border: #E2E8F0;
+    --transition: all 0.3s ease;
 }
- 
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     outline: none;
-    border-radius: 0 !important;
 }
- 
+
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     background: var(--white);
     color: var(--text-dark);
-    min-height: 100vh;
 }
- 
+
 .master-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     min-height: 100vh;
 }
- 
-/* --- LADO IZQUIERDO: BRANDING --- */
+
+/* --- LADO IZQUIERDO (Limpio y centrado como en la imagen) --- */
 .brand-side {
-    background: var(--light-bg);
+    background-color: var(--white);
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    padding: 80px;
-    position: relative;
-    border-right: 1px solid var(--border);
+    padding: 60px;
 }
- 
-.brand-side::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 5px;
-    background: linear-gradient(90deg, var(--white), var(--rose), var(--white));
+
+.brand-illustration {
+    max-width: 85%;
+    max-height: 75vh;
+    object-fit: contain;
 }
- 
-.brand-tag {
-    color: var(--rose);
-    font-weight: 800;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    margin-bottom: 20px;
-    display: block;
-}
- 
-.brand-side h1 {
-    font-size: 3.5rem;
-    font-weight: 800;
-    line-height: 1;
-    margin-bottom: 25px;
-    color: var(--text-dark);
-}
- 
-.brand-side h1 span {
-    color: var(--rose);
-}
- 
-.brand-side p {
-    color: var(--text-gray);
-    font-size: 1.1rem;
-    line-height: 1.6;
-    max-width: 450px;
-}
- 
-/* --- LADO DERECHO: FORMS --- */
+
+/* --- LADO DERECHO (Formulario y Logo integrado) --- */
 .form-side {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 60px;
-    position: relative;
     background: var(--white);
+    border-left: 1px solid #F0F4F8; /* Línea divisoria muy tenue en el centro */
 }
- 
+
 .form-box {
     width: 100%;
-    max-width: 420px;
-    position: relative;
+    max-width: 380px;
 }
- 
-/* Control de Vistas */
-.auth-view {
-    display: none;
-    animation: fadeIn 0.6s ease-out forwards;
+
+/* Estilos para el logo integrado sobre el login */
+.form-logo-container {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: flex-start; /* Cambiado de flex-start a center para centrarlo horizontalmente */
 }
- 
-.auth-view.active {
-    display: block;
+
+.form-logo {
+    max-height: 100px; /* Mantiene tu tamaño configurado */
+    width: auto;
+    object-fit: contain;
 }
- 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
- 
+
 .form-header {
-    margin-bottom: 40px;
+    margin-bottom: 32px;
 }
- 
+
 .form-header h2 {
-    font-size: 1.8rem;
+    font-size: 2.1rem;
     font-weight: 700;
-    margin-bottom: 10px;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
 }
- 
+
 .form-header p {
-    font-size: 0.9rem;
+    font-size: 0.92rem;
     color: var(--text-gray);
 }
- 
-/* INPUTS */
+
+/* --- CAMPOS DE FORMULARIO --- */
 .input-group {
-    margin-bottom: 22px;
+    margin-bottom: 24px;
 }
- 
+
 .input-group label {
     display: block;
-    font-size: 0.7rem;
-    font-weight: 800;
+    font-size: 0.72rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    color: var(--text-dark);
 }
- 
+
 .input-wrapper {
     position: relative;
-    border-bottom: 2px solid var(--border);
-    transition: 0.3s;
+    border-bottom: 1px solid var(--border);
 }
- 
-.input-wrapper i {
-    position: absolute;
-    left: 0;
-    top: 12px;
-    color: #CCC;
-    font-size: 1.1rem;
-}
- 
+
 .input-field {
     width: 100%;
     border: none;
     background: transparent;
-    padding: 12px 10px 12px 35px;
+    padding: 12px 35px 12px 28px;
     font-size: 0.95rem;
-    font-family: inherit;
+    color: var(--text-dark);
 }
- 
+
+.input-wrapper i {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #A0AEC0;
+    font-size: 1.1rem;
+}
+
 .input-wrapper:focus-within {
-    border-color: var(--rose);
+    border-color: var(--text-dark);
 }
- 
-.input-wrapper:focus-within i {
-    color: var(--rose);
+
+.toggle-password {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-gray);
+    font-size: 1rem;
 }
- 
-/* ACCIONES */
+
+/* --- ACCIONES Y BOTÓN --- */
 .flex-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 28px;
 }
- 
+
 .forgot-link {
-    font-size: 0.8rem;
-    color: var(--rose);
-    text-decoration: none;
+    background: none;
+    border: none;
+    font-size: 0.82rem;
+    color: var(--text-dark);
     font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
 }
- 
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
 .btn-primary {
     width: 100%;
-    padding: 18px;
-    background: var(--text-dark);
+    padding: 15px;
+    background: #6B7280; /* Tono grisáceo elegante idéntico al de tu captura */
     color: var(--white);
     border: none;
+    border-radius: 12px !important; /* Esquinas suavizadas a 12px */
+    font-size: 0.9rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 0.5px;
     cursor: pointer;
     transition: var(--transition);
 }
- 
-.btn-primary:hover {
-    background: var(--rose);
-    box-shadow: 0 15px 30px var(--rose-light);
-    transform: translateY(-3px);
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--text-dark);
 }
- 
-.btn-ghost {
-    width: 100%;
-    padding: 14px;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-dark);
-    font-weight: 600;
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* --- ALERTAS MODERNAS --- */
+.alert {
+    padding: 12px 16px;
+    border-radius: 12px !important; /* Consistencia en el diseño a 12px */
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 10px;
-    margin-top: 20px;
-    cursor: pointer;
-    transition: 0.3s;
-    font-family: inherit;
-}
- 
-.btn-ghost:hover {
-    background: var(--light-bg);
-    border-color: var(--text-gray);
-}
- 
-.footer-text {
-    text-align: center;
-    margin-top: 40px;
     font-size: 0.85rem;
-    color: var(--text-gray);
+    font-weight: 600;
 }
- 
-.footer-text span,
-.footer-text .create-account-link {
-    color: var(--rose);
-    cursor: pointer;
-    font-weight: 700;
-    text-decoration: underline;
+
+.alert-error {
+    background: #FFF5F5;
+    color: #C53030;
+    border: 1px solid #FEB2B2;
 }
- 
-/* TÉRMINOS Y CONDICIONES */
-.terms-row {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    margin: 20px 0 30px;
-    font-size: 0.75rem;
-    color: #888;
-    text-align: left;
+
+.alert-success {
+    background: #F0FFF4;
+    color: #22543D;
+    border: 1px solid #9AE6B4;
 }
- 
-.check-custom {
-    min-width: 20px;
-    height: 20px;
-    border: 1px solid var(--text-dark);
-    background: rgba(255, 255, 255, 0.05);
-    cursor: pointer;
-    position: relative;
-    appearance: none;
-    -webkit-appearance: none;
-    transition: 0.3s;
-    flex-shrink: 0;
+
+.field-hint {
+    color: #E53E3E;
+    font-size: 0.78rem;
+    display: block;
+    margin-top: 5px;
 }
- 
-.check-custom:checked {
-    background: var(--rose);
-    border-color: var(--rose);
-}
- 
-.check-custom:checked::after {
-    content: '\F26E';
-    font-family: 'bootstrap-icons';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-weight: bold;
-    font-size: 12px;
-}
- 
-/* Links de términos */
-.terms-link {
-    color: var(--rose);
-    font-weight: 700;
-    text-decoration: underline;
-    cursor: pointer;
-    transition: 0.2s;
-}
- 
-.terms-link:hover {
-    color: var(--rose-hover);
-}
- 
-/* =============================================
-   RESPONSIVE — TABLET (768px – 1000px)
-   ============================================= */
-@media (min-width: 768px) and (max-width: 1000px) {
-    .master-container {
-        grid-template-columns: 1fr 1fr;
-    }
- 
-    .brand-side {
-        padding: 50px 40px;
-    }
- 
-    .brand-side h1 {
-        font-size: 2.6rem;
-    }
- 
-    .brand-side p {
-        font-size: 0.95rem;
-    }
- 
-    .form-side {
-        padding: 40px 30px;
-    }
-}
- 
-/* =============================================
-   RESPONSIVE — MÓVIL (hasta 767px)
-   Oculta branding, centra el form
-   ============================================= */
-@media (max-width: 767px) {
-    body {
-        overflow-y: auto;
-    }
- 
+
+/* --- RESPONSIVE --- */
+@media (max-width: 992px) {
     .master-container {
         grid-template-columns: 1fr;
-        min-height: 100vh;
     }
- 
     .brand-side {
         display: none;
     }
-    .brand-side img{
-     display: none;
-    }
- 
     .form-side {
-        padding: 48px 28px;
-        align-items: flex-start;
-        min-height: 100vh;
-    }
- 
-    .form-box {
-        max-width: 100%;
-        padding-top: 20px;
-    }
- 
-    .form-header {
-        margin-bottom: 32px;
-    }
- 
-    .form-header h2 {
-        font-size: 1.6rem;
-    }
- 
-    .btn-primary {
-        padding: 16px;
-        font-size: 0.85rem;
-    }
- 
-    .flex-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-        margin-bottom: 24px;
-    }
-}
- 
-/* =============================================
-   RESPONSIVE — MÓVIL PEQUEÑO (hasta 400px)
-   ============================================= */
-@media (max-width: 400px) {
-    .form-side {
-        padding: 36px 20px;
-    }
- 
-    .form-header h2 {
-        font-size: 1.4rem;
-    }
- 
-    .input-field {
-        font-size: 0.88rem;
-    }
- 
-    .btn-primary {
-        padding: 14px;
-        font-size: 0.8rem;
-        letter-spacing: 1px;
-    }
- 
-    .terms-row {
-        font-size: 0.72rem;
+        padding: 40px 20px;
     }
 }

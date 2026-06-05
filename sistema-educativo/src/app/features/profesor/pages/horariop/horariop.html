@@ -1,243 +1,120 @@
- 
-<!-- HEADER -->
-<div class="hd">
-  <div class="hd-l">
-    <div class="tag">Gestión docente</div>
-    <h1>Mi <em>Horario</em></h1>
-    <p>Organiza y consulta tu carga horaria semanal</p>
-  </div>
-  <div class="hd-r">
-    <button class="btn btn-gh" onclick="showToast('PDF generado')"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar</button>
-    <button class="btn btn-gh" onclick="window.print()"><svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3z"/></svg>Imprimir</button>
-  </div>
-</div>
- 
-<!-- KPIs -->
-<div class="kpis">
-  <div class="kpi"><div class="kpi-ico"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg></div><div><strong>24h</strong><span>Horas semanales</span></div></div>
-  <div class="kpi"><div class="kpi-ico"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div><div><strong>4</strong><span>Cursos asignados</span></div></div>
-  <div class="kpi"><div class="kpi-ico"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5z"/></svg></div><div><strong>6</strong><span>Secciones</span></div></div>
-  <div class="kpi"><div class="kpi-ico"><svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg></div><div><strong>187</strong><span>Alumnos total</span></div></div>
-  <div class="kpi"><div class="kpi-ico"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg></div><div><strong>Mar</strong><span>Día más cargado</span></div></div>
-</div>
- 
-<!-- WEEK NAV + VIEW TOGGLE -->
-<div class="week-nav">
-  <div class="views">
-    <button class="vbtn on" onclick="toggleView('grid',this)"><svg viewBox="0 0 24 24"><path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"/></svg>Grilla</button>
-    <button class="vbtn" onclick="toggleView('list',this)"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>Lista</button>
-  </div>
-  <div class="wn-center">
-    <button class="wn-btn" onclick="changeWeek(-1)"><svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button>
-    <div class="wn-label" id="weekLabel">Semana 20 · 12 – 16 Mayo 2025</div>
-    <button class="wn-btn" onclick="changeWeek(1)"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button>
-  </div>
-  <button class="wn-today" onclick="goToday()">Hoy</button>
-</div>
- 
-<!-- ═══ VISTA GRILLA ═══ -->
-<div class="grid-view on" id="gridView">
-<div class="card">
-  <div class="sched" id="schedGrid"></div>
-  <div class="leyenda">
-    <div class="ley-item"><div class="ley-dot c-mat"></div>Matemáticas</div>
-    <div class="ley-item"><div class="ley-dot c-fis"></div>Física</div>
-    <div class="ley-item"><div class="ley-dot c-tut"></div>Tutoría</div>
-    <div class="ley-item"><div class="ley-dot c-reu"></div>Reuniones</div>
-    <div class="ley-sep"></div>
-    <div class="ley-item" style="font-size:10px;color:var(--g4)"><svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:var(--g4)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>Click en bloque para ver detalle</div>
-  </div>
-</div>
-</div>
- 
-<!-- ═══ VISTA LISTA ═══ -->
-<div class="list-view" id="listView"></div>
- 
+<!-- horario-docente.html -->
+<div class="cal-wrap">
 
- 
-<!-- ═══ MODAL DETALLE ═══ -->
-<div class="mo" id="moDetail">
-  <div class="modal">
-    <div class="mh">
-      <div class="mh-info"><div class="mh-color" id="mdColor"></div><div><h3 id="mdTitle"></h3><p id="mdSub"></p></div></div>
-      <button class="mc" onclick="closeMo()">✕</button>
+  <!-- HEADER -->
+  <div class="cal-head">
+    <div class="ch-left">
+      <h1>Mi horario</h1>
+      <p>Año académico {{ anio }}</p>
     </div>
-    <div class="mb">
-      <div class="md-grid">
-        <div class="md-item"><div class="md-label">Día y hora</div><div class="md-val" id="mdHora"></div></div>
-        <div class="md-item"><div class="md-label">Aula</div><div class="md-val" id="mdAula"></div></div>
-        <div class="md-item"><div class="md-label">Sección</div><div class="md-val" id="mdSec"></div></div>
-        <div class="md-item"><div class="md-label">Estudiantes</div><div class="md-val" id="mdAlum"></div></div>
+    <div class="ch-right">
+      <div class="seg">
+        <button [class.on]="vistaActiva() === 'grid'" (click)="toggleView('grid')">
+          <i class="ti ti-calendar"></i> Semana
+        </button>
+        <button [class.on]="vistaActiva() === 'list'" (click)="toggleView('list')">
+          <i class="ti ti-list"></i> Agenda
+        </button>
       </div>
-      <div class="md-section">
-        <div class="md-stitle">Tema de la sesión</div>
-        <div class="md-topic"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span id="mdTema">Función cuadrática — Gráfica y vértice</span></div>
-      </div>
-      <div class="md-section">
-        <div class="md-stitle">Pendientes de esta clase</div>
-        <div class="md-topic"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Tomar asistencia</div>
-        <div class="md-topic"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Entregar práctica calificada #5</div>
-        <div class="md-topic"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Revisar consultas del foro</div>
-      </div>
-      <div class="md-actions">
-        <button class="btn btn-or" onclick="closeMo();showToast('Asistencia abierta')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Tomar asistencia</button>
-        <button class="btn btn-gh" onclick="closeMo();showToast('Redirigiendo...')"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Ir al curso</button>
-      </div>
+      <button class="btn-print" (click)="imprimir()" title="Imprimir">
+        <i class="ti ti-printer"></i>
+      </button>
     </div>
   </div>
-</div>
- 
-<div class="toast" id="toast"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span id="toastMsg">OK</span></div>
 
-<script>
-/* ═══ DATA ═══ */
-const DIAS=['Lunes','Martes','Miércoles','Jueves','Viernes'];
-const DIAS_SHORT=['Lun','Mar','Mié','Jue','Vie'];
-const FECHAS=['12 May','13 May','14 May','15 May','16 May'];
-const HORAS=[
-  {h:'7:30',end:'8:15',n:'1ra'},
-  {h:'8:30',end:'9:15',n:'2da'},
-  {h:'10:00',end:'10:45',n:'3ra'},
-  {h:'11:00',end:'11:45',n:'4ta'},
-  {h:'12:00',end:'12:45',n:'5ta'}
-];
-const TEMAS={
-  'Matemáticas':['Ecuaciones cuadráticas','Función lineal','Sistemas 2x2','Repaso parcial','Función cuadrática'],
-  'Física':['Ondas mecánicas','Laboratorio: Ondas','Energía cinética','MRU problemas','Sonido y acústica'],
-  'Tutoría':['Proyecto de vida','Convivencia escolar'],
-  'Reunión':['Coordinación área Ciencias']
-};
- 
-// schedule[hora][dia] = {name,sec,aula,alum,cls,tema}
-const S=[
-  // Hora 0 (7:30)
-  [{name:'Matemáticas',sec:'3ro A',aula:'Aula 201',alum:32,cls:'c-mat'},{name:'Física',sec:'4to A',aula:'Lab. 1',alum:28,cls:'c-fis'},null,{name:'Matemáticas',sec:'3ro B',aula:'Aula 203',alum:30,cls:'c-mat'},{name:'Física',sec:'4to B',aula:'Aula 305',alum:31,cls:'c-fis'}],
-  // Hora 1 (8:30)
-  [{name:'Matemáticas',sec:'3ro B',aula:'Aula 203',alum:30,cls:'c-mat'},{name:'Física',sec:'4to B',aula:'Aula 305',alum:31,cls:'c-fis'},{name:'Matemáticas',sec:'3ro A',aula:'Aula 201',alum:32,cls:'c-mat'},{name:'Matemáticas',sec:'3ro A',aula:'Aula 201',alum:32,cls:'c-mat'},null],
-  // Hora 2 (10:00)
-  [{name:'Física',sec:'4to A',aula:'Lab. 1',alum:28,cls:'c-fis'},{name:'Matemáticas',sec:'3ro A',aula:'Aula 201',alum:32,cls:'c-mat'},{name:'Física',sec:'4to B',aula:'Aula 305',alum:31,cls:'c-fis'},null,{name:'Matemáticas',sec:'3ro B',aula:'Aula 203',alum:30,cls:'c-mat'}],
-  // Hora 3 (11:00)
-  [{name:'Física',sec:'4to B',aula:'Aula 305',alum:31,cls:'c-fis'},{name:'Tutoría',sec:'3ro A',aula:'Aula 201',alum:32,cls:'c-tut'},null,{name:'Física',sec:'4to A',aula:'Lab. 1',alum:28,cls:'c-fis'},{name:'Matemáticas',sec:'3ro A',aula:'Aula 201',alum:32,cls:'c-mat'}],
-  // Hora 4 (12:00)
-  [null,{name:'Reunión',sec:'Área Ciencias',aula:'Sala Prof.',alum:0,cls:'c-reu'},{name:'Matemáticas',sec:'3ro B',aula:'Aula 203',alum:30,cls:'c-mat'},null,{name:'Tutoría',sec:'3ro B',aula:'Aula 203',alum:30,cls:'c-tut'}]
-];
- 
-const TODAY_DIA=0; // Lunes
- 
-/* ═══ RENDER GRID ═══ */
-function renderGrid(){
-  const g=document.getElementById('schedGrid');
-  let html='<div class="sh sh-corner"></div>';
-  DIAS.forEach((d,i)=>{
-    html+=`<div class="sh ${i===TODAY_DIA?'today':''}">${d}<div class="sh-sub">${FECHAS[i]}</div></div>`;
-  });
- 
-  HORAS.forEach((hora,hi)=>{
-    // RECREO after hora 1
-    if(hi===2){
-      html+=`<div class="s-hour" style="min-height:32px;background:var(--g1);font-size:9px;color:var(--g4)">9:15<small>9:30</small></div>`;
-      html+=`<div class="s-recreo">☕ Recreo — 15 min</div>`;
+  <!-- KPIs minimal -->
+  <div class="cal-stats">
+    <div class="cs"><i class="ti ti-clock-hour-4"></i><span>{{ totalHoras() }}h semanales</span></div>
+    <div class="cs"><i class="ti ti-book-2"></i><span>{{ totalCursos() }} cursos</span></div>
+    <div class="cs"><i class="ti ti-users-group"></i><span>{{ totalSecciones() }} secciones</span></div>
+    <div class="cs"><i class="ti ti-calendar-event"></i><span>{{ horarios().length }} clases/semana</span></div>
+  </div>
+
+  @if (cargando()) {
+    <div class="cal-loading"><div class="spinner"></div><p>Cargando horario...</p></div>
+  }
+
+  @if (!cargando()) {
+    @if (horarios().length === 0) {
+      <div class="cal-empty">
+        <i class="ti ti-calendar-off"></i>
+        <p>No tienes clases programadas este año.</p>
+      </div>
     }
-    html+=`<div class="s-hour"><div class="hora-n">${hora.n}</div>${hora.h}<small>${hora.end}</small></div>`;
-    for(let di=0;di<5;di++){
-      const cl=S[hi][di];
-      if(cl){
-        html+=`<div class="s-cell" onclick="openDetail(${hi},${di})"><div class="s-block ${cl.cls}"><div class="sb-name">${cl.name}</div><div class="sb-sec">${cl.sec}</div><div class="sb-aula">📍 ${cl.aula}</div>${cl.alum?`<div class="sb-alum">👥 ${cl.alum} alumnos</div>`:''}</div></div>`;
-      } else {
-        html+=`<div class="s-cell s-empty"></div>`;
+
+    @if (horarios().length > 0) {
+
+      <!-- ═══ VISTA SEMANA (estilo Google Calendar) ═══ -->
+      @if (vistaActiva() === 'grid') {
+        <div class="cal-grid-wrap">
+          <div class="cal-grid" [style.grid-template-rows]="filasGrid()">
+
+            <!-- Esquina + cabeceras de días -->
+            <div class="cg-corner"></div>
+            @for (dia of DIAS; track $index; let di = $index) {
+              <div class="cg-dayhead" [class.hoy]="di === hoyIdx()">
+                <span class="cg-dayname">{{ dia.substring(0,3) }}</span>
+              </div>
+            }
+
+            <!-- Filas de horas -->
+            @for (hora of horasDelDia(); track hora; let hi = $index) {
+              <!-- etiqueta de hora -->
+              <div class="cg-hourlabel" [style.grid-row]="hi + 2">
+                <span>{{ hora }}:00</span>
+              </div>
+              <!-- celdas vacías de fondo (una por día) -->
+              @for (dia of DIAS; track $index; let di = $index) {
+                <div class="cg-cell" [style.grid-row]="hi + 2" [style.grid-column]="di + 2"
+                     [class.col-hoy]="di === hoyIdx()"></div>
+              }
+            }
+
+            <!-- Bloques de clase posicionados absolutamente sobre la grilla -->
+            @for (b of bloquesPosicionados(); track b.id) {
+              <div class="cg-event"
+                   [style.grid-column]="b.col"
+                   [style.grid-row]="b.rowStart + ' / ' + b.rowEnd"
+                   [style.background]="b.colorBg"
+                   [style.border-left-color]="b.colorBar"
+                   (click)="irAlCurso(b.raw)">
+                <div class="ev-time">{{ b.horaIni }} – {{ b.horaFin }}</div>
+                <div class="ev-name">{{ b.raw.cursoNombre }}</div>
+                <div class="ev-sec">{{ b.raw.seccionDenominacion }}</div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- ═══ VISTA AGENDA ═══ -->
+      @if (vistaActiva() === 'list') {
+        <div class="agenda">
+          @for (dia of DIAS; track $index; let di = $index) {
+            @let clases = clasesDelDia(di);
+            @if (clases.length > 0) {
+              <div class="ag-day">
+                <div class="ag-daycol" [class.hoy]="di === hoyIdx()">
+                  <span class="ag-dianame">{{ dia.substring(0,3) }}</span>
+                </div>
+                <div class="ag-clases">
+                  @for (cl of clases; track cl.id) {
+                    <div class="ag-clase" (click)="irAlCurso(cl)"
+                         [style.border-left-color]="colorBarCurso(cl.cursoId)">
+                      <div class="ag-time">{{ horaCorta(cl.horaInicio) }} – {{ horaCorta(cl.horaFin) }}</div>
+                      <div class="ag-info">
+                        <div class="ag-name">{{ cl.cursoNombre }}</div>
+                        <div class="ag-sec"><i class="ti ti-users"></i> {{ cl.seccionDenominacion }}</div>
+                      </div>
+                      <i class="ti ti-chevron-right ag-arrow"></i>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          }
+        </div>
       }
     }
-  });
-  g.innerHTML=html;
-}
- 
-/* ═══ RENDER LIST ═══ */
-function renderList(){
-  const lv=document.getElementById('listView');
-  let html='';
-  DIAS.forEach((dia,di)=>{
-    const clases=[];
-    HORAS.forEach((hora,hi)=>{
-      if(S[hi][di]) clases.push({...S[hi][di],hora:hora.h,end:hora.end,hi,di});
-    });
-    const isToday=di===TODAY_DIA;
-    html+=`<div class="day-section"><div class="day-h ${isToday?'today-h':''}">${dia} <span>${FECHAS[di]}</span><div class="day-count">${clases.length} clase${clases.length!==1?'s':''}</div></div>`;
-    if(clases.length===0){
-      html+=`<div class="clase-item" style="justify-content:center;color:var(--g4);font-size:12px;padding:20px">Sin clases programadas</div>`;
-    }
-    clases.forEach((cl,idx)=>{
-      const colorMap={'c-mat':'#2A63E6','c-fis':'#FF5B1F','c-tut':'#F5A623','c-reu':'#9B59B6'};
-      const color=colorMap[cl.cls]||'var(--g4)';
-      let badge='cb-pend',badgeTxt='Pendiente';
-      if(isToday && idx===0){badge='cb-done';badgeTxt='Dictada';}
-      if(isToday && idx===1){badge='cb-done';badgeTxt='Dictada';}
-      if(isToday && idx===2){badge='cb-now';badgeTxt='En curso';}
-      if(isToday && idx===3){badge='cb-next';badgeTxt='Siguiente';}
-      html+=`<div class="clase-item" onclick="openDetail(${cl.hi},${cl.di})">
-        <div class="ci-hora">${cl.hora}<small>${cl.end}</small></div>
-        <div class="ci-color" style="background:${color}"></div>
-        <div class="ci-info"><div class="ci-name">${cl.name} — ${cl.sec}</div><div class="ci-meta"><div class="ci-mi"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>${cl.aula}</div>${cl.alum?`<div class="ci-mi"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5z"/></svg>${cl.alum} alumnos</div>`:''}</div></div>
-        <div class="ci-right">${isToday?`<span class="ci-badge ${badge}">${badgeTxt}</span>`:''}<div class="ci-actions"><button class="ci-act" title="Asistencia"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></button><button class="ci-act" title="Ver curso"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5z"/></svg></button></div></div>
-      </div>`;
-    });
-    html+=`</div>`;
-  });
-  lv.innerHTML=html;
-}
- 
-/* ═══ VIEW TOGGLE ═══ */
-function toggleView(view,btn){
-  document.querySelectorAll('.vbtn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  document.getElementById('gridView').classList.toggle('on',view==='grid');
-  document.getElementById('listView').classList.toggle('on',view==='list');
-}
- 
-/* ═══ WEEK NAV ═══ */
-let weekOffset=0;
-const weeks=[
-  'Semana 18 · 28 Abr – 2 May 2025',
-  'Semana 19 · 5 – 9 May 2025',
-  'Semana 20 · 12 – 16 May 2025',
-  'Semana 21 · 19 – 23 May 2025',
-  'Semana 22 · 26 – 30 May 2025'
-];
-function changeWeek(d){
-  weekOffset=Math.max(0,Math.min(weeks.length-1,weekOffset+d));
-  document.getElementById('weekLabel').textContent=weeks[weekOffset];
-}
-function goToday(){weekOffset=2;document.getElementById('weekLabel').textContent=weeks[2];showToast('Semana actual')}
-weekOffset=2;
- 
-/* ═══ MODAL DETAIL ═══ */
-function openDetail(hi,di){
-  const cl=S[hi][di];
-  if(!cl)return;
-  const colorMap={'c-mat':'#2A63E6','c-fis':'#FF5B1F','c-tut':'#F5A623','c-reu':'#9B59B6'};
-  document.getElementById('mdColor').style.background=colorMap[cl.cls]||'var(--g4)';
-  document.getElementById('mdTitle').textContent=cl.name+' — '+cl.sec;
-  document.getElementById('mdSub').textContent=DIAS[di]+' '+FECHAS[di];
-  document.getElementById('mdHora').textContent=HORAS[hi].h+' – '+HORAS[hi].end+' ('+HORAS[hi].n+' hora)';
-  document.getElementById('mdAula').textContent=cl.aula;
-  document.getElementById('mdSec').textContent=cl.sec;
-  document.getElementById('mdAlum').textContent=cl.alum?cl.alum+' estudiantes':'—';
-  const temas=TEMAS[cl.name]||['Tema por definir'];
-  document.getElementById('mdTema').textContent=temas[Math.floor(Math.random()*temas.length)];
-  document.getElementById('moDetail').classList.add('show');
-}
-function closeMo(){document.getElementById('moDetail').classList.remove('show')}
-document.getElementById('moDetail').addEventListener('click',function(e){if(e.target===this)closeMo()});
- 
-/* ═══ TOAST ═══ */
-let _t;
-function showToast(msg){
-  clearTimeout(_t);
-  document.getElementById('toastMsg').textContent=msg;
-  document.getElementById('toast').classList.add('show');
-  _t=setTimeout(()=>document.getElementById('toast').classList.remove('show'),3000);
-}
- 
-/* ═══ INIT ═══ */
-renderGrid();
-renderList();
-</script>
+  }
+</div>

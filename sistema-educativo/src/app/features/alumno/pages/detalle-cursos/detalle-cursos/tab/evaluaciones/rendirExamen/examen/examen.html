@@ -1,0 +1,116 @@
+<div class="ex-loading" *ngIf="cargando">
+  <div class="ex-spinner"></div>
+  <p>Inicializando entorno de evaluación segura...</p>
+</div>
+
+<div class="resultado-wrap" *ngIf="resultado">
+  <div class="resultado-card">
+    <div class="res-ico" [class.aprobado]="resultado.notaObtenida >= 11" [class.desaprobado]="resultado.notaObtenida < 11">
+      <i class="bi" [class.bi-trophy-fill]="resultado.notaObtenida >= 11" [class.bi-exclamation-octagon-fill]="resultado.notaObtenida < 11"></i>
+    </div>
+    <h3 class="res-titulo">{{ resultado.mensaje }}</h3>
+    <div class="res-nota" [style.color]="colorNota(resultado.notaObtenida)">
+      {{ resultado.notaObtenida }}
+    </div>
+    <p class="res-detalle">
+      Has respondido correctamente <strong>{{ resultado.correctas }}</strong> de un total de <strong>{{ resultado.totalPreguntas }}</strong> reactivos formulados.
+    </p>
+    <button class="btn-volver" (click)="volver()">
+      <i class="bi bi-arrow-left-short"></i> Volver a la plataforma
+    </button>
+  </div>
+</div>
+
+<div class="ex-wrap" *ngIf="!cargando && examen && !resultado">
+
+  <div class="ex-head">
+    <button class="ex-back" (click)="volver()">
+      <i class="bi bi-chevron-left"></i> Abandonar examen
+    </button>
+    <div class="tag-row">
+      <span class="ex-tag"><i class="bi bi-shield-check"></i> Evaluación en Línea</span>
+    </div>
+    <h2 class="ex-titulo">{{ examen.titulo }}</h2>
+    <p class="ex-desc" *ngIf="examen.descripcion">{{ examen.descripcion }}</p>
+  </div>
+
+  <div class="ex-infobar">
+    <div class="ex-info" *ngIf="examen.duracionMinutos">
+      <div class="ex-info-ico"><i class="bi bi-clock-history"></i></div>
+      <div>
+        <div class="ex-info-label">Tiempo Límite</div>
+        <div class="ex-info-val">{{ examen.duracionMinutos }} minutos</div>
+      </div>
+    </div>
+    <div class="ex-info">
+      <div class="ex-info-ico"><i class="bi bi-journal-text"></i></div>
+      <div>
+        <div class="ex-info-label">Estructura</div>
+        <div class="ex-info-val">{{ examen.totalPreguntas }} preguntas</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-progress">
+    <span class="ex-progress-text">
+      <i class="bi bi-list-check"></i> Avanzado: <strong>{{ totalRespondidas }}</strong> de {{ examen.totalPreguntas }}
+    </span>
+    <div class="ex-progress-bar">
+      <div class="ex-progress-fill" [style.width.%]="progreso"></div>
+    </div>
+  </div>
+
+  <div class="ex-body">
+    <div class="preg" *ngFor="let p of examen.preguntas; let i = index">
+      
+      <div class="preg-head">
+        <div class="preg-num">{{ i + 1 }}</div>
+        <div class="preg-enunciado">{{ p.enunciado }}</div>
+        <span class="preg-puntaje">
+          <i class="bi bi-award"></i> {{ p.puntaje }} pto{{ p.puntaje > 1 ? 's' : '' }}
+        </span>
+      </div>
+
+      <div class="alt" *ngFor="let alt of p.alternativas; let j = index"
+           [class.sel]="estaSeleccionada(p.id, alt.id)"
+           (click)="seleccionar(p.id, alt.id)">
+        <div class="alt-radio-wrap">
+          <div class="alt-radio"></div>
+        </div>
+        <span class="alt-letra">{{ letra(j) }}.</span>
+        <span class="alt-texto">{{ alt.texto }}</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="ex-footer">
+    <span class="ex-footer-info">
+      <i class="bi bi-info-circle-fill"></i> Recuerda: Una vez enviado el formulario, no se admitirán modificaciones.
+    </span>
+    <button class="btn-enviar" (click)="abrirConfirm()" [disabled]="enviando">
+      <i class="bi bi-cloud-arrow-up-fill" *ngIf="!enviando"></i>
+      <i class="bi bi-arrow-clockwise spin" *ngIf="enviando"></i>
+      <span>{{ enviando ? 'Procesando...' : 'Finalizar y Enviar' }}</span>
+    </button>
+  </div>
+</div>
+
+<div class="modal-wrap" [class.show]="mostrarConfirm" (click)="cerrarConfirm()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <div class="modal-ico">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+    </div>
+    <h3>¿Confirmas el envío del examen?</h3>
+    <p>
+      Has respondido <strong>{{ totalRespondidas }}</strong> de <strong>{{ examen?.totalPreguntas }}</strong> enunciados. 
+      Esta acción cerrará tu intento de forma permanente.
+    </p>
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="cerrarConfirm()">Revisar Respuestas</button>
+      <button class="btn-submit" (click)="enviar()">Confirmar Envío</button>
+    </div>
+  </div>
+</div>
+
+<app-toast></app-toast>

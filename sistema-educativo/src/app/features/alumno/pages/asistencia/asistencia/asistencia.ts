@@ -1,38 +1,26 @@
+// asistencia.ts
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { ModalAsistencia } from '../../../components/modales/modal-asistencia/modal-asistencia';
+import { Component, OnInit, inject } from '@angular/core';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { AsistenciaService } from '../../../service/asistencia.service';
 
 export interface Curso {
-  id: number;
+  cursoId: string;
   name: string;
   color: string;
   prof: string;
-  hor: string;
-  sec: string;
   total: number;
-  p: number; // Presencias
-  t: number; // Tardanzas
-  f: number; // Faltas
-  j: number; // Justificados
-}
-
-export interface MesResumen {
-  nm: string;
-  p: number;
-  t: number;
-  f: number;
-  j: number;
-  total: number;
+  p: number; t: number; f: number; j: number;
+  pct: number;
 }
 
 export interface HistorialItem {
-  fecha: string;
+  fecha: string;    // dd/mm/yyyy
   dia: string;
-  hora: string;
-  mes: string;
-  sem: number;
   estado: 'P' | 'T' | 'F' | 'J';
   obs: string;
+  rawFecha: string; // yyyy-mm-dd
 }
 
 @Component({
@@ -43,42 +31,77 @@ export interface HistorialItem {
   styleUrls: ['asistencia.css']
 })
 export class AsistenciaAlumno implements OnInit {
-  // Datos Estáticos
-  CURSOS: Curso[] = [
-    { id: 1, name: 'Matemáticas', color: '#2A63E6', prof: 'Prof. Mendoza', hor: 'Lun/Mié 7:30', sec: '3ro A', total: 24, p: 21, t: 1, f: 1, j: 1 },
-    { id: 2, name: 'Comunicación', color: '#FF5B1F', prof: 'Prof. García', hor: 'Mar/Jue 8:30', sec: '3ro A', total: 22, p: 20, t: 1, f: 1, j: 0 },
-    { id: 3, name: 'Ciencia y Tecnología', color: '#00C27C', prof: 'Prof. Ríos', hor: 'Lun/Vie 10:00', sec: '3ro A', total: 20, p: 18, t: 0, f: 1, j: 1 },
-    { id: 4, name: 'Historia y Geografía', color: '#9B59B6', prof: 'Prof. Vargas', hor: 'Mié/Vie 8:30', sec: '3ro A', total: 22, p: 19, t: 2, f: 1, j: 0 },
-    { id: 5, name: 'Inglés', color: '#F5A623', prof: 'Prof. Torres', hor: 'Mar/Jue 10:00', sec: '3ro A', total: 22, p: 22, t: 0, f: 0, j: 0 },
-    { id: 6, name: 'Educación Física', color: '#E53030', prof: 'Prof. López', hor: 'Vie 11:00', sec: '3ro A', total: 10, p: 9, t: 1, f: 0, j: 0 }
-  ];
 
-  DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
-  MESES: MesResumen[] = [
-    { nm: 'Marzo', p: 18, t: 1, f: 1, j: 0, total: 20 },
-    { nm: 'Abril', p: 20, t: 1, f: 0, j: 1, total: 22 },
-    { nm: 'Mayo', p: 10, t: 0, f: 0, j: 0, total: 10 }
-  ];
+  private asistenciaService = inject(AsistenciaService);
 
-  // Variables de Estado de la UI
+  anio = new Date().getFullYear();
+  cargando = true;
+
+  // Paleta de colores para asignar a cursos
+  private COLORES = ['#2A63E6', '#FF5B1F', '#00C27C', '#9B59B6', '#F5A623', '#E53030'];
+
+  CURSOS: Curso[] = [];
+  DIAS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+  // Estado UI
   activeCurso: Curso | null = null;
-  activeTab: number = 0;
+  activeTab = 0;
   historialActiveCurso: HistorialItem[] = [];
-  calData: { [day: number]: string } = {};
-  
-  // Variables de Resumen General
+  cargandoDetalle = false;
+
+  // Resumen general
   totalP = 0; totalT = 0; totalF = 0; totalJ = 0; totalAll = 0; gPct = 0;
-  
-  // Días del calendario (Mayo 2025 ficticio del HTML original)
-  prevMonthDays = [28, 29, 30];
-  currentMonthDays = Array.from({ length: 31 }, (_, i) => i + 1);
-  nextMonthDays = [1];
 
   ngOnInit() {
-    this.calcularResumenGeneral();
+    this.cargar();
   }
 
-  // Cálculos Auxiliares
+  cargar(): void {
+    this.cargando = true;
+    this.asistenciaService.miAsistencia(this.anio)
+      .pipe(catchError(() => of([])))
+      .subscribe((data: any[]) => {
+        this.CURSOS = (data || []).map((c, i) => ({
+          cursoId: c.cursoId,
+          name: c.cursoNombre,
+          color: this.COLORES[i % this.COLORES.length],
+          prof: c.docenteNombre,
+          total: c.totalSesiones,
+          p: c.presente,
+          t: c.tardanza,
+          f: c.ausente,
+          j: c.justificado,
+          pct: c.porcentajeAsistencia
+        }));
+        this.calcularResumenGeneral();
+        this.cargando = false;
+      });
+  }
+
+  calcularResumenGeneral() {
+    this.totalP = this.totalT = this.totalF = this.totalJ = this.totalAll = 0;
+    this.CURSOS.forEach(c => {
+      this.totalP += c.p; this.totalT += c.t;
+      this.totalF += c.f; this.totalJ += c.j;
+      this.totalAll += c.total;
+    });
+    // % general: presente + tardanza cuentan como asistió
+    this.gPct = this.totalAll
+      ? Math.round(((this.totalP + this.totalT) / this.totalAll) * 100)
+      : 0;
+  }
+
+  // Mapea el estado del backend a la letra de la vista
+  private mapEstado(estado: string): 'P' | 'T' | 'F' | 'J' {
+    switch (estado) {
+      case 'PRESENTE':    return 'P';
+      case 'TARDANZA':    return 'T';
+      case 'AUSENTE':     return 'F';
+      case 'JUSTIFICADO': return 'J';
+      default:            return 'F';
+    }
+  }
+
   pct(p: number, total: number): number {
     return total ? Math.round((p / total) * 100) : 0;
   }
@@ -92,75 +115,58 @@ export class AsistenciaAlumno implements OnInit {
     return `${(c * pct) / 100} ${(c * (100 - pct)) / 100}`;
   }
 
-  private rndState(): 'P' | 'T' | 'F' | 'J' {
-    const r = Math.random();
-    return r < .84 ? 'P' : r < .92 ? 'T' : r < .97 ? 'F' : 'J';
-  }
-
-  calcularResumenGeneral() {
-    this.CURSOS.forEach(c => {
-      this.totalP += c.p; this.totalT += c.t;
-      this.totalF += c.f; this.totalJ += c.j;
-      this.totalAll += c.total;
-    });
-    this.gPct = this.pct(this.totalP, this.totalAll);
-  }
-
-  // Generador de historial (Lógica replicada de tu JS original)
-  genHistorial(curso: Curso): HistorialItem[] {
-    const fechas: any[] = [];
-    const startDay = 3;
-    const months = [{ m: 'Mar', days: 29 }, { m: 'Abr', days: 30 }, { m: 'May', days: 12 }];
-    let d = startDay;
-
-    months.forEach(mo => {
-      while (d <= mo.days) {
-        const monthIdx = mo.m === 'Mar' ? 2 : mo.m === 'Abr' ? 3 : 4;
-        const dow = new Date(2025, monthIdx, d).getDay();
-        if (dow >= 1 && dow <= 5) {
-          fechas.push({
-            fecha: `${String(d).padStart(2, '0')}/${mo.m === 'Mar' ? '03' : mo.m === 'Abr' ? '04' : '05'}/2025`,
-            dia: this.DIAS[dow - 1],
-            hora: curso.hor.split(' ')[1] || '7:30',
-            mes: mo.m,
-            sem: Math.ceil(d / 7)
-          });
-        }
-        d += 1;
-      }
-      d = 1;
-    });
-
-    return fechas.map(f => {
-      const st = this.rndState();
-      const obs = st === 'T' ? 'Llegó 10 min tarde' : st === 'F' ? '' : st === 'J' ? 'Certificado médico' : '';
-      return { ...f, estado: st, obs };
-    });
-  }
-
-  // Acciones de la Vista
   openCurso(curso: Curso) {
     this.activeCurso = curso;
-    this.activeTab = 0; // Resetear a la primera pestaña
-    this.historialActiveCurso = this.genHistorial(curso);
+    this.activeTab = 0;
+    this.cargandoDetalle = true;
+    this.historialActiveCurso = [];
 
-    // Mapear datos para el calendario del mes de Mayo (05)
-    this.calData = {};
-    this.historialActiveCurso.forEach(h => {
-      const parts = h.fecha.split('/');
-      if (parts[1] === '05') {
-        this.calData[parseInt(parts[0])] = h.estado;
-      }
-    });
+    this.asistenciaService.miAsistenciaCurso(curso.cursoId, this.anio)
+      .pipe(catchError(() => of([])))
+      .subscribe((data: any[]) => {
+        this.historialActiveCurso = (data || []).map(a => {
+          const d = new Date(a.fecha + 'T00:00:00');
+          return {
+            rawFecha: a.fecha,
+            fecha: this.formatFecha(a.fecha),
+            dia: this.DIAS[d.getDay()],
+            estado: this.mapEstado(a.estado),
+            obs: a.motivo || ''
+          } as HistorialItem;
+        });
+        this.cargandoDetalle = false;
+      });
 
-    // Scroll Suave al Detalle
     setTimeout(() => {
       document.getElementById('detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 80);
   }
 
+  private formatFecha(iso: string): string {
+    const [y, m, d] = iso.split('-');
+    return `${d}/${m}/${y}`;
+  }
+
+  // Agrupa el historial por mes (para la pestaña "Por mes")
+  get resumenPorMes() {
+    const meses: Record<string, { nm: string; p: number; t: number; f: number; j: number; total: number }> = {};
+    const nombresMes = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    this.historialActiveCurso.forEach(h => {
+      const mesIdx = parseInt(h.rawFecha.split('-')[1]) - 1;
+      const key = nombresMes[mesIdx];
+      if (!meses[key]) meses[key] = { nm: key, p:0, t:0, f:0, j:0, total:0 };
+      meses[key].total++;
+      if (h.estado === 'P') meses[key].p++;
+      else if (h.estado === 'T') meses[key].t++;
+      else if (h.estado === 'F') meses[key].f++;
+      else if (h.estado === 'J') meses[key].j++;
+    });
+    return Object.values(meses);
+  }
+
   closeDetail() {
     this.activeCurso = null;
+    this.historialActiveCurso = [];
   }
 
   swDt(tabIndex: number) {

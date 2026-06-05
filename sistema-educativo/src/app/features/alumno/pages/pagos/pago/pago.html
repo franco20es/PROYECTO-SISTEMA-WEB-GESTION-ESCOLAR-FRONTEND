@@ -1,68 +1,79 @@
-<!-- pagos.html -->
-
 <div class="pago-container">
 
-  <!-- HEADER con resumen -->
   <div class="pago-header">
-    <h2>HISTORIAL DE PAGOS</h2>
-    <p>Consulta tus transacciones y estados de cuenta pendientes.</p>
+    <div class="pago-title-group">
+      <div class="pago-icon-main"><i class="bi bi-wallet2"></i></div>
+      <div>
+        <h2>HISTORIAL DE PAGOS</h2>
+        <p>Consulta tus transacciones y estados de cuenta pendientes.</p>
+      </div>
+    </div>
   </div>
 
-  <!-- KPIs -->
   <div class="pagos-kpis" *ngIf="!cargando">
     <div class="kpi-pago deuda">
-      <span class="kpi-label">Total pendiente</span>
-      <span class="kpi-valor">S/ {{ totalDeuda | number:'1.2-2' }}</span>
+      <div class="kpi-icon-wrapper"><i class="bi bi-exclamation-circle-fill"></i></div>
+      <div class="kpi-text">
+        <span class="kpi-label">Total pendiente</span>
+        <span class="kpi-valor">S/ {{ totalDeuda | number:'1.2-2' }}</span>
+      </div>
     </div>
+    
     <div class="kpi-pago pagado">
-      <span class="kpi-label">Total pagado {{ anio }}</span>
-      <span class="kpi-valor">S/ {{ totalPagado | number:'1.2-2' }}</span>
+      <div class="kpi-icon-wrapper"><i class="bi bi-check-circle-fill"></i></div>
+      <div class="kpi-text">
+        <span class="kpi-label">Total pagado {{ anio }}</span>
+        <span class="kpi-valor">S/ {{ totalPagado | number:'1.2-2' }}</span>
+      </div>
     </div>
+    
     <div class="kpi-pago total">
-      <span class="kpi-label">Pensiones registradas</span>
-      <span class="kpi-valor">{{ todasLasPensiones.length }}</span>
+      <div class="kpi-icon-wrapper"><i class="bi bi-receipt-cutoff"></i></div>
+      <div class="kpi-text">
+        <span class="kpi-label">Pensiones registradas</span>
+        <span class="kpi-valor">{{ todasLasPensiones.length }} Ubicaciones</span>
+      </div>
     </div>
   </div>
 
-  <hr class="separador">
-
-  <!-- LOADING -->
   <div class="loading-pagos" *ngIf="cargando">
     <div class="spinner-pago"></div>
-    <p>Cargando pagos...</p>
+    <p>Cargando estados de cuenta...</p>
   </div>
 
   <ng-container *ngIf="!cargando">
 
-    <!-- PENDIENTES -->
     <div class="pagos-estado" (click)="togglePendientes()">
       <h2>
+        <i class="bi bi-clock-history icon-pendiente"></i>
         Pendientes
         <span class="badge-count" *ngIf="pagosPendientes.length > 0">
           {{ pagosPendientes.length }}
         </span>
       </h2>
-      <span class="flecha" [class.abierto]="mostrarPendientes">▼</span>
+      <span class="flecha bi bi-chevron-down" [class.abierto]="mostrarPendientes"></span>
     </div>
 
-    <hr class="separador">
-
     <div class="pagos-list" *ngIf="mostrarPendientes">
-
       <div class="sin-pagos" *ngIf="pagosPendientes.length === 0">
-        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-        No tienes pagos pendientes
+        <i class="bi bi-shield-check-fill text-success"></i>
+        <span>Felicidades, no tienes obligaciones ni pagos pendientes.</span>
       </div>
 
       <div class="pago-item"
            *ngFor="let pago of pagosPendientes"
            (click)="verDetalle(pago)">
-        <div class="pago-main-info">
-          <span class="pago-concepto">Pensión {{ pago.mes }} {{ pago.anio }}</span>
-          <span class="pago-fecha">Vence: {{ pago.fechaVencimiento }}</span>
+        <div class="pago-item-left">
+          <div class="pago-avatar-type type-pendiente">
+            <i class="bi bi-hourglass-split"></i>
+          </div>
+          <div class="pago-main-info">
+            <span class="pago-concepto">Pensión {{ pago.mes }} {{ pago.anio }}</span>
+            <span class="pago-fecha"><i class="bi bi-calendar3"></i> Vence: {{ pago.fechaVencimiento }}</span>
+          </div>
         </div>
         <div class="pago-details">
-          <span class="pago-mora" *ngIf="pago.mora > 0">+S/ {{ pago.mora }} mora</span>
+          <span class="pago-mora" *ngIf="pago.mora > 0"><i class="bi bi-graph-up-arrow"></i> +S/ {{ pago.mora | number:'1.2-2' }} mora</span>
           <span class="pago-monto">S/ {{ pago.totalAPagar | number:'1.2-2' }}</span>
           <span class="pago-estado" [ngClass]="pago.estado.toLowerCase()">
             {{ pago.estado }}
@@ -71,33 +82,34 @@
       </div>
     </div>
 
-    <hr class="separador">
-
-    <!-- PAGADOS -->
     <div class="pagos-estado" (click)="togglePagados()">
       <h2>
+        <i class="bi bi-check-all icon-pagado"></i>
         Pagados
         <span class="badge-count pagado" *ngIf="pagosPagados.length > 0">
           {{ pagosPagados.length }}
         </span>
       </h2>
-      <span class="flecha" [class.abierto]="mostrarPagados">▼</span>
+      <span class="flecha bi bi-chevron-down" [class.abierto]="mostrarPagados"></span>
     </div>
 
-    <hr class="separador">
-
     <div class="pagos-list" *ngIf="mostrarPagados">
-
       <div class="sin-pagos" *ngIf="pagosPagados.length === 0">
-        No hay pagos registrados aún
+        <i class="bi bi-folder-x"></i>
+        <span>No se registran transacciones liquidadas este periodo.</span>
       </div>
 
       <div class="pago-item pagado-item"
            *ngFor="let pago of pagosPagados"
            (click)="verDetalle(pago)">
-        <div class="pago-main-info">
-          <span class="pago-concepto">Pensión {{ pago.mes }} {{ pago.anio }}</span>
-          <span class="pago-fecha">Pagado: {{ pago.fechaPago || '—' }}</span>
+        <div class="pago-item-left">
+          <div class="pago-avatar-type type-pagado">
+            <i class="bi bi-patch-check-fill"></i>
+          </div>
+          <div class="pago-main-info">
+            <span class="pago-concepto">Pensión {{ pago.mes }} {{ pago.anio }}</span>
+            <span class="pago-fecha"><i class="bi bi-calendar-check"></i> Pagado el: {{ pago.fechaPago || '—' }}</span>
+          </div>
         </div>
         <div class="pago-details">
           <span class="pago-monto">S/ {{ pago.monto | number:'1.2-2' }}</span>
@@ -107,20 +119,18 @@
     </div>
 
     <button class="btn-pago" (click)="historialPagos()">
-      VER TODO EL HISTORIAL
+      <i class="bi bi-layers-half"></i> VER HISTORIAL COMPLETO
     </button>
 
   </ng-container>
-
 </div>
 
-<!-- MODAL DETALLE -->
 <div class="modal-overlay" *ngIf="modalVisible" (click)="cerrarModal()">
   <div class="modal-detalle" (click)="$event.stopPropagation()">
 
     <div class="modal-header">
-      <h3>Detalle del pago</h3>
-      <button class="btn-cerrar" (click)="cerrarModal()">✕</button>
+      <h3><i class="bi bi-file-earmark-text-fill"></i> Resumen de Transacción</h3>
+      <button class="btn-cerrar" (click)="cerrarModal()"><i class="bi bi-x-lg"></i></button>
     </div>
 
     <div class="modal-body" *ngIf="pagoSeleccionado">
@@ -133,29 +143,31 @@
         <span class="detalle-valor">{{ pagoSeleccionado.alumnoNombreCompleto }}</span>
       </div>
       <div class="detalle-row">
-        <span class="detalle-label">Monto base</span>
+        <span class="detalle-label">Monto Base</span>
         <span class="detalle-valor">S/ {{ pagoSeleccionado.monto | number:'1.2-2' }}</span>
       </div>
       <div class="detalle-row" *ngIf="pagoSeleccionado.mora > 0">
-        <span class="detalle-label">Mora</span>
+        <span class="detalle-label">Mora por Vencimiento</span>
         <span class="detalle-valor mora">S/ {{ pagoSeleccionado.mora | number:'1.2-2' }}</span>
       </div>
-      <div class="detalle-row total">
-        <span class="detalle-label">Total a pagar</span>
-        <span class="detalle-valor">S/ {{ pagoSeleccionado.totalAPagar | number:'1.2-2' }}</span>
+      
+      <div class="detalle-total-box">
+        <span class="detalle-label-total">Monto Consolidado</span>
+        <span class="detalle-valor-total">S/ {{ pagoSeleccionado.totalAPagar | number:'1.2-2' }}</span>
       </div>
+
       <div class="detalle-row">
-        <span class="detalle-label">Vencimiento</span>
+        <span class="detalle-label">Límite de Pago</span>
         <span class="detalle-valor">{{ pagoSeleccionado.fechaVencimiento }}</span>
       </div>
       <div class="detalle-row">
-        <span class="detalle-label">Estado</span>
-        <span class="detalle-valor estado-chip" [ngClass]="pagoSeleccionado.estado.toLowerCase()">
+        <span class="detalle-label">Estado Actual</span>
+        <span class="estado-chip" [ngClass]="pagoSeleccionado.estado.toLowerCase()">
           {{ pagoSeleccionado.estado }}
         </span>
       </div>
       <div class="detalle-row" *ngIf="pagoSeleccionado.referenciaBancaria">
-        <span class="detalle-label">Referencia</span>
+        <span class="detalle-label">Código de Referencia</span>
         <span class="detalle-valor mono">{{ pagoSeleccionado.referenciaBancaria }}</span>
       </div>
     </div>
@@ -163,7 +175,9 @@
   </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" [class.show]="toast.visible">
-  {{ toast.mensaje }}
+<div class="toast-pago" [class.show]="toast.visible">
+  <div class="toast-content">
+    <i class="bi bi-info-circle-fill"></i>
+    <span>{{ toast.mensaje }}</span>
+  </div>
 </div>

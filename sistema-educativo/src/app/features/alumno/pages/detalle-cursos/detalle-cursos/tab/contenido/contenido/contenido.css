@@ -1,0 +1,359 @@
+:host {
+  --bd: #0A1A3E;
+  --bm: #1340A0;
+  --bl: #2A63E6;
+  --ok: #00C27C;
+  --or: #FF5B1F;
+  --g1: #F8FAFC;
+  --g2: #E2E8F0;
+  --g4: #94A3B8;
+  --g6: #64748B;
+  --tr: .22s cubic-bezier(.4, 0, .2, 1);
+  --sc: 0 4px 16px rgba(10, 26, 62, .04);
+}
+
+/* ═══ LOADING SPINNER ═══ */
+.tab-loading {
+  display: flex;
+  justify-content: center;
+  padding: 64px 48px;
+}
+.tl-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--g2);
+  border-top-color: var(--bm);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.contenido-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeIn .25s ease both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══ ENCABEZADO SECCIÓN ═══ */
+.sec-head {
+  margin-bottom: 6px;
+}
+.sec-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--bd);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sec-title i {
+  color: var(--bm);
+  font-size: 20px;
+}
+
+/* ═══ ACORDEÓN SEMANAS (WEEK CARDS) ═══ */
+.week-card {
+  border: 1px solid var(--g2);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  transition: all var(--tr);
+  box-shadow: var(--sc);
+}
+
+.week-card:hover {
+  border-color: var(--g4);
+}
+
+.week-card.week-is-open {
+  border-color: var(--bm);
+  box-shadow: 0 6px 20px rgba(19, 64, 160, 0.06);
+}
+
+.week-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  cursor: pointer;
+  background: #fff;
+  transition: background var(--tr);
+}
+
+.week-head:hover {
+  background: var(--g1);
+}
+
+/* Indicador del número de semana */
+.week-num {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--bd);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(10, 26, 62, 0.15);
+}
+
+.week-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.week-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--bd);
+  margin-bottom: 2px;
+}
+
+.week-sub {
+  font-size: 12px;
+  color: var(--g6);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.week-sub i {
+  color: var(--g4);
+}
+
+.week-chevron-wrap {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--g1);
+  color: var(--g6);
+  transition: all var(--tr);
+}
+
+.week-chevron {
+  font-size: 14px;
+  transition: transform var(--tr);
+}
+.week-chevron.open {
+  transform: rotate(180deg);
+  color: var(--bm);
+}
+
+/* Cuerpo desplegable */
+.week-body {
+  border-top: 1px solid var(--g2);
+  padding: 16px 20px;
+  background: var(--g1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.empty-mat {
+  font-size: 13px;
+  color: var(--g6);
+  text-align: center;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* ═══ MATERIALES INTERNOS ═══ */
+.week-mat {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid var(--g2);
+  border-radius: 12px; /* Alineado a tu estándar */
+  transition: all var(--tr);
+}
+
+.week-mat:hover {
+  border-color: var(--g4);
+  transform: translateX(2px);
+}
+
+/* Contenedores de Iconos por Tipo */
+.wm-ico {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.wm-ico.pdf {
+  background: rgba(226, 75, 74, 0.08);
+  color: #E24B4A;
+  border: 1px solid rgba(226, 75, 74, 0.15);
+}
+
+.wm-ico.video {
+  background: rgba(127, 119, 221, 0.08);
+  color: #7F77DD;
+  border: 1px solid rgba(127, 119, 221, 0.15);
+}
+
+.wm-ico.doc {
+  background: rgba(55, 138, 221, 0.08);
+  color: #378ADD;
+  border: 1px solid rgba(55, 138, 221, 0.15);
+}
+
+.wm-ico.link {
+  background: rgba(186, 117, 23, 0.08);
+  color: #BA7517;
+  border: 1px solid rgba(186, 117, 23, 0.15);
+}
+
+.wm-ico i {
+  font-size: 18px;
+}
+
+.wm-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.wm-nombre {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--bd);
+  line-height: 1.4;
+}
+
+.wm-meta {
+  font-size: 11px;
+  color: var(--g6);
+  margin-top: 1px;
+}
+
+/* Botones de acción */
+.wm-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.wm-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px; /* Consistencia industrial */
+  border: 1px solid var(--g2);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--tr);
+}
+
+.wm-btn i {
+  font-size: 15px;
+}
+
+.wm-btn:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+/* Hover de botón ver */
+.wm-btn.btn-view {
+  color: var(--g6);
+}
+.wm-btn.btn-view:hover:not(:disabled) {
+  background: var(--g1);
+  color: var(--bm);
+  border-color: var(--bm);
+}
+
+/* Hover de botón descargar */
+.wm-btn.btn-download {
+  color: var(--bm);
+  background: rgba(19, 64, 160, 0.04);
+}
+.wm-btn.btn-download:hover:not(:disabled) {
+  background: var(--bm);
+  color: #fff;
+  border-color: var(--bm);
+}
+
+/* ═══ EMPTY STATE GENERAL ═══ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 20px;
+  background: #fff;
+  border: 2px dashed var(--g2);
+  border-radius: 12px;
+  gap: 14px;
+}
+
+.empty-icon-wrap {
+  width: 56px;
+  height: 56px;
+  background: var(--g1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--g4);
+  font-size: 26px;
+}
+
+.empty-state h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--bd);
+  margin: 0;
+}
+
+.empty-state p {
+  font-size: 13px;
+  color: var(--g6);
+  text-align: center;
+  max-width: 340px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* RESPONSIVO */
+@media (max-width: 576px) {
+  .week-head {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  .week-body {
+    padding: 12px 14px;
+  }
+  .week-mat {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    position: relative;
+  }
+  .wm-actions {
+    width: 100%;
+    justify-content: flex-end;
+    border-top: 1px solid var(--g2);
+    padding-top: 8px;
+  }
+}

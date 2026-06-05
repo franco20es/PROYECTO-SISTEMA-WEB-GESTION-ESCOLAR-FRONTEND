@@ -1,8 +1,10 @@
+// notas.ts
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { ModalAsistencia } from '../../../components/modales/modal-asistencia/modal-asistencia';
-import { environment } from '../../../../../../environment/environment';
+import { NotaService } from '../../../service/nota.service';
 
 @Component({
   selector: 'app-notas',
@@ -13,8 +15,7 @@ import { environment } from '../../../../../../environment/environment';
 })
 export class NotasAlumno implements OnInit {
 
-  private http = inject(HttpClient);
-  private api = environment.apiUrl;
+  private notaService = inject(NotaService);
 
   expandedIndex: number | null = null;
   mostrarAsistencia = false;
@@ -22,25 +23,24 @@ export class NotasAlumno implements OnInit {
   cargando = true;
   anio = new Date().getFullYear();
 
+  periodo: any = null;
   notas: any[] = [];
 
   ngOnInit(): void {
-    this.cargarNotas();
+    this.cargar();
   }
 
-  cargarNotas(): void {
-    const anioParam = new HttpParams().set('anio', this.anio);
+  cargar(): void {
+    this.cargando = true;
 
-    // Cargar horario y notas en paralelo
-    Promise.all([
-      this.http.get<any[]>(`${this.api}/portal/alumno/horario`, { params: anioParam }).toPromise(),
-      this.http.get<any>(`${this.api}/portal/alumno/notas`, {
-        params: new HttpParams().set('anio', this.anio).set('page', 0).set('size', 50)
-      }).toPromise()
-    ]).then(([horario, notasRes]) => {
-      const notasContent: any[] = notasRes?.content || [];
+    // 1. Periodo activo + horario en paralelo
+    forkJoin({
+      periodo: this.notaService.getPeriodoActivo().pipe(catchError(() => of(null))),
+      horario: this.notaService.getHorario(this.anio).pipe(catchError(() => of([])))
+    }).subscribe(({ periodo, horario }) => {
+      this.periodo = periodo;
 
-      // Agrupar horario por curso
+      // 2. Agrupar cursos del horario
       const cursosMap = new Map<string, any>();
       (horario || []).forEach((h: any) => {
         if (!cursosMap.has(h.cursoId)) {
@@ -51,56 +51,74 @@ export class NotasAlumno implements OnInit {
             docente: h.docenteNombreCompleto,
             horario: `${this.abrevDia(h.diaSemana)}: ${h.horaInicio.slice(0,5)} - ${h.horaFin.slice(0,5)}`,
             modalidad: 'Presencial',
-            horasSemanales: 2.0,
-            creditos: 2.0,
-            nroVez: 1,
             seccion: h.seccionDenominacion,
-            b1: '—', b2: '—', b3: '—', b4: '—',
+            evaluaciones: [],
             promedio: null,
-            asistencia: { asistio: 0, noAsistio: 0, pendiente: 0, sinRegistro: 0, calendario: [] }
+            sumaPesos: 0,
+            todoCalificado: false,
           });
         }
       });
 
-      // Mapear notas por curso y bimestre
-      notasContent.forEach((n: any) => {
-        if (cursosMap.has(n.cursoId)) {
-          const curso = cursosMap.get(n.cursoId);
-          const key = `b${n.numeroBimestre}`;
-          curso[key] = n.calificacion?.toFixed(1) || '—';
-          curso.docente = n.docenteNombreCompleto;
-        }
-      });
+      const cursos = Array.from(cursosMap.values());
 
-      // Calcular promedio por curso
-      cursosMap.forEach(curso => {
-        const bimestres = [curso.b1, curso.b2, curso.b3, curso.b4]
-          .filter((b: string) => b !== '—')
-          .map((b: string) => parseFloat(b));
-        curso.promedio = bimestres.length > 0
-          ? bimestres.reduce((a: number, b: number) => a + b, 0) / bimestres.length
-          : null;
-      });
+      if (!periodo || cursos.length === 0) {
+        this.notas = cursos;
+        this.cargando = false;
+        return;
+      }
 
-      this.notas = Array.from(cursosMap.values());
-      this.cargando = false;
-    }).catch(() => {
-      this.cargando = false;
+      // 3. Por cada curso, traer sus evaluaciones del periodo activo (en paralelo)
+      const llamadas = cursos.map(c =>
+        this.notaService.getEvaluaciones(c.cursoId, periodo.id, this.anio)
+          .pipe(catchError(() => of(null)))
+      );
+
+      forkJoin(llamadas).subscribe(resultados => {
+        resultados.forEach((res, i) => {
+          if (res) {
+            cursos[i].evaluaciones = res.evaluaciones || [];
+            cursos[i].sumaPesos    = res.sumaPesos || 0;
+            const evals = cursos[i].evaluaciones;
+            const calificadas = evals.filter((e: any) => e.estado === 'CALIFICADA').length;
+            cursos[i].todoCalificado = evals.length > 0 && calificadas === evals.length;
+            cursos[i].promedio = cursos[i].todoCalificado ? res.notaFinal : null;
+            cursos[i].calificadas = calificadas;
+          }
+        });
+        this.notas = cursos;
+        this.cargando = false;
+      });
     });
   }
 
   abrevDia(dia: string): string {
-    const abrevs: Record<string, string> = {
+    const a: Record<string, string> = {
       LUNES: 'Lun', MARTES: 'Mar', MIERCOLES: 'Mié',
       JUEVES: 'Jue', VIERNES: 'Vie', SABADO: 'Sáb', DOMINGO: 'Dom'
     };
-    return abrevs[dia] || dia;
+    return a[dia] || dia;
+  }
+
+  // Construye la fórmula ponderada: P1(20%) + P2(20%) + EF(40%)...
+  formula(nota: any): string {
+    if (!nota.evaluaciones || nota.evaluaciones.length === 0) return '—';
+    return nota.evaluaciones
+      .map((e: any) => `${e.nombre} (${e.peso}%)`)
+      .join(' + ');
   }
 
   get promedio(): number {
-    const conNota = this.notas.filter(n => n.promedio !== null);
+    const conNota = this.notas.filter(n => n.promedio != null);
     if (conNota.length === 0) return 0;
     return conNota.reduce((sum, n) => sum + n.promedio, 0) / conNota.length;
+  }
+
+  colorNota(n: number | null): string {
+    if (n == null) return '#8A95B0';
+    if (n >= 15) return '#1D9E75';
+    if (n >= 11) return '#BA7517';
+    return '#A32D2D';
   }
 
   toggleAccordion(index: number): void {

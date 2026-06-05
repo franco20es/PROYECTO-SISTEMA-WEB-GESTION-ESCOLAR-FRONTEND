@@ -593,13 +593,17 @@ body {
 /* ═══ DRAWER ═══ */
 .drawer-overlay {
 	position: fixed;
-	inset: 0;
-	z-index: 100;
-	background: rgba(10, 26, 62, .6);
-	backdrop-filter: blur(3px);
-	opacity: 0;
-	pointer-events: none;
-	transition: opacity .3s
+
+	top: 60px; 
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    background: rgba(10, 26, 62, .6);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s
 }
 
 .drawer-overlay.show {
@@ -609,18 +613,21 @@ body {
 
 .drawer {
 	position: fixed;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	width: 580px;
-	max-width: 95vw;
-	background: var(--w);
-	z-index: 101;
-	transform: translateX(100%);
-	transition: transform .35s cubic-bezier(.4, 0, .2, 1);
-	display: flex;
-	flex-direction: column;
-	box-shadow: -8px 0 40px rgba(10, 26, 62, .2)
+	top: 60px; /* ◄ Baja el drawer para evitar que se monte sobre tu Navbar principal */
+    right: 0;
+    bottom: 0;
+    width: 580px;
+    max-width: 95vw;
+    background: var(--w);
+    z-index: 101;
+    transform: translateX(100%);
+    transition: transform .35s cubic-bezier(.4, 0, .2, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -8px 0 40px rgba(10, 26, 62, .2);
+    
+    
+    overflow: hidden; /* Mantiene los fondos oscuros dentro del límite redondeado */
 }
 
 .drawer.show {

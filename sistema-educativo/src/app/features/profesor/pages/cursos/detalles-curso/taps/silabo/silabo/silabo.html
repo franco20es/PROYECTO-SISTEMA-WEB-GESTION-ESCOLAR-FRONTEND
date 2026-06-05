@@ -1,0 +1,48 @@
+<div class="stitle">Sílabo del curso</div>
+
+@if (cargando()) {
+  <div class="sd-loading"><div class="spinner-d"></div></div>
+}
+
+@if (!cargando()) {
+  @if (silabo(); as s) {
+    <div class="sd-card">
+      <div class="sd-ico">
+        <i class="bi bi-file-earmark-pdf-fill"></i>
+      </div>
+      <div class="sd-info">
+        <div class="sd-nombre">{{ s.nombreArchivo }}</div>
+        <div class="sd-meta">{{ s.tamanio }} · Subido el {{ s.fechaSubida | date:'dd MMM yyyy' }}</div>
+      </div>
+      <div class="sd-actions">
+        <button class="btn btn-gh btn-sm" (click)="verSilabo()">
+          <i class="bi bi-eye-fill"></i> Ver
+        </button>
+        <button class="btn btn-gh btn-sm" (click)="descargarSilabo()">
+          <i class="bi bi-download"></i> Descargar
+        </button>
+        <button class="btn btn-gh btn-sm sd-del" (click)="eliminarSilabo()">
+          <i class="bi bi-trash3-fill"></i> Eliminar
+        </button>
+      </div>
+    </div>
+
+    <div class="sd-reemplazar">
+      <p>¿Quieres reemplazarlo? Sube un nuevo archivo PDF para sustituir el documento actual.</p>
+      <label class="btn btn-or" [class.disabled]="subiendo()">
+        <i class="bi bi-cloud-arrow-up-fill"></i>
+        {{ subiendo() ? 'Subiendo...' : 'Reemplazar sílabo' }}
+        <input type="file" accept="application/pdf" hidden (change)="onArchivoSeleccionado($event)" [disabled]="subiendo()">
+      </label>
+    </div>
+  }
+
+  @if (!silabo()) {
+    <label class="sd-upload" [class.disabled]="subiendo()">
+      <i class="bi bi-cloud-upload-fill"></i>
+      <p>{{ subiendo() ? 'Subiendo sílabo...' : 'Sube el sílabo del curso' }}</p>
+      <small>Solo archivos en formato PDF • máx 25MB</small>
+      <input type="file" accept="application/pdf" hidden (change)="onArchivoSeleccionado($event)" [disabled]="subiendo()">
+    </label>
+  }
+}

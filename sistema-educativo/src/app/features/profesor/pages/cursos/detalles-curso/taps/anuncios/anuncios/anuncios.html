@@ -1,0 +1,75 @@
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:8px">
+  <div class="stitle" style="margin-bottom:0">Anuncios del curso</div>
+  <button class="btn btn-or" (click)="abrirModal()">
+    <i class="bi bi-plus-lg"></i> Nuevo anuncio
+  </button>
+</div>
+
+@if (cargando()) {
+  <div class="cd-loading">
+    <div class="spinner-d"></div>
+  </div>
+}
+
+@if (!cargando()) {
+  @if (anuncios().length === 0) {
+    <div class="empty-d">
+      <i class="bi bi-megaphone-fill"></i>
+      <p>No hay anuncios publicados. Crea el primero para informar a tus alumnos.</p>
+    </div>
+  }
+
+  @for (a of anuncios(); track a.id) {
+    <div class="anuncio" [class.an-pin]="a.fijado">
+      <div class="an-h">
+        <div class="an-title">
+          @if (a.fijado) { <i class="bi bi-pin-angle-fill an-pin-icon"></i> }
+          <span>{{ a.titulo }}</span>
+          @if (a.fijado) { <span class="an-pin-badge">FIJADO</span> }
+        </div>
+        <div class="an-date">
+          <i class="bi bi-calendar3"></i> {{ formatearFecha(a.fechaPublicacion) }}
+        </div>
+      </div>
+      <div class="an-body">{{ a.cuerpo }}</div>
+      <div class="an-foot">
+        <button class="btn btn-sm btn-gh sd-del" (click)="eliminar(a, $event)">
+          <i class="bi bi-trash3-fill"></i> Eliminar
+        </button>
+      </div>
+    </div>
+  }
+}
+
+@if (modalAbierto()) {
+  <div class="mo show" (click)="cerrarModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="mh">
+        <h3><i class="bi bi-megaphone-fill"></i> Nuevo anuncio</h3>
+        <button class="mc" (click)="cerrarModal()">✕</button>
+      </div>
+      <div class="mb">
+        <div class="ff">
+          <label>Título <span class="req">*</span></label>
+          <input type="text" [(ngModel)]="form.titulo" placeholder="Ej: Cambio de fecha del examen">
+        </div>
+        <div class="ff">
+          <label>Contenido <span class="req">*</span></label>
+          <textarea [(ngModel)]="form.cuerpo" rows="4" placeholder="Escribe las instrucciones o comunicado aquí..."></textarea>
+        </div>
+        <div class="ff-check">
+          <label>
+            <input type="checkbox" [(ngModel)]="form.fijado">
+            <span>Fijar este anuncio en la parte superior</span>
+          </label>
+        </div>
+      </div>
+      <div class="mf">
+        <button class="btn btn-gh" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn btn-or" (click)="publicar()" [disabled]="guardando()">
+          {{ guardando() ? 'Publicando...' : 'Publicar anuncio' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

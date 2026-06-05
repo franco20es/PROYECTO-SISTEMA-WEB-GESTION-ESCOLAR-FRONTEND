@@ -1,200 +1,288 @@
- 
 <div class="hd">
-  <div class="hd-l"><div class="tag">Gestión docente</div><h1>Mis <em>Estudiantes</em></h1><p>Gestiona y consulta la información académica de tus alumnos</p></div>
+  <div class="hd-l">
+    <div class="tag">Gestión docente</div>
+    <h1>Mis <em>Estudiantes</em></h1>
+    <p>Gestiona y consulta la información académica de tus alumnos</p>
+  </div>
   <div style="display:flex;gap:7px">
-    <select class="fsel" id="selCurso" onchange="renderAll()"><option>Matemáticas — 3ro A (32)</option><option>Matemáticas — 3ro B (30)</option><option>Física — 4to A (28)</option><option>Física — 4to B (31)</option></select>
-    <button class="btn btn-gh"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar</button>
+    <select class="fsel" id="selCurso" [ngModel]="cursoSeleccionado()" (ngModelChange)="cursoSeleccionado.set($event)">
+      <option value="mat3a">Matemáticas — 3ro A (32)</option>
+      <option value="mat3b">Matemáticas — 3ro B (30)</option>
+      <option value="fis4a">Física — 4to A (28)</option>
+      <option value="fis4b">Física — 4to B (31)</option>
+    </select>
+    <button class="btn btn-gh" (click)="showToast('Exportando datos...', 'info')">
+      <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar
+    </button>
   </div>
 </div>
- 
-<div class="kpis" id="kpis"></div>
- 
-<div class="toolbar">
-  <div class="srch"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z"/></svg><input id="searchBox" placeholder="Buscar por nombre o código..." oninput="renderAll()"></div>
-  <select class="fsel" id="sortSel" onchange="renderAll()"><option value="list">Orden de lista</option><option value="az">Apellido A → Z</option><option value="prom-desc">Mayor promedio</option><option value="prom-asc">Menor promedio</option><option value="asist-asc">Menor asistencia</option></select>
-  <div style="display:flex;gap:2px"><span class="chip on" onclick="filterChip(this,'all')">Todos</span><span class="chip" onclick="filterChip(this,'risk')">En riesgo</span><span class="chip" onclick="filterChip(this,'exc')">Excelentes</span></div>
-  <div class="views"><button class="vbtn on" onclick="toggleView('table',this)"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>Tabla</button><button class="vbtn" onclick="toggleView('grid',this)"><svg viewBox="0 0 24 24"><path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"/></svg>Grid</button></div>
-</div>
- 
-<div class="table-view on" id="tableView"><div class="card"><div class="tbl-wrap"><table class="st"><thead><tr><th>#</th><th>Estudiante</th><th class="ctr">Promedio</th><th class="ctr">Asistencia</th><th class="ctr">Tareas</th><th class="ctr">Estado</th></tr></thead><tbody id="tBody"></tbody></table></div></div></div>
-<div class="grid-view" id="gridView"></div>
- 
 
-<!-- DRAWER -->
-<div class="drawer-overlay" id="drOverlay" onclick="closeDrawer()"></div>
-<div class="drawer" id="drawer">
-  <div class="dr-header" id="drHeader"></div>
-  <div class="dr-tabs" id="drTabs"></div>
-  <div id="drPanels"></div>
+<div class="kpis">
+  <div class="kpi"><div><strong>{{ kpis().total }}</strong><span>Total estudiantes</span></div></div>
+  <div class="kpi"><div><strong>{{ kpis().avgProm }}</strong><span>Promedio aula</span></div></div>
+  <div class="kpi"><div><strong>{{ kpis().avgAsist }}%</strong><span>Asistencia prom.</span></div></div>
+  <div class="kpi"><div><strong>{{ kpis().exc }}</strong><span>Excelentes</span></div></div>
+  <div class="kpi"><div><strong>{{ kpis().risk }}</strong><span>En riesgo</span></div></div>
 </div>
- 
-<div class="toast t-ok" id="toast"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span id="toastMsg">OK</span></div>
- 
-<script>
-const STU=['Aguirre López, Pedro','Álvarez Quispe, María','Benites Ruiz, Ana','Campos Torres, Luis','Castillo Vega, Rosa','Chávez Díaz, Jorge','Cruz Mendoza, Lucía','Delgado Ramos, Carlos','Espinoza Paredes, Sofía','Fernández León, Diego','García Huamán, Andrea','Gómez Salazar, Kevin','Gutiérrez Flores, Valeria','Herrera Sánchez, Marco','Huamán Rivera, Carmen','López Castro, Daniel','Martínez Arias, Isabella','Mendoza Vargas, Sebastián','Morales Chávez, Jimena','Ortega Cruz, Alejandro','Paredes Gutiérrez, Camila','Pérez Herrera, Fernando','Quispe Espinoza, Natalia','Ramírez García, Gabriel','Rivera López, Antonella','Rojas Benites, Miguel','Salazar Campos, Daniela','Sánchez Castillo, Rodrigo','Torres Álvarez, Mariana','Vargas Delgado, Adrián','Vega Martínez, Paola','Villanueva Ortega, Emilio'];
-const COLORS=['#2A63E6','#FF5B1F','#00C27C','#9B59B6','#F5A623','#E53030','#1340A0','#d08a00'];
-const rn=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
-function ini(n){return n.split(',')[0].split(' ').map(w=>w[0]).join('').slice(0,2)}
-function nColor(v){return v>=15?'var(--ok)':v>=11?'var(--wa)':'var(--er)'}
-function pColor(v){return v>=90?'var(--ok)':v>=75?'var(--wa)':'var(--er)'}
- 
-// Generate student data
-const data=STU.map((name,i)=>{
-  const prom=rn(8,20);const asist=rn(65,100);const tareas=`${rn(4,7)}/7`;
-  const status=prom>=17?'exc':prom>=11?(asist<75?'risk':'ok'):'risk';
-  const dni='7'+rn(1000000,9999999);
-  return {name,prom,asist,tareas,status,dni,code:'COD-2025-'+(3000+i),color:COLORS[i%COLORS.length],
-    notas:[rn(8,20),rn(8,20),rn(8,20),rn(8,20),rn(8,20),rn(8,20),rn(8,20)],
-    asistData:Array.from({length:20},()=>{const r=Math.random();return r<.84?'P':r<.92?'T':r<.97?'F':'J'}),
-    tel:'9'+rn(10000000,99999999),email:name.split(',')[0].toLowerCase().replace(/\s/g,'')+'@email.com',
-    apoderado:['María López','Carlos Torres','Ana Quispe','José García'][i%4],apTel:'9'+rn(10000000,99999999)};
-});
- 
-let filter='all';
-function filterChip(el,f){el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');filter=f;renderAll()}
-function toggleView(v,btn){document.querySelectorAll('.vbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.getElementById('tableView').classList.toggle('on',v==='table');document.getElementById('gridView').classList.toggle('on',v==='grid')}
- 
-function getFiltered(){
-  let list=data.map((d,i)=>({...d,idx:i}));
-  const q=document.getElementById('searchBox').value.toLowerCase();
-  if(q) list=list.filter(d=>d.name.toLowerCase().includes(q)||d.code.includes(q));
-  if(filter==='risk') list=list.filter(d=>d.status==='risk');
-  if(filter==='exc') list=list.filter(d=>d.status==='exc');
-  const sort=document.getElementById('sortSel').value;
-  if(sort==='az') list.sort((a,b)=>a.name.localeCompare(b.name));
-  if(sort==='prom-desc') list.sort((a,b)=>b.prom-a.prom);
-  if(sort==='prom-asc') list.sort((a,b)=>a.prom-b.prom);
-  if(sort==='asist-asc') list.sort((a,b)=>a.asist-b.asist);
-  return list;
-}
- 
-function renderAll(){
-  const list=getFiltered();
-  // KPIs
-  const exc=data.filter(d=>d.status==='exc').length,risk=data.filter(d=>d.status==='risk').length;
-  const avgProm=(data.reduce((a,d)=>a+d.prom,0)/data.length).toFixed(1);
-  const avgAsist=Math.round(data.reduce((a,d)=>a+d.asist,0)/data.length);
-  document.getElementById('kpis').innerHTML=`<div class="kpi"><div><strong>${data.length}</strong><span>Total estudiantes</span></div></div><div class="kpi"><div><strong>${avgProm}</strong><span>Promedio aula</span></div></div><div class="kpi"><div><strong>${avgAsist}%</strong><span>Asistencia prom.</span></div></div><div class="kpi"><div><strong>${exc}</strong><span>Excelentes</span></div></div><div class="kpi"><div><strong>${risk}</strong><span>En riesgo</span></div></div>`;
- 
-  // TABLE
-  const tbody=document.getElementById('tBody');
-  tbody.innerHTML=list.map((d,i)=>{
-    const badgeCls=d.status==='exc'?'b-exc':d.status==='risk'?'b-risk':d.prom>=15?'b-ok':'b-reg';
-    const badgeTxt=d.status==='exc'?'Excelente':d.status==='risk'?'En riesgo':d.prom>=15?'Aprobado':'Regular';
-    return `<tr class="${d.status==='risk'?'row-risk':''}" onclick="openDrawer(${d.idx})">
-      <td class="td-n">${i+1}</td>
-      <td><div class="td-stu"><div class="td-av" style="background:${d.color}">${ini(d.name)}</div><div><div class="td-nm">${d.name}</div><div class="td-code">${d.code}</div></div></div></td>
-      <td style="text-align:center"><span class="td-prom" style="color:${nColor(d.prom)}">${d.prom}</span></td>
-      <td style="text-align:center"><span class="td-pct" style="color:${pColor(d.asist)}">${d.asist}%</span><span class="mini-bar"><span class="mini-fill" style="width:${d.asist}%;background:${pColor(d.asist)}"></span></span></td>
-      <td style="text-align:center;font-family:'DM Mono',monospace;font-size:11px">${d.tareas}</td>
-      <td style="text-align:center"><span class="badge ${badgeCls}">${badgeTxt}</span></td>
-    </tr>`;}).join('');
- 
-  // GRID
-  document.getElementById('gridView').innerHTML=list.map(d=>{
-    const badgeCls=d.status==='exc'?'b-exc':d.status==='risk'?'b-risk':d.prom>=15?'b-ok':'b-reg';
-    const badgeTxt=d.status==='exc'?'Excelente':d.status==='risk'?'En riesgo':d.prom>=15?'Aprobado':'Regular';
-    return `<div class="gc" onclick="openDrawer(${d.idx})"><div class="gc-body"><div class="gc-av" style="background:${d.color}">${ini(d.name)}</div><div class="gc-nm">${d.name}</div><div class="gc-code">${d.code}</div><div class="gc-stats"><div class="gc-st"><strong style="color:${nColor(d.prom)}">${d.prom}</strong><span>Prom.</span></div><div class="gc-st"><strong style="color:${pColor(d.asist)}">${d.asist}%</strong><span>Asist.</span></div><div class="gc-st"><strong>${d.tareas}</strong><span>Tareas</span></div></div></div><div class="gc-foot"><span class="gc-badge ${badgeCls}">${badgeTxt}</span></div></div>`;}).join('');
-}
- 
-/* ═══ DRAWER ═══ */
-function openDrawer(idx){
-  const d=data[idx];
-  document.getElementById('drOverlay').classList.add('show');
-  document.getElementById('drawer').classList.add('show');
- 
-  document.getElementById('drHeader').innerHTML=`
-    <button class="dr-close" onclick="closeDrawer()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
-    <div class="dr-profile"><div class="dr-av" style="background:${d.color}">${ini(d.name)}</div><div class="dr-info"><h2>${d.name}</h2><p>${d.code} · DNI: ${d.dni}</p><div class="dr-chips"><span class="dr-chip drc-sec">3ro A</span><span class="dr-chip drc-st">Activo</span></div></div></div>
-    <div class="dr-quick"><div class="dq"><strong style="color:${nColor(d.prom)}">${d.prom}</strong><span>Promedio</span></div><div class="dq"><strong style="color:${pColor(d.asist)}">${d.asist}%</strong><span>Asistencia</span></div><div class="dq"><strong>${d.tareas}</strong><span>Tareas</span></div><div class="dq"><strong style="color:${d.status==='risk'?'var(--er)':d.status==='exc'?'var(--bl)':'var(--ok)'}">${d.status==='exc'?'Exc.':d.status==='risk'?'Riesgo':'OK'}</strong><span>Estado</span></div></div>`;
- 
-  const tabs=['Datos','Notas','Asistencia','Observaciones','Apoderado'];
-  document.getElementById('drTabs').innerHTML=tabs.map((t,i)=>`<div class="drt ${i===0?'on':''}" onclick="swDrTab(this,${i})"><span>${t}</span></div>`).join('');
- 
-  document.getElementById('drPanels').innerHTML=`
-    <div class="dr-panel on" id="drp0">${panelDatos(d)}</div>
-    <div class="dr-panel" id="drp1">${panelNotas(d)}</div>
-    <div class="dr-panel" id="drp2">${panelAsistencia(d)}</div>
-    <div class="dr-panel" id="drp3">${panelObservaciones(d)}</div>
-    <div class="dr-panel" id="drp4">${panelApoderado(d)}</div>`;
-}
-function closeDrawer(){document.getElementById('drOverlay').classList.remove('show');document.getElementById('drawer').classList.remove('show')}
-function swDrTab(el,i){el.parentElement.querySelectorAll('.drt').forEach(t=>t.classList.remove('on'));el.classList.add('on');for(let j=0;j<5;j++){const p=document.getElementById('drp'+j);if(p)p.classList.toggle('on',j===i)}}
- 
-function panelDatos(d){
-  return `<div class="stitle">Información personal</div>
-    <div class="dr-row"><label>Nombre completo</label><span>${d.name}</span></div>
-    <div class="dr-row"><label>Código</label><span class="mono">${d.code}</span></div>
-    <div class="dr-row"><label>DNI</label><span class="mono">${d.dni}</span></div>
-    <div class="dr-row"><label>Email</label><span>${d.email}</span></div>
-    <div class="dr-row"><label>Teléfono</label><span class="mono">${d.tel}</span></div>
-    <div class="dr-row"><label>Sección</label><span>3ro A — Secundaria</span></div>
-    <div class="dr-row"><label>Fecha de nacimiento</label><span class="mono">${rn(1,28)}/${rn(1,12).toString().padStart(2,'0')}/20${rn(10,12)}</span></div>
-    <div class="dr-row"><label>Dirección</label><span>Av. Los Maestros ${rn(100,999)}, Ica</span></div>
-    <div style="margin-top:12px" class="stitle">Información académica</div>
-    <div class="dr-row"><label>Promedio Bimestre II</label><span style="color:${nColor(d.prom)};font-family:'Bebas Neue';font-size:18px">${d.prom}</span></div>
-    <div class="dr-row"><label>Promedio Bimestre I</label><span class="mono">${rn(10,18)}</span></div>
-    <div class="dr-row"><label>Asistencia</label><span style="color:${pColor(d.asist)}">${d.asist}%</span></div>
-    <div class="dr-row"><label>Tareas entregadas</label><span>${d.tareas}</span></div>
-    <div class="dr-row"><label>Puesto en clase</label><span class="mono">${rn(1,32)}°</span></div>`;
-}
- 
-function panelNotas(d){
-  const evals=['E.Parcial','P.C#4','T#5','T#4','T#3','P.C#3','T#2'];
-  return `<div class="stitle">Registro de calificaciones</div>
-    <table class="nt"><thead><tr><th>Evaluación</th>${evals.map(e=>`<th>${e}</th>`).join('')}<th style="background:var(--or)">Prom.</th></tr></thead>
-    <tbody><tr><td>Matemáticas</td>${d.notas.map(n=>`<td style="color:${nColor(n)}">${n}</td>`).join('')}<td style="color:${nColor(d.prom)};font-family:'Bebas Neue';font-size:16px">${d.prom}</td></tr></tbody></table>
-    <div class="stitle">Evolución de notas</div>
-    <div style="display:flex;gap:3px;align-items:flex-end;height:80px;padding:4px 0">
-      ${d.notas.map(n=>`<div style="flex:1;background:${nColor(n)};height:${n/20*100}%;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px;font-family:'DM Mono',monospace;font-size:9px;color:#fff;font-weight:700">${n}</div>`).join('')}
+
+<div class="toolbar">
+  <div class="srch">
+    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z"/></svg>
+    <input [ngModel]="searchFilter()" (ngModelChange)="searchFilter.set($event)" placeholder="Buscar por nombre o código...">
+  </div>
+
+  <select class="fsel" [ngModel]="currentSort()" (ngModelChange)="currentSort.set($event)">
+    <option value="list">Orden de lista</option>
+    <option value="az">Apellido A → Z</option>
+    <option value="prom-desc">Mayor promedio</option>
+    <option value="prom-asc">Menor promedio</option>
+    <option value="asist-asc">Menor asistencia</option>
+  </select>
+
+  <div style="display:flex;gap:2px">
+    <span class="chip" [class.on]="currentChip() === 'all'" (click)="currentChip.set('all')">Todos</span>
+    <span class="chip" [class.on]="currentChip() === 'risk'" (click)="currentChip.set('risk')">En riesgo</span>
+    <span class="chip" [class.on]="currentChip() === 'exc'" (click)="currentChip.set('exc')">Excelentes</span>
+  </div>
+
+  <div class="views">
+    <button class="vbtn" [class.on]="currentView() === 'table'" (click)="currentView.set('table')">
+      <svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>Tabla
+    </button>
+    <button class="vbtn" [class.on]="currentView() === 'grid'" (click)="currentView.set('grid')">
+      <svg viewBox="0 0 24 24"><path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"/></svg>Grid
+    </button>
+  </div>
+</div>
+
+@if (currentView() === 'table') {
+  <div class="table-view on">
+    <div class="card">
+      <div class="tbl-wrap">
+        <table class="st">
+          <thead>
+            <tr><th>#</th><th>Estudiante</th><th class="ctr">Promedio</th><th class="ctr">Asistencia</th><th class="ctr">Tareas</th><th class="ctr">Estado</th></tr>
+          </thead>
+          <tbody>
+            @for (st of filteredEstudiantes(); track st.code; let i = $index) {
+              <tr [class.row-risk]="st.status === 'risk'" (click)="openDrawer(st.idx)">
+                <td class="td-n">{{ i + 1 }}</td>
+                <td>
+                  <div class="td-stu">
+                    <div class="td-av" [style.background]="st.color">{{ getInitials(st.name) }}</div>
+                    <div>
+                      <div class="td-nm">{{ st.name }}</div>
+                      <div class="td-code">{{ st.code }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="text-align:center"><span class="td-prom" [style.color]="nColor(st.prom)">{{ st.prom }}</span></td>
+                <td style="text-align:center">
+                  <span class="td-pct" [style.color]="pColor(st.asist)">{{ st.asist }}%</span>
+                  <span class="mini-bar"><span class="mini-fill" [style.width.%]="st.asist" [style.background]="pColor(st.asist)"></span></span>
+                </td>
+                <td style="text-align:center; font-family:'DM Mono',monospace; font-size:11px">{{ st.tareas }}</td>
+                <td style="text-align:center">
+                  <span class="badge" [ngClass]="{'b-exc': st.status === 'exc', 'b-risk': st.status === 'risk', 'b-ok': st.status !== 'exc' && st.status !== 'risk' && st.prom >= 15, 'b-reg': st.status !== 'exc' && st.status !== 'risk' && st.prom < 15}">
+                    {{ st.status === 'exc' ? 'Excelente' : st.status === 'risk' ? 'En riesgo' : st.prom >= 15 ? 'Aprobado' : 'Regular' }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
-    <div style="display:flex;gap:3px;font-size:8.5px;color:var(--g4);margin-top:2px">${evals.map(e=>`<div style="flex:1;text-align:center">${e}</div>`).join('')}</div>`;
+  </div>
 }
- 
-function panelAsistencia(d){
-  const mkCls={P:'am-p',T:'am-t',F:'am-f',J:'am-j'};
-  const counts={P:0,T:0,F:0,J:0};
-  d.asistData.forEach(s=>counts[s]++);
-  return `<div class="stitle">Historial de asistencia (últimas 20 sesiones)</div>
-    <div class="asist-mini">${d.asistData.map(s=>`<span class="am ${mkCls[s]}">${s}</span>`).join('')}</div>
-    <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;font-size:11px;color:var(--g6)">
-      <span>P: <strong style="color:var(--ok)">${counts.P}</strong></span>
-      <span>T: <strong style="color:var(--wa)">${counts.T}</strong></span>
-      <span>F: <strong style="color:var(--er)">${counts.F}</strong></span>
-      <span>J: <strong style="color:var(--bl)">${counts.J}</strong></span>
-      <span>Total: <strong>${d.asistData.length}</strong></span>
-      <span>%: <strong style="color:${pColor(d.asist)}">${d.asist}%</strong></span>
+
+@if (currentView() === 'grid') {
+  <div class="grid-view on">
+    @for (st of filteredEstudiantes(); track st.code) {
+      <div class="gc" (click)="openDrawer(st.idx)">
+        <div class="gc-body">
+          <div class="gc-av" [style.background]="st.color">{{ getInitials(st.name) }}</div>
+          <div class="gc-nm">{{ st.name }}</div>
+          <div class="gc-code">{{ st.code }}</div>
+          <div class="gc-stats">
+            <div class="gc-st"><strong [style.color]="nColor(st.prom)">{{ st.prom }}</strong><span>Prom.</span></div>
+            <div class="gc-st"><strong [style.color]="pColor(st.asist)">{{ st.asist }}%</strong><span>Asist.</span></div>
+            <div class="gc-st"><strong>{{ st.tareas }}</strong><span>Tareas</span></div>
+          </div>
+        </div>
+        <div class="gc-foot">
+          <span class="gc-badge" [ngClass]="{'b-exc': st.status === 'exc', 'b-risk': st.status === 'risk', 'b-ok': st.status !== 'exc' && st.status !== 'risk' && st.prom >= 15, 'b-reg': st.status !== 'exc' && st.status !== 'risk' && st.prom < 15}">
+            {{ st.status === 'exc' ? 'Excelente' : st.status === 'risk' ? 'En riesgo' : st.prom >= 15 ? 'Aprobado' : 'Regular' }}
+          </span>
+        </div>
+      </div>
+    }
+  </div>
+}
+
+<div class="drawer-overlay" [class.show]="activeEstudianteIndex() !== null" (click)="closeDrawer()"></div>
+
+<div class="drawer" [class.show]="activeEstudianteIndex() !== null">
+  @if (seleccionado(); as st) {
+    <div class="dr-header">
+      <button class="dr-close" (click)="closeDrawer()">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+      <div class="dr-profile">
+        <div class="dr-av" [style.background]="st.color">{{ getInitials(st.name) }}</div>
+        <div class="dr-info">
+          <h2>{{ st.name }}</h2>
+          <p>{{ st.code }} · DNI: {{ st.dni }}</p>
+          <div class="dr-chips"><span class="dr-chip drc-sec">3ro A</span><span class="dr-chip drc-st">Activo</span></div>
+        </div>
+      </div>
+      <div class="dr-quick">
+        <div class="dq"><strong [style.color]="nColor(st.prom)">{{ st.prom }}</strong><span>Promedio</span></div>
+        <div class="dq"><strong [style.color]="pColor(st.asist)">{{ st.asist }}%</strong><span>Asistencia</span></div>
+        <div class="dq"><strong>{{ st.tareas }}</strong><span>Tareas</span></div>
+        <div class="dq">
+          <strong [style.color]="st.status === 'risk' ? 'var(--er)' : st.status === 'exc' ? 'var(--bl)' : 'var(--ok)'">
+            {{ st.status === 'exc' ? 'Exc.' : st.status === 'risk' ? 'Riesgo' : 'OK' }}
+          </strong>
+          <span>Estado</span>
+        </div>
+      </div>
     </div>
-    ${d.asist<75?`<div style="padding:8px 12px;background:rgba(229,48,48,.05);border:1px solid rgba(229,48,48,.15);font-size:12px;color:var(--er);font-weight:600;margin-bottom:10px">⚠ Alumno en riesgo: asistencia menor al 75%. Se recomienda notificar al apoderado.</div>`:''}`;
-}
- 
-function panelObservaciones(d){
-  return `<div class="stitle">Observaciones del docente</div>
-    <div class="obs-item"><div class="obs-h"><span class="obs-author">Prof. Mendoza</span><span class="obs-date">10 May 2025</span></div><div class="obs-text">Buen rendimiento en la práctica calificada #4. Participación activa en clase.</div></div>
-    <div class="obs-item"><div class="obs-h"><span class="obs-author">Prof. Mendoza</span><span class="obs-date">25 Abr 2025</span></div><div class="obs-text">Necesita mejorar en resolución de problemas con sistemas de ecuaciones. Se recomienda refuerzo.</div></div>
-    ${d.status==='risk'?`<div class="obs-item" style="border-color:rgba(229,48,48,.2)"><div class="obs-h"><span class="obs-author" style="color:var(--er)">Alerta académica</span><span class="obs-date">8 May 2025</span></div><div class="obs-text">Alumno identificado en riesgo académico. Promedio por debajo del mínimo y/o asistencia insuficiente.</div></div>`:''}
-    <div style="margin-top:12px" class="stitle">Agregar observación</div>
-    <div class="ff"><label>Tipo</label><select><option>Observación general</option><option>Conducta</option><option>Rendimiento académico</option><option>Asistencia</option><option>Alerta al apoderado</option></select></div>
-    <div class="ff"><label>Observación</label><textarea placeholder="Escribe una observación sobre el estudiante..."></textarea></div>
-    <button class="btn btn-or" onclick="showToast('Observación guardada')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Guardar observación</button>`;
-}
- 
-function panelApoderado(d){
-  return `<div class="stitle">Datos del apoderado</div>
-    <div class="dr-row"><label>Nombre</label><span>${d.apoderado}</span></div>
-    <div class="dr-row"><label>Parentesco</label><span>${['Madre','Padre','Tutor(a)'][rn(0,2)]}</span></div>
-    <div class="dr-row"><label>Teléfono</label><span class="mono">${d.apTel}</span></div>
-    <div class="dr-row"><label>Email</label><span>${d.apoderado.split(' ')[0].toLowerCase()}@email.com</span></div>
-    <div class="dr-row"><label>Dirección</label><span>Av. Los Maestros ${rn(100,999)}, Ica</span></div>
-    <div style="margin-top:14px" class="stitle">Acciones de contacto</div>
-    <div class="contact"><div class="ct-ico" style="background:rgba(0,194,124,.08)"><svg viewBox="0 0 24 24" style="fill:var(--ok)"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div><div class="ct-info"><div class="ct-nm">Llamar al apoderado</div><div class="ct-detail">${d.apTel}</div></div><div class="ct-action" onclick="showToast('Llamando...','info')"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div></div>
-    <div class="contact"><div class="ct-ico" style="background:rgba(42,99,230,.08)"><svg viewBox="0 0 24 24" style="fill:var(--bl)"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div><div class="ct-info"><div class="ct-nm">Enviar correo</div><div class="ct-detail">${d.apoderado.split(' ')[0].toLowerCase()}@email.com</div></div><div class="ct-action" onclick="showToast('Redirigiendo al correo...','info')"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></div></div>
-    <div class="contact"><div class="ct-ico" style="background:rgba(245,166,35,.08)"><svg viewBox="0 0 24 24" style="fill:var(--wa)"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div><div class="ct-info"><div class="ct-nm">Enviar notificación</div><div class="ct-detail">Notificación push al apoderado</div></div><div class="ct-action" onclick="showToast('Notificación enviada')"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div></div>`;
-}
- 
-renderAll();
- 
-let _t;
-const _ti={ok:'<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',info:'<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>',warn:'<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>'};
-function showToast(msg,type='ok'){clearTimeout(_t);const t=document.getElementById('toast');t.className='toast t-'+type;t.querySelector('svg').innerHTML=_ti[type]||_ti.ok;document.getElementById('toastMsg').textContent=msg;t.classList.add('show');_t=setTimeout(()=>t.classList.remove('show'),3200)}
-</script>
+
+    <div class="dr-tabs">
+      @for (tab of ['Datos','Notas','Asistencia','Observaciones','Apoderado']; track tab; let i = $index) {
+        <div class="drt" [class.on]="activeTab() === i" (click)="activeTab.set(i)"><span>{{ tab }}</span></div>
+      }
+    </div>
+
+    <div id="drPanels">
+      @if (activeTab() === 0) {
+        <div class="dr-panel on">
+          <div class="stitle">Información personal</div>
+          <div class="dr-row"><label>Nombre completo</label><span>{{ st.name }}</span></div>
+          <div class="dr-row"><label>Código</label><span class="mono">{{ st.code }}</span></div>
+          <div class="dr-row"><label>DNI</label><span class="mono">{{ st.dni }}</span></div>
+          <div class="dr-row"><label>Email</label><span>{{ st.email }}</span></div>
+          <div class="dr-row"><label>Teléfono</label><span class="mono">{{ st.tel }}</span></div>
+          <div class="dr-row"><label>Sección</label><span>3ro A — Secundaria</span></div>
+          <div class="dr-row"><label>Fecha de nacimiento</label><span class="mono">24/05/2011</span></div>
+          <div class="dr-row"><label>Dirección</label><span>{{ st.direccion }}</span></div>
+          
+          <div style="margin-top:12px" class="stitle">Información académica</div>
+          <div class="dr-row"><label>Promedio Bimestre II</label><span [style.color]="nColor(st.prom)" style="font-family:'Bebas Neue';font-size:18px">{{ st.prom }}</span></div>
+          <div class="dr-row"><label>Asistencia</label><span [style.color]="pColor(st.asist)">{{ st.asist }}%</span></div>
+          <div class="dr-row"><label>Tareas entregadas</label><span>{{ st.tareas }}</span></div>
+        </div>
+      }
+
+      @if (activeTab() === 1) {
+        <div class="dr-panel on">
+          <div class="stitle">Registro de calificaciones</div>
+          <table class="nt">
+            <thead>
+              <tr><th>Evaluación</th> @for (ev of evaluaciones; track ev) { <th>{{ ev }}</th> } <th style="background:var(--or)">Prom.</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Matemáticas</td>
+                @for (nota of st.notas; track $index) { <td [style.color]="nColor(nota)">{{ nota }}</td> }
+                <td [style.color]="nColor(st.prom)" style="font-family:'Bebas Neue';font-size:16px">{{ st.prom }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="stitle">Evolución de notas</div>
+          <div style="display:flex;gap:3px;align-items:flex-end;height:80px;padding:4px 0">
+            @for (nota of st.notas; track $index) {
+              <div [style.background]="nColor(nota)" [style.height.%]="(nota / 20) * 100" style="flex:1;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px;font-family:'DM Mono',monospace;font-size:9px;color:#fff;font-weight:700">
+                {{ nota }}
+              </div>
+            }
+          </div>
+          <div style="display:flex;gap:3px;font-size:8.5px;color:var(--g4);margin-top:2px">
+            @for (ev of evaluaciones; track ev) { <div style="flex:1;text-align:center">{{ ev }}</div> }
+          </div>
+        </div>
+      }
+
+      @if (activeTab() === 2) { 
+        <div class="dr-panel on">
+          <div class="stitle">Historial de asistencia (últimas 20 sesiones)</div>
+          <div class="asist-mini">
+            @for (tipo of st.asistData; track $index) {
+              <span class="am" [ngClass]="{'am-p': tipo==='P', 'am-t': tipo==='T', 'am-f': tipo==='F', 'am-j': tipo==='J'}">{{ tipo }}</span>
+            }
+          </div>
+          <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;font-size:11px;color:var(--g6)">
+            <span>P: <strong style="color:var(--ok)">{{ asistenciaCounts().P }}</strong></span>
+            <span>T: <strong style="color:var(--wa)">{{ asistenciaCounts().T }}</strong></span>
+            <span>F: <strong style="color:var(--er)">{{ asistenciaCounts().F }}</strong></span>
+            <span>J: <strong style="color:var(--bl)">{{ asistenciaCounts().J }}</strong></span> 
+            <span>Total: <strong>{{ st.asistData.length }}</strong></span>
+            <span>%: <strong [style.color]="pColor(st.asist)">{{ st.asist }}%</strong></span>
+          </div>
+          @if (st.asist < 75) {
+            <div style="padding:8px 12px;background:rgba(229,48,48,.05);border:1px solid rgba(229,48,48,.15);font-size:12px;color:var(--er);font-weight:600;margin-bottom:10px">
+              ⚠ Alumno en riesgo: asistencia menor al 75%. Se recomienda notificar al apoderado.
+            </div>
+          }
+        </div>
+      }
+
+      @if (activeTab() === 3) {
+        <div class="dr-panel on">
+          <div class="stitle">Observaciones del docente</div>
+          <div class="obs-item"><div class="obs-h"><span class="obs-author">Prof. Mendoza</span><span class="obs-date">10 May 2025</span></div><div class="obs-text">Buen rendimiento en la práctica calificada #4. Participación activa en clase.</div></div>
+          <div class="obs-item"><div class="obs-h"><span class="obs-author">Prof. Mendoza</span><span class="obs-date">25 Abr 2025</span></div><div class="obs-text">Necesita mejorar en resolución de problemas con sistemas de ecuaciones. Se recomienda refuerzo.</div></div>
+          @if (st.status === 'risk') {
+            <div class="obs-item" style="border-color:rgba(229,48,48,.2)"><div class="obs-h"><span class="obs-author" style="color:var(--er)">Alerta académica</span><span class="obs-date">8 May 2025</span></div><div class="obs-text">Alumno identificado en riesgo académico. Promedio por debajo del mínimo y/o asistencia insuficiente.</div></div>
+          }
+          <div style="margin-top:12px" class="stitle">Agregar observación</div>
+          <div class="ff"><label>Tipo</label><select><option>Observación general</option><option>Conducta</option><option>Rendimiento académico</option><option>Asistencia</option><option>Alerta al apoderado</option></select></div>
+          <div class="ff"><label>Observación</label><textarea placeholder="Escribe una observación sobre el estudiante..."></textarea></div>
+          <button class="btn btn-or" (click)="showToast('Observación guardada', 'ok')">
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Guardar observación
+          </button>
+        </div>
+      }
+
+      @if (activeTab() === 4) {
+        <div class="dr-panel on">
+          <div class="stitle">Datos del apoderado</div>
+          <div class="dr-row"><label>Nombre</label><span>{{ st.apoderado }}</span></div>
+          <div class="dr-row"><label>Parentesco</label><span>Madre</span></div>
+          <div class="dr-row"><label>Teléfono</label><span class="mono">{{ st.apTel }}</span></div>
+          <div class="dr-row"><label>Email</label><span>{{ st.email }}</span></div>
+          <div class="dr-row"><label>Dirección</label><span>{{ st.direccion }}</span></div>
+          <div style="margin-top:14px" class="stitle">Acciones de contacto</div>
+          
+          <div class="contact">
+            <div class="ct-ico" style="background:rgba(0,194,124,.08)"><svg viewBox="0 0 24 24" style="fill:var(--ok)"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
+            <div class="ct-info"><div class="ct-nm">Llamar al apoderado</div><div class="ct-detail">{{ st.apTel }}</div></div>
+            <div class="ct-action" (click)="showToast('Llamando...', 'info')"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
+          </div>
+
+          <div class="contact">
+            <div class="ct-ico" style="background:rgba(42,99,230,.08)"><svg viewBox="0 0 24 24" style="fill:var(--bl)"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+            <div class="ct-info"><div class="ct-nm">Enviar correo</div><div class="ct-detail">{{ st.email }}</div></div>
+            <div class="ct-action" (click)="showToast('Redirigiendo al correo...', 'info')"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></div>
+          </div>
+
+          <div class="contact">
+            <div class="ct-ico" style="background:rgba(245,166,35,.08)"><svg viewBox="0 0 24 24" style="fill:var(--wa)"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
+            <div class="ct-info"><div class="ct-nm">Enviar notificación</div><div class="ct-detail">Notificación push al apoderado</div></div>
+            <div class="ct-action" (click)="showToast('Notificación enviada', 'ok')"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<div class="toast" [class.show]="toast().show" [ngClass]="{'t-ok': toast().type === 'ok', 't-info': toast().type === 'info', 't-warn': toast().type === 'warn'}">
+  <svg viewBox="0 0 24 24">
+    @if (toast().type === 'ok') { <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/> }
+    @if (toast().type === 'info') { <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/> }
+    @if (toast().type === 'warn') { <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/> }
+  </svg>
+  <span>{{ toast().msg }}</span>
+</div>

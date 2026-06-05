@@ -1,0 +1,363 @@
+:host {
+  --bd: #0A1A3E; 
+  --bm: #1340A0; 
+  --bl: #2A63E6;
+  --or: #FF5B1F;
+  --ok: #00C27C;
+  --g1: #EEF1F8;
+  --g2: #E2E8F0; 
+  --g4: #94A3B8; 
+  --g6: #64748B;
+  --tr: .22s cubic-bezier(.4,0,.2,1);
+  --sc: 0 4px 20px rgba(10, 26, 62, .05);
+}
+
+/* ═══ LOADING SPINNER PRINCIPAL ═══ */
+.tab-loading { 
+  display: flex; 
+  justify-content: center; 
+  padding: 64px 48px; 
+}
+.tl-spinner { 
+  width: 32px; 
+  height: 32px; 
+  border: 3px solid var(--g2); 
+  border-top-color: var(--bl); 
+  border-radius: 50%; 
+  animation: spin .8s linear infinite; 
+}
+
+/* Animación global para rotaciones */
+@keyframes spin { 
+  to { transform: rotate(360deg); } 
+}
+.ti.spin {
+  display: inline-block;
+  animation: spin .9s linear infinite;
+}
+
+/* ═══ CONTENEDOR WRAPPER ═══ */
+.silabo-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fadeIn .3s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══ HEADER DE LA SECCIÓN ═══ */
+.sec-head { 
+  margin-bottom: 4px; 
+}
+.sec-title { 
+  font-size: 16px; 
+  font-weight: 700; 
+  color: var(--bd); 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+}
+.sec-title i { 
+  color: var(--bm); 
+  font-size: 20px; 
+}
+
+/* ═══ CARD DEL PDF (DISEÑO INDUSTRIAL) ═══ */
+.pdf-card { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+  gap: 24px; 
+  padding: 24px; 
+  border: 1px solid var(--g2); 
+  border-radius: 12px; 
+  background: #fff; 
+  transition: all var(--tr); 
+  box-shadow: var(--sc);
+}
+
+.pdf-card:hover { 
+  border-color: var(--g4); 
+  box-shadow: 0 8px 30px rgba(10, 26, 62, .08); 
+}
+
+.pdf-main-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Bloque contenedor del icono PDF */
+.pdf-ico { 
+  width: 64px; 
+  height: 64px; 
+  border-radius: 12px; 
+  background: rgba(229, 48, 48, .06); 
+  display: flex; 
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center; 
+  flex-shrink: 0; 
+  border: 1px solid rgba(229, 48, 48, .1.5);
+}
+
+.pdf-ico i { 
+  font-size: 30px; 
+  color: #E24B4A; 
+}
+
+.pdf-badge {
+  font-size: 8px;
+  font-weight: 800;
+  color: #E24B4A;
+  background: rgba(229, 48, 48, 0.1);
+  padding: 1px 5px;
+  border-radius: 12px;
+  margin-top: -1px;
+  letter-spacing: 0.5px;
+}
+
+/* Bloque de Textos e Información */
+.pdf-info { 
+  flex: 1; 
+  min-width: 0; 
+}
+
+.pdf-tag {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--or);
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.pdf-nombre { 
+  font-size: 17px; 
+  font-weight: 700; 
+  color: var(--bd); 
+  margin: 0 0 6px 0; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Metadata en Línea */
+.pdf-meta { 
+  display: flex; 
+  align-items: center;
+  gap: 10px;
+  font-size: 12px; 
+  color: var(--g6); 
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.meta-item i {
+  color: var(--g4);
+  font-size: 14px;
+}
+
+.meta-item strong {
+  color: var(--bd);
+  font-weight: 600;
+}
+
+.meta-sep {
+  color: var(--g2);
+}
+
+.status-ok {
+  color: var(--ok);
+  font-weight: 600;
+}
+.status-ok i {
+  color: var(--ok) !important;
+}
+
+/* ... (El resto de tu CSS se mantiene igual) ... */
+
+/* ═══ BOTONES Y ACCIONES OPTIMIZADOS ═══ */
+.pdf-actions { 
+  display: flex; 
+  gap: 10px; 
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.pdf-btn { 
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center;
+  gap: 8px; /* Espacio perfecto entre icono y texto */
+  padding: 10px 18px; 
+  border-radius: 12px; 
+  font-size: 12px; 
+  font-weight: 700; 
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer; 
+  border: none; 
+  transition: all var(--tr); 
+  height: 42px; /* Forzamos altura simétrica */
+}
+
+.pdf-btn:disabled { 
+  opacity: .5; 
+  cursor: not-allowed; 
+}
+
+.pdf-btn.ver { 
+  background: var(--g1); 
+  color: var(--bm); 
+}
+
+.pdf-btn.ver:hover:not(:disabled) { 
+  background: var(--bm); 
+  color: #fff; 
+}
+
+.pdf-btn.descargar { 
+  background: var(--bm); 
+  color: #fff; 
+  box-shadow: 0 2px 8px rgba(19, 64, 160, 0.15);
+}
+
+.pdf-btn.descargar:hover:not(:disabled) { 
+  background: var(--bd); 
+  transform: translateY(-1px);
+}
+
+/* Control del tamaño del icono dentro del botón */
+.pdf-btn i { 
+  font-size: 16px; 
+  line-height: 1;
+}
+
+/* Animación para cuando estén cargando */
+.ti.spin {
+  display: inline-block;
+  animation: spin .9s linear infinite;
+}
+@keyframes spin { 
+  to { transform: rotate(360deg); } 
+}
+
+/* ═══ SECCIÓN INFORMATIVA INFERIOR ═══ */
+.silabo-specifications {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.spec-card {
+  background: var(--g1);
+  border: 1px solid rgba(226, 232, 240, 0.4);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.spec-ico {
+  font-size: 18px;
+  color: var(--g6);
+  margin-top: 2px;
+  display: flex;
+}
+
+.spec-txt h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--bd);
+  margin: 0 0 3px 0;
+}
+
+.spec-txt p {
+  font-size: 12px;
+  color: var(--g6);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ═══ EMPTY STATE MEJORADO ═══ */
+.empty-state { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center;
+  padding: 64px 20px; 
+  background: #fff;
+  border: 2px dashed var(--g2);
+  border-radius: 12px;
+  gap: 14px; 
+}
+
+.empty-icon-wrap {
+  width: 56px;
+  height: 56px;
+  background: var(--g1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--g4);
+  font-size: 26px;
+}
+
+.empty-state h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--bd);
+  margin: 0;
+}
+
+.empty-state p { 
+  font-size: 13px; 
+  color: var(--g6);
+  text-align: center; 
+  max-width: 340px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ═══ MEDIA QUERIES (RESPONSIVO CONTROLADO) ═══ */
+@media(max-width: 992px) {
+  .pdf-card { 
+    flex-direction: column; 
+    align-items: stretch; 
+    gap: 20px;
+  }
+  .pdf-actions { 
+    width: 100%; 
+  }
+  .pdf-btn { 
+    flex: 1; 
+  }
+}
+
+@media(max-width: 640px) {
+  .silabo-specifications {
+    grid-template-columns: 1fr;
+  }
+  .pdf-main-info {
+    flex-direction: column;
+    text-align: center;
+  }
+  .pdf-meta {
+    justify-content: center;
+  }
+}

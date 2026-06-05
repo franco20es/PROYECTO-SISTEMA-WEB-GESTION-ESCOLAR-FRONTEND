@@ -1,0 +1,123 @@
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:8px">
+  <div class="stitle" style="margin-bottom:0">Contenido del curso</div>
+  <button class="btn btn-or" (click)="abrirModalSemana()">
+    <i class="bi bi-plus-lg"></i> Nueva semana
+  </button>
+</div>
+
+@if (cargando()) {
+  <div class="cd-loading"><div class="spinner-d"></div></div>
+}
+
+@if (!cargando()) {
+  @if (semanas().length === 0) {
+    <div class="empty-d">
+      <i class="bi bi-folder-symlink"></i>
+      <p>No hay semanas. Crea la primera para empezar a subir materiales.</p>
+    </div>
+  }
+
+  @for (s of semanas(); track s.id) {
+    <div class="semana" [class.open]="expandida() === s.id">
+      <div class="semana-h" (click)="toggle(s.id)">
+        <div class="semana-num">{{ s.numero }}</div>
+        <div class="semana-info">
+          <div class="semana-titulo">{{ s.titulo }}</div>
+          <div class="semana-sub">{{ s.materiales?.length || 0 }} material(es) agregado(s)</div>
+        </div>
+        <button class="ua-del" title="Eliminar semana" (click)="eliminarSemana(s, $event)">
+          <i class="bi bi-trash3-fill"></i>
+        </button>
+        <i class="bi bi-chevron-down semana-arrow" [class.rot]="expandida() === s.id"></i>
+      </div>
+
+      @if (expandida() === s.id) {
+        <div class="semana-body">
+          @if (s.materiales?.length) {
+            @for (m of s.materiales; track m.id) {
+              <div class="material">
+                <div class="mat-ico" [style.background]="colorTipo(m.tipo) + '14'">
+                  <i class="bi" [ngClass]="iconoTipo(m.tipo)" [style.color]="colorTipo(m.tipo)"></i>
+                </div>
+                <div class="mat-info">
+                  <div class="mat-nombre">{{ m.nombre }}</div>
+                  <div class="mat-meta">{{ m.meta }}</div>
+                </div>
+                <button class="ua-del" title="Eliminar" (click)="eliminarMaterial(m, $event)">
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </div>
+            }
+          } @else {
+            <div class="sin-mat">Aún no hay materiales en esta semana.</div>
+          }
+
+          <div class="semana-acciones">
+            <label class="btn btn-gh btn-sm" [class.disabled]="subiendoEn() === s.id">
+              <i class="bi bi-cloud-arrow-up-fill"></i>
+              {{ subiendoEn() === s.id ? 'Subiendo...' : 'Subir archivo' }}
+              <input type="file" hidden (change)="onArchivo(s, $event)" [disabled]="subiendoEn() === s.id">
+            </label>
+            <button class="btn btn-gh btn-sm" (click)="abrirModalLink(s)">
+              <i class="bi bi-link-45deg"></i> Agregar enlace
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+}
+
+@if (modalSemana()) {
+  <div class="mo show" (click)="modalSemana.set(false)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="mh">
+        <h3><i class="bi bi-folder-plus"></i> Nueva semana</h3>
+        <button class="mc" (click)="modalSemana.set(false)">✕</button>
+      </div>
+      <div class="mb">
+        <div class="ff">
+          <label>Número de semana <span class="req">*</span></label>
+          <input type="number" [(ngModel)]="formSemana.numero" min="1">
+        </div>
+        <div class="ff">
+          <label>Título <span class="req">*</span></label>
+          <input type="text" [(ngModel)]="formSemana.titulo" placeholder="Ej: Introducción a la comunicación">
+        </div>
+      </div>
+      <div class="mf">
+        <button class="btn btn-gh" (click)="modalSemana.set(false)">Cancelar</button>
+        <button class="btn btn-or" (click)="crearSemana()" [disabled]="guardandoSemana()">
+          {{ guardandoSemana() ? 'Creando...' : 'Crear semana' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (modalLink()) {
+  <div class="mo show" (click)="modalLink.set(false)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="mh">
+        <h3><i class="bi bi-link-45deg"></i> Agregar enlace</h3>
+        <button class="mc" (click)="modalLink.set(false)">✕</button>
+      </div>
+      <div class="mb">
+        <div class="ff">
+          <label>Nombre <span class="req">*</span></label>
+          <input type="text" [(ngModel)]="formLink.nombre" placeholder="Ej: Video explicativo en YouTube">
+        </div>
+        <div class="ff">
+          <label>URL <span class="req">*</span></label>
+          <input type="text" [(ngModel)]="formLink.url" placeholder="https://...">
+        </div>
+      </div>
+      <div class="mf">
+        <button class="btn btn-gh" (click)="modalLink.set(false)">Cancelar</button>
+        <button class="btn btn-or" (click)="agregarLink()" [disabled]="guardandoLink()">
+          {{ guardandoLink() ? 'Agregando...' : 'Agregar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

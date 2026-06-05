@@ -30,21 +30,27 @@
     </div>
   </div> -->
 
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- REEMPLAZA SOLO el bloque <div class="sb-user"> en tu sidebar.html -->
+<!-- ════════════════════════════════════════════════════════ -->
+ 
 <div class="sb-user">
-
   <div class="sb-avatar">
-    {{ nombre.charAt(0) }}
+    @if (avatarUrl) {
+      <img [src]="avatarUrl" [alt]="rol" class="sb-avatar-img">
+    } @else {
+      {{ nombre.charAt(0) }}
+    }
     <span class="sb-avatar-status"></span>
   </div>
-
   <div class="sb-user-info">
     <div class="sb-user-header">
       <span class="sb-user-name">{{ nombre }}</span>
       <span class="sb-user-role">{{ rol }}</span>
     </div>
   </div>
-
 </div>
+ 
 
   <!-- Navigation -->
 

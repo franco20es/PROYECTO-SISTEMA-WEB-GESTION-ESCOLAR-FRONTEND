@@ -1,4 +1,3 @@
-<!-- HEADER -->
 <div class="hd">
   <div class="hd-l">
     <div class="tag">Control académico</div>
@@ -6,62 +5,93 @@
     <p>Registra, consulta y gestiona la asistencia de tus estudiantes</p>
   </div>
   <div class="hd-r">
-    <select class="fsel" id="selCurso" onchange="changeCurso()">
-      <option value="0">Matemáticas — 3ro A (32 alumnos)</option>
-      <option value="1">Matemáticas — 3ro B (30 alumnos)</option>
-      <option value="2">Física — 4to A (28 alumnos)</option>
-      <option value="3">Física — 4to B (31 alumnos)</option>
+    <select class="fsel" id="selCurso" [value]="currentCursoIdx()" (change)="changeCurso($event)">
+      @for (curso of CURSOS; track curso.value) {
+        <option [value]="curso.value">{{ curso.name }} ({{ curso.alumnos }} alumnos)</option>
+      }
     </select>
-    <button class="btn btn-gh"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar</button>
+    <button class="btn btn-gh" (click)="showToast('Exportando archivo Excel...','info')">
+      <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar
+    </button>
   </div>
 </div>
  
-<!-- CLASE ACTIVA BANNER -->
 <div class="clase-banner">
   <div class="cb-live"><div class="cb-dot"></div><span>Clase en curso</span></div>
   <div class="cb-info">
-    <div class="cb-name" id="bannerName">Matemáticas — 3ro A</div>
+    <div class="cb-name" id="bannerName">{{ currentCurso().name }}</div>
     <div class="cb-meta">
       <div class="cb-mi"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg>Lun 12 May · 10:00 – 10:45</div>
       <div class="cb-mi"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>Aula 201</div>
-      <div class="cb-mi"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5z"/></svg><span id="bannerAlum">32 estudiantes</span></div>
+      <div class="cb-mi"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5z"/></svg><span id="bannerAlum">{{ currentCurso().alumnos }} estudiantes</span></div>
     </div>
   </div>
   <div class="cb-stats">
-    <div class="cbs cbs-p"><strong id="cntP">0</strong><span>P</span></div>
-    <div class="cbs cbs-t"><strong id="cntT">0</strong><span>T</span></div>
-    <div class="cbs cbs-f"><strong id="cntF">0</strong><span>F</span></div>
-    <div class="cbs cbs-j"><strong id="cntJ">0</strong><span>J</span></div>
+    <div class="cbs cbs-p"><strong id="cntP">{{ counts().p }}</strong><span>P</span></div>
+    <div class="cbs cbs-t"><strong id="cntT">{{ counts().t }}</strong><span>T</span></div>
+    <div class="cbs cbs-f"><strong id="cntF">{{ counts().f }}</strong><span>F</span></div>
+    <div class="cbs cbs-j"><strong id="cntJ">{{ counts().j }}</strong><span>J</span></div>
   </div>
 </div>
  
-<!-- TABS -->
 <div class="tabs">
-  <div class="tab on" onclick="switchTab(this,0)"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span>Toma de asistencia</span></div>
-  <div class="tab" onclick="switchTab(this,1)"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg><span>Historial</span></div>
-  <div class="tab" onclick="switchTab(this,2)"><svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg><span>Estadísticas</span></div>
-  <div class="tab" onclick="switchTab(this,3)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg><span>Justificaciones</span><div class="tab-cnt">3</div></div>
+  <div class="tab" [class.on]="activeTab() === 0" (click)="switchTab(0)">
+    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span>Toma de asistencia</span>
+  </div>
+  <div class="tab" [class.on]="activeTab() === 1" (click)="switchTab(1)">
+    <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6c0-1.1-.9-2-2-2z"/></svg><span>Historial</span>
+  </div>
+  <div class="tab" [class.on]="activeTab() === 2" (click)="switchTab(2)">
+    <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg><span>Estadísticas</span>
+  </div>
+  <div class="tab" [class.on]="activeTab() === 3" (click)="switchTab(3)">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg><span>Justificaciones</span>
+    @if (justificaciones().length > 0) {
+      <div class="tab-cnt">{{ justificaciones().length }}</div>
+    }
+  </div>
 </div>
  
-<!-- ═══ PANEL 1: TOMA DE ASISTENCIA ═══ -->
-<div class="panel on" id="pan0">
+<div class="panel" [class.on]="activeTab() === 0" id="pan0">
   <div class="panel-body">
     <div class="toma-toolbar">
-      <div class="srch"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z"/></svg><input type="text" id="searchInput" placeholder="Buscar alumno..." oninput="filterStudents()"></div>
+      <div class="srch">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z"/></svg>
+        <input type="text" placeholder="Buscar alumno..." [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)">
+      </div>
       <select class="fsel" style="min-width:auto"><option>Ordenar: Lista</option><option>Ordenar: Apellido A-Z</option><option>Ordenar: Sin marcar primero</option></select>
     </div>
     <div class="quick-btns">
-      <button class="qb qb-p" onclick="markAll('P')"><svg viewBox="0 0 24 24"><path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"/></svg>Todos presente</button>
-      <button class="qb qb-t" onclick="markAll('T')"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg>Todos tardanza</button>
-      <button class="qb qb-f" onclick="markAll('F')"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>Todos falta</button>
-      <button class="qb" style="margin-left:auto" onclick="clearAll()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>Limpiar todo</button>
+      <button class="qb qb-p" (click)="markAll('P')"><svg viewBox="0 0 24 24"><path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"/></svg>Todos presente</button>
+      <button class="qb qb-t" (click)="markAll('T')"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg>Todos tardanza</button>
+      <button class="qb qb-f" (click)="markAll('F')"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>Todos falta</button>
+      <button class="qb" style="margin-left:auto" (click)="clearAll()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>Limpiar todo</button>
     </div>
-    <div class="stu-list" id="stuList"></div>
+    
+    <div class="stu-list" id="stuList">
+      @for (stu of filteredStudents(); track stu.i) {
+        <div class="stu" [attr.data-idx]="stu.i">
+          <div class="stu-num">{{ stu.i + 1 }}</div>
+          <div class="stu-av" [style.background]="stu.color">{{ stu.initials }}</div>
+          <div class="stu-info">
+            <div class="stu-name">{{ stu.name }}</div>
+            <div class="stu-code">COD-2025-{{ 3000 + stu.i }}</div>
+          </div>
+          <div class="stu-pct" [style.color]="stu.pctColor">{{ stu.pct }}%</div>
+          <div class="marks">
+            <div class="mark" [class.sel-p]="stu.mark === 'P'" (click)="setMark(stu.i, 'P')">P</div>
+            <div class="mark" [class.sel-t]="stu.mark === 'T'" (click)="setMark(stu.i, 'T')">T</div>
+            <div class="mark" [class.sel-f]="stu.mark === 'F'" (click)="setMark(stu.i, 'F')">F</div>
+            <div class="mark" [class.sel-j]="stu.mark === 'J'" (click)="setMark(stu.i, 'J')">J</div>
+          </div>
+          <div class="stu-nota"><input type="text" placeholder="—" maxlength="3" title="Observación rápida"></div>
+        </div>
+      }
+    </div>
   </div>
 </div>
  
-<!-- ═══ PANEL 2: HISTORIAL ═══ -->
-<div class="panel" id="pan1">
+<div class="panel" [class.on]="activeTab() === 1" id="pan1">
   <div class="panel-body">
     <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
       <div class="stitle" style="margin-bottom:0">Historial de asistencia</div>
@@ -69,12 +99,46 @@
         <select class="fsel"><option>Mayo 2025</option><option>Abril 2025</option><option>Marzo 2025</option></select>
       </div>
     </div>
-    <div style="overflow-x:auto" id="histWrap"></div>
+    <div style="overflow-x:auto" id="histWrap">
+      <table class="hist-tbl">
+        <thead>
+          <tr>
+            <th style="text-align:left">#</th>
+            <th style="text-align:left">Estudiante</th>
+            @for (d of DATES; track d) { <th>{{ d }}</th> }
+            <th style="background:var(--or)">Hoy</th>
+            <th>%</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of historialTable(); track row.i) {
+            <tr>
+              <td class="td-num">{{ row.i + 1 }}</td>
+              <td class="td-name">{{ row.name }}</td>
+              @for (m of row.hist; track $index) {
+                <td>
+                  <span class="a-mark" 
+                        [ngClass]="{'a-p': m==='P', 'a-t': m==='T', 'a-f': m==='F', 'a-j': m==='J'}">
+                    {{ m }}
+                  </span>
+                </td>
+              }
+              <td>
+                <span class="a-mark" 
+                      [ngClass]="row.todayMark ? 'a-' + row.todayMark.toLowerCase() : 'a-empty'">
+                  {{ row.todayMark || '—' }}
+                </span>
+              </td>
+              <td class="td-pct" [style.color]="row.pctColor">{{ row.pct }}%</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
  
-<!-- ═══ PANEL 3: ESTADÍSTICAS ═══ -->
-<div class="panel" id="pan2">
+<div class="panel" [class.on]="activeTab() === 2" id="pan2">
   <div class="panel-body">
     <div class="stitle">Resumen del bimestre</div>
     <div class="stats-grid">
@@ -104,252 +168,88 @@
     <table class="risk-tbl">
       <thead><tr><th>#</th><th>Estudiante</th><th>Faltas</th><th>Asistencia</th><th>Acción</th></tr></thead>
       <tbody>
-        <tr><td class="td-num">1</td><td style="font-weight:700;color:var(--bd)">López Castro, Daniel</td><td style="font-family:'DM Mono',monospace;color:var(--er);font-weight:700">8</td><td style="font-family:'DM Mono',monospace;color:var(--er);font-weight:700">68%</td><td><button class="btn btn-sm btn-gh" onclick="showToast('Notificación enviada al apoderado','info')">Notificar</button></td></tr>
-        <tr><td class="td-num">2</td><td style="font-weight:700;color:var(--bd)">Ortega Cruz, Alejandro</td><td style="font-family:'DM Mono',monospace;color:var(--er);font-weight:700">7</td><td style="font-family:'DM Mono',monospace;color:var(--er);font-weight:700">72%</td><td><button class="btn btn-sm btn-gh" onclick="showToast('Notificación enviada al apoderado','info')">Notificar</button></td></tr>
+        <tr><td class="td-num">1</td><td style="font-weight:700;color:var(--bd)">López Castro, Daniel</td><td style="font-family:'DM Mono',monospace;color:var(--er);font-weight:700">8</td><td style="font-family:'DM Mono',monospace;color:var(--er);font-weight:700">68%</td><td><button class="btn btn-sm btn-gh" (click)="showToast('Notificación enviada al apoderado','info')">Notificar</button></td></tr>
+        <tr><td class="td-num">2</td><td style="font-weight:700;color:var(--bd)">Ortega Cruz, Alejandro</td><td style="font-family:'DM Mono',monospace;color:var(--er);font-weight:700">7</td><td style="font-family:'DM Mono',monospace;color:var(--er);font-weight:700">72%</td><td><button class="btn btn-sm btn-gh" (click)="showToast('Notificación enviada al apoderado','info')">Notificar</button></td></tr>
       </tbody>
     </table>
   </div>
 </div>
  
-<!-- ═══ PANEL 4: JUSTIFICACIONES ═══ -->
-<div class="panel" id="pan3">
+<div class="panel" [class.on]="activeTab() === 3" id="pan3">
   <div class="panel-body">
     <div class="stitle">Solicitudes de justificación</div>
  
-    <div class="just-item ji-pend">
-      <div class="ji-ico"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg></div>
-      <div class="ji-info">
-        <div class="ji-name">Ramírez García, Gabriel — 3ro A</div>
-        <div class="ji-detail">Falta del 9 de mayo · Certificado médico adjunto<br>Motivo: Cita médica programada en EsSalud</div>
-      </div>
-      <div class="ji-right">
-        <span class="ji-status js-pend">Pendiente</span>
-        <div class="ji-date">Recibida: 10 May</div>
-        <div class="ji-actions">
-          <button class="ji-btn ji-btn-view"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5z"/></svg>Ver</button>
-          <button class="ji-btn ji-btn-ok" onclick="showToast('Justificación aprobada')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Aprobar</button>
-          <button class="ji-btn ji-btn-rej" onclick="showToast('Justificación rechazada','er')"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>Rechazar</button>
+    @for (just of justificaciones(); track just.id) {
+      <div class="just-item ji-pend">
+        <div class="ji-ico"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg></div>
+        <div class="ji-info">
+          <div class="ji-name">{{ just.student }}</div>
+          <div class="ji-detail" [innerHTML]="just.detail + '<br>Motivo: ' + just.motivo"></div>
+        </div>
+        <div class="ji-right">
+          <span class="ji-status js-pend">Pendiente</span>
+          <div class="ji-date">Recibida: {{ just.date }}</div>
+          <div class="ji-actions">
+            <button class="ji-btn ji-btn-view" (click)="showToast('Visualizando adjunto...','info')"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5z"/></svg>Ver</button>
+            <button class="ji-btn ji-btn-ok" (click)="resolverJustificacion(just.id, 'ok')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Aprobar</button>
+            <button class="ji-btn ji-btn-rej" (click)="resolverJustificacion(just.id, 'rej')"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>Rechazar</button>
+          </div>
         </div>
       </div>
-    </div>
- 
-    <div class="just-item ji-pend">
-      <div class="ji-ico"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg></div>
-      <div class="ji-info">
-        <div class="ji-name">Castillo Vega, Rosa — 3ro A</div>
-        <div class="ji-detail">Falta del 7 de mayo · Documento de viaje adjunto<br>Motivo: Viaje familiar por emergencia</div>
-      </div>
-      <div class="ji-right">
-        <span class="ji-status js-pend">Pendiente</span>
-        <div class="ji-date">Recibida: 8 May</div>
-        <div class="ji-actions">
-          <button class="ji-btn ji-btn-view"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5z"/></svg>Ver</button>
-          <button class="ji-btn ji-btn-ok" onclick="showToast('Justificación aprobada')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Aprobar</button>
-          <button class="ji-btn ji-btn-rej" onclick="showToast('Justificación rechazada','er')"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>Rechazar</button>
-        </div>
-      </div>
-    </div>
- 
-    <div class="just-item ji-pend">
-      <div class="ji-ico"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2z"/></svg></div>
-      <div class="ji-info">
-        <div class="ji-name">López Castro, Daniel — 3ro A</div>
-        <div class="ji-detail">Faltas del 5 y 6 de mayo · Sin documento adjunto<br>Motivo: Enfermedad (apoderado notificó por teléfono)</div>
-      </div>
-      <div class="ji-right">
-        <span class="ji-status js-pend">Pendiente</span>
-        <div class="ji-date">Recibida: 7 May</div>
-        <div class="ji-actions">
-          <button class="ji-btn ji-btn-view"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5z"/></svg>Ver</button>
-          <button class="ji-btn ji-btn-ok" onclick="showToast('Justificación aprobada')"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Aprobar</button>
-          <button class="ji-btn ji-btn-rej" onclick="showToast('Justificación rechazada','er')"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>Rechazar</button>
-        </div>
-      </div>
-    </div>
+    } @empty {
+      <p style="font-size: 12px; color: var(--g4); padding: 10px 0;">No quedan solicitudes pendientes.</p>
+    }
  
     <div class="stitle" style="margin-top:18px">Historial resuelto</div>
-    <div class="just-item ji-ok">
-      <div class="ji-ico"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-      <div class="ji-info"><div class="ji-name">Álvarez Quispe, María — 3ro A</div><div class="ji-detail">Falta del 25 abril · Certificado médico</div></div>
-      <div class="ji-right"><span class="ji-status js-ok">Aprobada</span><div class="ji-date">28 Abr</div></div>
-    </div>
-    <div class="just-item ji-rej">
-      <div class="ji-ico"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
-      <div class="ji-info"><div class="ji-name">Gómez Salazar, Kevin — 3ro A</div><div class="ji-detail">Falta del 22 abril · Sin documento adjunto</div></div>
-      <div class="ji-right"><span class="ji-status js-rej">Rechazada</span><div class="ji-date">24 Abr</div></div>
-    </div>
+    @for (item of historialResuelto(); track $index) {
+      <div class="just-item" [ngClass]="item.status === 'ok' ? 'ji-ok' : 'ji-rej'">
+        <div class="ji-ico">
+          @if (item.status === 'ok') {
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          } @else {
+            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+          }
+        </div>
+        <div class="ji-info">
+          <div class="ji-name">{{ item.student }}</div>
+          <div class="ji-detail">{{ item.detail }}</div>
+        </div>
+        <div class="ji-right">
+          <span class="ji-status" [ngClass]="item.status === 'ok' ? 'js-ok' : 'js-rej'">
+            {{ item.status === 'ok' ? 'Aprobada' : 'Rechazada' }}
+          </span>
+          <div class="ji-date">{{ item.date }}</div>
+        </div>
+      </div>
+    }
   </div>
 </div>
  
-
-<!-- FOOTER BAR -->
 <div class="footer-bar">
   <div class="fb-info">
-    <div class="fb-stat"><div class="fb-dot" style="background:var(--ok)"></div>P: <strong id="fbP">0</strong></div>
-    <div class="fb-stat"><div class="fb-dot" style="background:var(--wa)"></div>T: <strong id="fbT">0</strong></div>
-    <div class="fb-stat"><div class="fb-dot" style="background:var(--er)"></div>F: <strong id="fbF">0</strong></div>
-    <div class="fb-stat"><div class="fb-dot" style="background:var(--bl)"></div>J: <strong id="fbJ">0</strong></div>
-    <div class="fb-stat" style="color:var(--g4)">Sin marcar: <strong id="fbNone">32</strong></div>
+    <div class="fb-stat"><div class="fb-dot" style="background:var(--ok)"></div>P: <strong id="fbP">{{ counts().p }}</strong></div>
+    <div class="fb-stat"><div class="fb-dot" style="background:var(--wa)"></div>T: <strong id="fbT">{{ counts().t }}</strong></div>
+    <div class="fb-stat"><div class="fb-dot" style="background:var(--er)"></div>F: <strong id="fbF">{{ counts().f }}</strong></div>
+    <div class="fb-stat"><div class="fb-dot" style="background:var(--bl)"></div>J: <strong id="fbJ">{{ counts().j }}</strong></div>
+    <div class="fb-stat" style="color:var(--g4)">Sin marcar: <strong id="fbNone">{{ counts().none }}</strong></div>
   </div>
   <div style="display:flex;gap:6px">
-    <button class="btn btn-gh btn-sm" onclick="showToast('Borrador guardado','info')"><svg viewBox="0 0 24 24"><path d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2V7l-4-4z"/></svg>Borrador</button>
-    <button class="btn btn-ok" onclick="saveAsistencia()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Guardar asistencia</button>
+    <button class="btn btn-gh btn-sm" (click)="showToast('Borrador guardado en la nube','info')"><svg viewBox="0 0 24 24"><path d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2V7l-4-4z"/></svg>Borrador</button>
+    <button class="btn btn-ok" (click)="saveAsistencia()"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Guardar asistencia</button>
   </div>
 </div>
  
-<div class="toast t-ok" id="toast"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span id="toastMsg">OK</span></div>
- 
-<script>
-/* ═══ DATA ═══ */
-const STUDENTS=[
-  'Aguirre López, Pedro','Álvarez Quispe, María','Benites Ruiz, Ana','Campos Torres, Luis',
-  'Castillo Vega, Rosa','Chávez Díaz, Jorge','Cruz Mendoza, Lucía','Delgado Ramos, Carlos',
-  'Espinoza Paredes, Sofía','Fernández León, Diego','García Huamán, Andrea','Gómez Salazar, Kevin',
-  'Gutiérrez Flores, Valeria','Herrera Sánchez, Marco','Huamán Rivera, Carmen','López Castro, Daniel',
-  'Martínez Arias, Isabella','Mendoza Vargas, Sebastián','Morales Chávez, Jimena','Ortega Cruz, Alejandro',
-  'Paredes Gutiérrez, Camila','Pérez Herrera, Fernando','Quispe Espinoza, Natalia','Ramírez García, Gabriel',
-  'Rivera López, Antonella','Rojas Benites, Miguel','Salazar Campos, Daniela','Sánchez Castillo, Rodrigo',
-  'Torres Álvarez, Mariana','Vargas Delgado, Adrián','Vega Martínez, Paola','Villanueva Ortega, Emilio'
-];
-const COLORS=['#2A63E6','#FF5B1F','#00C27C','#9B59B6','#F5A623','#E53030','#1340A0','#d08a00'];
-const attendance={}; // {idx: 'P'|'T'|'F'|'J'}
-const DATES=['5/5','6/5','7/5','8/5','9/5'];
-const histData={}; // {studentIdx: [P,T,F,P,P]}
- 
-// Generate history
-STUDENTS.forEach((_,i)=>{
-  histData[i]=DATES.map(()=>{const r=Math.random();return r<.82?'P':r<.90?'T':r<.96?'F':'J'});
-});
- 
-/* ═══ RENDER STUDENTS ═══ */
-function renderStudents(){
-  const list=document.getElementById('stuList');
-  const search=document.getElementById('searchInput').value.toLowerCase();
-  let html='';
-  STUDENTS.forEach((name,i)=>{
-    if(search && !name.toLowerCase().includes(search)) return;
-    const initials=name.split(',')[0].split(' ').map(w=>w[0]).join('').slice(0,2);
-    const color=COLORS[i%COLORS.length];
-    const mark=attendance[i]||'';
-    const hist=histData[i];
-    const pCount=hist.filter(x=>x==='P').length;
-    const pct=Math.round(pCount/hist.length*100);
-    const pctColor=pct>=90?'var(--ok)':pct>=75?'var(--wa)':'var(--er)';
-    html+=`<div class="stu" data-idx="${i}">
-      <div class="stu-num">${i+1}</div>
-      <div class="stu-av" style="background:${color}">${initials}</div>
-      <div class="stu-info"><div class="stu-name">${name}</div><div class="stu-code">COD-2025-${String(3000+i)}</div></div>
-      <div class="stu-pct" style="color:${pctColor}">${pct}%</div>
-      <div class="marks">
-        <div class="mark ${mark==='P'?'sel-p':''}" onclick="setMark(${i},'P')">P</div>
-        <div class="mark ${mark==='T'?'sel-t':''}" onclick="setMark(${i},'T')">T</div>
-        <div class="mark ${mark==='F'?'sel-f':''}" onclick="setMark(${i},'F')">F</div>
-        <div class="mark ${mark==='J'?'sel-j':''}" onclick="setMark(${i},'J')">J</div>
-      </div>
-      <div class="stu-nota"><input type="text" placeholder="—" maxlength="3" title="Observación rápida"></div>
-    </div>`;
-  });
-  list.innerHTML=html;
-  updateCounts();
-}
- 
-function setMark(idx,mark){
-  if(attendance[idx]===mark) delete attendance[idx]; else attendance[idx]=mark;
-  renderStudents();
-}
-function markAll(mark){
-  STUDENTS.forEach((_,i)=>attendance[i]=mark);
-  renderStudents();
-  showToast(`Todos marcados como ${mark==='P'?'Presente':mark==='T'?'Tardanza':mark==='F'?'Falta':'Justificado'}`);
-}
-function clearAll(){
-  Object.keys(attendance).forEach(k=>delete attendance[k]);
-  renderStudents();
-  showToast('Asistencia limpiada','info');
-}
-function filterStudents(){renderStudents()}
- 
-function updateCounts(){
-  const vals=Object.values(attendance);
-  const p=vals.filter(v=>v==='P').length;
-  const t=vals.filter(v=>v==='T').length;
-  const f=vals.filter(v=>v==='F').length;
-  const j=vals.filter(v=>v==='J').length;
-  const none=STUDENTS.length-p-t-f-j;
-  document.getElementById('cntP').textContent=p;
-  document.getElementById('cntT').textContent=t;
-  document.getElementById('cntF').textContent=f;
-  document.getElementById('cntJ').textContent=j;
-  document.getElementById('fbP').textContent=p;
-  document.getElementById('fbT').textContent=t;
-  document.getElementById('fbF').textContent=f;
-  document.getElementById('fbJ').textContent=j;
-  document.getElementById('fbNone').textContent=none;
-}
- 
-function saveAsistencia(){
-  const total=Object.keys(attendance).length;
-  if(total<STUDENTS.length){showToast(`Faltan ${STUDENTS.length-total} alumnos por marcar`,'warn');return;}
-  showToast('✓ Asistencia guardada correctamente');
-}
- 
-/* ═══ RENDER HISTORIAL ═══ */
-function renderHistorial(){
-  const wrap=document.getElementById('histWrap');
-  let html=`<table class="hist-tbl"><thead><tr><th style="text-align:left">#</th><th style="text-align:left">Estudiante</th>`;
-  DATES.forEach(d=>html+=`<th>${d}</th>`);
-  html+=`<th style="background:var(--or)">Hoy</th><th>%</th></tr></thead><tbody>`;
-  STUDENTS.forEach((name,i)=>{
-    const hist=histData[i];
-    const todayMark=attendance[i];
-    const allMarks=[...hist];if(todayMark)allMarks.push(todayMark);
-    const pCount=allMarks.filter(x=>x==='P').length;
-    const pct=Math.round(pCount/allMarks.length*100);
-    const pctColor=pct>=90?'var(--ok)':pct>=75?'var(--wa)':'var(--er)';
-    html+=`<tr><td class="td-num">${i+1}</td><td class="td-name">${name}</td>`;
-    hist.forEach(m=>{
-      const cls=m==='P'?'a-p':m==='T'?'a-t':m==='F'?'a-f':'a-j';
-      html+=`<td><span class="a-mark ${cls}">${m}</span></td>`;
-    });
-    html+=`<td><span class="a-mark ${todayMark?'a-'+(todayMark==='P'?'p':todayMark==='T'?'t':todayMark==='F'?'f':'j'):'a-empty'}">${todayMark||'—'}</span></td>`;
-    html+=`<td class="td-pct" style="color:${pctColor}">${pct}%</td></tr>`;
-  });
-  html+='</tbody></table>';
-  wrap.innerHTML=html;
-}
- 
-/* ═══ TABS ═══ */
-function switchTab(el,idx){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
-  el.classList.add('on');
-  for(let i=0;i<4;i++) document.getElementById('pan'+i).classList.toggle('on',i===idx);
-  if(idx===1) renderHistorial();
-}
- 
-function changeCurso(){
-  const names=['Matemáticas — 3ro A','Matemáticas — 3ro B','Física — 4to A','Física — 4to B'];
-  const alums=[32,30,28,31];
-  const v=+document.getElementById('selCurso').value;
-  document.getElementById('bannerName').textContent=names[v];
-  document.getElementById('bannerAlum').textContent=alums[v]+' estudiantes';
-  Object.keys(attendance).forEach(k=>delete attendance[k]);
-  renderStudents();
-  showToast('Curso cambiado: '+names[v],'info');
-}
- 
-/* ═══ TOAST ═══ */
-let _t;
-const _ti={ok:'<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',info:'<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>',warn:'<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>',er:'<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>'};
-function showToast(msg,type='ok'){
-  clearTimeout(_t);
-  const t=document.getElementById('toast');
-  t.className='toast t-'+type;
-  t.querySelector('svg').innerHTML=_ti[type]||_ti.ok;
-  document.getElementById('toastMsg').textContent=msg;
-  t.classList.add('show');
-  _t=setTimeout(()=>t.classList.remove('show'),3200);
-}
- 
-/* ═══ INIT ═══ */
-renderStudents();
-</script>
+<div class="toast" [class.show]="toastState().show" [ngClass]="'t-' + toastState().type" id="toast">
+  <svg viewBox="0 0 24 24">
+    @if (toastState().type === 'ok') {
+      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+    } @else if (toastState().type === 'info') {
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+    } @else if (toastState().type === 'warn') {
+      <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+    } @else if (toastState().type === 'er') {
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>
+    }
+  </svg>
+  <span id="toastMsg">{{ toastState().msg }}</span>
+</div>

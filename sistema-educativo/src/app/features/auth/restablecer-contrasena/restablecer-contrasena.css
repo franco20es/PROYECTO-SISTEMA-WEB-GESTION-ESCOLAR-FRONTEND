@@ -1,355 +1,232 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-/* ==========================================================================
-   VARIABLES DE DISEÑO: LIGHT MODE PREMIUM (STRIPE / VERCEL STYLE)
-   ========================================================================== */
 :root {
-  --bg-main: #f8fafc;                /* Fondo general gris frío ultra limpio */
-  --card-bg: #ffffff;                /* Tarjeta blanca sólida (sin transparencias) */
-  --border-color: #e2e8f0;           /* Bordes delgados y limpios */
-  --border-focus: #6366f1;           /* Índigo para el enfoque activo */
-  
-  /* Textos de alta legibilidad */
-  --text-main: #0f172a;              /* Slate oscuro para máxima claridad */
-  --text-muted: #475569;
-  --text-dim: #94a3b8;
-  
-  /* Estados semánticos */
-  --success: #10b981;
-  --error: #f43f5e;
-  
-  /* Botón e interacciones */
-  --btn-bg: #0f172a;                 /* Botón oscuro sólido súper elegante */
-  --btn-hover: #1e293b;
-  
-  /* Redondeados y transiciones */
-  --radius-lg: 12px;
-  --radius-md: 8px;
-  --radius-sm: 4px;
-  --transition: all 0.2s ease-in-out;
+    --rose: #FF007F;
+    --rose-hover: #E60072;
+    --white: #FFFFFF;
+    --text-dark: #1F2937;
+    --text-gray: #4A5568;
+    --border: #E2E8F0;
+    --transition: all 0.3s ease;
 }
 
-/* ==========================================================================
-   ESTRUCTURA PRINCIPAL (SPLIT INTERFAZ)
-   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--white);
+    color: var(--text-dark);
+}
+
 .master-container {
-  display: flex;
-  min-height: 100vh;
-  width: 100%;
-  background-color: var(--bg-main);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
 }
 
-/* Mitad Izquierda: Ilustración limpia */
+/* --- LADO IZQUIERDO (Limpio y centrado como en la imagen) --- */
 .brand-side {
-  flex: 1.1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #ffffff;
-  border-right: 1px solid var(--border-color);
+    background-color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
 }
 
-.brand-side img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.brand-illustration {
+    max-width: 85%;
+    max-height: 75vh;
+    object-fit: contain;
 }
 
-/* Mitad Derecha: Formulario Sólido */
+/* --- LADO DERECHO (Formulario y Logo integrado) --- */
 .form-side {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    background: var(--white);
+    border-left: 1px solid #F0F4F8; /* Línea divisoria muy tenue en el centro */
 }
 
 .form-box {
-  width: 100%;
-  max-width: 440px;
-  background: var(--card-bg);
-  padding: 40px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  /* Sombra premium sutil multicapa (Depth Design limpio) */
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 
-              0 10px 15px -3px rgba(0, 0, 0, 0.03), 
-              0 4px 6px -4px rgba(0, 0, 0, 0.03);
-  animation: cardEntrance 0.4s ease-out;
+    width: 100%;
+    max-width: 380px;
 }
 
-/* ==========================================================================
-   CABECERA Y TITULARES
-   ========================================================================== */
+/* Estilos para el logo integrado sobre el login */
+.form-logo-container {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: flex-start; /* Cambiado de flex-start a center para centrarlo horizontalmente */
+}
+
+.form-logo {
+    max-height: 100px; /* Mantiene tu tamaño configurado */
+    width: auto;
+    object-fit: contain;
+}
+
 .form-header {
-  margin-bottom: 28px;
+    margin-bottom: 32px;
 }
 
 .form-header h2 {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 8px;
-  letter-spacing: -0.03em;
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
 }
 
 .form-header p {
-  color: var(--text-muted);
-  font-size: 14px;
-  line-height: 1.5;
+    font-size: 0.92rem;
+    color: var(--text-gray);
 }
 
-.error-icon, .success-icon {
-  font-size: 36px;
-  text-align: center;
-  margin-bottom: 12px;
-}
-
-/* ==========================================================================
-   CAMPOS DE ENTRADA (CONTRALTO DE FOCUS)
-   ========================================================================== */
+/* --- CAMPOS DE FORMULARIO --- */
 .input-group {
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
+    margin-bottom: 24px;
 }
 
 .input-group label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-main);
-  margin-bottom: 6px;
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    color: var(--text-dark);
 }
 
 .input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.input-wrapper > i {
-  position: absolute;
-  left: 14px;
-  color: var(--text-dim);
-  font-size: 16px;
-  transition: color 0.2s ease;
-  pointer-events: none;
+    position: relative;
+    border-bottom: 1px solid var(--border);
 }
 
 .input-field {
-  width: 100%;
-  padding: 12px 40px 12px 42px;
-  background: #ffffff;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  font-size: 14.5px;
-  color: var(--text-main);
-  transition: var(--transition);
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 12px 35px 12px 28px;
+    font-size: 0.95rem;
+    color: var(--text-dark);
 }
 
-.input-field::placeholder {
-  color: var(--text-dim);
+.input-wrapper i {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #A0AEC0;
+    font-size: 1.1rem;
 }
 
-/* Enfoque nítido sin brillos exagerados */
-.input-field:focus {
-  outline: none;
-  border-color: var(--border-focus);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
-}
-
-.input-wrapper:focus-within > i {
-  color: var(--border-focus);
+.input-wrapper:focus-within {
+    border-color: var(--text-dark);
 }
 
 .toggle-password {
-  position: absolute;
-  right: 14px;
-  background: none;
-  border: none;
-  color: var(--text-dim);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  transition: color 0.2s ease;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-gray);
+    font-size: 1rem;
 }
 
-.toggle-password:hover {
-  color: var(--text-main);
-}
-
-/* ==========================================================================
-   VALIDADORES Y REGLAS (UI LIMPIA)
-   ========================================================================== */
-.field-hint {
-  font-size: 12.5px;
-  font-weight: 500;
-  margin-top: 6px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.field-hint.error { color: var(--error); }
-.field-hint.success { color: var(--success); }
-
-.password-rules {
-  margin-top: 12px;
-  padding: 12px;
-  background: #f8fafc;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-}
-
-.rule {
-  font-size: 12px;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-.rule:last-child { margin-bottom: 0; }
-
-.rule.ok {
-  color: var(--text-main);
-}
-.rule.ok i {
-  color: var(--success);
-}
-
-/* MEDIDOR DE FORTALEZA SÓLIDO */
-.strength-bar {
-  margin-top: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.strength-track {
-  flex: 1;
-  height: 6px;
-  background: #e2e8f0;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-}
-
-.strength-fill {
-  height: 100%;
-  width: 0;
-  transition: width 0.3s ease, background-color 0.3s ease;
-}
-
-.strength-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-}
-
-/* ==========================================================================
-   BOTÓN PRINCIPAL SÓLIDO (MINIMALISTA CORPORATIVO)
-   ========================================================================== */
-.btn-primary {
-  width: 100%;
-  padding: 13px;
-  background-color: var(--btn-bg);
-  border: 1px solid transparent;
-  border-radius: var(--radius-md);
-  color: #ffffff;
-  font-size: 14.5px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: var(--transition);
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: var(--btn-hover);
-  transform: translateY(-0.5px);
-}
-
-.btn-primary:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.btn-primary:disabled {
-  background-color: #f1f5f9;
-  border-color: var(--border-color);
-  color: var(--text-dim);
-  cursor: not-allowed;
-}
-
-.bi-hourglass-split {
-  animation: spin 1.5s linear infinite;
+/* --- ACCIONES Y BOTÓN --- */
+.flex-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
 }
 
 .forgot-link {
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  transition: color 0.2s ease;
+    background: none;
+    border: none;
+    font-size: 0.82rem;
+    color: var(--text-dark);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
 }
 
 .forgot-link:hover {
-  color: var(--text-main);
+    text-decoration: underline;
 }
 
-/* ==========================================================================
-   NOTIFICACIONES DE ALERTA SÓLIDAS
-   ========================================================================== */
+.btn-primary {
+    width: 100%;
+    padding: 15px;
+    background: #6B7280; /* Tono grisáceo elegante idéntico al de tu captura */
+    color: var(--white);
+    border: none;
+    border-radius: 12px !important; /* Esquinas suavizadas a 12px */
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--text-dark);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* --- ALERTAS MODERNAS --- */
 .alert {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: var(--radius-md);
-  font-size: 13.5px;
-  font-weight: 500;
-  margin-bottom: 20px;
+    padding: 12px 16px;
+    border-radius: 12px !important; /* Consistencia en el diseño a 12px */
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 
 .alert-error {
-  background: #fff5f5;
-  border: 1px solid #fed7d7;
-  color: #c53030;
+    background: #FFF5F5;
+    color: #C53030;
+    border: 1px solid #FEB2B2;
 }
 
 .alert-success {
-  background: #f0fff4;
-  border: 1px solid #c6f6d5;
-  color: #22543d;
+    background: #F0FFF4;
+    color: #22543D;
+    border: 1px solid #9AE6B4;
 }
 
-/* ==========================================================================
-   ANIMACIONES SIMPLES Y FLUIDAS
-   ========================================================================== */
-@keyframes cardEntrance {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+.field-hint {
+    color: #E53E3E;
+    font-size: 0.78rem;
+    display: block;
+    margin-top: 5px;
 }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* ==========================================================================
-   SOPORTE RESPONSIVE
-   ========================================================================== */
-@media (max-width: 1024px) {
-  .brand-side {
-    display: none;
-  }
-  .form-side {
-    padding: 24px;
-  }
-  .form-box {
-    padding: 32px 24px;
-  }
+/* --- RESPONSIVE --- */
+@media (max-width: 992px) {
+    .master-container {
+        grid-template-columns: 1fr;
+    }
+    .brand-side {
+        display: none;
+    }
+    .form-side {
+        padding: 40px 20px;
+    }
 }

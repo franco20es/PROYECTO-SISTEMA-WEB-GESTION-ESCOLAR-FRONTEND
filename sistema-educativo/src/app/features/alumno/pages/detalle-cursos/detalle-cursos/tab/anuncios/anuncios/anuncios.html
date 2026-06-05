@@ -1,0 +1,43 @@
+<div class="tab-loading" *ngIf="cargando">
+  <div class="tl-spinner"></div>
+</div>
+
+<ng-container *ngIf="!cargando">
+  <div class="anuncios-wrapper">
+    
+    <div class="sec-head">
+      <div class="sec-title">
+        <i class="bi bi-megaphone-fill"></i> 
+        Anuncios del docente
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="anuncios.length === 0">
+      <div class="empty-icon-wrap">
+        <i class="bi bi-bell-slash"></i>
+      </div>
+      <h3>Tablón de anuncios vacío</h3>
+      <p>El docente no ha publicado comunicados ni novedades informativas en este curso.</p>
+    </div>
+
+    <div class="anuncio" *ngFor="let a of anuncios" [class.an-pin]="a.fijado">
+      
+      <div class="an-header">
+        <div class="an-title">
+          <i class="bi bi-pin-angle-fill" *ngIf="a.fijado"></i>
+          <span class="title-text">{{ a.titulo }}</span>
+          <span class="an-pin-b" *ngIf="a.fijado">Destacado</span>
+        </div>
+        <div class="an-date">
+          <i class="bi bi-clock"></i> {{ formatearFecha(a.fechaPublicacion) }}
+        </div>
+      </div>
+      
+      <div class="an-body">
+        {{ a.cuerpo }}
+      </div>
+      
+    </div>
+
+  </div>
+</ng-container>

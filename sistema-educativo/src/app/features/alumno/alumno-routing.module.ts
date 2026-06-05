@@ -49,6 +49,10 @@ export const ALUMNO_ROUTES: Routes = [
   {
     path: 'detalle-curso/:id',
     loadComponent: () => import('./pages/detalle-cursos/detalle-cursos/detalle-cursos').then(m => m.DetalleCursos)
-  }
+  },
+  {
+  path: 'examen/:examenId',
+  loadComponent: () => import('./pages/detalle-cursos/detalle-cursos/tab/evaluaciones/rendirExamen/examen/examen').then(m => m.RendirExamen)
+},
 
 ];
